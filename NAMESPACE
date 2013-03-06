@@ -1,0 +1,27 @@
+import(methods)
+import(Rsamtools)
+import(GenomicRanges)
+import(IRanges)
+
+importFrom(rtracklayer, export)
+importFrom(BSgenome, available.genomes)
+importFrom(beanplot, beanplot)
+
+importFrom(som, som)
+importFrom(VGAM, zeta)
+
+exportClasses(CAGEset)
+
+exportMethods(getCTSS, importPublicData)
+exportMethods(aggregateTagClusters)
+exportMethods(clusterCTSS)
+exportMethods(cumulativeCTSSdistribution)
+exportMethods(plotReverseCumulatives, exportCTSStoBedGraph, plotInterquantileWidth, plotExpressionProfiles, exportToBed)
+exportMethods(getExpressionProfiles, extractExpressionClass)
+exportMethods(show)
+exportMethods(mergeSamples)
+exportMethods(normalizeTagCount)
+exportMethods(quantilePositions)
+exportMethods(scoreShift, getShiftingPromoters)
+
+export(genomeName, inputFiles, inputFilesType, sampleLabels, librarySizes, CTSScoordinates, CTSStagCount, CTSSnormalizedTpm, CTSSclusteringMethod, tagClusters, consensusClusters, expressionClasses)

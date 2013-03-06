@@ -1,0 +1,550 @@
+%\VignetteIndexEntry{CAGEr}
+%\VignetteKeywords{CAGEr}
+%\VignettePackage{CAGEr}
+
+%documentclass[12pt, a4paper]{article}
+\documentclass[12pt]{article}
+
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage[authoryear,round]{natbib}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rcode}[1]{{\texttt{#1}}}
+\newcommand{\Rparameter}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+
+\author{Vanja Haberle \footnote{Department of Biology, University of Bergen, Bergen,  Norway}}
+
+\title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
+
+\date{March 4, 2013}
+
+\begin{document}
+<<setup, echo=FALSE>>=
+options(width = 60)
+olocale=Sys.setlocale(locale="C")
+@ 
+\maketitle
+
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+This document briefly describes how to use the package \Rpackage{CAGEr}. 
+\Rpackage{CAGEr} is a Bioconductor-compliant R package designed to manipulate, analyse and visualise 
+Cap Analysis of Gene Expression (CAGE) sequencing data. CAGE (\cite{Kodzius:2006}) is a high-throughput method for transcriptome
+analysis that utilizes "cap-trapping" (\cite{Carninci:1996}), a technique based on the biotinylation of the 7-methylguanosine cap of Pol II transcripts, 
+to pulldown the 5'-complete cDNAs reversely transcribed from the captured transcripts. A linker sequence is ligated to the 5' end of the cDNA and 
+a specific restriction enzyme is used to cleave off a short fragment from the 5' end. Resulting fragments are then amplified and sequenced using 
+massive parallel high-throughput sequencing technology, which results in a large number of short sequenced tags that can be mapped back to 
+the referent genome to infer the exact position of the transcription start sites (TSSs) used for transcription of captured RNAs (Figure~\ref{fig:CAGEprotocol}). 
+Number of CAGE tags supporting each TSS gives the information on relative frequency of its usage and can be used as a measure of expression 
+from that specific TSS. Thus, CAGE provides information on two aspects of capped transcriptome: genome-wide 1bp-resolution map of transcription 
+start sites and transcript expression levels. This information can be used for various analyses, from 5' centered expression profiling (\cite{Takahashi:2012}) to 
+studying promoter architecture (\cite{Carninci:2006}).
+
+\begin{figure}
+\centering
+\includegraphics[width = 150mm]{images/CAGEprotocol.pdf}
+\caption{Overview of CAGE experiment}
+\label{fig:CAGEprotocol}
+\end{figure}
+
+CAGE samples derived from various organisms (genomes) can be analysed by \Rpackage{CAGEr} and the only limitation is the availability of the referent genome 
+within the Bioconductor \Rpackage{BSgenome} package. \Rpackage{CAGEr} provides a comprehensive workflow that starts from mapped CAGE tags and includes
+reconstruction of TSSs and promoters and their visualisation, as well as more specialized downstream analyses like promoter width, expression profiling and
+differential TSS usage. It can use both Binary Sequence Alignment Map (BAM) files of aligned CAGE tags or 
+files with genomic locations of TSSs and number of supporting CAGE tags as input. If BAM files are provided \Rpackage{CAGEr} constructs TSSs from aligned 
+CAGE tags and counts the number of tags supporting each TSS, while allowing filtering out low-quality tags and removing technology-specific bias. 
+It further performs normalization of raw CAGE tag count, clustering of TSSs into tag clusters (TC) and their aggregation across multiple CAGE experiments into promoters 
+to construct the promoterome. Various methods for normalization and clustering of TSSs are supported. Exporting data into different types of track files allows various visualisations 
+of TSSs and clusters (promoters) in the UCSC Genome Browser, which facilitate generation of hypotheses. \Rpackage{CAGEr} manipulates multiple CAGE experiments 
+at once and performs analyses across datasets, including expression profiling and detection of differential TSS usage (promoter shifting). Multicore option for parallel 
+processing is supported on Unix-like platforms, which significantly reduces computing time.
+\newline
+\newline
+Here are some of the functionalities provided in this package:
+
+\begin{itemize}
+\item
+Reading in multiple CAGE datasets from various sources; user provided BAM or TSS input files, public CAGE datasets from accompanying data packages.
+\item
+Normalizing raw CAGE tag count: simple tag per million (tpm) or power-law based normalization (\cite{Balwierz:2009}).
+\item
+Clustering of individual TSSs into tag clusters (TCs) and aggregating clusters across multiple CAGE datasets to create a set of consensus promoters.
+\item
+Making bedGraph or BED files of individual TSSs or clusters for visualisation in the genome browser.
+\item
+Expression clustering of individual TSSs or consensus promoters into distinct expression profiles using common clustering algorithms.
+\item
+Calculating promoter width based on the cumulative distribution of CAGE signal along the promoter.
+\item
+Scoring differential TSS usage (promoter shifting) and detecting promoters that shift between two samples.
+\end{itemize}
+
+Two data packages are accompanying this package: \Rpackage{FANTOM3and4CAGE} and \Rpackage{ENCODEprojectCAGE}. 
+They contain majority of the up-to-date publicly available CAGE data produced by two major genome regulation-oriented international 
+consortia, FANTOM and ENCODE, respectively, and provide a valuable resource of genome-wide TSSs in various organisms, 
+tissues and cell types that can be used directly in R. Section 5 in this vignette describes how these public datasets can be included into a
+workflow provided by \Rpackage{CAGEr}. See the vignettes of these data packages for the list of available CAGE datasets.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Input data for \Rpackage{CAGEr}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Rpackage{CAGEr} package supports three types of CAGE data input: 
+
+\begin{enumerate}
+\item
+\textbf{Sequenced CAGE tags mapped to the genome}: BAM (Binary Sequence Alignment Map) files of sequenced CAGE tags aligned to the referent genome.
+\item
+\textbf{CAGE detected TSSs (CTSSs)}: tab separated files with genomic coordinates of TSSs and number of tags supporting each TSS. The file should not contain 
+a header and the data must be organized in four columns: 
+\begin{itemize}
+\item
+name of the chromosome: names must match the names of chromosomes in the corresponding \Rpackage{BSgenome} package
+\item
+1-based coordinate of the TSS on the chromosome
+\item
+genomic strand: should be either + or -
+\item
+number of CAGE tags supporting that TSS
+\end{itemize}
+\item
+\textbf{Publicly available CAGE datasets from R data packages}: Two data packages containing CAGE data produced by FANTOM and ENCODE 
+consortia (\Rpackage{FANTOM3and4CAGE} and \Rpackage{ENCODEprojectCAGE}, respectively) are accompanying this 
+package. Selected subset of these data can be used as input for \Rpackage{CAGEr}.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Getting started}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+To load the \Rpackage{CAGEr} package into your R envirnoment type:
+<<>>=
+library(CAGEr)
+@
+
+In this tutorial we will be using data from zebrafish (\emph{Danio rerio}) that was mapped to the danRer7 assembly of the genome. 
+Therefore, the corresponding genome package \Rpackage{BSgenome.Drerio.UCSC.danRer7} has to be installed and available to
+load by typing:
+<<>>=
+library(BSgenome.Drerio.UCSC.danRer7)
+@
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{\Rpackage{CAGEr} workflow}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Preparing input files}
+The subset of zebrafish (\emph{Danio rerio}) developmental time-series CAGE data generated by (\cite{Nepal:2013})
+will be used for the demonstration of the workflow and the provided functionalities. 
+Files with genomic coordinates of TSSs detected by CAGE in 4 zebrafish developmental stages are included in this package 
+in the \Rcode{extdata} subdirectory. The files contain TSSs from a part of chromosome 17 (26,000,000-46,000,000), and there 
+are two files for one of the developmental stages (two independent replicas). The data in files is organized in four tab separated 
+columns as described above in the section about  input data formats.
+First we have to define paths to the input files:
+<<>>=
+inputDir <- system.file("extdata", package = "CAGEr")
+pathsToInputFiles <- list.files(inputDir, full.names = TRUE)
+basename(pathsToInputFiles)
+@
+
+\subsection{Creating \Robject{CAGEset} object}
+We start the workflow by creating a \Robject{CAGEset} object, which is a container 
+for storing CAGE datasets and all the results that will be generated by applying specific functions. 
+\Rcode{CAGEset} is created by providing name of the referent genome, paths to input files, type of 
+input files and labels of individual CAGE datasets (samples):
+<<>>=
+myCAGEset <- new("CAGEset", genomeName = "BSgenome.Drerio.UCSC.danRer7",
+		inputFiles = pathsToInputFiles, inputFilesType = "ctss",
+		sampleLabels = c("zf_30p_dome", "zf_high", 
+		"zf_prim6_rep1", "zf_prim6_rep2", "zf_unfertilized_egg"))
+@
+
+To display the created object type:
+<<>>=
+myCAGEset
+@
+
+The supplied information can be seen in the \Rcode{Input data information} section, whereas all other slots are still empty 
+since no data has been read yet and no analysis conducted.
+
+\subsection{Reading in the data}
+To read in the data from the provided files we use the following function:
+<<>>=
+getCTSS(myCAGEset)
+@
+This function reads in the data from the provided files in the order they were specified in the \Rcode{inputFiles} argument. 
+It creates a single set of all TSSs detected across all input datasets and a table with counts of CAGE tags supporting each TSS in 
+every dataset. Genomic coordinates of all TSSs and numbers of supporting CAGE tags in every input sample can be retrieved by typing:
+<<>>=
+ctss <- CTSStagCount(myCAGEset)
+head(ctss)
+@
+Note that the samples are ordered in the way they were supplied when creating the \Robject{CAGEset} object and will be presented in that 
+order in all the results and plots.
+After the data has been read we might want to merge and/or rearrange some of the datasets. To rearrange the samples in the
+temporal order of the zebrafish development (unfertilized egg -> high -> 30 percent dome -> prim6) and to merge the two replicates for the 
+prim6 developmental stage we use the \Rfunction{mergeSamples} function:
+<<>>=
+mergeSamples(myCAGEset, mergeIndex = c(3,2,4,4,1), 
+			mergedSampleLabels = c("zf_unfertilized_egg", 
+			"zf_high", "zf_30p_dome", "zf_prim6"))
+@
+The \Rcode{mergeIndex} argument controls which samples will be merged and how the final dataset will be ordered. Samples labeled by the 
+same number (in our case samples three and four) will be merged together by summing 
+number of CAGE tags per TSS. The final set of samples will be ordered in the ascending order of values provided in \Rcode{mergeIndex} and 
+will be labeled by the labels provided in the \Rcode{mergedSampleLabels} argument.
+Note that \Rfunction(mergeSamples) function resets all slots with results of downstream analyses, so in case there were any results in the 
+\Robject{CAGEset} object prior to merging, they will be removed.
+
+\subsection{Normalization}
+Library sizes (number of total sequenced tags) of individual experiments differ, thus normalization is required to make
+them comparable. The \Rfunction{librarySizes} function returns the total number of CAGE tags in each sample:
+<<>>=
+librarySizes(myCAGEset)
+@
+\Rpackage{CAGEr} package supports both simple tags per million normalization and power-law based normalization. 
+It has been shown that many CAGE datasets follow a power-law distribution (\cite{Balwierz:2009}). Plotting the number of CAGE tags (X-axis) 
+against the number of TSSs that are supported by <= of that number of tags (Y-axis) results in a distribution that can be approximated by a power-law. 
+On a log-log scale this reverse cumulative distribution will manifest as a monotonically decreasing linear function, which can be defined as
+\newline 
+\Rcode{y = -1 * alpha * x + beta}  
+\newline
+and is fully determined by the slope \Rcode{alpha} and total number of tags T (which together with \Rcode{alpha} determines the value of \Rcode{beta}).
+\newline
+To check whether our CAGE datasets follow power-law distribution and in which range of values, we can use the \Rfunction{plotReverseCumulatives} function:
+<<eval=FALSE>>=
+plotReverseCumulatives(myCAGEset, onePlot = TRUE)
+@
+This will create a PDF file with reverse cumulative plots (Figure~\ref{fig:ReverseCumulatives}) in your working directory. The plots can help in choosing 
+the parameters for power-law based normalization. We can see that the reverse cumulative distributions look similar and follow the power-law in the central part of the CAGE 
+tag counts values with a slope between -1.2 and -1.3. Thus, we choose a range from 5 to 500 tags to fit a power-law, and we normalize all samples to a referent power-law distribution with a 
+total of 50,000 tags and slope of -1.25 (\Rcode{alpha = 1.25}). (Note that since this example dataset contains only data from one part of chromosome 17 and the total number of tags is very small, 
+we normalize to a referent distribution with a similarly small number of tags. When analyzing full datasets it is reasonable to set total number of tags for referent distribution to one million to get 
+normalized tags per million values.)
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=90mm,height=90mm]{images/CTSS_reverse_cumulatives_all_samples.pdf}
+\caption{Reverse cumulative distribution of CAGE tags}
+\label{fig:ReverseCumulatives}
+\end{figure}
+
+To perform normalization we pass these parameters to the \Rfunction{normalizeTagCount} function:
+<<>>=
+normalizeTagCount(myCAGEset, method = "powerLaw", 
+		fitInRange = c(5, 500), alpha = 1.25, T = 5*10^4)
+@
+The normalization is performed as described in (\cite{Balwierz:2009}): 
+\begin{enumerate}
+\item
+Power-law is fitted to the reverse cumulative distribution in the specified range of CAGE tags values to each sample separately.
+\item
+A referent power-law distribution is defined based on the provided \Rcode{alpha} (slope in the log-log representation) and \Rcode{T} (total number of tags) parameters. Setting \Rcode{T} to 1 million results in normalized tags per million (tpm) values.
+\item
+Every sample is normalized to the defined referent distribution, \emph{i.e.} given the parameters that approximate its own power-law distribution it is calculated how many tags would each TSS have in the referent power-law distribution.
+\end{enumerate}
+
+\subsection{Exporting CAGE signal to bedGraph}
+CAGE data can be visualized in the genomic context by exporting raw or normalized CAGE tag counts to a bedGraph file and uploading the file 
+to a genome browser. Positions of TSSs and tag counts supporting them are exported using \Rfunction{exportCTSStoBedGraph} function:
+<<eval=FALSE>>=
+exportCTSStoBedGraph(myCAGEset, values = "normalized", oneFile = TRUE)
+@
+This will produce a single bedGraph file with multiple annotated tracks that can be directly visualized as custom tracks in the genome browser (Figure~\ref{fig:CTSSbedGraph}).
+There are two tracks per sample; one for TSSs on the plus strand and the other for the minus strand. Values for TSSs on minus strand are shown as 
+negative and are pointing downwards in the browser.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=160mm]{images/CTSSbedGraph.pdf}
+\caption{CAGE data bedGraph track visualized in the UCSC Genome Browser}
+\label{fig:CTSSbedGraph}
+\end{figure}
+
+\subsection{CTSS clustering}
+Transcription start sites are found in the promoter region of a gene and reflect the transcriptional activity of that promoter (Figure~\ref{fig:CTSSbedGraph}). 
+TSSs in the close proximity of each other give rise to a functionally equivalent set of transcripts and are likely regulated by the same promoter elements. Thus, TSSs can 
+be spatially clustered into larger transcriptional units, called tag clusters (TCs) that correspond to individual promoters. \Rpackage{CAGEr} supports three methods for spatial clustering of TSSs 
+along the genome, two "ab initio" methods driven by the data itself as well as assigning TSSs to predefined genomic regions:
+\begin{enumerate}
+\item
+simple distance-based clustering in which two neighbouring TSSs are joined together if they are closer than some specified distance
+\item
+parametric clustering of data attached to sequences based on the density of the signal (\cite{Frith:2007}, \href{http://www.cbrc.jp/paraclu/}{http://www.cbrc.jp/paraclu/})
+\item
+counting TSSs and their signal in a set of user supplied genomic regions (\emph{e.g.} annotation derived promoter regions or other regions of interest)
+\end{enumerate}
+These functionalities are provided in the \Rfunction{clusterCTSS} function, which accepts additional arguments for controlling which CTSSs will be included in the 
+clustering as well as for refining the final set of tag clusters.
+\newline
+We will perform a simple distance-based clustering using 20bp as a maximal allowed distance between two neighbouring TSSs. Prior to 
+clustering we will filter out low-fidelity TSSs - the ones supported by less than 2 normalized tag counts in all of the samples.
+<<>>=
+clusterCTSS(object = myCAGEset, threshold = 1, thresholdIsTpm = TRUE, 
+		nrPassThreshold = 1, method = "distclu", maxDist = 20, 
+		removeSingletons = TRUE, keepSingletonsAbove = 5)
+@
+Our final set of tag clusters will not include singletons (clusters with only one TSS), unless the normalized signal is above 5, \emph{i.e.} it is a reasonably supported TSS.
+The \Rfunction(clusterCTSS) function creates a set of clusters for each sample separately; for each cluster it returns the genomic coordinates, counts the number of TSSs within 
+the cluster, determines the position of the most frequently used (dominant) TSS, calculates the total CAGE signal within the cluster and CAGE signal supporting the dominant TSS only.
+We can extract tag clusters for a desired sample from the \Robject{CAGEset} object by calling \Rfunction{tagClusters} function:
+<<>>=
+tc <- tagClusters(myCAGEset, sample = "zf_unfertilized_egg")
+head(tc)
+@
+
+\subsection{Promoter width}
+Genome-wide mapping of TSSs using CAGE has initially revealed two major classes of promoters in mammals (\cite{Carninci:2006}), with respect to the number and distribution of TSSs within the promoter. 
+They have been further correlated with differences in the underlying sequence and the functional classes of the genes they regulate, as well as the organization of the chromatin around them.
+These are:
+ \begin{itemize}
+ \item
+ "broad" promoters with multiple TSSs characterized by a high GC content and overlap with a CpG island, which are associated with widely expressed or developmentally regulated genes
+ \item
+ "sharp" promoters with one dominant TSS often associated with a TATA-box at a fixed upstream distance, which often regulate tissue-specific transcription
+ \end{itemize}
+Thus, the width of the promoter is an important characteristic that distinguishes different functional classes of promoters. \Rpackage{CAGEr} package analyzes promoter width across all samples present 
+in the \Robject{CAGEset} object. It defines promoter width by taking into account both the positions and the CAGE signal at TSSs along the tag cluster, thus making it more robust with respect 
+to total expression and local level of noise at the promoter. Width of every tag cluster is calculated as following:
+\begin{enumerate}
+\item
+Cumulative distribution of CAGE signal along the cluster is calculated.
+\item
+Positions of two selected quantiles are determined. At the 5' end the position of the "lower" quantile \Rcode{qLow} is determined, which is defined as the point that divides the cluster into two parts, 
+such that the 5' part contains \Rcode{< qLow * 100\%} of the CAGE signal of that cluster. Accordingly, position of the "upper" quantile \Rcode{qUp} is determined near the 3' end, which is defined as the point that 
+divides the cluster into two parts such that the 5' part contains \Rcode{>= qUp * 100\%} of the CAGE signal of that cluster.
+\item
+Promoter width is defined as the distance (in base pairs) between the two quantiles. This \textbf{interquantile width} marks the central part of the cluster that contains \Rcode{>= (qUp - qLow) * 100\%} of the CAGE signal.
+\end{enumerate}
+The procedure is schematically shown in Figure~\ref{fig:CumulativeDistribution}. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=100mm]{images/CumulativeDistributionAndQuantiles.pdf}
+\caption{Cumulative distribution of CAGE signal and definition of interquantile width}
+\label{fig:CumulativeDistribution}
+\end{figure}
+
+Required computations are done using \Rfunction{cumulativeCTSSdistribution} and \Rfunction{quantilePositions} functions, which calculate cumulative distribution for 
+every tag cluster in each of the samples and determine the positions of selected quantiles, respectively:
+<<>>=
+cumulativeCTSSdistribution(myCAGEset, clusters = "tagClusters")
+quantilePositions(myCAGEset, clusters = "tagClusters", qLow = 0.1, qUp = 0.9)
+@
+
+Tag clusters and their interquantile width can be visualized in a gene-like representation in the UCSC genome browser by exporting the data into BED file:
+<<eval=FALSE>>=
+exportToBed(object = myCAGEset, what = "tagClusters", 
+		qLow = 0.1, qUp = 0.9, oneFile = TRUE)
+@
+In this gene-like representation (Figure~\ref{fig:tagClustersBed}), the oriented line shows the full span of the cluster, filled block marks the interquantile width and a single base-pair thick 
+block denotes the position of the dominant TSS.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=160mm]{images/TagClustersBed.pdf}
+\caption{Tag clusters visualization in the genome browser}
+\label{fig:tagClustersBed}
+\end{figure}
+
+Once the cumulative distributions and the positions of quantiles have been calculated, the histograms of interquantile width can be plotted to 
+globally compare the promoter width between different samples (Figure~\ref{fig:TagClustersInterquantileWidth}):
+<<eval=FALSE>>=
+plotInterquantileWidth(myCAGEset, clusters = "tagClusters", 
+		tpmThreshold = 3, qLow = 0.1, qUp = 0.9)
+@
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=140mm]{images/TagClustersInterquantileWidth.pdf}
+\caption{Distribution of promoter interquantile width}
+\label{fig:TagClustersInterquantileWidth}
+\end{figure}
+
+Significant difference in the promoter width might indicate global differences in the modes of gene regulation between the two samples.
+
+\subsection{Creating consensus promoters across samples}
+Tag clusters are created for each sample individually and they are often sample-specific, thus can be present in one sample but absent in another. In addition, 
+in many cases tag clusters do not coincide perfectly within the same promoter region, or there might be two clusters in one sample and only one larger in the other. 
+To be able to compare genome-wide transcriptional activity across samples and to perform expression profiling, a single set of consensus clusters has to be created. 
+This is done using \Rfunction{aggregateTagClusters} function, which aggregates tag clusters from all samples into a single set of non-overlapping consensus clusters:
+<<>>=
+aggregateTagClusters(myCAGEset, tpmThreshold = 5, 
+		qLow = 0.1, qUp = 0.9, maxDist = 100)
+@
+Tag clusters can be aggregated using their full span (from start to end) or using positions of previously calculated quantiles as their boundaries. Only tag clusters above 
+given threshold will be selected and two clusters will be aggregated together if they are \Rcode{<= maxDist} apart.
+Final set of consensus clusters can be retrieved by:
+<<>>=
+consensusCl <- consensusClusters(myCAGEset)
+head(consensusCl)
+@
+Analysis of promoter width can be performed for consensus clusters as well, using the \Rfunction{cumulativeCTSSdistribution}, \Rfunction{quantilePositions} 
+and \Rfunction{plotInterquantileWidth} functions as described above for the tag clusters, but by setting 
+the \Rcode{clusters} parameter to \Rcode{"consensusClusters"}.
+
+\subsection{Expression profiling}
+Since CAGE signal reflects level of transcription from a given TSS or promoter it can be used for 5' centered expression profiling.
+Expression clustering can be done at level of individual CTSSs or at level of entire promoters (consensus clusteres). In the former case, 
+feature vector containing log transformed and scaled normalized CAGE signal at individual TSS across multiple samples is used as input 
+for clustering algorithm, whereas in the latter case CAGE signal within the entire consensus cluster is used. \Rpackage{CAGEr} package 
+supports two unsupervised clustering algorithms: kmeans and self-organizing maps (SOM). Both algorithms require to specify number of clusters in advance.
+\newline
+We will perform expression clustering at the level of entire promoter using SOM algorithm and applying it only to promoters with normalized 
+CAGE signal \emph{>= 15} in at least one sample.
+<<>>=
+getExpressionProfiles(myCAGEset, what = "consensusClusters", tpmThreshold = 10, 
+		nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
+@
+Distribution of expression across samples for 8 clusters returned by SOM (4 x 2 map) can be visualized using \Rfunction{plotExpressionProfiles} function 
+as shown in Figure~\ref{fig:ConsensusClustersExpressionProfiles}:
+<<eval=FALSE>>=
+plotExpressionProfiles(myCAGEset, what = "consensusClusters")
+@
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=160mm]{images/ConsensusClustersExpressionProfiles.pdf}
+\caption{Expression clusters}
+\label{fig:ConsensusClustersExpressionProfiles}
+\end{figure}
+
+Each cluster is shown in different color and is marked by its label and the number of elements (promoters) in the cluster.
+We can extract promoters belonging to a specific cluster by typing:
+<<>>=
+class3_1 <- extractExpressionClass(myCAGEset, 
+		what = "consensusClusters", which = "3_1")
+head(class3_1)
+@
+
+Consensus clusters and information on their expression profile can be exported to a BED file, which allows visualization of the promoters in the 
+genome browser colored in the color of the expression cluster they belong to (Figure~\ref{fig:ConsensusClustersBed}):
+<<eval=FALSE>>=
+exportToBed(myCAGEset, what = "consensusClusters", 
+		colorByExpressionProfile = TRUE)
+@
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=160mm]{images/ConsensusClustersBed.pdf}
+\caption{Consensus clusters colored by expression profile in the genome browser}
+\label{fig:ConsensusClustersBed}
+\end{figure}
+
+Expression profiling of individual TSSs is done using the same procedure as described above for consensus clusters, only by setting \Rcode{what} parameter 
+to \Rcode{"CTSS"} in all of the functions.
+
+
+\subsection{Shifting promoters}
+As shown in Figure~\ref{fig:tagClustersBed}, TSSs within the same promoter region can be used differently in different samples. Thus, although the overall transcription level from a promoter 
+does not change between the samples, the differential usage of TSSs or "promoter shifting" may indicate changes in the regulation of transcription from that promoter, which cannot be detected 
+by expression profiling. To detect this promoter shifting, a method described in \cite{Haberle:2013} has been implemented in \Rpackage{CAGEr}. Shifting can be detected between two 
+individual samples or between two groups of samples. In the latter case, samples are first merged into groups and then compared in the same way as two individual samples. For all promoters a 
+shifting score is calculated based on the difference in the cumulative distribution of CAGE signal along that promoter in the two samples. Thus, prior to shifting score calculation, we have to 
+calculate cumulative distribution along all consensus clusters:
+<<>>=
+cumulativeCTSSdistribution(myCAGEset, clusters = "consensusClusters")
+@
+Next, we calculate shifting score for all promoters comparing two specified samples:
+<<>>=
+scoreShift(myCAGEset, groupX = "zf_unfertilized_egg", groupY = "zf_prim6")
+@
+This function will calculate shifting score as illustrated in Figure~\ref{fig:ShiftingScore}. Values of shifting score are in range between -Inf and 1. Positive values can be interpreted as the proportion of transcription initiation 
+in the sample with lower expression that is happening "outside" (either upstream or downstream) of the region used for transcription initiation in the other sample. In contrast, negative values 
+indicate no physical separation, \emph{i.e.} the region used for transcription initiation in the sample with lower expression is completely contained within the region used for transcription 
+initiation in the other sample.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=130mm]{images/ShiftingScore.pdf}
+\caption{Calculation of shifting score}
+\label{fig:ShiftingScore}
+\end{figure}
+
+We can select a subset of promoters with shifting score above specified threshold:
+<<>>=
+shifting.promoters <- getShiftingPromoters(myCAGEset, 
+		tpmThreshold = 5, scoreThreshold = 0.6)
+head(shifting.promoters)
+@
+The \Rfunction{getShiftingPromoters} function returns genomic coordinates and shifting score of the promoters, as well as the value of CAGE signal and position of the dominant TSS in the two 
+compared (groups of) samples. Figure~\ref{fig:ShiftingPromoter} shows the difference in the CAGE signal between the two compared samples for one of the selected high-scoring shifting promoters.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=160mm]{images/ShiftingPromoter.pdf}
+\caption{Example of shifting promoter}
+\label{fig:ShiftingPromoter}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Accessing public CAGE datasets}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Two data packages containing CAGE data produced by FANTOM and ENCODE consortia are accompanying this package. 
+These are \Rpackage{FANTOM3and4CAGE} and \Rpackage{ENCODEprojectCAGE}, respectively. For the full list and description of the 
+available datasets within these packages and references to the original publications of the containing data, please refer to the vignettes of 
+the corresponding packages. In this vignette we will only demonstrate how to include a user-selected subset of the provided datasets into 
+the \Rpackage{CAGEr} workflow.
+We will use CAGE data produced by FANTOM consortium for various human tissues. To load the corresponding data package type:
+<<>>=
+library(FANTOM3and4CAGE)
+@
+Next, we load a list of available samples for human:
+<<>>=
+data(FANTOMhumanSamples)
+head(FANTOMhumanSamples)
+@
+We can see in the list that there is a single object named \Robject{FANTOMtissueCAGEhuman} that contains all the data organized into groups 
+by tissue type. To load this object we type:
+<<eval=FALSE>>=
+data(FANTOMtissueCAGEhuman)
+@
+Since this data was mapped to the hg18 assembly of the human genome we have to load the corresponding genome before we can use the 
+data in \Rpackage{CAGEr}:
+<<eval=FALSE>>=
+library(BSgenome.Hsapiens.UCSC.hg18)
+@
+Once we have the required datasets in our working environment we can use the \Rfunction{importPublicData} function to import the desired samples 
+into a \Rcode{CAGEset} object. We have to provide the source dataset and specify which samples from which groups do we want 
+to select:
+<<eval=FALSE>>=
+myCAGEset <- importPublicData(dataset = FANTOMtissueCAGEhuman,
+		group = c("liver", "liver", "blood"), 
+		sample = c("liver", "malignancy", "RCB-0806_Jurkat"))
+@
+This will select three samples: two originating from liver (normal liver and malignancy) and one originating from blood (RCB-0806 Jurkat cell line) and import 
+the information on all CAGE detected TSSs and raw tag count into a \Robject{CAGEset} object.
+%<<>>=
+%myCAGEset
+%@
+Returned \Robject{CAGEset} object can further be normally used in the \Rpackage{CAGEr} workflow as described above, \emph{i.e.} raw tag counts can be 
+normalized, TSSs clustered, consensus clusters created, \emph{etc.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Session Info}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<<>>=
+sessionInfo()
+@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage
+\bibliographystyle{apalike}
+\bibliography{CAGEr}
+\end{document}
