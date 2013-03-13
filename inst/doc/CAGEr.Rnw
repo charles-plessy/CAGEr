@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{March 4, 2013}
+\date{March 13, 2013}
 
 \begin{document}
 <<setup, echo=FALSE>>=
@@ -79,7 +79,7 @@ Here are some of the functionalities provided in this package:
 
 \begin{itemize}
 \item
-Reading in multiple CAGE datasets from various sources; user provided BAM or TSS input files, public CAGE datasets from accompanying data packages.
+Reading in multiple CAGE datasets from various sources; user provided BAM or TSS input files, public CAGE datasets from accompanying data package.
 \item
 Normalizing raw CAGE tag count: simple tag per million (tpm) or power-law based normalization (\cite{Balwierz:2009}).
 \item
@@ -94,11 +94,11 @@ Calculating promoter width based on the cumulative distribution of CAGE signal a
 Scoring differential TSS usage (promoter shifting) and detecting promoters that shift between two samples.
 \end{itemize}
 
-Two data packages are accompanying this package: \Rpackage{FANTOM3and4CAGE} and \Rpackage{ENCODEprojectCAGE}. 
-They contain majority of the up-to-date publicly available CAGE data produced by two major genome regulation-oriented international 
-consortia, FANTOM and ENCODE, respectively, and provide a valuable resource of genome-wide TSSs in various organisms, 
-tissues and cell types that can be used directly in R. Section 5 in this vignette describes how these public datasets can be included into a
-workflow provided by \Rpackage{CAGEr}. See the vignettes of these data packages for the list of available CAGE datasets.
+A data package \Rpackage{FANTOM3and4CAGE} is accompanying this package. 
+It contains all of the up-to-date publicly available CAGE data produced by FANTOM, a genome regulation-oriented international 
+consortium, and provides a valuable resource of genome-wide TSSs in various tissue/cell types in human and mouse that can be used directly in R. 
+Section 5 in this vignette describes how these public datasets can be included into a
+workflow provided by \Rpackage{CAGEr}. See the vignette of the \Rpackage{FANTOM3and4CAGE} package for the list of available CAGE datasets.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -123,9 +123,8 @@ genomic strand: should be either + or -
 number of CAGE tags supporting that TSS
 \end{itemize}
 \item
-\textbf{Publicly available CAGE datasets from R data packages}: Two data packages containing CAGE data produced by FANTOM and ENCODE 
-consortia (\Rpackage{FANTOM3and4CAGE} and \Rpackage{ENCODEprojectCAGE}, respectively) are accompanying this 
-package. Selected subset of these data can be used as input for \Rpackage{CAGEr}.
+\textbf{Publicly available CAGE datasets from R data package}: A data package \Rpackage{FANTOM3and4CAGE} containing CAGE data produced by FANTOM 
+consortium is accompanying this package. Selected subset of these data can be used as input for \Rpackage{CAGEr}.
 \end{enumerate}
 
 
@@ -496,12 +495,11 @@ compared (groups of) samples. Figure~\ref{fig:ShiftingPromoter} shows the differ
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Accessing public CAGE datasets}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Two data packages containing CAGE data produced by FANTOM and ENCODE consortia are accompanying this package. 
-These are \Rpackage{FANTOM3and4CAGE} and \Rpackage{ENCODEprojectCAGE}, respectively. For the full list and description of the 
-available datasets within these packages and references to the original publications of the containing data, please refer to the vignettes of 
-the corresponding packages. In this vignette we will only demonstrate how to include a user-selected subset of the provided datasets into 
-the \Rpackage{CAGEr} workflow.
-We will use CAGE data produced by FANTOM consortium for various human tissues. To load the corresponding data package type:
+A data package, \Rpackage{FANTOM3and4CAGE}, containing CAGE data produced by FANTOM consortium is accompanying this package. 
+For the full list and description of the available datasets within this package and references to the original publications of the containing data, 
+please refer to the vignette of the corresponding package. In this vignette we will only demonstrate how to include a user-selected subset of 
+the provided datasets into the \Rpackage{CAGEr} workflow.
+We will use CAGE data for various human tissues. To load the corresponding data package type:
 <<>>=
 library(FANTOM3and4CAGE)
 @
@@ -512,27 +510,27 @@ head(FANTOMhumanSamples)
 @
 We can see in the list that there is a single object named \Robject{FANTOMtissueCAGEhuman} that contains all the data organized into groups 
 by tissue type. To load this object we type:
-<<eval=FALSE>>=
+<<>>=
 data(FANTOMtissueCAGEhuman)
 @
 Since this data was mapped to the hg18 assembly of the human genome we have to load the corresponding genome before we can use the 
 data in \Rpackage{CAGEr}:
-<<eval=FALSE>>=
+<<>>=
 library(BSgenome.Hsapiens.UCSC.hg18)
 @
 Once we have the required datasets in our working environment we can use the \Rfunction{importPublicData} function to import the desired samples 
 into a \Rcode{CAGEset} object. We have to provide the source dataset and specify which samples from which groups do we want 
 to select:
-<<eval=FALSE>>=
+<<>>=
 myCAGEset <- importPublicData(dataset = FANTOMtissueCAGEhuman,
 		group = c("liver", "liver", "blood"), 
 		sample = c("liver", "malignancy", "RCB-0806_Jurkat"))
 @
 This will select three samples: two originating from liver (normal liver and malignancy) and one originating from blood (RCB-0806 Jurkat cell line) and import 
 the information on all CAGE detected TSSs and raw tag count into a \Robject{CAGEset} object.
-%<<>>=
-%myCAGEset
-%@
+<<>>=
+myCAGEset
+@
 Returned \Robject{CAGEset} object can further be normally used in the \Rpackage{CAGEr} workflow as described above, \emph{i.e.} raw tag counts can be 
 normalized, TSSs clustered, consensus clusters created, \emph{etc.}
 
