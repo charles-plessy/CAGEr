@@ -404,7 +404,7 @@
 	ctss.cluster.list <- list()
 	for(s in sample.labels) {
 		
-		message("\t->  ", s,)
+		message("\t->  ", s)
 		d <- data[,c("chr", "pos", "strand", s)]
 		colnames(d) <- c("chr", "pos", "strand", "tpm")
 		d <- subset(d, tpm > 0)
