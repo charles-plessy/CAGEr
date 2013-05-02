@@ -51,29 +51,11 @@ function (object, tpmThreshold, qLow, qUp, maxDist){
 
 	object@consensusClustersTpmMatrix <- m
 
-# using data.table package
-#	consensus.clusters <- data.table(consensus.clusters)
-#	setkey(consensus.clusters, consensus.cluster)
-#	consensus.clusters <- consensus.clusters[, list(chr[1], min(start), max(end), strand[1], sum(tpm)), by = consensus.cluster]
-#	setnames(consensus.clusters, c("consensus.cluster", "chr", "start", "end", "strand", "tpm"))
-
-#	consensus.clusters <- lapply(as.list(unique(consensus.clusters$consensus.cluster)), function(x) {
-#									t <- subset(consensus.clusters, consensus.cluster == x, drop = F)
-#									a <- data.frame(consensus.cluster = x, chr = t$chr[1], start = min(t$start), end = max(t$end), strand = t$strand[1], tpm = sum(t$tpm))
-#									return(a)
-#								 })
-#	consensus.clusters <- do.call(rbind, consensus.clusters)
-	
-	
-	
-	clusters <- consensus.clusters[!duplicated(consensus.clusters$consensus.cluster), c("consensus.cluster", "chr", "strand")]
-	start <- aggregate(consensus.clusters$start, by = list(consensus.clusters$consensus.cluster), FUN = min)
-	end <- aggregate(consensus.clusters$end, by = list(consensus.clusters$consensus.cluster), FUN = max)[,2]
-	tpm <- aggregate(consensus.clusters$tpm, by = list(consensus.clusters$consensus.cluster), FUN = sum)[,2]
-	consensus.clusters.1 <- data.frame(consensus.cluster = as.integer(start[,1]), start = as.integer(start[,2]), end = as.integer(end), tpm = tpm)
-	consensus.clusters <- merge(clusters, consensus.clusters.1)
-	consensus.clusters <- consensus.clusters[,c("consensus.cluster", "chr", "start", "end", "strand", "tpm")]
-	
+	consensus.clusters <- data.table(consensus.clusters)
+	setkey(consensus.clusters, consensus.cluster)
+	consensus.clusters <- consensus.clusters[, list(chr[1], min(start), max(end), strand[1], sum(tpm)), by = consensus.cluster]
+	setnames(consensus.clusters, c("consensus.cluster", "chr", "start", "end", "strand", "tpm"))
+	consensus.clusters <- as.data.frame(consensus.clusters)	
 	
 	object@consensusClusters <- consensus.clusters
 	

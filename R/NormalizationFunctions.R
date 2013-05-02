@@ -25,7 +25,7 @@
 	v <- aggregate(values, by = list(as.integer(values)), FUN = length)
 	v$x <- rev(cumsum(rev(v$x)))
 	colnames(v) <- c('nr_tags', 'reverse_cumulative')
-	v <- subset(v, nr_tags >= min(val.range), nr_tags <= max(val.range))
+	v <- subset(v, nr_tags >= min(val.range) & nr_tags <= max(val.range))
 	
 	lin.m <- lm(log(reverse_cumulative) ~ log(nr_tags), data = v)
 	a <- coefficients(lin.m)[2]

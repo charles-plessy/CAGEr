@@ -41,7 +41,7 @@ Objects of the class contain information on the genomic coordinates of TSSs deri
     \item{\code{consensusClustersQuantileUp}:}{Object of class \code{"list"} the positions of upper quantile(s) within consensus clusters }
     \item{\code{shiftingGroupX}:}{Object of class \code{"character"} the label(s) of experiment(s) in the first shifting group }
     \item{\code{shiftingGroupY}:}{Object of class \code{"character"} the label(s) of experiment(s) in the second shifting group }
-    \item{\code{consensusClustersShiftingScores}:}{Object of class \code{"data.frame"} the shifting scores of consensus clusters between two (groups of) experiments }
+    \item{\code{consensusClustersShiftingScores}:}{Object of class \code{"data.frame"} the shifting scores and P-values/FDR for comparison of consensus clusters between two (groups of) experiments }
   }
 }
 \section{Methods}{
@@ -61,7 +61,7 @@ Objects of the class contain information on the genomic coordinates of TSSs deri
     \item{genomeName}{\code{signature(object = "CAGEset")}: extracts the name of the BSgenome package used as the referent genome }
     \item{getCTSS}{\code{signature(object = "CAGEset")}: reads in specified input files and fills in information on detected CTSSs and their tag count }
     \item{getExpressionProfiles}{\code{signature(object = "CAGEset")}: performs expression clustering of CTSSs or consensus clusters across experiments }
-    \item{getShiftingPromoters}{\code{signature(object = "CAGEset")}: extracts consensus clusters with shifting score above specified threshold }
+    \item{getShiftingPromoters}{\code{signature(object = "CAGEset")}: extracts consensus clusters with shifting score and/or FDR above specified threshold }
     \item{inputFiles}{\code{signature(object = "CAGEset")}: extracts the paths of input CAGE data files }
     \item{inputFilesType}{\code{signature(object = "CAGEset")}: extracts the type of input CAGE data files }
     \item{librarySizes}{\code{signature(object = "CAGEset")}: extracts the library sizes of individual CAGE experiments within CAGEset object }
@@ -72,7 +72,7 @@ Objects of the class contain information on the genomic coordinates of TSSs deri
     \item{plotReverseCumulatives}{\code{signature(object = "CAGEset")}: creates file with reverse cumulative plots of CAGE tag count per CTSS }
     \item{quantilePositions}{\code{signature(object = "CAGEset")}: calculates the positions of specified quantiles within TCs or consensus clusters }
     \item{sampleLabels}{\code{signature(object = "CAGEset")}: extracts the labels of individual CAGE experiments within CAGEset object }
-    \item{scoreShift}{\code{signature(object = "CAGEset", groupX = "character", groupY = "character")}: calculates the shifting score of consensus clusters between two specified (groups of) samples }
+    \item{scoreShift}{\code{signature(object = "CAGEset", groupX = "character", groupY = "character")}: calculates the shifting score and tests the statistical significance of differential TSS usage for consensus clusters between two specified (groups of) samples }
     \item{show}{\code{signature(object = "CAGEset")}: displays CAGEset object in a user friendly way }
     \item{tagClusters}{\code{signature(object = "CAGEset")}: extracts the tag clusters for specified CAGE experiment }
 	 }

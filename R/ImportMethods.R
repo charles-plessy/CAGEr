@@ -146,7 +146,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		}
 		
 		library.sizes <- as.integer(colSums(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)), drop = F], na.rm = T))
-	
+		
 	}else{
 		
 		stop("'inputFilesType' must be one of the supported file types (\"bam\", \"ctss\")")
@@ -160,6 +160,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	CTSS.all.samples <- CTSS.all.samples[order(CTSS.all.samples$chr, CTSS.all.samples$pos),]
 	colnames(CTSS.all.samples) <- c("chr", "pos", "strand", sample.labels)
 	
+	names(library.sizes) <- sample.labels
 	object@librarySizes <- library.sizes
 	object@CTSScoordinates <- CTSS.all.samples[,c("chr", "pos", "strand")]
 	object@tagCountMatrix <- as.data.frame(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)),drop=F])
