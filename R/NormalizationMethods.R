@@ -44,8 +44,10 @@ function (object, method, fitInRange, alpha, T){
 	
 	}else if(method == "simpleTpm"){
 		ctss.all.norm <- as.data.frame(apply(tag.count, 2, function(x) {x/sum(x) * 10^6}))
+	}else if(method == "none"){
+		ctss.all.norm <- as.data.frame(tag.count)
 	}else{
-		stop("'method' must be one of the (\"powerLaw\", \"simpleTpm\"")
+		stop("'method' must be one of the (\"powerLaw\", \"simpleTpm\", \"none\")")
 	}
 	
 	colnames(ctss.all.norm) = sample.labels

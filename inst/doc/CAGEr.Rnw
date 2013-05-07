@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{March 13, 2013}
+\date{May 2, 2013}
 
 \begin{document}
 <<setup, echo=FALSE>>=
@@ -91,7 +91,7 @@ Expression clustering of individual TSSs or consensus promoters into distinct ex
 \item
 Calculating promoter width based on the cumulative distribution of CAGE signal along the promoter.
 \item
-Scoring differential TSS usage (promoter shifting) and detecting promoters that shift between two samples.
+Scoring and statistically testing differential TSS usage (promoter shifting) and detecting promoters that shift between two samples.
 \end{itemize}
 
 A data package \Rpackage{FANTOM3and4CAGE} is accompanying this package. 
@@ -228,14 +228,15 @@ and is fully determined by the slope \Rcode{alpha} and total number of tags T (w
 \newline
 To check whether our CAGE datasets follow power-law distribution and in which range of values, we can use the \Rfunction{plotReverseCumulatives} function:
 <<eval=FALSE>>=
-plotReverseCumulatives(myCAGEset, onePlot = TRUE)
+plotReverseCumulatives(myCAGEset, fitInRange = c(5, 1000), onePlot = TRUE)
 @
-This will create a PDF file with reverse cumulative plots (Figure~\ref{fig:ReverseCumulatives}) in your working directory. The plots can help in choosing 
-the parameters for power-law based normalization. We can see that the reverse cumulative distributions look similar and follow the power-law in the central part of the CAGE 
-tag counts values with a slope between -1.2 and -1.3. Thus, we choose a range from 5 to 500 tags to fit a power-law, and we normalize all samples to a referent power-law distribution with a 
-total of 50,000 tags and slope of -1.25 (\Rcode{alpha = 1.25}). (Note that since this example dataset contains only data from one part of chromosome 17 and the total number of tags is very small, 
-we normalize to a referent distribution with a similarly small number of tags. When analyzing full datasets it is reasonable to set total number of tags for referent distribution to one million to get 
-normalized tags per million values.)
+This will create a PDF file with reverse cumulative plots (Figure~\ref{fig:ReverseCumulatives}) in your working directory. In addition, a power-law distribution will be fitted to each reverse cumulative 
+using values in the specified range (denoted with dashed lines in Figure~\ref{fig:ReverseCumulatives}) and the value of alpha will be reported for each sample (shown in the brackets in 
+the Figure~\ref{fig:ReverseCumulatives} legend). The plots can help in choosing the optimal parameters for power-law based normalization. We can see that the reverse cumulative 
+distributions look similar and follow the power-law in the central part of the CAGE tag counts values with a slope between -1.1 and -1.3. Thus, we choose a range from 5 to 1000 tags 
+to fit a power-law, and we normalize all samples to a referent power-law distribution with a total of 50,000 tags and slope of -1.2 (\Rcode{alpha = 1.2}). (Note that since this example dataset 
+contains only data from one part of chromosome 17 and the total number of tags is very small, we normalize to a referent distribution with a similarly small number of tags. When analyzing 
+full datasets it is reasonable to set total number of tags for referent distribution to one million to get normalized tags per million values.)
 
 \begin{figure}[h!]
 \centering
@@ -247,7 +248,7 @@ normalized tags per million values.)
 To perform normalization we pass these parameters to the \Rfunction{normalizeTagCount} function:
 <<>>=
 normalizeTagCount(myCAGEset, method = "powerLaw", 
-		fitInRange = c(5, 500), alpha = 1.25, T = 5*10^4)
+		fitInRange = c(5, 1000), alpha = 1.2, T = 5*10^4)
 @
 The normalization is performed as described in (\cite{Balwierz:2009}): 
 \begin{enumerate}
@@ -258,6 +259,10 @@ A referent power-law distribution is defined based on the provided \Rcode{alpha}
 \item
 Every sample is normalized to the defined referent distribution, \emph{i.e.} given the parameters that approximate its own power-law distribution it is calculated how many tags would each TSS have in the referent power-law distribution.
 \end{enumerate}
+
+In addition to the two provided normalization methods, a pass-through option "none" can be set as \Rcode{method} parameter to keep using raw tag counts in all downstream steps. Note that \Rfunction{normalizeTagCount} function has to be applied to 
+\Robject{CAGEset} object before moving to next steps. Thus, in order to keep using raw tag counts run the function with \Rcode{method="none"}. In that case, all results and parameters in the further steps that would normally refer to 
+normalized CAGE signal (denoted as tpm), will actually be raw tag counts.
 
 \subsection{Exporting CAGE signal to bedGraph}
 CAGE data can be visualized in the genomic context by exporting raw or normalized CAGE tag counts to a bedGraph file and uploading the file 
@@ -455,19 +460,29 @@ As shown in Figure~\ref{fig:tagClustersBed}, TSSs within the same promoter regio
 does not change between the samples, the differential usage of TSSs or "promoter shifting" may indicate changes in the regulation of transcription from that promoter, which cannot be detected 
 by expression profiling. To detect this promoter shifting, a method described in \cite{Haberle:2013} has been implemented in \Rpackage{CAGEr}. Shifting can be detected between two 
 individual samples or between two groups of samples. In the latter case, samples are first merged into groups and then compared in the same way as two individual samples. For all promoters a 
-shifting score is calculated based on the difference in the cumulative distribution of CAGE signal along that promoter in the two samples. Thus, prior to shifting score calculation, we have to 
+shifting score is calculated based on the difference in the cumulative distribution of CAGE signal along that promoter in the two samples. In addition, a more general assessment of differential TSS 
+usage is obtained by performing Kolmogorov-Smirnov test on the cumulative distributions of CAGE signal, as described below. Thus, prior to shifting score calculation and statistical testing, we have to 
 calculate cumulative distribution along all consensus clusters:
 <<>>=
 cumulativeCTSSdistribution(myCAGEset, clusters = "consensusClusters")
 @
-Next, we calculate shifting score for all promoters comparing two specified samples:
+Next, we calculate a shifting score and P-value of Kolmogorov-Smirnov test for all promoters comparing two specified samples:
 <<>>=
-scoreShift(myCAGEset, groupX = "zf_unfertilized_egg", groupY = "zf_prim6")
+scoreShift(myCAGEset, groupX = "zf_unfertilized_egg", groupY = "zf_prim6",
+		testKS = TRUE, useTpmKS = FALSE)
 @
 This function will calculate shifting score as illustrated in Figure~\ref{fig:ShiftingScore}. Values of shifting score are in range between -Inf and 1. Positive values can be interpreted as the proportion of transcription initiation 
 in the sample with lower expression that is happening "outside" (either upstream or downstream) of the region used for transcription initiation in the other sample. In contrast, negative values 
 indicate no physical separation, \emph{i.e.} the region used for transcription initiation in the sample with lower expression is completely contained within the region used for transcription 
-initiation in the other sample.
+initiation in the other sample. Thus, shifting score detects only the degree of upstream or downstream shifting, but does not detect more general changes in TSS rearrangement in the region, 
+\emph{e.g.} narrowing or broadening of the region used for transcription.
+\newline
+To assess any general change in the TSS usage within the promoter region, a two-sample Kolmogorov-Smirnov (K-S) test on cumulative 
+sums of CAGE signal along the consensus cluster is performed. Cumulative sums in both samples are scaled to range between 0 and 1 and are considered to be empirical cumulative distribution functions (ECDF) 
+reflecting sampling of TSS positions during transcription initiation. K-S test is performed to assess whether the two underlying probability distributions differ. To obtain P-value 
+(\emph{i.e.} the level at which the null-hypothesis can be rejected), sample sizes that generated the ECDFs are required, in addition to actual K-S statistics calculated from ECDFs. 
+These are derived either from raw tag counts, \emph{i.e.} exact number of times each TSS in the cluster was sampled during sequencing (when \Rcode{useTpmKS = FALSE}), or from normalized 
+tpm values (when \Rcode{useTpmKS = TRUE}). P-values obtained from K-S tests are further corrected for multiple testing using Benjamini and Hochenberg (BH) method and for each P-value a corresponding false-discovery rate (FDR) is also reported.
 
 \begin{figure}[h!]
 \centering
@@ -476,13 +491,15 @@ initiation in the other sample.
 \label{fig:ShiftingScore}
 \end{figure}
 
-We can select a subset of promoters with shifting score above specified threshold:
+
+We can select a subset of promoters with shifting score and/or FDR above specified threshold:
 <<>>=
 shifting.promoters <- getShiftingPromoters(myCAGEset, 
-		tpmThreshold = 5, scoreThreshold = 0.6)
+		tpmThreshold = 5, scoreThreshold = 0.6,
+		fdrThreshold = 0.01)
 head(shifting.promoters)
 @
-The \Rfunction{getShiftingPromoters} function returns genomic coordinates and shifting score of the promoters, as well as the value of CAGE signal and position of the dominant TSS in the two 
+The \Rfunction{getShiftingPromoters} function returns genomic coordinates, shifting score and P-value (FDR) of the promoters, as well as the value of CAGE signal and position of the dominant TSS in the two 
 compared (groups of) samples. Figure~\ref{fig:ShiftingPromoter} shows the difference in the CAGE signal between the two compared samples for one of the selected high-scoring shifting promoters.
 
 \begin{figure}[h!]

@@ -5,14 +5,14 @@
 
 setGeneric(
 name="plotReverseCumulatives",
-def=function(object, onePlot = FALSE){
+def=function(object, fitInRange = c(10, 1000), onePlot = FALSE){
 	standardGeneric("plotReverseCumulatives")
 }
 )
 
 setMethod("plotReverseCumulatives",
 signature(object = "CAGEset"),
-function (object, onePlot){
+function (object, fitInRange = c(10, 1000), onePlot = FALSE){
 		
 	sample.labels <- sampleLabels(object)
 	tag.count <- object@tagCountMatrix
@@ -21,13 +21,16 @@ function (object, onePlot){
 	par(mar = c(5,5,5,2))
 	cols <- rainbow(n = length(sample.labels))
 	
+	fit.coefs.m <- apply(tag.count, 2, function(x) {.fit.power.law.to.reverse.cumulative(values = x, val.range = fitInRange)})
+	fit.slopes <- fit.coefs.m[1,]
 	if(onePlot == TRUE){
 		values <- tag.count[, 1]
 		.plotReverseCumulative(values = values, col = cols[1], title = "All samples")
 		sapply(c(2:length(sample.labels)), function(x) {values <- tag.count[, sample.labels[x]]; .addReverseCumulative(values, col = cols[x])})
-		legend("topright", legend = sample.labels, bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
+		abline(v = fitInRange, lty = "dashed")
+		legend("topright", legend = paste("(", formatC(-1*fit.slopes, format = "f", digits = 2), ") ", sample.labels, sep = ""), bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
 	}else{
-		sapply(sample.labels, function(x) {values <- tag.count[, x]; .plotReverseCumulative(values = values, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)])})
+		sapply(sample.labels, function(x) {values <- tag.count[, x]; .plotReverseCumulative(values = values, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)]); abline(v = fitInRange, lty = "dashed"); text(min(fitInRange), 1, labels = paste("alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,0) ,col = cols[which(sample.labels == x)], cex = 1.3)})
 	}
 	dev.off()
 	message("\nFile 'CTSS_reverse_cumulatives_all_samples.pdf' has been created in your working directory (", getwd(), ")")
@@ -158,7 +161,7 @@ function (object, what){
 		cl.method <- object@consensusClustersExpressionClusteringMethod
 	
 	}else{
-		stop("'what' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
+		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
 	}
 	
 	l <- .extract.cluster.info(tpm.mx, cl)

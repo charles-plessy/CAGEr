@@ -84,42 +84,11 @@
 
 .summarize.clusters <- function(ctss.cluster.df, removeSingletons = FALSE, keepSingletonsAbove = Inf) {
 
-# using data.table package
-#	ctss.cluster <- data.table(ctss.cluster.df)
-#	ctss.cluster <- ctss.cluster[, list(chr[1], min(pos)-1, max(pos), strand[1], length(pos), pos[which(tpm == max(tpm))[ceiling(length(which(tpm == max(tpm)))/2)]], sum(tpm), max(tpm)), by = cluster]
-#	setnames(ctss.cluster, c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss"))
-	
-	ctss.cluster.l <- lapply(as.list(unique(ctss.cluster.df$cluster)), function(x) {
-									t <- subset(ctss.cluster.df, cluster == x, drop = F)
-									a <- data.frame(cluster = x, chr = t$chr[1], start = min(t$pos)-1, end = max(t$pos), strand = t$strand[1], nr_ctss = nrow(t), dominant_ctss = t$pos[which(t$tpm == max(t$tpm))[ceiling(length(which(t$tpm == max(t$tpm)))/2)]], tpm = sum(t$tpm), tpm.dominant_ctss = max(t$tpm))
-									return(a)
-							 })
-	ctss.cluster <- do.call(rbind, ctss.cluster.l)
-	
+	ctss.cluster <- data.table(ctss.cluster.df)
+	ctss.cluster <- ctss.cluster[, list(chr[1], min(pos)-1, max(pos), strand[1], length(pos), pos[which(tpm == max(tpm))[ceiling(length(which(tpm == max(tpm)))/2)]], sum(tpm), max(tpm)), by = cluster]
+	setnames(ctss.cluster, c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss"))
+		
 	ctss.cluster <- data.frame(ctss.cluster)
-	if(removeSingletons){
-		ctss.cluster <- subset(ctss.cluster, nr_ctss > 1 | tpm >= keepSingletonsAbove)
-		ctss.cluster$cluster <- c(1:nrow(ctss.cluster))
-		rownames(ctss.cluster) <- c(1:nrow(ctss.cluster))
-	}
-	return(ctss.cluster)
-	
-}
-
-
-.summarize.clusters.2 <- function(ctss.cluster.df, removeSingletons = FALSE, keepSingletonsAbove = Inf) {
-	
-	clusters <- ctss.cluster.df[!duplicated(ctss.cluster.df$cluster), c("cluster", "chr", "strand")]
-	nr_ctss <- aggregate(ctss.cluster.df$cluster, by = list(ctss.cluster.df$cluster), FUN = length)
-	start <- aggregate(ctss.cluster.df$pos - 1, by = list(ctss.cluster.df$cluster), FUN = min)[,2]
-	end <- aggregate(ctss.cluster.df$pos, by = list(ctss.cluster.df$cluster), FUN = max)[,2]
-	tpm.dominant_ctss <- aggregate(ctss.cluster.df$tpm, by = list(ctss.cluster.df$cluster), FUN = max)[,2]
-	tpm <- aggregate(ctss.cluster.df$tpm, by = list(ctss.cluster.df$cluster), FUN = sum)[,2]
-	dominant_ctss <- aggregate(c(1:nrow(ctss.cluster.df)), by = list(ctss.cluster.df$cluster), FUN = function(x) {w <- which(ctss.cluster.df$tpm[x] == max(ctss.cluster.df$tpm[x])); ctss.cluster.df$pos[x][w[ceiling(length(w)/2)]]})[,2]
-	ctss.cluster.1 <- data.frame(cluster = as.integer(nr_ctss[,1]), start = as.integer(start), end = as.integer(end), nr_ctss = as.integer(nr_ctss[,2]), dominant_ctss = as.integer(dominant_ctss), tpm = tpm, tpm.dominant_ctss = tpm.dominant_ctss)
-	ctss.cluster <- merge(clusters, ctss.cluster.1)
-	ctss.cluster <- ctss.cluster[,c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss")]
-
 	if(removeSingletons){
 		ctss.cluster <- subset(ctss.cluster, nr_ctss > 1 | tpm >= keepSingletonsAbove)
 		ctss.cluster$cluster <- c(1:nrow(ctss.cluster))
@@ -145,7 +114,11 @@
 		
 	}
 	
-	ctss.cluster.list <- lapply(ctss.cluster.list, function(x) {.summarize.clusters.2(ctss.cluster.df = x, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove)})
+	if(useMulticore == TRUE){
+		ctss.cluster.list <- mclapply(ctss.cluster.list, function(x) {.summarize.clusters(ctss.cluster.df = x, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove)}, mc.cores = nrCores)
+	}else{
+		ctss.cluster.list <- lapply(ctss.cluster.list, function(x) {.summarize.clusters(ctss.cluster.df = x, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove)})
+	}
 	return(ctss.cluster.list)
 }
 
@@ -364,40 +337,15 @@
 
 .summarize.clusters.predef <- function(ctss.cluster.df) {
 	
-# using data.table package	
-#	ctss.cluster <- data.table(ctss.cluster.df)
-#	ctss.cluster <- ctss.cluster[, list(chr[1], start[1], end[1], strand[1], length(pos), pos[which(tpm == max(tpm))[ceiling(length(which(tpm == max(tpm)))/2)]], sum(tpm), max(tpm)), by = cluster]
-#	setnames(ctss.cluster, c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss")) 
-#	ctss.cluster <- data.frame(ctss.cluster)
-	
-	ctss.cluster.l <- lapply(as.list(unique(ctss.cluster.df$cluster)), function(x) {
-							 t <- subset(ctss.cluster.df, cluster == x, drop = F)
-							 a <- data.frame(cluster = x, chr = t$chr[1], start = min(t$pos)-1, end = max(t$pos), strand = t$strand[1], nr_ctss = nrow(t), dominant_ctss = t$pos[which(t$tpm == max(t$tpm))[ceiling(length(which(t$tpm == max(t$tpm)))/2)]], tpm = sum(t$tpm), tpm.dominant_ctss = max(t$tpm))
-							 return(a)
-							 })
-	ctss.cluster <- do.call(rbind, ctss.cluster.l)	
-	
+	ctss.cluster <- data.table(ctss.cluster.df)
+	ctss.cluster <- ctss.cluster[, list(chr[1], start[1], end[1], strand[1], length(pos), pos[which(tpm == max(tpm))[ceiling(length(which(tpm == max(tpm)))/2)]], sum(tpm), max(tpm)), by = cluster]
+	setnames(ctss.cluster, c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss")) 
+	ctss.cluster <- data.frame(ctss.cluster)
+		
 	invisible(gc())
 	return(ctss.cluster)
 	
 }
-
-.summarize.clusters.predef.2 <- function(ctss.cluster.df) {
-	
-	clusters <- ctss.cluster.df[!duplicated(ctss.cluster.df$cluster), c("cluster", "chr", "strand")]
-	nr_ctss <- aggregate(ctss.cluster.df$cluster, by = list(ctss.cluster.df$cluster), FUN = length)
-	start <- aggregate(ctss.cluster.df$pos - 1, by = list(ctss.cluster.df$cluster), FUN = min)[,2]
-	end <- aggregate(ctss.cluster.df$pos, by = list(ctss.cluster.df$cluster), FUN = max)[,2]
-	tpm.dominant_ctss <- aggregate(ctss.cluster.df$tpm, by = list(ctss.cluster.df$cluster), FUN = max)[,2]
-	tpm <- aggregate(ctss.cluster.df$tpm, by = list(ctss.cluster.df$cluster), FUN = sum)[,2]
-	dominant_ctss <- aggregate(c(1:nrow(ctss.cluster.df)), by = list(ctss.cluster.df$cluster), FUN = function(x) {w <- which(ctss.cluster.df$tpm[x] == max(ctss.cluster.df$tpm[x])); ctss.cluster.df$pos[x][w[ceiling(length(w)/2)]]})[,2]
-	ctss.cluster.1 <- data.frame(cluster = as.integer(nr_ctss[,1]), start = as.integer(start), end = as.integer(end), nr_ctss = as.integer(nr_ctss[,2]), dominant_ctss = as.integer(dominant_ctss), tpm = tpm, tpm.dominant_ctss = tpm.dominant_ctss)
-	ctss.cluster <- merge(clusters, ctss.cluster.1)
-	ctss.cluster <- ctss.cluster[,c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss")]
-
-	return(ctss.cluster)
-	
-}	
 
 .predefined.clusters <- function(data, sample.labels, custom.clusters, useMulticore = FALSE, nrCores = NULL){
 
@@ -414,7 +362,11 @@
 		
 	}
 	
-	ctss.cluster.list <- lapply(ctss.cluster.list, .summarize.clusters.predef.2)
+	if(useMulticore == TRUE){
+		ctss.cluster.list <- mclapply(ctss.cluster.list, .summarize.clusters.predef, mc.cores = nrCores)
+	}else{
+		ctss.cluster.list <- lapply(ctss.cluster.list, .summarize.clusters.predef)
+	}
 	invisible(gc())
 	return(ctss.cluster.list)
 	

@@ -257,11 +257,13 @@ setMethod("show",
 		max_out = min(3, nrow(object@consensusClustersShiftingScores))
 		cat("GroupX: ", paste(object@shiftingGroupX, collapse = ", "), "\n", sep = "")
 		cat("GroupY: ", paste(object@shiftingGroupY, collapse = ", "), "\n", sep = "")
-		cat("Shifting scores: ", paste(formatC(object@consensusClustersShiftingScores$shifting.score[1:max_out], format = "f", digits = 3), collapse = ", "), "\n", sep = "")		
+		cat("Shifting scores: ", paste(formatC(object@consensusClustersShiftingScores$shifting.score[1:max_out], format = "f", digits = 3), collapse = ", "), "\n", sep = "")
+		cat("KS p-values (FDR adjusted): ", paste(formatC(object@consensusClustersShiftingScores$fdr.KS[1:max_out], format = "e", digits = 2), collapse = ", "), "\n", sep = "")
 	}else{
 		cat("GroupX:\n")
 		cat("GroupY:\n")
 		cat("Shifting scores:\n")
+		cat("KS p-values (FDR adjusted):\n")
 	}	
 	cat("\n")
 		
