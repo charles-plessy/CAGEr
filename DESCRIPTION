@@ -1,14 +1,27 @@
 Package: CAGEr
-Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for precise mapping of transcription start sites and promoterome mining
-Version: 1.1.1
-Date: 02-05-2013
+Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing
+        data for precise mapping of transcription start sites and
+        promoterome mining
+Version: 1.2.1
+Date: 21-05-2013
 Author: Vanja Haberle, Department of Biology, University of Bergen, Norway <vanja.haberle@bio.uib.no>
 Maintainer: Vanja Haberle <vanja.haberle@bio.uib.no>
-Imports: Rsamtools, GenomicRanges, IRanges, data.table, beanplot, rtracklayer, som, VGAM
+Imports: Rsamtools, GenomicRanges, IRanges, data.table, beanplot,
+        rtracklayer, som, VGAM
 Depends: methods, R (>= 2.15.0), BSgenome, BSgenome.Mmusculus.UCSC.mm9
-Suggests: BSgenome.Drerio.UCSC.danRer7, BSgenome.Hsapiens.UCSC.hg18, FANTOM3and4CAGE 
+Suggests: BSgenome.Drerio.UCSC.danRer7, BSgenome.Hsapiens.UCSC.hg18,
+        FANTOM3and4CAGE
 Enhances: multicore
 Description: Preprocessing of CAGE sequencing data, identification and normalization of transcription start sites and downstream analysis of transcription start sites clusters (promoters).
 License: GPL-3
-biocViews: Preprocessing, Sequencing, HighThroughputSequencing, Transcription, Clustering, Visualization
-Collate: AllClasses.R GetMethods.R ImportMethods.R ExportFunctions.R ExportMethods.R MergingMethods.R NormalizationFunctions.R NormalizationMethods.R ExpressionProfilingMethods.R ClusteringFunctions.R ClusteringMethods.R CumulativeDistributionFunctions.R CumulativeDistributionMethods.R QuantileWidthFunctions.R QuantileWidthMethods.R AggregationFunctions.R AggregationMethods.R ShiftingFunctions.R ShiftingMethods.R
+biocViews: Preprocessing, Sequencing, HighThroughputSequencing,
+        Transcription, Clustering, Visualization
+Collate: AllClasses.R GetMethods.R ImportMethods.R ExportFunctions.R
+        ExportMethods.R MergingMethods.R NormalizationFunctions.R
+        NormalizationMethods.R ExpressionProfilingMethods.R
+        ClusteringFunctions.R ClusteringMethods.R
+        CumulativeDistributionFunctions.R
+        CumulativeDistributionMethods.R QuantileWidthFunctions.R
+        QuantileWidthMethods.R AggregationFunctions.R
+        AggregationMethods.R ShiftingFunctions.R ShiftingMethods.R
+Packaged: 2013-05-21 15:46:53 UTC; vanja

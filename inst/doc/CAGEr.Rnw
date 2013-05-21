@@ -143,6 +143,11 @@ load by typing:
 library(BSgenome.Drerio.UCSC.danRer7)
 @
 
+In case the data is mapped to a genome that is not readily available through \Rpackage{BSgenome} package (not in the list returned by \Rfunction{available.genomes()} function), 
+a custom \Rpackage{BSgenome} package has to be build and installed first. (See the vignette within the \Rpackage{BSgenome} package for instructions on how to build 
+a custom genome package). The built genome should then be loaded by calling \Rcode{library()} and the \Rcode{genomeName} argument should be set to the name of the build genome 
+package when creating a \Robject{CAGEset} object (see the section \emph{Creating \Robject{CAGEset} object} below).
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{\Rpackage{CAGEr} workflow}
