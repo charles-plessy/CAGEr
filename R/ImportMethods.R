@@ -73,34 +73,35 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		reads.GRanges.minus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "-" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & (as.character(seqnames(reads.GRanges)) %in% seqnames(genome) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold)]
 		
 		if(removeFirstG == TRUE){
-			message("\t-> Removing the first base of the reads if 'G' and not aligned to the genome ...")
+			message("\t-> Removing the first base of the reads if 'G' and not aligned to the genome...")
 		
-			CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = start(reads.GRanges.plus), strand = "+", firstBaseRead = substr(elementMetadata(reads.GRanges.plus)$seq, start = 1, stop = 1), firstBaseGenome = getSeq(genome, names = seqnames(reads.GRanges.plus), start = start(reads.GRanges.plus), end = start(reads.GRanges.plus), strand = "+", as.character = T))
-			CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = end(reads.GRanges.minus), strand = "-", firstBaseRead = as.character(reverseComplement(DNAStringSet(substr(elementMetadata(reads.GRanges.minus)$seq, start = elementMetadata(reads.GRanges.minus)$read.length, stop = elementMetadata(reads.GRanges.minus)$read.length), use.names = FALSE))), firstBaseGenome = getSeq(genome, names = seqnames(reads.GRanges.minus), start = end(reads.GRanges.minus), end = end(reads.GRanges.minus), strand = "-", as.character = T))
+			CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = start(reads.GRanges.plus), strand = "+", firstBaseRead = substr(elementMetadata(reads.GRanges.plus)$seq, start = 1, stop = 1), firstBaseGenome = getSeq(genome, names = seqnames(reads.GRanges.plus), start = start(reads.GRanges.plus), end = start(reads.GRanges.plus), strand = "+", as.character = T), stringsAsFactors = F)
+			CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = end(reads.GRanges.minus), strand = "-", firstBaseRead = as.character(reverseComplement(DNAStringSet(substr(elementMetadata(reads.GRanges.minus)$seq, start = elementMetadata(reads.GRanges.minus)$read.length, stop = elementMetadata(reads.GRanges.minus)$read.length), use.names = FALSE))), firstBaseGenome = getSeq(genome, names = seqnames(reads.GRanges.minus), start = end(reads.GRanges.minus), end = end(reads.GRanges.minus), strand = "-", as.character = T), stringsAsFactors = F)
 		
-			CTSS.plus$pos[CTSS.plus$firstBaseRead == "G" & CTSS.plus$firstBaseGenome != "G"] <- CTSS.plus$pos[CTSS.plus$firstBaseRead == "G" & CTSS.plus$firstBaseGenome != "G"] + 1
-			CTSS.minus$pos[CTSS.minus$firstBaseRead == "G" & CTSS.minus$firstBaseGenome != "G"] <- CTSS.minus$pos[CTSS.minus$firstBaseRead == "G" & CTSS.minus$firstBaseGenome != "G"] - 1
+			CTSS.plus$pos[CTSS.plus$firstBaseRead == "G" & CTSS.plus$firstBaseGenome != "G"] <- CTSS.plus$pos[CTSS.plus$firstBaseRead == "G" & CTSS.plus$firstBaseGenome != "G"] + as.integer(1)
+			CTSS.minus$pos[CTSS.minus$firstBaseRead == "G" & CTSS.minus$firstBaseGenome != "G"] <- CTSS.minus$pos[CTSS.minus$firstBaseRead == "G" & CTSS.minus$firstBaseGenome != "G"] - as.integer(1)
 
 			CTSS <- rbind(CTSS.plus, CTSS.minus)
 			CTSS <- CTSS[,c("chr", "pos", "strand")]
 		
 		}else{
 			reads.GRanges = append(reads.GRanges.plus, reads.GRanges.minus)
-			CTSS <- data.frame(chr = as.character(seqnames(reads.GRanges)), pos = as.integer(start(reads.GRanges)), strand = as.character(strand(reads.GRanges)))
+			CTSS <- data.frame(chr = as.character(seqnames(reads.GRanges)), pos = as.integer(start(reads.GRanges)), strand = as.character(strand(reads.GRanges)), stringsAsFactors = F)
 		}
 		
-		message("\t-> Making CTSSs and counting number of tags ...")
+		message("\t-> Making CTSSs and counting number of tags...")
 		
 		CTSS$tag_count <- 1
 		
 # using data.table package
-#		CTSS = data.table(CTSS)
-#		CTSS = CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
-#		setnames(CTSS, c("chr", "pos", "strand", sample.labels[i])) 
-#		setkey(CTSS, chr, pos, strand)
-		
-		CTSS <- aggregate(CTSS$tag_count, by = list(CTSS$chr, CTSS$pos, CTSS$strand), FUN = sum)
-		colnames(CTSS) <- c("chr", "pos", "strand", sample.labels[i])
+		CTSS = data.table(CTSS)
+		CTSS = CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
+		setnames(CTSS, c("chr", "pos", "strand", sample.labels[i])) 
+		setkey(CTSS, chr, pos, strand)
+
+# without data.table
+#		CTSS <- aggregate(CTSS$tag_count, by = list(CTSS$chr, CTSS$pos, CTSS$strand), FUN = sum)
+#		colnames(CTSS) <- c("chr", "pos", "strand", sample.labels[i])
 		
 		library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
 		
