@@ -1,3 +1,5 @@
+28/05/2013	fixed the bug in reporting number of CTSSs in cluster when clustering CTSSs using custom clusters (for empty clusters it was returning that the number of CTSSs is 1, although the signal is 0)
+28/05/2013	fixed the bug in clustering CTSSs using custom clusters when run with multicore=FALSE (it was returning to many clusters - correct specified region but all of the regions on each chromosome, not only the specified one)
 22/05/2013	fixed the column classes in CTSS data.frame when reading the data from bam files (to match the classes when reading from ctss files)
 21/05/2013	updated the vignette with explanation on how to use custom build genomes
 21/05/2013	allowed usage of custom build BSgenome packages by removing the check whether the specified genome is present in the available.genomes() from BSgenome package
