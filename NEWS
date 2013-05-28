@@ -1,0 +1,16 @@
+28/05/2013	fixed the bug in reporting number of CTSSs in cluster when clustering CTSSs using custom clusters (for empty clusters it was returning that the number of CTSSs is 1, although the signal is 0)
+28/05/2013	fixed the bug in clustering CTSSs using custom clusters when run with multicore=FALSE (it was returning to many clusters - correct specified region but all of the regions on each chromosome, not only the specified one)
+22/05/2013	fixed the column classes in CTSS data.frame when reading the data from bam files (to match the classes when reading from ctss files)
+21/05/2013	updated the vignette with explanation on how to use custom build genomes
+21/05/2013	allowed usage of custom build BSgenome packages by removing the check whether the specified genome is present in the available.genomes() from BSgenome package
+Updated to version 1.2.0 in the release and 1.3.0 in the development (02/05/2013)
+02/05/2013	updated the vignette
+02/05/2013	added a new feature in the plotReverseCumulatives function, so that the slope of the fitted power-law distribution in the user selected range of values is shown on the plot for each sample (helps to choose appropriate alpha parameter for normalization)
+02/05/2013	fixed a bug in selecting the range of tag count values for fitting power-law distribution in normalization
+01/05/2013	added sample labels as names to library sizes vector
+29/04/2013	implemented statistical testing (Kolmogorov-Smirnov test) for differential promoter usage based on cumulative sums of CAGE signal along the promoters (implemented within the scoreShift function)
+20/04/2013	added pass-through option "none" for 'method' parameter in normalizeTagCount function to enable using raw tag counts in downstream steps (CTSS clustering, promoter width, etc.)
+19/04/2013	optimized scoreShift function to extract and process only the cumulative sums for samples being compared 
+19/04/2013	replaced lapply with a for loop in the scoreShift function to avoid invoking multicore within lapply
+18/04/2013	fixed wrong error message in plotExpressionProfiles function that notifies about accepted values for 'what' parameter
+27/03/2013	added data.table to the list of dependencies and optimized various parts of the code to use data.table instead of data.frame

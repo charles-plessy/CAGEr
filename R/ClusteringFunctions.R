@@ -309,7 +309,7 @@
 		ctss.cluster.list <- lapply(as.list(unique(custom.clusters$chr)), function(x) {
 									
 									ctss.df.chr <- subset(ctss.df, chr == x)
-									custom.clusters <- subset(custom.clusters, chr = x)
+									custom.clusters <- subset(custom.clusters, chr == x)
 									if(nrow(custom.clusters)>0){
 										ctss.cluster.chr.df <- .cluster.ctss.chr.predef(ctss.df = ctss.df.chr, custom.clusters = custom.clusters)
 									}
@@ -341,6 +341,7 @@
 	ctss.cluster <- ctss.cluster[, list(chr[1], start[1], end[1], strand[1], length(pos), pos[which(tpm == max(tpm))[ceiling(length(which(tpm == max(tpm)))/2)]], sum(tpm), max(tpm)), by = cluster]
 	setnames(ctss.cluster, c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss")) 
 	ctss.cluster <- data.frame(ctss.cluster)
+	ctss.cluster$nr_ctss[ctss.cluster$tpm == 0] <- 0
 		
 	invisible(gc())
 	return(ctss.cluster)
