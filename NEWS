@@ -1,3 +1,6 @@
+Updated to version 1.2.2 in the release and 1.3.2 in the development (30/05/2013)
+30/05/2013	implemented the algorithm for correcting 'G' nucleotide addition bias to CAGE tags described in Carninci et al., Nature Genetics 2006 - added a new option 'correctSystematicG' to getCTSS function
+Updated to version 1.2.1 in the release and 1.3.1 in the development (28/05/2013)
 28/05/2013	fixed the bug in reporting number of CTSSs in cluster when clustering CTSSs using custom clusters (for empty clusters it was returning that the number of CTSSs is 1, although the signal is 0)
 28/05/2013	fixed the bug in clustering CTSSs using custom clusters when run with multicore=FALSE (it was returning to many clusters - correct specified region but all of the regions on each chromosome, not only the specified one)
 22/05/2013	fixed the column classes in CTSS data.frame when reading the data from bam files (to match the classes when reading from ctss files)

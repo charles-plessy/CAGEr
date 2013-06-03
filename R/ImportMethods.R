@@ -1,13 +1,13 @@
 setGeneric(
 name="getCTSS",
-def=function(object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE){
+def=function(object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE, correctSystematicG = TRUE){
 	standardGeneric("getCTSS")
 }
 )
 
 setMethod("getCTSS",
 signature(object = "CAGEset"),
-function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE){
+function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE, correctSystematicG = TRUE){
 
 	if(!is(object,"CAGEset")){
 		stop("Need to initialize the CAGEset object")
@@ -36,14 +36,14 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	
 	}
 		
-	sample.labels = sampleLabels(object)
+	sample.labels <- sampleLabels(object)
 			
 	library.sizes <- vector()
 	first <- TRUE
 	
 	for(i in 1:length(bam.files)) {
 	
-		message("\nReading in file:", bam.files[i], "...")
+		message("\nReading in file: ", bam.files[i], "...")
 		
 		what <- c("rname", "strand", "pos", "qwidth", "seq", "qual", "mapq")
 		param <- ScanBamParam(what = what, flag = scanBamFlag(isUnmappedQuery = FALSE))
@@ -73,35 +73,24 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		reads.GRanges.minus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "-" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & (as.character(seqnames(reads.GRanges)) %in% seqnames(genome) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold)]
 		
 		if(removeFirstG == TRUE){
-			message("\t-> Removing the first base of the reads if 'G' and not aligned to the genome...")
-		
-			CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = start(reads.GRanges.plus), strand = "+", firstBaseRead = substr(elementMetadata(reads.GRanges.plus)$seq, start = 1, stop = 1), firstBaseGenome = getSeq(genome, names = seqnames(reads.GRanges.plus), start = start(reads.GRanges.plus), end = start(reads.GRanges.plus), strand = "+", as.character = T), stringsAsFactors = F)
-			CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = end(reads.GRanges.minus), strand = "-", firstBaseRead = as.character(reverseComplement(DNAStringSet(substr(elementMetadata(reads.GRanges.minus)$seq, start = elementMetadata(reads.GRanges.minus)$read.length, stop = elementMetadata(reads.GRanges.minus)$read.length), use.names = FALSE))), firstBaseGenome = getSeq(genome, names = seqnames(reads.GRanges.minus), start = end(reads.GRanges.minus), end = end(reads.GRanges.minus), strand = "-", as.character = T), stringsAsFactors = F)
-		
-			CTSS.plus$pos[CTSS.plus$firstBaseRead == "G" & CTSS.plus$firstBaseGenome != "G"] <- CTSS.plus$pos[CTSS.plus$firstBaseRead == "G" & CTSS.plus$firstBaseGenome != "G"] + as.integer(1)
-			CTSS.minus$pos[CTSS.minus$firstBaseRead == "G" & CTSS.minus$firstBaseGenome != "G"] <- CTSS.minus$pos[CTSS.minus$firstBaseRead == "G" & CTSS.minus$firstBaseGenome != "G"] - as.integer(1)
-
-			CTSS <- rbind(CTSS.plus, CTSS.minus)
-			CTSS <- CTSS[,c("chr", "pos", "strand")]
+			
+			CTSS <- .remove.added.G(reads.GRanges.plus, reads.GRanges.minus, correctSystematicG = correctSystematicG)
 		
 		}else{
-			reads.GRanges = append(reads.GRanges.plus, reads.GRanges.minus)
+		
+			reads.GRanges <- append(reads.GRanges.plus, reads.GRanges.minus)
 			CTSS <- data.frame(chr = as.character(seqnames(reads.GRanges)), pos = as.integer(start(reads.GRanges)), strand = as.character(strand(reads.GRanges)), stringsAsFactors = F)
+			CTSS$tag_count <- 1
+			CTSS <- data.table(CTSS)
+			CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
+			
 		}
 		
-		message("\t-> Making CTSSs and counting number of tags...")
-		
-		CTSS$tag_count <- 1
-		
-# using data.table package
-		CTSS = data.table(CTSS)
-		CTSS = CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
 		setnames(CTSS, c("chr", "pos", "strand", sample.labels[i])) 
 		setkey(CTSS, chr, pos, strand)
 
-# without data.table
-#		CTSS <- aggregate(CTSS$tag_count, by = list(CTSS$chr, CTSS$pos, CTSS$strand), FUN = sum)
-#		colnames(CTSS) <- c("chr", "pos", "strand", sample.labels[i])
+		message("\t-> Making CTSSs and counting number of tags...")
+		
 		
 		library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
 		
@@ -133,13 +122,13 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		
 		for(i in 1:length(ctss.files)) {
 			
-			message("\nReading in file:", ctss.files[i], "...")
+			message("\nReading in file: ", ctss.files[i], "...")
 			
 			CTSS <- read.table(file = ctss.files[i], header = F, sep = "\t", colClasses = c("character", "integer", "character", "integer"), col.names = c("chr", "pos", "strand", sample.labels[i]))
 		
 			if(first == TRUE) {
 				CTSS.all.samples <- CTSS
-				first = FALSE
+				first <- FALSE
 			}else{
 				CTSS.all.samples <- merge(CTSS.all.samples, CTSS, by.x = c(1:3), by.y = c(1:3), all.x = TRUE, all.y = TRUE)
 			}			
@@ -156,7 +145,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	
 	CTSS.all.samples <- data.frame(CTSS.all.samples)
 	for(i in 4:ncol(CTSS.all.samples)){
-		CTSS.all.samples[is.na(CTSS.all.samples[,i]),i] <- 0
+		CTSS.all.samples[is.na(CTSS.all.samples[,i]),i] <- as.integer(0)
 	}
 	CTSS.all.samples <- CTSS.all.samples[order(CTSS.all.samples$chr, CTSS.all.samples$pos),]
 	colnames(CTSS.all.samples) <- c("chr", "pos", "strand", sample.labels)
