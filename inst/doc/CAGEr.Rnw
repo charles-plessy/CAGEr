@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{May 2, 2013}
+\date{June 12, 2013}
 
 \begin{document}
 <<setup, echo=FALSE>>=
@@ -81,9 +81,13 @@ Here are some of the functionalities provided in this package:
 \item
 Reading in multiple CAGE datasets from various sources; user provided BAM or TSS input files, public CAGE datasets from accompanying data package.
 \item
+Correcting systematic G nucleotide addition bias at the 5' end of CAGE tags.
+\item
+Plotting pairwise scatter plots, calculating correlation between datasets and merging datasets.
+\item
 Normalizing raw CAGE tag count: simple tag per million (tpm) or power-law based normalization (\cite{Balwierz:2009}).
 \item
-Clustering of individual TSSs into tag clusters (TCs) and aggregating clusters across multiple CAGE datasets to create a set of consensus promoters.
+Clustering individual TSSs into tag clusters (TCs) and aggregating clusters across multiple CAGE datasets to create a set of consensus promoters.
 \item
 Making bedGraph or BED files of individual TSSs or clusters for visualisation in the genome browser.
 \item
@@ -200,9 +204,35 @@ ctss <- CTSStagCount(myCAGEset)
 head(ctss)
 @
 Note that the samples are ordered in the way they were supplied when creating the \Robject{CAGEset} object and will be presented in that 
-order in all the results and plots.
-After the data has been read we might want to merge and/or rearrange some of the datasets. To rearrange the samples in the
-temporal order of the zebrafish development (unfertilized egg -> high -> 30 percent dome -> prim6) and to merge the two replicates for the 
+order in all the results and plots. To check sample labels and their ordering type:
+<<>>=
+sampleLabels(myCAGEset)
+@
+
+\subsection{Correlation between samples}
+After the data has been read we can start exploring the data by looking at the correlation between the samples. The  \Rfunction{plotCorrelation} 
+function will plot pairwise scatter plots of CAGE tag count per TSS and calculate correlation between all possible pairs of samples. A tag count 
+threshold can be set, so that only TSSs with tag count above the threshold (either in one or both samples) are considered when calculating 
+correlation. Three different correlation measures are supported: Pearson's, Spearman's and Kendall's correlation coefficients.
+<<eval=FALSE>>=
+corr.m <- plotCorrelation(myCAGEset, samples = "all", method = "pearson")
+@
+The command above will create a PNG file with pairwise scatter plots and calculated correlation coefficients (Figure~\ref{fig:CorrelationScatterPlots}), 
+and will return a matrix with correlation coefficients. Note that the correlation is calculated using raw tag counts on a linear scale, however, the 
+scatter plots are plotted on a logarithmic scale for the convenience. Figure~\ref{fig:CorrelationScatterPlots} shows that early developmental stages 
+correlate very well with each other, whereas their correlation with later prim6 stage is lower. There is also a very good correlation between the two 
+replicas for prim6 developmental stage.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=110mm,height=109mm]{images/Pairwise_tag_count_correlation.jpg}
+\caption{Correlation of raw CAGE tag counts per TSS}
+\label{fig:CorrelationScatterPlots}
+\end{figure}
+
+
+Based on calculated correlation we might want to merge and/or rearrange some of the datasets. To rearrange the samples in the
+temporal order of the zebrafish development (unfertilized egg -> high -> 30 percent dome -> prim6) and to merge the two replicas for the 
 prim6 developmental stage we use the \Rfunction{mergeSamples} function:
 <<>>=
 mergeSamples(myCAGEset, mergeIndex = c(3,2,4,4,1), 
@@ -213,7 +243,7 @@ The \Rcode{mergeIndex} argument controls which samples will be merged and how th
 same number (in our case samples three and four) will be merged together by summing 
 number of CAGE tags per TSS. The final set of samples will be ordered in the ascending order of values provided in \Rcode{mergeIndex} and 
 will be labeled by the labels provided in the \Rcode{mergedSampleLabels} argument.
-Note that \Rfunction(mergeSamples) function resets all slots with results of downstream analyses, so in case there were any results in the 
+Note that \Rfunction{mergeSamples} function resets all slots with results of downstream analyses, so in case there were any results in the 
 \Robject{CAGEset} object prior to merging, they will be removed.
 
 \subsection{Normalization}
