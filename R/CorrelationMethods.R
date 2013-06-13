@@ -26,7 +26,7 @@ function (object, samples = "all", method = "pearson", tagCountThreshold = 1, ap
 	corr.m <- matrix(rep(1, (nr.samples)^2), nrow = nr.samples)
 	colnames(corr.m) <- samples
 	rownames(corr.m) <- samples
-	png(filename = "Pairwise_tag_count_correlation.png", width = (800 + 36) * nr.samples + 180, height = (800 + 36) * nr.samples + 90, family = "Helvetica", fonts = NULL, res = 360)
+	png(filename = "Pairwise_tag_count_correlation.png", width = (800 + 36) * nr.samples + 180, height = (800 + 36) * nr.samples + 90, family = "Helvetica", res = 360)
 	par(mfrow = c(nr.samples, nr.samples), mai = c(0.05,0.05,0.05,0.05), omi = c(0.25,0.5,0,0))
 	
 	for(i in c(1:nr.samples)){
