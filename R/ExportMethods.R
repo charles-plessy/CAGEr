@@ -5,35 +5,63 @@
 
 setGeneric(
 name="plotReverseCumulatives",
-def=function(object, fitInRange = c(10, 1000), onePlot = FALSE){
+def=function(object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 	standardGeneric("plotReverseCumulatives")
 }
 )
 
 setMethod("plotReverseCumulatives",
 signature(object = "CAGEset"),
-function (object, fitInRange = c(10, 1000), onePlot = FALSE){
+function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 		
 	sample.labels <- sampleLabels(object)
-	tag.count <- object@tagCountMatrix
-	
-	pdf(file = "CTSS_reverse_cumulatives_all_samples.pdf", width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
-	par(mar = c(5,5,5,2))
-	cols <- rainbow(n = length(sample.labels))
-	
-	fit.coefs.m <- apply(tag.count, 2, function(x) {.fit.power.law.to.reverse.cumulative(values = x, val.range = fitInRange)})
-	fit.slopes <- fit.coefs.m[1,]
-	if(onePlot == TRUE){
-		values <- tag.count[, 1]
-		.plotReverseCumulative(values = values, col = cols[1], title = "All samples")
-		sapply(c(2:length(sample.labels)), function(x) {values <- tag.count[, sample.labels[x]]; .addReverseCumulative(values, col = cols[x])})
-		abline(v = fitInRange, lty = "dashed")
-		legend("topright", legend = paste("(", formatC(-1*fit.slopes, format = "f", digits = 2), ") ", sample.labels, sep = ""), bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
+	if(values == "raw"){
+		tag.count <- object@tagCountMatrix
+	}else if(values == "normalized"){
+		tag.count <- object@normalizedTpmMatrix
 	}else{
-		sapply(sample.labels, function(x) {values <- tag.count[, x]; .plotReverseCumulative(values = values, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)]); abline(v = fitInRange, lty = "dashed"); text(min(fitInRange), 1, labels = paste("alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,0) ,col = cols[which(sample.labels == x)], cex = 1.3)})
+		stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
+	}
+	
+	pdf(file = paste("CTSS_reverse_cumulatives_", values, "_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
+	par(mar = c(5,5,5,2))
+	cols <- names(sample.labels)
+	
+	if(values == "raw"){
+		fit.coefs.m <- apply(tag.count, 2, function(x) {.fit.power.law.to.reverse.cumulative(values = as.integer(x), val.range = fitInRange)})
+		fit.slopes <- fit.coefs.m[1,]
+		reference.slope <- min(median(fit.slopes), -1.05)
+		library.sizes <- librarySizes(object)
+		reference.library.size <- 10^floor(log10(median(library.sizes)))
+#reference.intercept <- log(reference.library.size/zeta(-1*reference.slope))  # intercept on natural logarithm scale
+		reference.intercept <- log10(reference.library.size/zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
+	}else if(values == "normalized"){
+#		fit.coefs.m <- apply(tag.count, 2, function(x) {.fit.power.law.to.reverse.cumulative(values = x, val.range = fitInRange)})
+	}
+	
+	if(onePlot == TRUE){
+		vals <- tag.count[, 1]		
+		if(values == "raw"){
+			.plotReverseCumulative(values = as.integer(vals), col = cols[1], title = "All samples")
+			sapply(c(2:length(sample.labels)), function(x) {vals <- as.integer(tag.count[, sample.labels[x]]); .plotReverseCumulative(values = vals, col = cols[x], add = TRUE)})
+			abline(v = fitInRange, lty = "dotted")
+			abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash")
+			legend("topright", legend = paste("(", formatC(-1*fit.slopes, format = "f", digits = 2), ") ", sample.labels, sep = ""), bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
+			legend("bottomleft", legend = c("Ref. distribution:", paste("alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste("T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)
+		}else if(values == "normalized"){
+			.plotReverseCumulative(values = vals, col = cols[1], title = "All samples")
+			sapply(c(2:length(sample.labels)), function(x) {vals <- tag.count[, sample.labels[x]]; .plotReverseCumulative(values = vals, col = cols[x], add = TRUE)})
+			legend("topright", legend = sample.labels, bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
+		}
+	}else{
+		if(values == "raw"){
+			sapply(sample.labels, function(x) {vals <- as.integer(tag.count[, x]); .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)]); abline(v = fitInRange, lty = "dotted"); abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash"); text(min(fitInRange), 10^6, labels = paste(" alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,1), col = cols[which(sample.labels == x)], cex = 1.3); legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)})
+		}else if(values == "normalized"){
+			sapply(sample.labels, function(x) {vals <- tag.count[, x]; .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)])})
+		}
 	}
 	dev.off()
-	message("\nFile 'CTSS_reverse_cumulatives_all_samples.pdf' has been created in your working directory (", getwd(), ")")
+	message("\nFile 'CTSS_reverse_cumulatives_", values, "_all_samples.pdf' has been created in your working directory (", getwd(), ")")
 	
 }
 )
@@ -82,7 +110,7 @@ signature(object = "CAGEset"),
 function (object, clusters, tpmThreshold, qLow, qUp){
 	
 	sample.labels <- sampleLabels(object)
-	cols <- rainbow(n = length(sample.labels))
+	cols <- names(sample.labels)
 	
 	if(clusters == "tagClusters"){	
 		
@@ -253,7 +281,7 @@ function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = TRUE
 		
 		names(clusters.q.list) <- sample.labels
 		itemRgb = FALSE
-		cols <- rainbow(n = length(sample.labels))
+		cols <- names(sample.labels)
 		cols <- as.list(apply(sapply(cols, function(x) {as.integer(col2rgb(x))}), 2, function(y) {paste(y, collapse = ",")}))
 		names(cols) <- sample.labels
 

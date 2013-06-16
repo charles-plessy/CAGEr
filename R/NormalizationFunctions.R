@@ -15,17 +15,17 @@
 .fit.power.law.to.reverse.cumulative <- function(values, val.range = c(10, 1000)) {
 
 # using data.table package	
-#	v <- data.table(num = 1, nr_tags = as.integer(values))
-#	v <- v[, sum(num), by = nr_tags]
-#	setkey(v, nr_tags)
-#	v$V1 <- rev(cumsum(rev(v$V1)))
-#	setnames(v, c('nr_tags', 'reverse_cumulative'))
-#	v <- v[nr_tags >= min(val.range) & nr_tags <= max(val.range)]
+	v <- data.table(num = 1, nr_tags = values)
+	v <- v[, sum(num), by = nr_tags]
+	setkey(v, nr_tags)
+	v$V1 <- rev(cumsum(rev(v$V1)))
+	setnames(v, c('nr_tags', 'reverse_cumulative'))
+	v <- v[nr_tags >= min(val.range) & nr_tags <= max(val.range)]
 
-	v <- aggregate(values, by = list(as.integer(values)), FUN = length)
-	v$x <- rev(cumsum(rev(v$x)))
-	colnames(v) <- c('nr_tags', 'reverse_cumulative')
-	v <- subset(v, nr_tags >= min(val.range) & nr_tags <= max(val.range))
+#	v <- aggregate(values, by = list(values), FUN = length)
+#	v$x <- rev(cumsum(rev(v$x)))
+#	colnames(v) <- c('nr_tags', 'reverse_cumulative')
+#	v <- subset(v, nr_tags >= min(val.range) & nr_tags <= max(val.range))
 	
 	lin.m <- lm(log(reverse_cumulative) ~ log(nr_tags), data = v)
 	a <- coefficients(lin.m)[2]

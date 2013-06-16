@@ -1,16 +1,29 @@
 setGeneric(
 name="plotCorrelation",
-def=function(object, samples = "all", method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE){
+def=function(object, what = "CTSS", values = "raw", samples = "all", method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE){
 	standardGeneric("plotCorrelation")
 }
 )
 
 setMethod("plotCorrelation",
 signature(object = "CAGEset"),
-function (object, samples = "all", method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE){
+function (object, what = "CTSS", values = "raw", samples = "all", method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE){
 	
 	sample.labels <- sampleLabels(object)
-	tag.count <- object@tagCountMatrix
+	
+	if(what == "CTSS"){
+		if(values == "raw"){
+			tag.count <- object@tagCountMatrix
+		}else if(values == "normalized"){
+			tag.count <- object@normalizedTpmMatrix
+		}else{
+			stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
+		}
+	}else if(what == "consensusClusters"){
+		tag.count <- as.data.frame(object@consensusClustersTpmMatrix)
+	}else{
+		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
+	}
 
 
 	if(all(samples %in% sample.labels)){
@@ -26,8 +39,8 @@ function (object, samples = "all", method = "pearson", tagCountThreshold = 1, ap
 	corr.m <- matrix(rep(1, (nr.samples)^2), nrow = nr.samples)
 	colnames(corr.m) <- samples
 	rownames(corr.m) <- samples
-	png(filename = "Pairwise_tag_count_correlation.png", width = (800 + 36) * nr.samples + 180, height = (800 + 36) * nr.samples + 90, family = "Helvetica", res = 360)
-	par(mfrow = c(nr.samples, nr.samples), mai = c(0.05,0.05,0.05,0.05), omi = c(0.25,0.5,0,0))
+	png(filename = "Pairwise_tag_count_correlation.png", width = (800 + 36) * nr.samples + 0.1*800*(log2(nr.samples)/log2(3) + (2-1/log2(3))), height = (800 + 36) * nr.samples + 0.05*800*(log2(nr.samples)/log2(3) + (2-1/log2(3))), family = "Helvetica", res = 360)
+	par(mfrow = c(nr.samples, nr.samples), mai = c(0.05,0.05,0.05,0.05), omi = c(0.05*800*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0.1*800*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0,0))
 	
 	for(i in c(1:nr.samples)){
 		for(j in c(1:nr.samples)){
@@ -35,7 +48,7 @@ function (object, samples = "all", method = "pearson", tagCountThreshold = 1, ap
 			if(i == j){
 				
 				plot(1, 1, type = "n", bty = "n", xlim = c(0,1), ylim = c(0,1), axes = F)
-				text(0.5, 0.5, samples[i], cex = 0.95/max(sapply(samples, strwidth)))
+				text(0.5, 0.5, samples[i], cex = 0.98/max(sapply(samples, strwidth)))
 				box(lwd = 3)
 		
 			}else if(j > i){
@@ -73,10 +86,18 @@ function (object, samples = "all", method = "pearson", tagCountThreshold = 1, ap
 				
 				smoothScatter(x = log10(x+1), y = log10(y+1), xlim = c(0, 3), ylim = c(0,3), nrpoints = 0, nbin = c(800, 800), transformation = function(x) x^(1/6), axes = F)
 				if(i == nr.samples & j < nr.samples){
-					axis(side = 1, at = seq(0,3), labels = 10^seq(0,3), cex.axis = 1/(6.5*strwidth("1")))
+					if((nr.samples <= 3) | ((nr.samples > 3) & (j%%2 == 1))){
+						axis(side = 1, at = seq(0,3), labels = 10^seq(0,3), cex.axis = 0.1*800*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360/(4*strwidth("1")))
+					}else{
+						axis(side = 1, at = seq(0,3), labels = rep("", 4))
+					}
 				}
-				if(j == 1 & i > 1){				
-					axis(side = 2, at = seq(0,3), labels = 10^seq(0,3), las = 2, cex.axis = 1/(6.5*strwidth("1")))
+				if(j == 1 & i > 1){
+					if((nr.samples <= 3) | ((nr.samples > 3) & ((i - nr.samples)%%2 == 0))){
+						axis(side = 2, at = seq(0,3), labels = 10^seq(0,3), las = 2, cex.axis = 0.1*800*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360/(4*strwidth("1")))
+					}else{
+						axis(side = 2, at = seq(0,3), labels = rep("", 4))
+					}
 				}
 				box(lwd = 3)
 				
