@@ -218,7 +218,9 @@ function (dataset, group, sample){
 	organismName <- strsplit(datasetName, split = "CAGE")[[1]][2]
 	projectName <- substr(datasetName, start = 1, stop = 6)
 	genomes <- c("human" = "BSgenome.Hsapiens.UCSC.hg18", "mouse" = "BSgenome.Mmusculus.UCSC.mm9", "fly" = "BSgenome.Dmelanogaster.UCSC.dm3")
-	myCAGEset <- new("CAGEset", genomeName = genomes[organismName], inputFiles = paste(projectName, colnames(ctssTable)[4:ncol(ctssTable)], sep = "__"), inputFilesType = projectName, sampleLabels = colnames(ctssTable)[4:ncol(ctssTable)])
+	sample.labels <- colnames(ctssTable)[4:ncol(ctssTable)]
+	names(sample.labels) <- rainbow(n = length(sample.labels))
+	myCAGEset <- new("CAGEset", genomeName = genomes[organismName], inputFiles = paste(projectName, colnames(ctssTable)[4:ncol(ctssTable)], sep = "__"), inputFilesType = projectName, sampleLabels = sample.labels)
 
 	myCAGEset@librarySizes <- as.integer(colSums(ctssTable[,4:ncol(ctssTable)]))
 	myCAGEset@CTSScoordinates <- ctssTable[, c("chr", "pos", "strand")]
