@@ -1,4 +1,6 @@
-Updated to version 1.2.2 in the release and 1.3.2 in the development (30/05/2013)
+Updated to version 1.2.3. in the release and 1.3.3 in the development (12/06/2013)
+12/06/2012	implemented plotting pairwise scatter plots of CAGE tag count and calculating correlation between samples - added new plotCorrelation() function
+Updated to version 1.2.2. in the release and 1.3.2 in the development (30/05/2013)
 30/05/2013	implemented the algorithm for correcting 'G' nucleotide addition bias to CAGE tags described in Carninci et al., Nature Genetics 2006 - added a new option 'correctSystematicG' to getCTSS function
 Updated to version 1.2.1 in the release and 1.3.1 in the development (28/05/2013)
 28/05/2013	fixed the bug in reporting number of CTSSs in cluster when clustering CTSSs using custom clusters (for empty clusters it was returning that the number of CTSSs is 1, although the signal is 0)
