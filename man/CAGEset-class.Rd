@@ -67,12 +67,14 @@ Objects of the class contain information on the genomic coordinates of TSSs deri
     \item{librarySizes}{\code{signature(object = "CAGEset")}: extracts the library sizes of individual CAGE experiments within CAGEset object }
     \item{mergeSamples}{\code{signature(object = "CAGEset", mergeIndex = "numeric")}: merges specified experiments (samples) into one (e.g. replicas) }
     \item{normalizeTagCount}{\code{signature(object = "CAGEset")}: normalizes raw CAGE tag count }
+    \item{plotCorrelation}{\code{signature(object = "CAGEset")}: plots pairwise scatter plots and calculates correlation between samples }
     \item{plotExpressionProfiles}{\code{signature(object = "CAGEset")}: creates file with beanplots of expression across experiments for CTSSs or consensus clusters belonging to different expression classes }
     \item{plotInterquantileWidth}{\code{signature(object = "CAGEset")}: creates file with histograms of interquantile width }
     \item{plotReverseCumulatives}{\code{signature(object = "CAGEset")}: creates file with reverse cumulative plots of CAGE tag count per CTSS }
     \item{quantilePositions}{\code{signature(object = "CAGEset")}: calculates the positions of specified quantiles within TCs or consensus clusters }
     \item{sampleLabels}{\code{signature(object = "CAGEset")}: extracts the labels of individual CAGE experiments within CAGEset object }
     \item{scoreShift}{\code{signature(object = "CAGEset", groupX = "character", groupY = "character")}: calculates the shifting score and tests the statistical significance of differential TSS usage for consensus clusters between two specified (groups of) samples }
+    \item{setColors}{\code{signature(object = "CAGEset")}: assigns color to each sample to be used in visualisation }
     \item{show}{\code{signature(object = "CAGEset")}: displays CAGEset object in a user friendly way }
     \item{tagClusters}{\code{signature(object = "CAGEset")}: extracts the tag clusters for specified CAGE experiment }
 	 }

@@ -32,7 +32,8 @@ function (object, mergeIndex, mergedSampleLabels){
 	lib.sizes.new <- sapply(sort(unique(mergeIndex)), function(x) {cols <- which(mergeIndex == x); a <- sum(lib.sizes[cols]); return(a)})
 	names(lib.sizes.new) <- mergedSampleLabels
 	colnames(tag.count.matrix.new) <- mergedSampleLabels
-		
+	names(mergedSampleLabels) <- rainbow(n = length(mergedSampleLabels))
+	
 	new.CAGE.set <- suppressWarnings(suppressMessages(new("CAGEset", genomeName = object@genomeName, inputFiles = paste(mergedSampleLabels, "_merged", sep = ""), inputFilesType = object@inputFilesType, sampleLabels = mergedSampleLabels, librarySizes = lib.sizes.new, CTSScoordinates = object@CTSScoordinates, tagCountMatrix = as.data.frame(tag.count.matrix.new))))
 	
 	assign(objName, new.CAGE.set, envir = parent.frame())

@@ -2,42 +2,30 @@
 # Functions for exporting results (graphical and textual)
 #
 
-.plotReverseCumulative <- function(values, col = "darkblue", title = "", col.title = "black") {
+.plotReverseCumulative <- function(values, col = "darkblue", title = "", col.title = "black", add = FALSE) {
 
-	values <- values[values > 0]
-
-# using data.table package
-#	v <- data.table(num = 1, nr_tags = as.integer(values))
-#	v <- v[, sum(num), by = nr_tags]
-#	setkey(v, nr_tags)
-	
-	v <- aggregate(values, by = list(as.integer(values)), FUN = length)
-	colnames(v) <- c('nr_tags', 'V1')
-	
-	plot(sort(c(v$nr_tags - (v$nr_tags - c(0, v$nr_tags[-length(v$nr_tags)]))/2, v$nr_tags + (c(v$nr_tags[-1], v$nr_tags[length(v$nr_tags)]+1) - v$nr_tags)/2)), rep(rev(cumsum(rev(v$V1))), each = 2), xaxt = 'n', yaxt = 'n', log = "xy", type = "l", lwd = 2, col = col, xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)", main = title, cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = col.title, xlim = c(1, 10^5), ylim = c(1, 10^6))	
-
-	axis(side = 1, at = as.integer(sapply(10^(seq(0,6,1)), function(x) {seq(x,10*x-1,x)})), labels = rep("", 63), cex.axis = 1.8)   		   
-	axis(side = 1, at = 10^(seq(0,6,1)), labels = formatC(10^(seq(0,6,1)), format = "f", digits = 0), cex.axis = 1.8)		   
-	axis(side = 2, at = as.integer(sapply(10^(seq(0,6,1)), function(x) {seq(x,10*x-1,x)})), labels = rep("", 63), cex.axis = 1.8)   		   
-	axis(side = 2, at = 10^(seq(0,6,1)), labels = formatC(10^(seq(0,6,1)), format = "f", digits = 0), cex.axis = 1.8)		   
-}
-
-.addReverseCumulative <- function(values, col = "darkblue") {
-
-	values <- values[values > 0]
+	values <- values[values != 0]
 
 # using data.table package
-#	v <- data.table(num = 1, nr_tags = as.integer(values))
-#	v <- v[, sum(num), by = nr_tags]
-#	setkey(v, nr_tags)
+	v <- data.table(num = 1, nr_tags = values)
+	v <- v[, sum(num), by = nr_tags]
+	setkey(v, nr_tags)
 	
-	v <- aggregate(values, by = list(as.integer(values)), FUN = length)
-	colnames(v) <- c('nr_tags', 'V1')
-		
-	lines(sort(c(v$nr_tags - (v$nr_tags - c(0, v$nr_tags[-length(v$nr_tags)]))/2, v$nr_tags + (c(v$nr_tags[-1], v$nr_tags[length(v$nr_tags)]+1) - v$nr_tags)/2)), rep(rev(cumsum(rev(v$V1))), each = 2), col = col, lwd = 2)
+#	v <- aggregate(values, by = list(values), FUN = length)
+#	colnames(v) <- c('nr_tags', 'V1')
+	
+	if(add){
+		lines(sort(c(v$nr_tags - (v$nr_tags - c(0, v$nr_tags[-length(v$nr_tags)]))/2, v$nr_tags + (c(v$nr_tags[-1], v$nr_tags[length(v$nr_tags)]+1) - v$nr_tags)/2)), rep(rev(cumsum(rev(v$V1))), each = 2), col = col, lwd = 2)
+	}else{
+		plot(sort(c(v$nr_tags - (v$nr_tags - c(0, v$nr_tags[-length(v$nr_tags)]))/2, v$nr_tags + (c(v$nr_tags[-1], v$nr_tags[length(v$nr_tags)]+1) - v$nr_tags)/2)), rep(rev(cumsum(rev(v$V1))), each = 2), xaxt = 'n', yaxt = 'n', log = "xy", type = "l", lwd = 2, col = col, xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)", main = title, cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = col.title, xlim = c(1, 10^5), ylim = c(1, 10^6))	
+	
+		axis(side = 1, at = as.integer(sapply(10^(seq(0,6,1)), function(x) {seq(x,10*x-1,x)})), labels = rep("", 63), cex.axis = 1.8)   		   
+		axis(side = 1, at = 10^(seq(0,6,1)), labels = formatC(10^(seq(0,6,1)), format = "f", digits = 0), cex.axis = 1.8)		   
+		axis(side = 2, at = as.integer(sapply(10^(seq(0,6,1)), function(x) {seq(x,10*x-1,x)})), labels = rep("", 63), cex.axis = 1.8)   		   
+		axis(side = 2, at = 10^(seq(0,6,1)), labels = formatC(10^(seq(0,6,1)), format = "f", digits = 0), cex.axis = 1.8)
+	}
+	
 }
-
-
 
 .make.RangedData <- function(data) {
 	data.rd <- RangedData(space = data$chr, IRanges(start = data$pos, end = data$pos), score = data$score)
