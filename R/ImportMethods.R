@@ -120,6 +120,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		}
 		
 		sample.labels = sampleLabels(object)
+		names(sample.labels) <- rainbow(n = length(sample.labels))
 		
 		for(i in 1:length(ctss.files)) {
 			
@@ -152,6 +153,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	colnames(CTSS.all.samples) <- c("chr", "pos", "strand", sample.labels)
 	
 	names(library.sizes) <- sample.labels
+	object@sampleLabels <- sample.labels
 	object@librarySizes <- library.sizes
 	object@CTSScoordinates <- CTSS.all.samples[,c("chr", "pos", "strand")]
 	object@tagCountMatrix <- as.data.frame(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)),drop=F])
