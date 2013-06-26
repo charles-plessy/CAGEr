@@ -120,6 +120,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		}
 		
 		sample.labels = sampleLabels(object)
+		names(sample.labels) <- rainbow(n = length(sample.labels))
 		
 		for(i in 1:length(ctss.files)) {
 			
