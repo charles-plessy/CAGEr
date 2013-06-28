@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{June 12, 2013}
+\date{June 28, 2013}
 
 \begin{document}
 <<setup, echo=FALSE>>=
@@ -208,6 +208,9 @@ order in all the results and plots. To check sample labels and their ordering ty
 <<>>=
 sampleLabels(myCAGEset)
 @
+In addition, a colour is assigned to each sample, which is consistently used to depict that sample in all the plots. By default a rainbow palette of colours is used 
+and the hexadecimal format of the assigned colours can be seen as names attribute of sample labels shown above. The colours can be changed to taste at any point 
+in the workflow using \Rfunction{setColors} function.
 
 \subsection{Correlation between samples}
 After the data has been read we can start exploring the data by looking at the correlation between the samples. The  \Rfunction{plotCorrelation} 
