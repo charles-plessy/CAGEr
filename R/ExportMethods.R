@@ -43,14 +43,18 @@ function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 		vals <- tag.count[, 1]		
 		if(values == "raw"){
 			.plotReverseCumulative(values = as.integer(vals), col = cols[1], title = "All samples")
-			sapply(c(2:length(sample.labels)), function(x) {vals <- as.integer(tag.count[, sample.labels[x]]); .plotReverseCumulative(values = vals, col = cols[x], add = TRUE)})
+			if(length(sample.labels) > 1){
+				sapply(c(2:length(sample.labels)), function(x) {vals <- as.integer(tag.count[, sample.labels[x]]); .plotReverseCumulative(values = vals, col = cols[x], add = TRUE)})
+			}
 			abline(v = fitInRange, lty = "dotted")
 			abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash")
 			legend("topright", legend = paste("(", formatC(-1*fit.slopes, format = "f", digits = 2), ") ", sample.labels, sep = ""), bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
-			legend("bottomleft", legend = c("Ref. distribution:", paste("alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste("T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)
+			legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)
 		}else if(values == "normalized"){
 			.plotReverseCumulative(values = vals, col = cols[1], title = "All samples")
-			sapply(c(2:length(sample.labels)), function(x) {vals <- tag.count[, sample.labels[x]]; .plotReverseCumulative(values = vals, col = cols[x], add = TRUE)})
+			if(length(sample.labels) > 1){			
+				sapply(c(2:length(sample.labels)), function(x) {vals <- tag.count[, sample.labels[x]]; .plotReverseCumulative(values = vals, col = cols[x], add = TRUE)})
+			}
 			legend("topright", legend = sample.labels, bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
 		}
 	}else{
@@ -114,6 +118,14 @@ function (object, clusters, tpmThreshold, qLow, qUp){
 	
 	if(clusters == "tagClusters"){	
 		
+		if(length(object@tagClustersQuantileLow)>0 & length(object@tagClustersQuantileUp)>0) {
+			if(!(paste("q_", qLow, sep = "") %in% colnames(object@tagClustersQuantileLow[[1]]) & paste("q_", qUp, sep = "") %in% colnames(object@tagClustersQuantileUp[[1]]))){
+				stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
+			}
+		}else{
+			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
+		}
+		
 		filename <- "TC"
 		q.low <- object@tagClustersQuantileLow
 		q.up <- object@tagClustersQuantileUp
@@ -127,6 +139,15 @@ function (object, clusters, tpmThreshold, qLow, qUp){
 						   )
 	
 	}else if (clusters == "consensusClusters"){
+		
+		if(length(object@consensusClustersQuantileLow)>0 & length(object@consensusClustersQuantileUp)>0) {
+			
+			if(!(paste("q_", qLow, sep = "") %in% colnames(object@consensusClustersQuantileLow[[1]]) & paste("q_", qUp, sep = "") %in% colnames(object@consensusClustersQuantileUp[[1]]))){
+				stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
+			}
+		}else{
+			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
+		}
 		
 		filename <- "consensusClusters_interquantile_width_all_samples.pdf"
 		q.low <- object@consensusClustersQuantileLow
@@ -173,21 +194,29 @@ def=function(object, what){
 setMethod("plotExpressionProfiles",
 signature(object = "CAGEset"),
 function (object, what){
-
+	
 	if(what == "CTSS") {
-	
+		
 		cl <- object@CTSSexpressionClasses
-		tpm.mx <- object@normalizedTpmMatrix
-		tpm.mx <- tpm.mx[as.integer(names(cl)),]
-		cl.method <- object@CTSSexpressionClusteringMethod
-	
+		if(length(cl)>0){
+			tpm.mx <- object@normalizedTpmMatrix
+			tpm.mx <- tpm.mx[as.integer(names(cl)),]
+			cl.method <- object@CTSSexpressionClusteringMethod
+		}else{
+			stop("No CTSS expression profiling has been done yet! Run getExpressionProfiles function first!")
+		}
+		
 	}else if(what == "consensusClusters"){
-	
+		
 		cl <- object@consensusClustersExpressionClasses
-		tpm.mx <- object@consensusClustersTpmMatrix
-		tpm.mx <- tpm.mx[as.integer(names(cl)),]
-		cl.method <- object@consensusClustersExpressionClusteringMethod
-	
+		if(length(cl)>0){
+			tpm.mx <- object@consensusClustersTpmMatrix
+			tpm.mx <- tpm.mx[as.integer(names(cl)),]
+			cl.method <- object@consensusClustersExpressionClusteringMethod
+		}else{
+			stop("No consensusClusters expression profiling has been done yet! Run getExpressionProfiles function first!")
+		}
+		
 	}else{
 		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
 	}
@@ -208,7 +237,7 @@ function (object, what){
 
 setGeneric(
 name="exportToBed",
-def=function(object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = TRUE, oneFile = TRUE){
+def=function(object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALSE, oneFile = TRUE){
 	standardGeneric("exportToBed")
 }
 )
@@ -216,7 +245,7 @@ def=function(object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = T
 
 setMethod("exportToBed",
 signature(object = "CAGEset"),
-function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = TRUE, oneFile = TRUE){
+function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALSE, oneFile = TRUE){
 	
 	sample.labels <- sampleLabels(object)
 

@@ -11,9 +11,9 @@
 	
 	if(length(q) > 0) {
 		if(use.multicore == TRUE){
-			library(multicore)
+			library(parallel)
 			if(is.null(nrCores)){
-				nrCores <- multicore:::detectCores()
+				nrCores <- detectCores()
 			}					
 			if(q.orientation == "low"){
 				cluster.q = mclapply(cluster.cumsums, function(x) {sapply(q, function(y) {head(which(x/max(x)>y), 1)})}, mc.cores = nrCores)

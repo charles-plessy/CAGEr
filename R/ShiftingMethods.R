@@ -12,8 +12,8 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 	pt <- .Platform$OS.type
 	if(useMulticore == TRUE){
 		if(pt == "unix"){
-			if("multicore" %in% rownames(installed.packages()) == FALSE){
-				stop("Cannot use multicore because package 'multicore' is not installed!")
+			if("parallel" %in% rownames(installed.packages()) == FALSE){
+				stop("Cannot use multicore because package 'parallel' is not installed!")
 			}
 		}else{
 			useMulticore = FALSE
@@ -33,9 +33,9 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 	a <- a[names(a) %in% c(groupX, groupY)]
 	b <- object@consensusClusters
 	if(useMulticore){
-		library(multicore)
+		library(parallel)
 		if(is.null(nrCores)){
-			nrCores <- multicore:::detectCores()
+			nrCores <- detectCores()
 		}		
 		cumsum.list <- mclapply(a, function(x) {n <- names(x); y <- subset(b, !(consensus.cluster %in% as.integer(names(x)))); nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls); names(x) <- c(n, as.character(y$consensus.cluster)); return(x)}, mc.cores = nrCores)
 	}else{

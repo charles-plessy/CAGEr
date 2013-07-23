@@ -6,9 +6,9 @@
 .reverse.cumsum <- function(cumsum.list, use.multicore = F, nrCores = NULL) {
 	
 	if(use.multicore){
-		library(multicore)
+		library(parallel)
 		if(is.null(nrCores)){
-			nrCores <- multicore:::detectCores()
+			nrCores <- detectCores()
 		}		
 		cumsum.reversed <- mclapply(cumsum.list, function(x) {cumsum(rev(x[2:length(x)] - x[1:(length(x)-1)]))}, mc.cores = nrCores)
 	}else{
@@ -40,9 +40,9 @@
 .score.promoter.shifting <- function(cum.sum.stages, use.multicore = F, nrCores = NULL) {	
 	
 	if(use.multicore){
-		library(multicore)
+		library(parallel)
 		if(is.null(nrCores)){
-			nrCores <- multicore:::detectCores()
+			nrCores <- detectCores()
 		}				
 		scores <- unlist(mclapply(cum.sum.stages, function(x) {less.tpm <- which(x[nrow(x),] == min(x[nrow(x),]))[1]; if(max(x[,less.tpm])>0) {max(x[,less.tpm] - x[,(3-less.tpm)])/max(x[,less.tpm])}else{return(as.numeric(NA))}}, mc.cores = nrCores))
 	}else{
@@ -90,9 +90,9 @@
 .getTotalTagCount <- function(ctss.df, ctss.clusters, id.column, use.multicore = FALSE, nrCores = NULL) {
 	
 	if(use.multicore == TRUE) {
-		library(multicore)
+		library(parallel)
 		if(is.null(nrCores)){
-			nrCores <- multicore:::detectCores()
+			nrCores <- detectCores()
 		}		
 		
 		clusters.tagcount <- mclapply(as.list(unique(ctss.clusters$chr)), function(x) {

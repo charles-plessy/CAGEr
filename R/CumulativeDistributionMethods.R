@@ -12,8 +12,8 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 	pt <- .Platform$OS.type
 	if(useMulticore == TRUE){
 		if(pt == "unix"){
-			if("multicore" %in% rownames(installed.packages()) == FALSE){
-				stop("Cannot use multicore because package 'multicore' is not installed!")
+			if("parallel" %in% rownames(installed.packages()) == FALSE){
+				stop("Cannot use multicore because package 'parallel' is not installed!")
 			}
 		}else{
 			useMulticore = FALSE

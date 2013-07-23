@@ -39,7 +39,9 @@ function (object, what = "CTSS", values = "raw", samples = "all", method = "pear
 	corr.m <- matrix(rep(1, (nr.samples)^2), nrow = nr.samples)
 	colnames(corr.m) <- samples
 	rownames(corr.m) <- samples
-	png(filename = "Pairwise_tag_count_correlation.png", width = (800 + 36) * nr.samples + 0.1*800*(log2(nr.samples)/log2(3) + (2-1/log2(3))), height = (800 + 36) * nr.samples + 0.05*800*(log2(nr.samples)/log2(3) + (2-1/log2(3))), family = "Helvetica", res = 360)
+	
+	filename <- paste(what, "_", values, "_values_pairwise_correlation.png", sep = "")
+	png(filename = filename, width = (800 + 36) * nr.samples + 0.1*800*(log2(nr.samples)/log2(3) + (2-1/log2(3))), height = (800 + 36) * nr.samples + 0.05*800*(log2(nr.samples)/log2(3) + (2-1/log2(3))), family = "Helvetica", res = 360)
 	par(mfrow = c(nr.samples, nr.samples), mai = c(0.05,0.05,0.05,0.05), omi = c(0.05*800*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0.1*800*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0,0))
 	
 	for(i in c(1:nr.samples)){
@@ -110,7 +112,7 @@ function (object, what = "CTSS", values = "raw", samples = "all", method = "pear
 	}
 	
 	dev.off()
-	message("\nFile 'Pairwise_tag_count_correlation.png' has been created in your working directory (", getwd(), ")")
+	message("\nFile '", filename, "' has been created in your working directory (", getwd(), ")")
 	
 	return(corr.m)
 	
