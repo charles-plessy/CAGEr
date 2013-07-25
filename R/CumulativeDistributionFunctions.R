@@ -45,9 +45,9 @@
 .getCumsum <- function(ctss.df, ctss.clusters, id.column, use.multicore = FALSE, nrCores = NULL) {
 		
 	if(use.multicore == TRUE) {
-		library(multicore)
+		library(parallel)
 		if(is.null(nrCores)){
-			nrCores <- multicore:::detectCores()
+			nrCores <- detectCores()
 		}		
 		
 		clusters.cumsum <- mclapply(as.list(unique(ctss.clusters$chr)), function(x) {

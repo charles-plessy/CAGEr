@@ -45,9 +45,9 @@
 .ctss2clusters <- function(ctss.df, max.dist = 20, useMulticore = FALSE, nrCores = NULL) {
 	
 	if(useMulticore == TRUE){
-		library(multicore)
+		library(parallel)
 		if(is.null(nrCores)){
-			nrCores <- multicore:::detectCores()
+			nrCores <- detectCores()
 		}		
 		ctss.cluster.list <- mclapply(as.list(unique(ctss.df$chr)), function(x) {
 									
@@ -178,9 +178,9 @@
 .paraclu3 <- function(ctss.df, minStability = 1, maxLength = 500, removeSingletons = FALSE, keepSingletonsAbove = Inf, reduceToNonoverlapping = TRUE, useMulticore = FALSE, nrCores = NULL){
 	
 	if(useMulticore == TRUE){
-		library(multicore)
+		library(parallel)
 		if(is.null(nrCores)){
-			nrCores <- multicore:::detectCores()
+			nrCores <- detectCores()
 		}		
 		
 		ctss.df.plus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, chr == x & strand == "+")})
@@ -292,9 +292,9 @@
 .ctss2clusters.predef <- function(ctss.df, custom.clusters, useMulticore = FALSE, nrCores = NULL) {
 	
 	if(useMulticore == TRUE){
-		library(multicore)
+		library(parallel)
 		if(is.null(nrCores)){
-			nrCores <- multicore:::detectCores()
+			nrCores <- detectCores()
 		}		
 		ctss.cluster.list <- mclapply(as.list(unique(custom.clusters$chr)), function(x) {
 									  

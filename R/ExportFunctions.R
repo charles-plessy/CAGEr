@@ -64,13 +64,13 @@
 		strands = c("plus", "minus")
 		for(i in 1:length(sample.labels)){
 			for(s in c(1,2)){
-				.export.bedgraph(rd.list[[i]][[s]], name = paste(sample.labels[i], "_", strands[s], sep = ""), description = paste(sample.labels[i], " CTSS ", v, " (", strands[s], " strand)", sep = ""), file_name = paste("All.samples.CTSS.", v, ".bedGraph", sep = ""), append = T)
+				.export.bedgraph(rd.list[[i]][[s]], name = paste(sample.labels[i], "_", v, "_", strands[s], sep = ""), description = paste(sample.labels[i], " CTSS ", v, " (", strands[s], " strand)", sep = ""), file_name = paste("All.samples.CTSS.", v, ".bedGraph", sep = ""), append = T)
 			}
 		}
 	}else{
 		a <- lapply(as.list(sample.labels), function(x) {
-				.export.bedgraph(rd.list[[x]][[1]], name = paste(x, "_plus", sep = ""), description = paste(x, " CTSS ", v, " (plus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".plus.bedGraph", sep = ""), append = F)
-				.export.bedgraph(rd.list[[x]][[2]], name = paste(x, "_minus", sep = ""), description = paste(x, " CTSS ", v, " (minus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".minus.bedGraph", sep = ""), append = F)			   
+				.export.bedgraph(rd.list[[x]][[1]], name = paste(x, "_", v, "_plus", sep = ""), description = paste(x, " CTSS ", v, " (plus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".plus.bedGraph", sep = ""), append = F)
+				.export.bedgraph(rd.list[[x]][[2]], name = paste(x, "_", v, "_minus", sep = ""), description = paste(x, " CTSS ", v, " (minus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".minus.bedGraph", sep = ""), append = F)			   
 			   }
 			   )
 	}
@@ -110,7 +110,6 @@ value.low=min(vec), value.high=max(vec), value.mid=(value.low+value.high)/2, ...
 		   )
 	
 }
-
 
 
 

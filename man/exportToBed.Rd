@@ -7,7 +7,7 @@
 }
 \usage{
 exportToBed(object, what, qLow = NULL, qUp = NULL, 
-            colorByExpressionProfile = TRUE, oneFile = TRUE)
+            colorByExpressionProfile = FALSE, oneFile = TRUE)
 }
 \arguments{
   \item{object}{

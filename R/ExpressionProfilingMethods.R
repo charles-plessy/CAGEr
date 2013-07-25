@@ -15,7 +15,11 @@ function (object, what, tpmThreshold, nrPassThreshold, method, xDim, yDim){
 
 	objName <- deparse(substitute(object))
 	sample.labels = sampleLabels(object)	
-
+	
+	if(length(sample.labels) < 2){
+		stop("Provided CAGEset object contains only one sample! At least two samples are required for expression profiling!")
+	}
+		
 	if(what == "CTSS") {
 		
 		tpm.mx <- object@normalizedTpmMatrix

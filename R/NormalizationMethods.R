@@ -30,7 +30,7 @@ function (object, method, fitInRange, alpha, T){
 	for(x in sample.labels) {
 		
 		message("\t-> ", x)
-		fit.coef <- .fit.power.law.to.reverse.cumulative(values = tag.count[,x], val.range = fitInRange)
+		fit.coef <- .fit.power.law.to.reverse.cumulative(values = as.integer(tag.count[,x]), val.range = fitInRange)
 		norm.tag.count <- .normalize.to.reference.power.law.distribution(values = tag.count[,x,drop=F], lin.reg.coef = fit.coef, alpha = alpha, T = T)
 		if(first == TRUE) {
 			ctss.all.norm <- data.frame(norm.tpm = norm.tag.count)

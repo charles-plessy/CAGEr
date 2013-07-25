@@ -75,7 +75,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		
 		if(removeFirstG == TRUE){
 			
-			CTSS <- .remove.added.G(reads.GRanges.plus, reads.GRanges.minus, correctSystematicG = correctSystematicG)
+			CTSS <- .remove.added.G(reads.GRanges.plus, reads.GRanges.minus, genome, correctSystematicG = correctSystematicG)
 		
 		}else{
 		

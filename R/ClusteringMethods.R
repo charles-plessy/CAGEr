@@ -12,8 +12,8 @@ function (object, threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE, met
 	pt <- .Platform$OS.type
 	if(useMulticore == TRUE){
 		if(pt == "unix"){
-			if("multicore" %in% rownames(installed.packages()) == FALSE){
-				stop("Cannot use multicore because package 'multicore' is not installed!")
+			if("parallel" %in% rownames(installed.packages()) == FALSE){
+				stop("Cannot use multicore because package 'parallel' is not installed!")
 			}
 		}else{
 			useMulticore = FALSE
