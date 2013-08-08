@@ -341,7 +341,8 @@
 	ctss.cluster <- ctss.cluster[, list(chr[1], start[1], end[1], strand[1], length(pos), pos[which(tpm == max(tpm))[ceiling(length(which(tpm == max(tpm)))/2)]], sum(tpm), max(tpm)), by = cluster]
 	setnames(ctss.cluster, c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss")) 
 	ctss.cluster <- data.frame(ctss.cluster)
-		
+	ctss.cluster$nr_ctss[ctss.cluster$tpm == 0] <- 0
+	
 	invisible(gc())
 	return(ctss.cluster)
 	

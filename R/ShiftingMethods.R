@@ -37,9 +37,9 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 		if(is.null(nrCores)){
 			nrCores <- detectCores()
 		}		
-		cumsum.list <- mclapply(a, function(x) {n <- names(x); y <- subset(b, !(consensus.cluster %in% as.integer(names(x)))); nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls); names(x) <- c(n, as.character(y$consensus.cluster)); return(x)}, mc.cores = nrCores)
+		cumsum.list <- mclapply(a, function(x) {n <- names(x); y <- subset(b, !(consensus.cluster %in% as.integer(names(x)))); if(nrow(y)>0) {nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls)}; names(x) <- c(n, as.character(y$consensus.cluster)); return(x)}, mc.cores = nrCores)
 	}else{
-		cumsum.list <- lapply(a, function(x) {n <- names(x); y <- subset(b, !(consensus.cluster %in% as.integer(names(x)))); nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls); names(x) <- c(n, as.character(y$consensus.cluster)); return(x)})
+		cumsum.list <- lapply(a, function(x) {n <- names(x); y <- subset(b, !(consensus.cluster %in% as.integer(names(x)))); if(nrow(y)>0) {nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls)}; names(x) <- c(n, as.character(y$consensus.cluster)); return(x)})
 	}
 
 	cumsum.list.r <- list()
@@ -118,9 +118,9 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 				colnames(d) <- c("chr", "pos", "strand", "tagcount")
 				d <- subset(d, tagcount>0)
 				ctss.clusters <- ctss.clusters.orig[ctss.clusters.orig[,s]>0,]
-				tag.count <- .getTotalTagCount(ctss.df = d, ctss.clusters = ctss.clusters, id.column = "consensus.cluster", use.multicore = useMulticore, nrCores = nrCores)
+				tag.count <- .getTotalTagCount(ctss.df = d, ctss.clusters = ctss.clusters, id.column = "consensus.cluster")
 				tag.count.new <- template.tagcount
-				tag.count.new[names(tag.count)] <- tag.count  # for some reason at this step the vector is converted to list when run within this function (does not happen when run normally outside the function)!!!
+				tag.count.new[names(tag.count)] <- as.integer(tag.count)  # for some reason at this step the vector is converted to list when run within this function (does not happen when run normally outside the function)!!!
 				tag.count.list[[s]] <- unlist(tag.count.new)
 				invisible(gc())
 			

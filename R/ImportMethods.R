@@ -24,6 +24,9 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		stop("Required genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
 	}
 		
+	sample.labels <- sampleLabels(object)
+	names(sample.labels) <- rainbow(n = length(sample.labels))
+
 	if(object@inputFilesType == "bam") {
 		
 	bam.files <- inputFiles(object)
@@ -35,10 +38,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		}			
 	
 	}
-		
-	sample.labels <- sampleLabels(object)
-	names(sample.labels) <- rainbow(n = length(sample.labels))
-			
+					
 	library.sizes <- vector()
 	first <- TRUE
 	
@@ -118,10 +118,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 			}			
 			
 		}
-		
-		sample.labels = sampleLabels(object)
-		names(sample.labels) <- rainbow(n = length(sample.labels))
-		
+				
 		for(i in 1:length(ctss.files)) {
 			
 			message("\nReading in file: ", ctss.files[i], "...")
@@ -139,9 +136,23 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		
 		library.sizes <- as.integer(colSums(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)), drop = F], na.rm = T))
 		
+	}else if(object@inputFilesType == "CTSStable"){
+	
+		ctss.table.file <- inputFiles(object)
+		
+		if(length(ctss.table.file) > 1){
+			stop("Only one file should be provided when inputFilesType = \"CTSStable\"!")
+		}
+		if(file.exists(ctss.table.file) == FALSE){
+			stop("Could not locate input file ", ctss.table.file)
+		}			
+		
+		CTSS.all.samples <- read.table(file = ctss.table.file, header = F, stringsAsFactors = FALSE)
+		library.sizes <- as.integer(apply(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)),drop=F], 2, sum))
+
 	}else{
 		
-		stop("'inputFilesType' must be one of the supported file types (\"bam\", \"ctss\")")
+		stop("'inputFilesType' must be one of the supported file types (\"bam\", \"ctss\", \"CTSStable\")")
 		
 	}
 	
@@ -149,8 +160,9 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	for(i in 4:ncol(CTSS.all.samples)){
 		CTSS.all.samples[is.na(CTSS.all.samples[,i]),i] <- as.integer(0)
 	}
-	CTSS.all.samples <- CTSS.all.samples[order(CTSS.all.samples$chr, CTSS.all.samples$pos),]
 	colnames(CTSS.all.samples) <- c("chr", "pos", "strand", sample.labels)
+	CTSS.all.samples <- CTSS.all.samples[order(CTSS.all.samples$chr, CTSS.all.samples$pos),]
+	rownames(CTSS.all.samples) <- c(1:nrow(CTSS.all.samples))
 	
 	names(library.sizes) <- sample.labels
 	object@sampleLabels <- sample.labels
@@ -165,7 +177,6 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	
 }
 )
-
 
 
 setGeneric(
