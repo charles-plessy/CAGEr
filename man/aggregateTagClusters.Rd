@@ -6,8 +6,9 @@
 	Aggregates tag clusters (TCs) across all CAGE dataset within the CAGEset object to create a referent set of consensus clusters.
 }
 \usage{
-aggregateTagClusters(object, tpmThreshold = 5, qLow = NULL, 
-                     qUp = NULL, maxDist = 100)
+aggregateTagClusters(object, tpmThreshold = 5, 
+					 excludeSignalBelowThreshold = TRUE, 
+					 qLow = NULL, qUp = NULL, maxDist = 100)
 }
 \arguments{
   \item{object}{
@@ -16,8 +17,11 @@ aggregateTagClusters(object, tpmThreshold = 5, qLow = NULL,
   \item{tpmThreshold}{
 	Only tag clusteres with normalized signal \code{>= tpmThreshold} will be used to construct consensus clusters.
 }
+  \item{excludeSignalBelowThreshold}{
+	When \code{TRUE} only tag clusteres with normalized signal \code{>= tpmThreshold} will contribute to the total CAGE signal of a consensus cluster, \emph{i.e.} only the TCs that are used to construct consensus cluster. When set to \code{FALSE} all TCs that overlap consensus cluster will contribute to the total signal (regardless whether they pass the threshold or not), however only the TCs above the threshold will be used to define consensus cluster boundaries. Thus, it that case the TCs above the threshold are first used to construct consensus clusters and define their boundaries, but then CAGE signal from all TCs that fall within those boundaries is used to calculate total signal of a particular consensus cluster.
+}
   \item{qLow}{
-	Position of which "lower" quantile should be used as 5' boundary of the tag cluster.  If \code{qLow = NULL} start position of the TC is used.  See details.
+	Position of which "lower" quantile should be used as 5' boundary of the tag cluster.  If \code{qLow = NULL} start position of the TC is used.  See Details.
 }
   \item{qUp}{
 	Position of which "upper" quantile should be used as 3' boundary of the tag cluster.  If \code{qUp = NULL} end position of the TC is used. \code{qUp} has to be \code{>= qLow}.  See Details.
@@ -40,5 +44,5 @@ aggregateTagClusters(object, tpmThreshold = 5, qLow = NULL,
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 
 aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
-qLow = 0.1, qUp = 0.9, maxDist = 100)
+excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 }

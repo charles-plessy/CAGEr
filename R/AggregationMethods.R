@@ -4,14 +4,14 @@
 
 setGeneric(
 name="aggregateTagClusters",
-def=function(object, tpmThreshold = 5, qLow = NULL, qUp = NULL, maxDist = 100){
+def=function(object, tpmThreshold = 5, excludeSignalBelowThreshold = TRUE, qLow = NULL, qUp = NULL, maxDist = 100){
 	standardGeneric("aggregateTagClusters")
 }
 )
 
 setMethod("aggregateTagClusters",
 signature(object = "CAGEset"),
-function (object, tpmThreshold, qLow, qUp, maxDist){
+function (object, tpmThreshold = 5, excludeSignalBelowThreshold = TRUE, qLow = NULL, qUp = NULL, maxDist = 100){
 
 	objName <- deparse(substitute(object))
 	sample.labels = sampleLabels(object)	
@@ -46,17 +46,34 @@ function (object, tpmThreshold, qLow, qUp, maxDist){
 
 	object@tagClustersInConsensusClusters <- consensus.clusters[,c("consensus.cluster", "cluster", "sample")]
 	
-	m <- tapply(consensus.clusters$tpm, INDEX = list(consensus.cluster = consensus.clusters$consensus.cluster, sample = consensus.clusters$sample), FUN = sum)
-	m[is.na(m)] <- 0 
+	if(excludeSignalBelowThreshold){
 
-	object@consensusClustersTpmMatrix <- m
-
+		m <- tapply(consensus.clusters$tpm, INDEX = list(consensus.cluster = consensus.clusters$consensus.cluster, sample = consensus.clusters$sample), FUN = sum)
+		m[is.na(m)] <- 0
+	
+	}
+	
 	consensus.clusters <- data.table(consensus.clusters)
 	setkey(consensus.clusters, consensus.cluster)
 	consensus.clusters <- consensus.clusters[, list(chr[1], min(start), max(end), strand[1], sum(tpm)), by = consensus.cluster]
 	setnames(consensus.clusters, c("consensus.cluster", "chr", "start", "end", "strand", "tpm"))
-	consensus.clusters <- as.data.frame(consensus.clusters)	
+	setkey(consensus.clusters, consensus.cluster)
+	consensus.clusters <- as.data.frame(consensus.clusters)
+		
+	if(!excludeSignalBelowThreshold){
+		
+		idx <- object@filteredCTSSidx
+		ctss <- cbind(CTSScoordinates(object)[idx,], object@normalizedTpmMatrix[idx,,drop=F])
+
+		tpm.list <- lapply(sample.labels, function(x) {ctss.s <- ctss[,c("chr", "pos", "strand", x)]; colnames(ctss.s)[4] <- "tagcount"; .getTotalTagCount(ctss.df = ctss.s, ctss.clusters = consensus.clusters, id.column = "consensus.cluster")})
+		m <- matrix(unlist(tpm.list), nrow = nrow(consensus.clusters))
+		dim.n <- list(consensus.cluster = as.character(consensus.clusters$consensus.cluster), sample = unname(sample.labels))
+		dimnames(m) <- dim.n
+		consensus.clusters$tpm <- rowSums(m) 
+		
+	}
 	
+	object@consensusClustersTpmMatrix <- m
 	object@consensusClusters <- consensus.clusters
 	
 	assign(objName, object, envir = parent.frame())

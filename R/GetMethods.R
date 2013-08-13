@@ -119,15 +119,27 @@ function (object){
 
 setGeneric(
 name="tagClusters",
-def=function(object, sample){
+def=function(object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
 	standardGeneric("tagClusters")
 })
 
 setMethod("tagClusters",
 signature(object = "CAGEset"),
-function (object, sample){
+function (object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
 	if(sample %in% object@sampleLabels){
-		object@tagClusters[[sample]]
+		tc <- object@tagClusters[[sample]]
+		if(returnInterquantileWidth & (length(object@tagClustersQuantileLow)==0 & length(object@tagClustersQuantileUp)==0)){
+			stop("Interquantile width cannot be returned because specified quantiles have not been calculated! Run 'quantilePositions()' first to get positions of desired quantiles!")
+		}else if(returnInterquantileWidth & (!(paste("q_", qLow, sep = "") %in% colnames(object@tagClustersQuantileLow[[sample]]) & paste("q_", qUp, sep = "") %in% colnames(object@tagClustersQuantileUp[[sample]])))){
+			stop("Interquantile width cannot be returned because specified quantiles have not been calculated! Run 'quantilePositions()' first to get positions of desired quantiles!")
+		}else if(returnInterquantileWidth){
+			tc.w <- merge(object@tagClustersQuantileLow[[sample]], object@tagClustersQuantileUp[[sample]])
+			tc.w$interquantile_width <- tc.w[,3] - tc.w[,2] + 1
+			tc <- merge(tc, tc.w)
+		}else{
+			tc <- object@tagClusters[[sample]]
+		}
+		return(tc)
 	}else{
 		stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
 	}

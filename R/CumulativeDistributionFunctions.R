@@ -1,7 +1,7 @@
 .getCAGEsignalCoverage <- function(ctss, coors) {
 	
 	cov = rep(0, max(coors$end) + 1)
-	cov[ctss$pos] = ctss$tpm
+	cov[ctss$pos+1] = ctss$tpm
 	cov = cumsum(cov)
 	return(cov)
 	
@@ -11,10 +11,10 @@
 	
 	cov.cumsum <- Rle(cov.cumsum)
 	if(nrow(coors)>1) {
-		cluster.cumsums <- Views(cov.cumsum, start = coors$start, end = coors$end)
+		cluster.cumsums <- Views(cov.cumsum, start = coors$start+1, end = coors$end+1)
 		cluster.cumsums <- viewApply(cluster.cumsums, FUN = function(x) {x - x[1]})
 	}else{
-		cluster.cumsums <- list(cov.cumsum[coors$start:coors$end] - cov.cumsum[coors$start])
+		cluster.cumsums <- list(cov.cumsum[(coors$start+1):(coors$end+1)] - cov.cumsum[coors$start+1])
 	}
 	return(cluster.cumsums)
 	
@@ -39,7 +39,7 @@
 # Function that calculates cumulative sums of tpm along the clusters
 # ARGUMENTS: ctss.df - data frame with one row per CTSS containing at least five columns, *cluster (cluster ID) *chr (chromosome) *pos (genomic position of CTSSs) *strand (genomic strand) *tpm (CAGE tag count or number per million)
 #            ctss.clusters - data frame with one row per cluster containing at least 6 columns, *cluster (cluster ID) *chr (chromosome) *start (start position of the cluster) *end (end position of the cluster) *strand (strand) *dominant_ctss (position of dominant peak)
-# RETURNS: list of Rle vectors (IRanges package) containing cumulative sum for each cluster (length of list is equal to number of clusters and names of the list components corespond to the name of the corresponding cluster) 
+# RETURNS: list of Rle vectors (IRanges package) containing cumulative sum for each cluster (length of list is equal to number of clusters and names of the list components corespond to the name of the corresponding cluster) v
 
 
 .getCumsum <- function(ctss.df, ctss.clusters, id.column, use.multicore = FALSE, nrCores = NULL) {

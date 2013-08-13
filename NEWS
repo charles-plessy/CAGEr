@@ -1,3 +1,7 @@
+Updated to version 1.2.7 in the release and 1.3.7 in the development (08/08/2013)
+08/08/2012	added new argument to aggregateTagClusters() function (excludeSignalBelowThreshold) that controls which TCs will contribute to the total CAGE signal of the consensus cluster - only the ones above the threshold that are used initially to set the boundaries of the consensus cluster, or all TCs that overlap the resulting consensus clusters 
+07/08/2012	enabled retrieving interquantile width for tag clusters - added new returnInterquantileWidth argument to tagClusters() function
+06/07/2012	enabled importing entire CTSS table with multiple columns of tag counts representing multiple samples/experiments - allowed setting imputFilesType to "CTSStable" when creating CAGEset object and extended getCTSS function accordingly to read the entire table at once and fill the object
 Updated to version 1.2.6 in the release and 1.3.6 in the development (23/07/2013)
 22/07/2012	replaced multicore package dependency with parallel package (suggested by Bioconductor core team)
 21/07/2012	fixed the bug in using loaded genome when correcting for G nucleotide bias

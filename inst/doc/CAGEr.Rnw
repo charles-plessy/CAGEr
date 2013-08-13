@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{June 28, 2013}
+\date{August 08, 2013}
 
 \begin{document}
 <<setup, echo=FALSE>>=
@@ -210,7 +210,7 @@ sampleLabels(myCAGEset)
 @
 In addition, a colour is assigned to each sample, which is consistently used to depict that sample in all the plots. By default a rainbow palette of colours is used 
 and the hexadecimal format of the assigned colours can be seen as names attribute of sample labels shown above. The colours can be changed to taste at any point 
-in the workflow using \Rfunction{setColors} function.
+in the workflow using  \Rfunction{setColors} function.
 
 \subsection{Correlation between samples}
 After the data has been read we can start exploring the data by looking at the correlation between the samples. The  \Rfunction{plotCorrelation} 
@@ -390,7 +390,14 @@ cumulativeCTSSdistribution(myCAGEset, clusters = "tagClusters")
 quantilePositions(myCAGEset, clusters = "tagClusters", qLow = 0.1, qUp = 0.9)
 @
 
-Tag clusters and their interquantile width can be visualized in a gene-like representation in the UCSC genome browser by exporting the data into BED file:
+Tag clusters and their interquantile width can be retrieved by calling \Rfunction{tagClusters} function:
+<<>>=
+tc <- tagClusters(myCAGEset, sample = "zf_unfertilized_egg",
+		returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9)
+head(tc)
+@
+
+Interquantile width can also be visualized in a gene-like representation in the UCSC genome browser by exporting the data into a BED file:
 <<eval=FALSE>>=
 exportToBed(object = myCAGEset, what = "tagClusters", 
 		qLow = 0.1, qUp = 0.9, oneFile = TRUE)
@@ -406,11 +413,13 @@ block denotes the position of the dominant TSS.
 \end{figure}
 
 Once the cumulative distributions and the positions of quantiles have been calculated, the histograms of interquantile width can be plotted to 
-globally compare the promoter width between different samples (Figure~\ref{fig:TagClustersInterquantileWidth}):
+globally compare the promoter width across different samples (Figure~\ref{fig:TagClustersInterquantileWidth}):
 <<eval=FALSE>>=
 plotInterquantileWidth(myCAGEset, clusters = "tagClusters", 
 		tpmThreshold = 3, qLow = 0.1, qUp = 0.9)
 @
+Significant difference in the promoter width might indicate global differences in the modes of gene regulation between the two samples.
+The histograms can also help in choosing an appropriate width threshold for separating sharp and broad promoters.
 
 \begin{figure}[h!]
 \centering
@@ -419,7 +428,6 @@ plotInterquantileWidth(myCAGEset, clusters = "tagClusters",
 \label{fig:TagClustersInterquantileWidth}
 \end{figure}
 
-Significant difference in the promoter width might indicate global differences in the modes of gene regulation between the two samples.
 
 \subsection{Creating consensus promoters across samples}
 Tag clusters are created for each sample individually and they are often sample-specific, thus can be present in one sample but absent in another. In addition, 
