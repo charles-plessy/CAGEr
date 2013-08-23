@@ -134,6 +134,7 @@ function (object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = N
 			stop("Interquantile width cannot be returned because specified quantiles have not been calculated! Run 'quantilePositions()' first to get positions of desired quantiles!")
 		}else if(returnInterquantileWidth){
 			tc.w <- merge(object@tagClustersQuantileLow[[sample]], object@tagClustersQuantileUp[[sample]])
+			tc.w <- tc.w[,c(1, which(colnames(tc.w) == paste("q_", qLow, sep = "")), which(colnames(tc.w) == paste("q_", qUp, sep = "")))]
 			tc.w$interquantile_width <- tc.w[,3] - tc.w[,2] + 1
 			tc <- merge(tc, tc.w)
 		}else{
@@ -156,6 +157,19 @@ setMethod("consensusClusters",
 signature(object = "CAGEset"),
 function (object){
 	object@consensusClusters
+})
+
+
+setGeneric(
+name="consensusClustersTpm",
+def=function(object){
+	standardGeneric("consensusClustersTpm")
+})
+
+setMethod("consensusClustersTpm",
+signature(object = "CAGEset"),
+function (object){
+	object@consensusClustersTpmMatrix
 })
 
 

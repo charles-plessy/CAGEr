@@ -33,7 +33,7 @@
 	ctss.df.m <- subset(ctss.df, strand == "-")
 	if(nrow(ctss.df.m) > 0) {			
 		ctss.df.minus <- .cluster.ctss.strand(ctss.df = ctss.df.m, max.dist = max.dist)
-		ctss.df.minus$cluster <- max(ctss.df.plus$cluster) + ctss.df.minus$cluster
+		ctss.df.minus$cluster <- max(0, suppressWarnings(max(ctss.df.plus$cluster))) + ctss.df.minus$cluster
 	}else{
 		ctss.df.minus <- data.frame()
 	}

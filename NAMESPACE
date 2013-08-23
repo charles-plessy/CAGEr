@@ -27,4 +27,4 @@ exportMethods(normalizeTagCount)
 exportMethods(quantilePositions)
 exportMethods(scoreShift, getShiftingPromoters)
 
-export(genomeName, inputFiles, inputFilesType, sampleLabels, librarySizes, CTSScoordinates, CTSStagCount, CTSSnormalizedTpm, CTSSclusteringMethod, tagClusters, consensusClusters, expressionClasses)
+export(genomeName, inputFiles, inputFilesType, sampleLabels, librarySizes, CTSScoordinates, CTSStagCount, CTSSnormalizedTpm, CTSSclusteringMethod, tagClusters, consensusClusters, consensusClustersTpm, expressionClasses)

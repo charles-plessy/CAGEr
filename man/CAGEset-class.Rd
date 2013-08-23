@@ -53,6 +53,7 @@ Objects of the class contain information on the genomic coordinates of TSSs deri
     \item{aggregateTagClusters}{\code{signature(object = "CAGEset")}: aggregates TCs across all experiments into consensus clusters }
     \item{clusterCTSS}{\code{signature(object = "CAGEset")}: clusters CTSSs into TCs per experiment }
     \item{consensusClusters}{\code{signature(object = "CAGEset")}: extracts the genomic coordinates and other information on consensus clusters }
+    \item{consensusClustersTpm}{\code{signature(object = "CAGEset")}: extracts the matrix with tpm values for consensus clusters across all samples }
     \item{cumulativeCTSSdistribution}{\code{signature(object = "CAGEset")}: calculates the cumulative distribution of CAGE signal along TCs or consensus clusters }
     \item{exportCTSStoBedGraph}{\code{signature(object = "CAGEset")}: creates bedGraph files of CTSSs for visualization in the UCSC Genome Browser }
     \item{exportToBed}{\code{signature(object = "CAGEset")}: creates various types of BED files for visualization in the UCSC Genome Browser }

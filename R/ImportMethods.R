@@ -29,81 +29,76 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 
 	if(object@inputFilesType == "bam") {
 		
-	bam.files <- inputFiles(object)
+		bam.files <- inputFiles(object)
 
-	for(f in bam.files) {
-		
-		if(file.exists(f) == FALSE){
-			stop("Could not locate input file ", f)
-		}			
-	
-	}
+		for(f in bam.files) {
+			if(file.exists(f) == FALSE){
+				stop("Could not locate input file ", f)
+			}				
+		}
 					
-	library.sizes <- vector()
-	first <- TRUE
+		library.sizes <- vector()
+		first <- TRUE
+		
+		for(i in 1:length(bam.files)) {
 	
-	for(i in 1:length(bam.files)) {
-	
-		message("\nReading in file: ", bam.files[i], "...")
+			message("\nReading in file: ", bam.files[i], "...")
 		
-		what <- c("rname", "strand", "pos", "qwidth", "seq", "qual", "mapq")
-		param <- ScanBamParam(what = what, flag = scanBamFlag(isUnmappedQuery = FALSE))
-		bam <- scanBam(bam.files[i], param = param)
+			what <- c("rname", "strand", "pos", "qwidth", "seq", "qual", "mapq")
+			param <- ScanBamParam(what = what, flag = scanBamFlag(isUnmappedQuery = FALSE))
+			bam <- scanBam(bam.files[i], param = param)
 		
-		message("\t-> Filtering out low quality reads...")
+			message("\t-> Filtering out low quality reads...")
 		
-		qual <- bam[[1]]$qual
+			qual <- bam[[1]]$qual
 		
-		if(length(unique(width(qual)) != 1)){
-			uniq.quals <- unique(width(qual))
-			quals.list <- lapply(as.list(uniq.quals), function(x) {idx <- width(qual) == x; q.m <- as(qual[idx], "matrix"); q.avg <- as.integer(rowMeans(q.m)); return(list(idx, q.avg))})
-			qa.avg <- unlist(lapply(quals.list, function(x) {return(x[[2]])}))
-			idx <- unlist(lapply(quals.list, function(x) {return(which(x[[1]]))}))
-			qa.avg <- qa.avg[order(idx)]
-		}else{
-			qa <- as(qual, "matrix")
-			qa.avg <- as.integer(rowMeans(qa))
+			if(length(unique(width(qual)) != 1)){
+				uniq.quals <- unique(width(qual))
+				quals.list <- lapply(as.list(uniq.quals), function(x) {idx <- width(qual) == x; q.m <- as(qual[idx], "matrix"); q.avg <- as.integer(rowMeans(q.m)); return(list(idx, q.avg))})
+				qa.avg <- unlist(lapply(quals.list, function(x) {return(x[[2]])}))
+				idx <- unlist(lapply(quals.list, function(x) {return(which(x[[1]]))}))
+				qa.avg <- qa.avg[order(idx)]
+			}else{
+				qa <- as(qual, "matrix")
+				qa.avg <- as.integer(rowMeans(qa))			
+			}
+		
+			reads.GRanges <- GRanges(seqnames = as.vector(bam[[1]]$rname), IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq)), strand = bam[[1]]$strand, qual = qa.avg, mapq = bam[[1]]$mapq, seq = bam[[1]]$seq, read.length = width(bam[[1]]$seq))	
+			reads.GRanges <- reads.GRanges[seqnames(reads.GRanges) %in% seqnames(genome)]
+			reads.GRanges <- reads.GRanges[!(end(reads.GRanges) > seqlengths(genome)[as.character(seqnames(reads.GRanges))])]
+			elementMetadata(reads.GRanges)$mapq[is.na(elementMetadata(reads.GRanges)$mapq)] <- Inf
+			reads.GRanges.plus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "+" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & (as.character(seqnames(reads.GRanges)) %in% seqnames(genome) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold)]
+			reads.GRanges.minus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "-" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & (as.character(seqnames(reads.GRanges)) %in% seqnames(genome) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold)]
+		
+			if(removeFirstG == TRUE){
+					CTSS <- .remove.added.G(reads.GRanges.plus, reads.GRanges.minus, genome, correctSystematicG = correctSystematicG)
+			}else{
+		
+				CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = as.integer(start(reads.GRanges.plus)), strand = rep("+", times = length(reads.GRanges.plus)), stringsAsFactors = F)
+				CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = as.integer(end(reads.GRanges.minus)), strand = rep("-", times = length(reads.GRanges.minus)), stringsAsFactors = F)
+				CTSS <- rbind(CTSS.plus, CTSS.minus)
+				CTSS$tag_count <- 1
+				CTSS <- data.table(CTSS)
+				CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
 			
-		}
+			}
 		
-		reads.GRanges <- GRanges(seqnames = as.vector(bam[[1]]$rname), IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq)), strand = bam[[1]]$strand, qual = qa.avg, mapq = bam[[1]]$mapq, seq = bam[[1]]$seq, read.length = width(bam[[1]]$seq))	
-		reads.GRanges <- reads.GRanges[seqnames(reads.GRanges) %in% seqnames(genome)]
-		reads.GRanges <- reads.GRanges[!(end(reads.GRanges) > seqlengths(genome)[as.character(seqnames(reads.GRanges))])]
-		elementMetadata(reads.GRanges)$mapq[is.na(elementMetadata(reads.GRanges)$mapq)] <- Inf
-		reads.GRanges.plus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "+" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & (as.character(seqnames(reads.GRanges)) %in% seqnames(genome) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold)]
-		reads.GRanges.minus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "-" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & (as.character(seqnames(reads.GRanges)) %in% seqnames(genome) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold)]
-		
-		if(removeFirstG == TRUE){
-			
-			CTSS <- .remove.added.G(reads.GRanges.plus, reads.GRanges.minus, genome, correctSystematicG = correctSystematicG)
-		
-		}else{
-		
-			reads.GRanges <- append(reads.GRanges.plus, reads.GRanges.minus)
-			CTSS <- data.frame(chr = as.character(seqnames(reads.GRanges)), pos = as.integer(start(reads.GRanges)), strand = as.character(strand(reads.GRanges)), stringsAsFactors = F)
-			CTSS$tag_count <- 1
-			CTSS <- data.table(CTSS)
-			CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
-			
-		}
-		
-		setnames(CTSS, c("chr", "pos", "strand", sample.labels[i])) 
-		setkey(CTSS, chr, pos, strand)
+			setnames(CTSS, c("chr", "pos", "strand", sample.labels[i])) 
+			setkey(CTSS, chr, pos, strand)
 
-		message("\t-> Making CTSSs and counting number of tags...")
+			message("\t-> Making CTSSs and counting number of tags...")
+				
+			library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
 		
+			if(first == TRUE) {
+				CTSS.all.samples <- as.data.frame(CTSS)
+			}else{
+				CTSS.all.samples <- merge(CTSS.all.samples, as.data.frame(CTSS), by.x = c(1:3), by.y = c(1:3), all.x = TRUE, all.y = TRUE)
+			}
 		
-		library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
+			first <- FALSE
 		
-		if(first == TRUE) {
-			CTSS.all.samples <- as.data.frame(CTSS)
-		}else{
-			CTSS.all.samples <- merge(CTSS.all.samples, as.data.frame(CTSS), by.x = c(1:3), by.y = c(1:3), all.x = TRUE, all.y = TRUE)
 		}
-		
-		first <- FALSE
-		
-	}
 	
 	}else if(object@inputFilesType == "ctss") {
 	
@@ -266,7 +261,7 @@ function (object, colors = NULL){
 	}else if(all(colors %in% colors())){
 		rgb.col <- col2rgb(colors)
 		names(sample.labels) <- apply(rgb.col, 2, function(x) {rgb(red = x[1], green = x[2], blue = x[3], alpha = 255, maxColorValue = 255)})
-	}else if((unique(substr(colors, start = 1, stop = 1)) == "#") & all(unique(unlist(strsplit(substr(colors, start = 2, stop = sapply(cols, width)), split = ""))) %in% c(seq(0,9,1), "A", "B", "C", "D", "E", "F"))){
+	}else if((unique(substr(colors, start = 1, stop = 1)) == "#") & all(unique(unlist(strsplit(substr(colors, start = 2, stop = sapply(colors, width)), split = ""))) %in% c(seq(0,9,1), "A", "B", "C", "D", "E", "F"))){
 		names(sample.labels) <- colors
 	}else{
 		stop("'colors' argument must be a vector of valid color names in R or a vector of hexadecimal specifications (e.g. #008F0AFF). See colors() for a complete list of valid color names.")
