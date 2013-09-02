@@ -47,7 +47,11 @@
 					  d <- get(paste("data.", y, sep = ""))
 					  d <- d[, c("chr", "pos", x)] 
 					  colnames(d) <- c("chr", "pos", "score")
-					  d.rd <- .make.RangedData(d)
+					  if(nrow(d)>0){
+						d.rd <- .make.RangedData(d)
+					  }else{
+						d.rd <- RangedData()
+					  }
 					  if(y == "minus"){
 						d.rd$score <- -1 * d.rd$score
 					  }
@@ -64,13 +68,19 @@
 		strands = c("plus", "minus")
 		for(i in 1:length(sample.labels)){
 			for(s in c(1,2)){
-				.export.bedgraph(rd.list[[i]][[s]], name = paste(sample.labels[i], "_", v, "_", strands[s], sep = ""), description = paste(sample.labels[i], " CTSS ", v, " (", strands[s], " strand)", sep = ""), file_name = paste("All.samples.CTSS.", v, ".bedGraph", sep = ""), append = T)
+				if(nrow(rd.list[[i]][[s]])>0){
+					.export.bedgraph(rd.list[[i]][[s]], name = paste(sample.labels[i], "_", v, "_", strands[s], sep = ""), description = paste(sample.labels[i], " CTSS ", v, " (", strands[s], " strand)", sep = ""), file_name = paste("All.samples.CTSS.", v, ".bedGraph", sep = ""), append = T)
+				}
 			}
 		}
 	}else{
 		a <- lapply(as.list(sample.labels), function(x) {
-				.export.bedgraph(rd.list[[x]][[1]], name = paste(x, "_", v, "_plus", sep = ""), description = paste(x, " CTSS ", v, " (plus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".plus.bedGraph", sep = ""), append = F)
-				.export.bedgraph(rd.list[[x]][[2]], name = paste(x, "_", v, "_minus", sep = ""), description = paste(x, " CTSS ", v, " (minus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".minus.bedGraph", sep = ""), append = F)			   
+				if(nrow(rd.list[[x]][[1]]) > 0){
+					.export.bedgraph(rd.list[[x]][[1]], name = paste(x, "_", v, "_plus", sep = ""), description = paste(x, " CTSS ", v, " (plus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".plus.bedGraph", sep = ""), append = F)
+				}
+				if(nrow(rd.list[[x]][[2]]) > 0){	
+					.export.bedgraph(rd.list[[x]][[2]], name = paste(x, "_", v, "_minus", sep = ""), description = paste(x, " CTSS ", v, " (minus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".minus.bedGraph", sep = ""), append = F)			   
+				}
 			   }
 			   )
 	}

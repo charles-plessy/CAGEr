@@ -30,6 +30,7 @@ function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 	if(values == "raw"){
 		fit.coefs.m <- apply(tag.count, 2, function(x) {.fit.power.law.to.reverse.cumulative(values = as.integer(x), val.range = fitInRange)})
 		fit.slopes <- fit.coefs.m[1,]
+		names(fit.slopes) <- sample.labels
 		reference.slope <- min(median(fit.slopes), -1.05)
 		library.sizes <- librarySizes(object)
 		reference.library.size <- 10^floor(log10(median(library.sizes)))
@@ -254,7 +255,7 @@ function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALS
 		oneFile <- TRUE
 		use.blocks <- F
 		ctss <- object@CTSScoordinates
-		filtered_ctss <- object@filteredCTSSidx
+		#filtered_ctss <- object@filteredCTSSidx
 
 		if(colorByExpressionProfile == TRUE){
 			cl <- object@CTSSexpressionClasses
@@ -270,8 +271,9 @@ function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALS
 			ctss <- data.frame(chr = ctss$chr, start = ctss$pos-1, end = ctss$pos, strand = ctss$strand)
 			track.file <- "CTSS.pooled.samples.bed"
 			track.names <- list("CTSS (pooled samples)")
-			filtered_cols <- c("TRUE" = c("0,0,0"), "FALSE" = c("127,127,127"))
-			cols = list(filtered_cols[as.character(filtered_ctss)])
+			#filtered_cols <- c("TRUE" = c("0,0,0"), "FALSE" = c("127,127,127"))
+			#cols = list(filtered_cols[as.character(filtered_ctss)])
+			cols = list(c("0,0,0"))
 		}
 		clusters.q.list = list(ctss)
 		

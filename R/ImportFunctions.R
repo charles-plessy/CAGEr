@@ -59,19 +59,27 @@
 	G.reads.plus <- which(substr(elementMetadata(reads.GRanges.plus)$seq, start = 1, stop = 1) == "G")
 	G.reads.minus <- which(substr(elementMetadata(reads.GRanges.minus)$seq, start = elementMetadata(reads.GRanges.minus)$read.length, stop = elementMetadata(reads.GRanges.minus)$read.length) == "C")
 	
+	if(length(G.reads.plus)>0){
 	G.mismatch.reads.plus <- G.reads.plus[getSeq(genome, resize(reads.GRanges.plus[G.reads.plus], width = 1, fix = "start"), as.character = TRUE) != "G"]
-	G.mismatch.reads.minus <- G.reads.minus[getSeq(genome, resize(reads.GRanges.minus[G.reads.minus], width = 1, fix = "start"), as.character = TRUE) != "G"]
-
 	elementMetadata(reads.GRanges.plus)$removedG <- FALSE
 	elementMetadata(reads.GRanges.plus)$removedG[G.mismatch.reads.plus] <- TRUE
 	start(reads.GRanges.plus)[G.mismatch.reads.plus] <- start(reads.GRanges.plus)[G.mismatch.reads.plus] + as.integer(1)
+	CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = start(reads.GRanges.plus), strand = "+", removedG = elementMetadata(reads.GRanges.plus)$removedG, stringsAsFactors = FALSE)
+	}else{
+		G.mismatch.reads.plus <- NULL
+		CTSS.plus <- data.frame()
+	}
+	
+	if(length(G.reads.minus)>0){
+	G.mismatch.reads.minus <- G.reads.minus[getSeq(genome, resize(reads.GRanges.minus[G.reads.minus], width = 1, fix = "start"), as.character = TRUE) != "G"]
 	elementMetadata(reads.GRanges.minus)$removedG <- FALSE
 	elementMetadata(reads.GRanges.minus)$removedG[G.mismatch.reads.minus] <- TRUE
 	end(reads.GRanges.minus)[G.mismatch.reads.minus] <- end(reads.GRanges.minus)[G.mismatch.reads.minus] - as.integer(1)
-
-	CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = start(reads.GRanges.plus), strand = "+", removedG = elementMetadata(reads.GRanges.plus)$removedG, stringsAsFactors = FALSE)
 	CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = end(reads.GRanges.minus), strand = "-", removedG = elementMetadata(reads.GRanges.minus)$removedG, stringsAsFactors = FALSE)
-	
+	}else{
+		G.mismatch.reads.minus <- NULL
+		CTSS.minus <- data.frame()
+	}
 	
 	if(correctSystematicG){
 		
@@ -81,32 +89,48 @@
 		# -> proportion of reads with unambigously added 'G' ('G' in the read and not in the genome) in all unambigous reads (reads with no 'G' at the beginning + reads with unambigously added 'G')
 		G.chance <- (length(G.mismatch.reads.plus) + length(G.mismatch.reads.minus)) / ((length(reads.GRanges.plus) - length(G.reads.plus)) + (length(reads.GRanges.minus) - length(G.reads.minus)) + length(G.mismatch.reads.plus) + length(G.mismatch.reads.minus))
 		
-		CTSS.G.plus <- CTSS.plus[G.reads.plus,]
-		CTSS.G.plus.corrected <- lapply(as.list(unique(CTSS.G.plus$chr)), function(x) {ctss.corrected <- .estimate.G.addition.and.correct(ctss = subset(CTSS.G.plus, chr == x), G.chance = G.chance, correction.orientation = 1); ctss.corrected$chr = x; return(ctss.corrected)})
-		CTSS.G.plus.corrected <- do.call(rbind, CTSS.G.plus.corrected)
-		CTSS.G.plus.corrected$strand <- "+"
-		CTSS.G.plus.corrected <- CTSS.G.plus.corrected[,c("chr", "pos", "strand", "nr_tags")]
+		if(nrow(CTSS.plus)>0){
+
+			CTSS.G.plus <- CTSS.plus[G.reads.plus,]
+			CTSS.G.plus.corrected <- lapply(as.list(unique(CTSS.G.plus$chr)), function(x) {ctss.corrected <- .estimate.G.addition.and.correct(ctss = subset(CTSS.G.plus, chr == x), G.chance = G.chance, correction.orientation = 1); ctss.corrected$chr = x; return(ctss.corrected)})
+			CTSS.G.plus.corrected <- do.call(rbind, CTSS.G.plus.corrected)
+			CTSS.G.plus.corrected$strand <- "+"
+			CTSS.G.plus.corrected <- CTSS.G.plus.corrected[,c("chr", "pos", "strand", "nr_tags")]
+
+			CTSS.no.G.plus <- data.table(CTSS.plus[-G.reads.plus,])
+			CTSS.no.G.plus <- CTSS.no.G.plus[, length(removedG), by = list(chr, pos, strand)]
+			setnames(CTSS.no.G.plus, c("chr", "pos", "strand", "nr_tags"))
+			CTSS.plus.final <- rbind(CTSS.G.plus.corrected, as.data.frame(CTSS.no.G.plus))
+			CTSS.plus.final <- data.table(CTSS.plus.final)
+			CTSS.plus.final <- CTSS.plus.final[, sum(nr_tags), by = list(chr, pos, strand)]
+
+		}else{
 		
-		CTSS.G.minus <- CTSS.minus[G.reads.minus,]
-		CTSS.G.minus.corrected <- lapply(as.list(unique(CTSS.G.minus$chr)), function(x) {ctss.corrected <- .estimate.G.addition.and.correct(ctss = subset(CTSS.G.minus, chr == x), G.chance = G.chance, correction.orientation = -1); ctss.corrected$chr = x; return(ctss.corrected)})
-		CTSS.G.minus.corrected <- do.call(rbind, CTSS.G.minus.corrected)
-		CTSS.G.minus.corrected$strand <- "-"
-		CTSS.G.minus.corrected <- CTSS.G.minus.corrected[,c("chr", "pos", "strand", "nr_tags")]
+			CTSS.plus.final <- data.table()
+			
+		}
+
+		if(nrow(CTSS.minus)>0){
+
+			CTSS.G.minus <- CTSS.minus[G.reads.minus,]
+			CTSS.G.minus.corrected <- lapply(as.list(unique(CTSS.G.minus$chr)), function(x) {ctss.corrected <- .estimate.G.addition.and.correct(ctss = subset(CTSS.G.minus, chr == x), G.chance = G.chance, correction.orientation = -1); ctss.corrected$chr = x; return(ctss.corrected)})
+			CTSS.G.minus.corrected <- do.call(rbind, CTSS.G.minus.corrected)
+			CTSS.G.minus.corrected$strand <- "-"
+			CTSS.G.minus.corrected <- CTSS.G.minus.corrected[,c("chr", "pos", "strand", "nr_tags")]
 		
-		CTSS.no.G.plus <- data.table(CTSS.plus[-G.reads.plus,])
-		CTSS.no.G.plus <- CTSS.no.G.plus[, length(removedG), by = list(chr, pos, strand)]
-		setnames(CTSS.no.G.plus, c("chr", "pos", "strand", "nr_tags"))
-		CTSS.plus.final <- rbind(CTSS.G.plus.corrected, as.data.frame(CTSS.no.G.plus))
-		CTSS.plus.final <- data.table(CTSS.plus.final)
-		CTSS.plus.final <- CTSS.plus.final[, sum(nr_tags), by = list(chr, pos, strand)]
-		
-		CTSS.no.G.minus <- data.table(CTSS.minus[-G.reads.minus,])
-		CTSS.no.G.minus <- CTSS.no.G.minus[, length(removedG), by = list(chr, pos, strand)]
-		setnames(CTSS.no.G.minus, c("chr", "pos", "strand", "nr_tags"))
-		CTSS.minus.final <- rbind(CTSS.G.minus.corrected, as.data.frame(CTSS.no.G.minus))
-		CTSS.minus.final <- data.table(CTSS.minus.final)
-		CTSS.minus.final <- CTSS.minus.final[, sum(nr_tags), by = list(chr, pos, strand)]
-		
+			CTSS.no.G.minus <- data.table(CTSS.minus[-G.reads.minus,])
+			CTSS.no.G.minus <- CTSS.no.G.minus[, length(removedG), by = list(chr, pos, strand)]
+			setnames(CTSS.no.G.minus, c("chr", "pos", "strand", "nr_tags"))
+			CTSS.minus.final <- rbind(CTSS.G.minus.corrected, as.data.frame(CTSS.no.G.minus))
+			CTSS.minus.final <- data.table(CTSS.minus.final)
+			CTSS.minus.final <- CTSS.minus.final[, sum(nr_tags), by = list(chr, pos, strand)]
+
+		}else{
+			
+			CTSS.minus.final <- data.table()
+			
+		}
+				
 		CTSS <- data.table(rbind(as.data.frame(CTSS.plus.final), as.data.frame(CTSS.minus.final)))
 
 	}else{
