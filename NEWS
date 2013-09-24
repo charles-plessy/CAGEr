@@ -1,3 +1,6 @@
+Updated to version 1.3.10 in the development (24/09/2013)
+24/09/2012	optimized calculation of K-S p-values for shifting promoters using vectorized functions
+23/09/2012	removed a .C call to the pKS2 function from stats package and replaced it by an R implementation of pKS2
 Updated to version 1.2.9 in the release and 1.3.9 in the development (23/08/2013)
 23/08/2012      added consensusClustersTpm() function for retrieving matrix with tpm values for consensus clusters across all samples
 Updated to version 1.2.8 in the release and 1.3.8 in the development (23/08/2013)

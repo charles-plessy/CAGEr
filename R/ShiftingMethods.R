@@ -134,10 +134,11 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 		}
 		
 		if(useMulticore){
-			p.vals <- unlist(mclapply(names(cumsum.matrices.groups.f), function(x) {ks.stat <- .ksStat(cumsum.matrices.groups.f[[as.character(x)]]); pval <- .ksPvalue(d = ks.stat, n = n[as.character(x)]); return(pval)}, mc.cores = nrCores))
+			ks.stat <- unlist(mclapply(cumsum.matrices.groups.f, function(x) {ks.s <- .ksStat(x)}, mc.cores = nrCores))
 		}else{
-			p.vals <- unlist(lapply(names(cumsum.matrices.groups.f), function(x) {ks.stat <- .ksStat(cumsum.matrices.groups.f[[as.character(x)]]); pval <- .ksPvalue(d = ks.stat, n = n[as.character(x)]); return(pval)}))
+			ks.stat <- unlist(lapply(cumsum.matrices.groups.f, function(x) {ks.s <- .ksStat(x)}))
 		}
+		p.vals <- .ksPvalue(d = ks.stat, n = n[names(cumsum.matrices.groups.f)])
 		fdr <- p.adjust(p.vals, method = "BH")
 		p.vals <- data.frame(consensus.cluster = as.integer(names(cumsum.matrices.groups.f)), pvalue.KS = p.vals, fdr.KS = fdr)
 

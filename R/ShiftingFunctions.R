@@ -88,21 +88,57 @@
 }
 
 
+
+.pKS2 <- function(x, tol){
+	
+	k_max <- sqrt(2-log(tol))
+	
+	for(i in c(1:length(x))){
+		
+		if(x[i] < 1){
+		
+			z <- as.double(-1 * pi^2/(8*x[i]^2))
+			w <- as.double(log(x[i]))
+			k <- seq(1, k_max - 10^(-10), 2)
+			s <- as.double(sum(exp(k^2 * z - w)))
+			x[i] <- as.double(s*sqrt(2*pi))
+
+		}else{
+		
+			z <- -2 * x[i]^2
+			s <- -1
+			k <- 1
+			old <- 0
+			new <- 1
+			while(abs(old - new) > tol){
+				old <- new
+				new <- new + 2 * s * exp(z * k^2)
+				s <- -1 * s
+				k <- k + 1
+			}
+			x[i] <- new
+			
+		}
+		
+	}
+	
+	return(x)
+	
+}
+
+	
 .pkstwo <- function(x, tol = 1e-06) {
 
-	if (is.numeric(x)) 
+	if (is.numeric(x)){ 
 		x <- as.double(x)
-	else stop("argument 'x' must be numeric")
+	}else{
+		stop("argument 'x' must be numeric")
+	}
 	p <- rep(0, length(x))
 	p[is.na(x)] <- NA
 	IND <- which(!is.na(x) & (x > 0))
-	if (length(IND)){
-		if(exists("C_pkstwo", envir=asNamespace("stats"))){
-			p[IND] <- .C(stats:::C_pkstwo, length(x[IND]), p = x[IND], as.double(tol))$p
-		}else if(exists("C_pKS2", envir=asNamespace("stats"))){
-			p[IND] <- .Call(stats:::C_pKS2, p = x[IND], as.double(tol))
-		}
-	
+	if (length(IND) > 0){
+		p[IND] <- .pKS2(x = x[IND], tol = as.double(tol))
 	}
 	return(p)
 
