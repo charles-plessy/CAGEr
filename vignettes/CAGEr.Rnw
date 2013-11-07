@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{August 08, 2013}
+\date{November 06, 2013}
 
 \begin{document}
 <<setup, echo=FALSE>>=

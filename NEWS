@@ -1,29 +1,35 @@
+Updated to version 1.5.2 (06/11/2013)
+06/11/2013	updated vignette and NEWS file
+Updated to version 1.5.1 (02/11/2013)
+02/11/2013	moved vignette source to /vignettes folder
+Updated to version 1.5.0
+15/10/2013	Biodonductor 2.14. release
 Updated to version 1.3.10 in the development (24/09/2013)
-24/09/2012	optimized calculation of K-S p-values for shifting promoters using vectorized functions
-23/09/2012	removed a .C call to the pKS2 function from stats package and replaced it by an R implementation of pKS2
+24/09/2013	optimized calculation of K-S p-values for shifting promoters using vectorized functions
+23/09/2013	removed a .C call to the pKS2 function from stats package and replaced it by an R implementation of pKS2
 Updated to version 1.2.9 in the release and 1.3.9 in the development (23/08/2013)
-23/08/2012      added consensusClustersTpm() function for retrieving matrix with tpm values for consensus clusters across all samples
+23/08/2013      added consensusClustersTpm() function for retrieving matrix with tpm values for consensus clusters across all samples
 Updated to version 1.2.8 in the release and 1.3.8 in the development (23/08/2013)
-22/08/2012	modified all functions to work on data from only one strand (some were previously giving error in such case)
-21/08/2012	fixed the bug in calling CTSSs from reads on minus strand when not correcting for G addition, i.e. when removeFirstG=FALSE
+22/08/2013	modified all functions to work on data from only one strand (some were previously giving error in such case)
+21/08/2013	fixed the bug in calling CTSSs from reads on minus strand when not correcting for G addition, i.e. when removeFirstG=FALSE
 Updated to version 1.2.7 in the release and 1.3.7 in the development (08/08/2013)
-08/08/2012	added new argument to aggregateTagClusters() function (excludeSignalBelowThreshold) that controls which TCs will contribute to the total CAGE signal of the consensus cluster - only the ones above the threshold that are used initially to set the boundaries of the consensus cluster, or all TCs that overlap the resulting consensus clusters 
-07/08/2012	enabled retrieving interquantile width for tag clusters - added new returnInterquantileWidth argument to tagClusters() function
-06/07/2012	enabled importing entire CTSS table with multiple columns of tag counts representing multiple samples/experiments - allowed setting imputFilesType to "CTSStable" when creating CAGEset object and extended getCTSS function accordingly to read the entire table at once and fill the object
+08/08/2013	added new argument to aggregateTagClusters() function (excludeSignalBelowThreshold) that controls which TCs will contribute to the total CAGE signal of the consensus cluster - only the ones above the threshold that are used initially to set the boundaries of the consensus cluster, or all TCs that overlap the resulting consensus clusters 
+07/08/2013	enabled retrieving interquantile width for tag clusters - added new returnInterquantileWidth argument to tagClusters() function
+06/07/2013	enabled importing entire CTSS table with multiple columns of tag counts representing multiple samples/experiments - allowed setting imputFilesType to "CTSStable" when creating CAGEset object and extended getCTSS function accordingly to read the entire table at once and fill the object
 Updated to version 1.2.6 in the release and 1.3.6 in the development (23/07/2013)
-22/07/2012	replaced multicore package dependency with parallel package (suggested by Bioconductor core team)
-21/07/2012	fixed the bug in using loaded genome when correcting for G nucleotide bias
-20/07/2012	fixed plotReverseCumulatives to work with only one sample in the CAGEset
-19/07/2012	changed naming of correlation plot files to distinguish CTSS from consensus clusters plot
+22/07/2013	replaced multicore package dependency with parallel package (suggested by Bioconductor core team)
+21/07/2013	fixed the bug in using loaded genome when correcting for G nucleotide bias
+20/07/2013	fixed plotReverseCumulatives to work with only one sample in the CAGEset
+19/07/2013	changed naming of correlation plot files to distinguish CTSS from consensus clusters plot
 Updated to version 1.2.5 in the release and 1.3.5 in the development (28/06/2013)
-28/06/2012	updated the vignette
+28/06/2013	updated the vignette
 Updated to version 1.2.4 in the release and 1.3.4 in the development (16/06/2013)
-16/06/2012	allowed plotting reverse cumulatives for normalized tag counts - added new argument to plotReverseCumulatives() function
-15/06/2012	implemented calculating suggested referent power-law distribution and visualizing the distribution and its parameters on reverse cumulatives plot when calling plotReverseCumulatives() function
-14/06/2012	allowed assigning user-specified colors to samples to be used in visualizations - added new setColors() function
-13/06/2012	allowed plotting scatter plots and correlation for both individual TSSs (raw or normalized values) and consensus clusters - added new argument to plotCorrelation() function
+16/06/2013	allowed plotting reverse cumulatives for normalized tag counts - added new argument to plotReverseCumulatives() function
+15/06/2013	implemented calculating suggested referent power-law distribution and visualizing the distribution and its parameters on reverse cumulatives plot when calling plotReverseCumulatives() function
+14/06/2013	allowed assigning user-specified colors to samples to be used in visualizations - added new setColors() function
+13/06/2013	allowed plotting scatter plots and correlation for both individual TSSs (raw or normalized values) and consensus clusters - added new argument to plotCorrelation() function
 Updated to version 1.2.3. in the release and 1.3.3 in the development (12/06/2013)
-12/06/2012	implemented plotting pairwise scatter plots of CAGE tag count and calculating correlation between samples - added new plotCorrelation() function
+12/06/2013	implemented plotting pairwise scatter plots of CAGE tag count and calculating correlation between samples - added new plotCorrelation() function
 Updated to version 1.2.2. in the release and 1.3.2 in the development (30/05/2013)
 30/05/2013	implemented the algorithm for correcting 'G' nucleotide addition bias to CAGE tags described in Carninci et al., Nature Genetics 2006 - added a new option 'correctSystematicG' to getCTSS function
 Updated to version 1.2.1 in the release and 1.3.1 in the development (28/05/2013)
