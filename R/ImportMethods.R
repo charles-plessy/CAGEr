@@ -217,8 +217,8 @@ function (dataset, group, sample){
 		}
 		ctssTable[is.na(ctssTable)] <- 0
 	}else{
-		ctssTable <- dataset[[unique(group)]][, c("chr", "pos", "strand", sample)]
-		discard <- all(ctssTable[,c(4:ncol(ctss))] > 0)
+		ctssTable <- dataset[[unique(group)]][, c("chr", "pos", "strand", sample), drop = FALSE]
+		discard <- apply(ctssTable[, c(4:ncol(ctssTable)), drop = F], 1, function(x) {sum(x > 0)}) >= 1
 		ctssTable <- ctssTable[discard,]
 	}
 	
@@ -230,9 +230,9 @@ function (dataset, group, sample){
 	names(sample.labels) <- rainbow(n = length(sample.labels))
 	myCAGEset <- new("CAGEset", genomeName = genomes[organismName], inputFiles = paste(projectName, colnames(ctssTable)[4:ncol(ctssTable)], sep = "__"), inputFilesType = projectName, sampleLabels = sample.labels)
 
-	myCAGEset@librarySizes <- as.integer(colSums(ctssTable[,4:ncol(ctssTable)]))
+	myCAGEset@librarySizes <- as.integer(colSums(ctssTable[,4:ncol(ctssTable),drop=FALSE]))
 	myCAGEset@CTSScoordinates <- ctssTable[, c("chr", "pos", "strand")]
-	myCAGEset@tagCountMatrix <- ctssTable[,4:ncol(ctssTable)]
+	myCAGEset@tagCountMatrix <- ctssTable[,4:ncol(ctssTable),drop=FALSE]
 	
 	return(myCAGEset)
 	

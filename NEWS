@@ -1,3 +1,6 @@
+Updated to version 1.5.3 (10/11/2013)
+08/11/2013      fixed the bug in importPublicData function that caused problems when importing only one sample
+08/11/2013	fixed error in BibTex file
 Updated to version 1.5.2 (06/11/2013)
 06/11/2013	updated vignette and NEWS file
 Updated to version 1.5.1 (02/11/2013)
