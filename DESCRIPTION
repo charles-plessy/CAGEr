@@ -26,5 +26,5 @@ Collate: AllClasses.R GetMethods.R ImportFunctions.R ImportMethods.R
         CumulativeDistributionMethods.R QuantileWidthFunctions.R
         QuantileWidthMethods.R AggregationFunctions.R
         AggregationMethods.R ShiftingFunctions.R ShiftingMethods.R
-biocViews: Preprocessing, Sequencing, Sequencing, Transcription,
+biocViews: Preprocessing, Sequencing, Transcription,
         Clustering, Visualization
