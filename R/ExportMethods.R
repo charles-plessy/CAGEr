@@ -167,9 +167,9 @@ function (object, clusters, tpmThreshold, qLow, qUp){
 	sapply(sample.labels, function(x) {
 		   
 		   q.low.s <- q.low[[x]]
-		   q.low.s <- as.integer(q.low.s[, grep(qLow, colnames(q.low.s), fixed = T)])
+		   q.low.s <- as.integer(q.low.s[, which(colnames(q.low.s) == paste("q_", qLow, sep = ""))])
 		   q.up.s <- q.up[[x]]
-		   q.up.s <- as.integer(q.up.s[, grep(qUp, colnames(q.up.s), fixed = T)])
+		   q.up.s <- as.integer(q.up.s[, which(colnames(q.up.s) == paste("q_", qUp, sep = ""))])
 		   width <- q.up.s[idx.list[[x]]] - q.low.s[idx.list[[x]]] + 1
 		   h <- hist(width, breaks = round(max(width)/2), plot = F)
 		   h$counts <- h$counts/sum(h$counts)
@@ -177,7 +177,7 @@ function (object, clusters, tpmThreshold, qLow, qUp){
 		   plot(h, xlim = c(0,150), main = x, xlab = paste(clusters, " interquantile width q", qLow, "-q", qUp, " (bp)", sep = ""), ylab = "relative frequency", col = rgb(col[1], col[2], col[3], 0.5), border = cols[which(sample.labels == x)], cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = cols[which(sample.labels == x)])
 		   
 		   }
-		)
+		   )
 	dev.off()
 	message("\nFile '", clusters, "_interquantile_width_all_samples.pdf' has been created in your working directory (", getwd(), ")")
 	

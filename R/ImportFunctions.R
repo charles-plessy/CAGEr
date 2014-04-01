@@ -12,7 +12,8 @@
 	# select the 'G' positions in the genome that had some tags before moving the 'G' mismatch reads from previous position - these should be further corrected
 	ctss.to.correct <- data.frame(subset(ctss.count, V1 != V2))
 	
-	# iterate sequentially through 'G' positions and correct for the number of reads that have to be moved to +1 position
+	if(nrow(ctss.to.correct) > 0){
+	# iterate sequentially through 'G' positions and correct for the number of reads that have to be moved to downstream position
 	
 	if(correction.orientation > 0){
 		ctss.gap <- c(Inf, diff(ctss.to.correct$pos))
@@ -46,6 +47,10 @@
 	ctss.final <- rbind(ctss.final, as.data.frame(ctss.count[V1 == V2]))
 	ctss.final <- ctss.final[order(ctss.final$pos),]
 	ctss.final <- data.frame(pos = ctss.final$pos, nr_tags = ctss.final$V1)
+	
+	}else{
+		ctss.final <- data.frame(pos = ctss.count$pos, nr_tags = ctss.count$V1)
+	}
 	
 	return(subset(ctss.final, nr_tags > 0))
 	

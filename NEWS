@@ -1,3 +1,7 @@
+Updated to version 1.5.5 (01/04/2014)
+13/02/2014	fixed bug in function for plotting interquantile width (in cases of multiple pairs of low and high quantiles present it was sometime fetching multiple columns and stopping with an error)
+12/02/2014	fix typo in Details section of man page for exportToBed function
+12/02/2014	fixed the bug in function for systematic correction of G addition bias (it was stopping with an error in a rare case when all reads beginning with a G and mapping to the genome are derived by trimming the G mismatch from upstream position)
 Updated to version 1.5.3 (10/11/2013)
 08/11/2013      fixed the bug in importPublicData function that caused problems when importing only one sample
 08/11/2013	fixed error in BibTex file
