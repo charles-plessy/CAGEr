@@ -1,3 +1,9 @@
+Updated to version 1.7.1 (30/05/2014)
+30/05/2014	updated the vignette with the description of available public CAGE data resources and how to use them in CAGEr
+25/05/2014	added a list of available human and mouse FANTOM5 samples as a dataset that can be loaded via call to data(FANTOM5humanSamples) or data(FANTOM5mouseSamples)
+25/05/2014	modified the importPublicData() function so that it supports importing FANTOM5 data for human and mouse directly from FANTOM web resource, as well as data from several CAGE data packages
+23/05/2014	optimized the creation of CTSS table across samples by performing merge on data.tables rather than data.frames - reading the data into CAGEset object from BAM or CTSS files is now ~10X faster
+Updated to version 1.7.0 (14/04/2014, Bioconductor 2.14 release)
 Updated to version 1.5.5 (01/04/2014)
 13/02/2014	fixed bug in function for plotting interquantile width (in cases of multiple pairs of low and high quantiles present it was sometime fetching multiple columns and stopping with an error)
 12/02/2014	fix typo in Details section of man page for exportToBed function

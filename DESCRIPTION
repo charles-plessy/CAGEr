@@ -1,12 +1,12 @@
 Package: CAGEr
 Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for precise mapping of transcription start sites and promoterome mining
-Version: 1.7.0
-Date: 01-04-2014
+Version: 1.7.1
+Date: 05-30-2014
 Author: Vanja Haberle, Department of Biology, University of Bergen, Norway <vanja.haberle@bio.uib.no>
 Maintainer: Vanja Haberle <vanja.haberle@bio.uib.no>
 Imports: Rsamtools, GenomicRanges, IRanges, data.table, beanplot, rtracklayer, som, VGAM
-Depends: methods, R (>= 2.15.0), BSgenome, BSgenome.Mmusculus.UCSC.mm9
-Suggests: BSgenome.Drerio.UCSC.danRer7, BSgenome.Hsapiens.UCSC.hg18, FANTOM3and4CAGE 
+Depends: methods, R (>= 2.15.0), BSgenome
+Suggests: BSgenome.Drerio.UCSC.danRer7, FANTOM3and4CAGE 
 Enhances: parallel
 Description: Preprocessing of CAGE sequencing data, identification and normalization of transcription start sites and downstream analysis of transcription start sites clusters (promoters).
 License: GPL-3
