@@ -1,3 +1,5 @@
+Updated to version 1.7.2 (01/06/2014)
+01/06/2014	replaced the .RData files in the /data folder with the more compressed ones
 Updated to version 1.7.1 (30/05/2014)
 30/05/2014	updated the vignette with the description of available public CAGE data resources and how to use them in CAGEr
 25/05/2014	added a list of available human and mouse FANTOM5 samples as a dataset that can be loaded via call to data(FANTOM5humanSamples) or data(FANTOM5mouseSamples)
