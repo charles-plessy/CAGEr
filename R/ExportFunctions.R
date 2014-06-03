@@ -27,11 +27,6 @@
 	
 }
 
-.make.RangedData <- function(data) {
-	data.rd <- RangedData(space = data$chr, IRanges(start = data$pos, end = data$pos), score = data$score)
-	data.rd <- data.rd[data.rd$score != 0,]	
-}
-
 .export.bedgraph <- function(data.rd, name, description, file_name, append = F) {
 	data.ucsc <- as(data.rd, "UCSCData")
 	data.ucsc@trackLine <- new("BasicTrackLine", name = name, description = description, visibility="full")	
@@ -41,26 +36,29 @@
 .export.bedgraph.all <- function(data, sample.labels, v, oneFile) {
 	data.plus <- subset(data, strand == "+")
 	data.minus <- subset(data, strand == "-")
-	
-		rd.list <- lapply(as.list(sample.labels), function(x) {
-			   lapply(as.list(c("plus", "minus")), function(y) {
-					  d <- get(paste("data.", y, sep = ""))
-					  d <- d[, c("chr", "pos", x)] 
-					  colnames(d) <- c("chr", "pos", "score")
-					  if(nrow(d)>0){
-						d.rd <- .make.RangedData(d)
-					  }else{
-						d.rd <- RangedData()
-					  }
-					  if(y == "minus"){
-						d.rd$score <- -1 * d.rd$score
-					  }
-					  return(d.rd)
+		
+	rd.list <- lapply(as.list(sample.labels), function(x) {
+					  lapply(as.list(c("plus", "minus")), function(y) {
+							 d <- get(paste("data.", y, sep = ""))
+							 d <- d[, c("chr", "pos", x)] 
+							 colnames(d) <- c("chr", "pos", "score")
+							 if(nrow(d)>0){
+							 d <- subset(d, score>0)
+							 d.rd <- GRanges(seqnames = d$chr, ranges=IRanges(start = d$pos, end = d$pos), strand = "+", score = d$score)
+							 }else{
+							 d.rd <- GRanges()
+							 }
+							 if(y == "minus"){
+							 d.rd$score <- -1 * d.rd$score
+							 }
+							 return(d.rd)
+							 }
+							 )
 					  }
 					  )
-			   }
-			   )
-		names(rd.list) <- sample.labels
+	names(rd.list) <- sample.labels
+	
+	
 	if(oneFile){
 		if(file.exists(paste("All.samples.CTSS.", v, ".bedGraph", sep = ""))){
 			r <- file.remove(paste("All.samples.CTSS.", v, ".bedGraph", sep = ""))
@@ -68,17 +66,17 @@
 		strands = c("plus", "minus")
 		for(i in 1:length(sample.labels)){
 			for(s in c(1,2)){
-				if(nrow(rd.list[[i]][[s]])>0){
+				if(length(rd.list[[i]][[s]])>0){
 					.export.bedgraph(rd.list[[i]][[s]], name = paste(sample.labels[i], "_", v, "_", strands[s], sep = ""), description = paste(sample.labels[i], " CTSS ", v, " (", strands[s], " strand)", sep = ""), file_name = paste("All.samples.CTSS.", v, ".bedGraph", sep = ""), append = T)
 				}
 			}
 		}
 	}else{
 		a <- lapply(as.list(sample.labels), function(x) {
-				if(nrow(rd.list[[x]][[1]]) > 0){
+				if(length(rd.list[[x]][[1]]) > 0){
 					.export.bedgraph(rd.list[[x]][[1]], name = paste(x, "_", v, "_plus", sep = ""), description = paste(x, " CTSS ", v, " (plus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".plus.bedGraph", sep = ""), append = F)
 				}
-				if(nrow(rd.list[[x]][[2]]) > 0){	
+				if(length(rd.list[[x]][[2]]) > 0){	
 					.export.bedgraph(rd.list[[x]][[2]], name = paste(x, "_", v, "_minus", sep = ""), description = paste(x, " CTSS ", v, " (minus strand)", sep = ""), file_name = paste(x, ".CTSS.", v, ".minus.bedGraph", sep = ""), append = F)			   
 				}
 			   }
