@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{May 30, 2014}
+\date{November 28, 2014}
 
 \begin{document}
 <<setup, echo=FALSE>>=
@@ -502,7 +502,7 @@ to \Rcode{"CTSS"} in all of the functions.
 \subsection{Shifting promoters}
 As shown in Figure~\ref{fig:tagClustersBed}, TSSs within the same promoter region can be used differently in different samples. Thus, although the overall transcription level from a promoter 
 does not change between the samples, the differential usage of TSSs or "promoter shifting" may indicate changes in the regulation of transcription from that promoter, which cannot be detected 
-by expression profiling. To detect this promoter shifting, a method described in \cite{Haberle:2013} has been implemented in \Rpackage{CAGEr}. Shifting can be detected between two 
+by expression profiling. To detect this promoter shifting, a method described in \cite{Haberle:2014} has been implemented in \Rpackage{CAGEr}. Shifting can be detected between two 
 individual samples or between two groups of samples. In the latter case, samples are first merged into groups and then compared in the same way as two individual samples. For all promoters a 
 shifting score is calculated based on the difference in the cumulative distribution of CAGE signal along that promoter in the two samples. In addition, a more general assessment of differential TSS 
 usage is obtained by performing Kolmogorov-Smirnov test on the cumulative distributions of CAGE signal, as described below. Thus, prior to shifting score calculation and statistical testing, we have to 
@@ -670,9 +670,9 @@ data(ENCODEhumanCellLinesSamples)
 The information provided in this data frame is analogous to the one in previously discussed data package and provides values to be used with \Rcode{importPublicData()} function. The command to import whole cell CAGE samples for three different cell lines would look like this:
 <<eval=FALSE>>=
 ENCODEset <- importPublicData(source = "ENCODE", 
-		dataset = c("A549", "H1-hESC", "IMR90"), 
-		group = c("cell", "cell", "cell"), sample = c("A549_cell_rep1", 
-		"H1-hESC_cell_rep1", "IMR90_cell_rep1"))
+	dataset = c("A549", "H1-hESC", "IMR90"), 
+	group = c("cell", "cell", "cell"), sample = c("A549_cell_rep1", 
+	"H1-hESC_cell_rep1", "IMR90_cell_rep1"))
 @
 
 For more details about datasets available in the \emph{ENCODEprojectCAGE} data package please refer to the vignette accompanying the package.

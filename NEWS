@@ -1,3 +1,5 @@
+Updated to version 1.9.2 (03/12/2014)
+03/12/2014	updated the vignette - fixed the references
 Updated to version 1.9.1 (01/12/2014)
 01/12/2014	fixed the bug in importing data from ENCODEprojectCAGE data package using importPublicData() function when importing from multiple datasets that contain groups with the same name
 Updated to version 1.9.0 (14/10/2014, Bioconductor 3.0 release)
