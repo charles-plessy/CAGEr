@@ -268,7 +268,7 @@ function (source, dataset, group, sample){
 					dset <- get(unique(dataset)[i])
 					for(j in 1:length(unique(group[which(dataset == unique(dataset)[i])]))){
 						g <- unique(group[which(dataset == unique(dataset)[i])])[j]
-						ctss <- dset[[g]][, c("chr", "pos", "strand", sample[which(group == g)])]
+						ctss <- dset[[g]][, c("chr", "pos", "strand", sample[which((group == g) & (dataset == unique(dataset)[i]))])]
 						discard <- apply(ctss[, c(4:ncol(ctss)), drop = F], 1, function(x) {sum(x > 0)}) >= 1
 						ctss <- data.table(ctss[discard,])
 						setkeyv(ctss, cols = c("chr", "pos", "strand"))
@@ -448,7 +448,7 @@ function (source, dataset, group, sample){
 		
 		for(i in c(1:length(sample))){
 			
-			message("Fetching sample", sample[i], "...\n")
+			message("Fetching sample: ", sample[i], "...")
 			sample.url <- samples.info[samples.info$sample == sample[i], "data_url"]
 			con <- gzcon(url(paste(sample.url)))
 			ctss <- scan(con, what = list(character(), NULL, integer(), NULL, integer(), character()))
