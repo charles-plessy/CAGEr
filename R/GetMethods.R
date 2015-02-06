@@ -129,7 +129,7 @@ function (object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = N
 	if(sample %in% object@sampleLabels){
 		tc <- object@tagClusters[[sample]]
 		if(returnInterquantileWidth & (length(object@tagClustersQuantileLow)==0 & length(object@tagClustersQuantileUp)==0)){
-			stop("Interquantile width cannot be returned because specified quantiles have not been calculated! Run 'quantilePositions()' first to get positions of desired quantiles!")
+			stop("No quantiles specified! Please specify which quantiles should be used to calculate width (qLow and qUp arguments)!")
 		}else if(returnInterquantileWidth & (!(paste("q_", qLow, sep = "") %in% colnames(object@tagClustersQuantileLow[[sample]]) & paste("q_", qUp, sep = "") %in% colnames(object@tagClustersQuantileUp[[sample]])))){
 			stop("Interquantile width cannot be returned because specified quantiles have not been calculated! Run 'quantilePositions()' first to get positions of desired quantiles!")
 		}else if(returnInterquantileWidth){

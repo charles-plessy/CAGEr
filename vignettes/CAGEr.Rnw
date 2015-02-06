@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{November 28, 2014}
+\date{February 6, 2015}
 
 \begin{document}
 <<setup, echo=FALSE>>=
@@ -101,6 +101,8 @@ It contains all of the up-to-date publicly available CAGE data produced by FANTO
 consortium, and provides a valuable resource of genome-wide TSSs in various tissue/cell types in human and mouse that can be used directly in R. 
 Section 5 in this vignette describes how these public datasets can be included into a
 workflow provided by \Rpackage{CAGEr}. See the vignette of the \Rpackage{FANTOM3and4CAGE} package for the list of available CAGE datasets.
+\newline
+For further details and for citing the CAGEr package in your work please refer to \cite{Haberle:2015}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
