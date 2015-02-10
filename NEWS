@@ -1,4 +1,7 @@
-Updated to version 1.9.2 in the development and 1.8.1 in the release (03/12/2014)
+Updated to version 1.10.3 in the release and 1.9.3 in the development (06/02/2015)
+06/02/2015	CAGEr package has now been published in NAR! If you find this package useful in your work, please cite Haberle et al. (2015) CAGEr: precise TSS data retrieval and high-resolution promoterome mining for integrative analyses, Nucleic Acids Research, Epub ahead of print 2015 Feb 4, doi:10.1093/nar/gkv054. Check the citation(“CAGEr”) for more details.
+13/01/2015	fixed the error message in tagClusters() function for the case no qLow and qUp values are specified
+Updated to version 1.9.2 (03/12/2014)
 03/12/2014	updated the vignette - fixed the references
 Updated to version 1.9.1 (01/12/2014)
 01/12/2014	fixed the bug in importing data from ENCODEprojectCAGE data package using importPublicData() function when importing from multiple datasets that contain groups with the same name
