@@ -13,7 +13,8 @@ importFrom(som, som)
 importFrom(VGAM, zeta)
 
 exportClasses(CAGEset)
-
+exportMethods(mergeCAGEsets)
+exportMethods(coerce)
 exportMethods(getCTSS, importPublicData)
 exportMethods(aggregateTagClusters)
 exportMethods(clusterCTSS)

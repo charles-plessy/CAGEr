@@ -7,9 +7,10 @@ citEntry(entry="article",
            as.person("Boris Lenhard")),
          year = 2015,
          journal = "Nucleic Acids Research",
-         volume = "Epub ahead of print",
-         issue = "2015 Feb 4",
+         volume = "43",
+         issue = "8",
+	 pages = "e51",
          doi = "10.1093/nar/gkv054",
-         url = "http://nar.oxfordjournals.org/content/early/2015/02/03/nar.gkv054.full",
+         url = "http://nar.oxfordjournals.org/content/43/8/e51",
          textVersion = 
-         "Haberle V, Forrest ARR, Hayashizaki Y, Carninci P, Lenhard B (2015) CAGEr: precise TSS data retrieval and high-resolution promoterome mining for integrative analyses. Nucleic Acids Res, Epub ahead of print (2015 Feb 4). doi:10.1093/nar/gkv054")
+         "Haberle V, Forrest ARR, Hayashizaki Y, Carninci P, Lenhard B (2015) CAGEr: precise TSS data retrieval and high-resolution promoterome mining for integrative analyses. Nucleic Acids Res 43(8):e51. doi:10.1093/nar/gkv054")

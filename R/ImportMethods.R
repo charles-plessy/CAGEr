@@ -197,7 +197,7 @@ function (source, dataset, group, sample){
 	if(source == "ENCODE"){
 		
 		if("ENCODEprojectCAGE" %in% rownames(installed.packages()) == FALSE){
-			stop("Requested CAGE data package is not installed! Please install and load the ENCODEprojectCAGE package, which is available for download from ???.")
+			stop("Requested CAGE data package is not installed! Please install and load the ENCODEprojectCAGE package, which is available for download from http://promshift.genereg.net/CAGEr/PackageSource/.")
 		}else if(!("package:ENCODEprojectCAGE" %in% search())){
 			stop("Requested CAGE data package is not loaded! Please load the data package by calling 'library(ENCODEprojectCAGE)'")
 		}
@@ -471,7 +471,7 @@ function (source, dataset, group, sample){
 	}else if (source == "ZebrafishDevelopment"){
 
 		if("ZebrafishDevelopmentalCAGE" %in% rownames(installed.packages()) == FALSE){
-			stop("Requested CAGE data package is not installed! Please install and load the ZebrafishDevelopmentalCAGE package, which is available for download from ???.")
+			stop("Requested CAGE data package is not installed! Please install and load the ZebrafishDevelopmentalCAGE package, which is available for download from http://promshift.genereg.net/CAGEr/PackageSource/.")
 		}else if(!("package:ZebrafishDevelopmentalCAGE" %in% search())){
 			stop("Requested CAGE data package is not loaded! Please load the data package by calling 'library(ZebrafishDevelopmentalCAGE)'")
 		}
@@ -485,6 +485,7 @@ function (source, dataset, group, sample){
 					genome.name <- "BSgenome.Drerio.UCSC.danRer7"
 					data(ZebrafishCAGE, envir = environment())
 					ctssTable <- ZebrafishCAGE[["development"]][,c("chr", "pos", "strand", sample)]
+                    ctssTable <- ctssTable[apply(ctssTable[,4:ncol(ctssTable),drop=FALSE], 1, function(x) {any(x>0)}),]
 				}
 			}else{
 				stop("Invalid group name! There is only one group in this dataset named 'development'.")
@@ -498,7 +499,8 @@ function (source, dataset, group, sample){
 		stop("Currently only the following public CAGE data resources are supported: 'FANTOM5', 'FANTOM3and4', 'ENCODE', 'ZebrafishDevelopment'. Refer to CAGEr vignette on how to use those resources!")
 	}
 	
-
+    rownames(ctssTable) <- c(1:nrow(ctssTable))
+    
 	sample.labels <- colnames(ctssTable)[4:ncol(ctssTable)]
 	names(sample.labels) <- rainbow(n = length(sample.labels))
 	myCAGEset <- new("CAGEset", genomeName = genome.name, inputFiles = paste(source, sample.labels, sep = "__"), inputFilesType = source, sampleLabels = sample.labels)

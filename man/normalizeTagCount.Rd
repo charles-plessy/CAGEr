@@ -3,7 +3,7 @@
 \alias{normalizeTagCount,CAGEset-method}
 \title{Normalizing raw CAGE tag count}
 \description{
-Normalizes raw CAGE tag count per CTSS in all experiments to a same referent distribution.  A simple tag per million normalization or normalization to a refernet power-law distribution (Balwierz \emph{et al}., Genome Biology 2009) can be specified.
+Normalizes raw CAGE tag count per CTSS in all experiments to a same referent distribution.  A simple tag per million normalization or normalization to a referent power-law distribution (Balwierz \emph{et al}., Genome Biology 2009) can be specified.
 }
 \usage{
 normalizeTagCount(object, method = "powerLaw", fitInRange = c(10, 1000),
