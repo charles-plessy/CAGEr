@@ -105,14 +105,14 @@ function (object, values = "normalized", oneFile = T){
 
 setGeneric(
 name="plotInterquantileWidth",
-def=function(object, clusters, tpmThreshold = 5, qLow = 0.1, qUp = 0.9){
+def=function(object, clusters, tpmThreshold = 5, qLow = 0.1, qUp = 0.9, xlim = c(0,150), ...){
 	standardGeneric("plotInterquantileWidth")
 }
 )
 
 setMethod("plotInterquantileWidth",
 signature(object = "CAGEset"),
-function (object, clusters, tpmThreshold, qLow, qUp){
+function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 	
 	sample.labels <- sampleLabels(object)
 	cols <- names(sample.labels)
@@ -174,7 +174,7 @@ function (object, clusters, tpmThreshold, qLow, qUp){
 		   h <- hist(width, breaks = round(max(width)/2), plot = F)
 		   h$counts <- h$counts/sum(h$counts)
 		   col <- as.integer(col2rgb(cols[which(sample.labels == x)]))/255
-		   plot(h, xlim = c(0,150), main = x, xlab = paste(clusters, " interquantile width q", qLow, "-q", qUp, " (bp)", sep = ""), ylab = "relative frequency", col = rgb(col[1], col[2], col[3], 0.5), border = cols[which(sample.labels == x)], cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = cols[which(sample.labels == x)])
+		   plot(h, xlim = xlim, main = x, xlab = paste(clusters, " interquantile width q", qLow, "-q", qUp, " (bp)", sep = ""), ylab = "relative frequency", col = rgb(col[1], col[2], col[3], 0.5), border = cols[which(sample.labels == x)], cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = cols[which(sample.labels == x)], ...)
 		   
 		   }
 		   )

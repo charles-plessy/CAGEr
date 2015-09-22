@@ -1,5 +1,11 @@
+Updated to version 1.10.1 in the release and 1.11.1 in the development (17/09/2015)
+15/05/2015	updated the vignette
+15/05/2015	enabled changing xlim and ylim when plotting interquantile width distribution
+13/05/2015	added mergeCAGEsets() function for merging two CAGEset objects
+11/05/2015	defined 'as' method for coercing a data.frame into a CAGEset object
+Updated to version 1.11.0 (17/04/2015, Bioconductor 3.1 release)
 Updated to version 1.9.3 (06/02/2015)
-06/02/2015	CAGEr package has now been published in NAR! If you find this package useful in your work, please cite Haberle et al. (2015) CAGEr: precise TSS data retrieval and high-resolution promoterome mining for integrative analyses, Nucleic Acids Research, Epub ahead of print 2015 Feb 4, doi:10.1093/nar/gkv054. Check the citation(“CAGEr”) for more details.
+06/02/2015	CAGEr package has now been published in NAR! If you find this package useful in your work, please cite: Haberle et al. (2015) CAGEr: precise TSS data retrieval and high-resolution promoterome mining for integrative analyses. Nucleic Acids Research 43(8):e51, doi:10.1093/nar/gkv054. Check citation(“CAGEr”) for more details.
 13/01/2015	fixed the error message in tagClusters() function for the case no qLow and qUp values are specified
 Updated to version 1.9.2 (03/12/2014)
 03/12/2014	updated the vignette - fixed the references

@@ -128,10 +128,12 @@ signature(object = "CAGEset"),
 function (object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
 	if(sample %in% object@sampleLabels){
 		tc <- object@tagClusters[[sample]]
-		if(returnInterquantileWidth & (length(object@tagClustersQuantileLow)==0 & length(object@tagClustersQuantileUp)==0)){
-			stop("No quantiles specified! Please specify which quantiles should be used to calculate width (qLow and qUp arguments)!")
+        if(returnInterquantileWidth & (length(qLow) == 0 | length(qUp) == 0)){
+            stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")
+        }else if(returnInterquantileWidth & (length(object@tagClustersQuantileLow)==0 & length(object@tagClustersQuantileUp)==0)){
+            stop("Interquantile width cannot be returned because no quantile positions have been calculated yet! Run 'quantilePositions()' first to get the positions of the desired quantiles!")
 		}else if(returnInterquantileWidth & (!(paste("q_", qLow, sep = "") %in% colnames(object@tagClustersQuantileLow[[sample]]) & paste("q_", qUp, sep = "") %in% colnames(object@tagClustersQuantileUp[[sample]])))){
-			stop("Interquantile width cannot be returned because specified quantiles have not been calculated! Run 'quantilePositions()' first to get positions of desired quantiles!")
+			stop("Interquantile width cannot be returned because specified quantile positions have not been calculated! Run 'quantilePositions()' again to get the positions of the desired quantiles!")
 		}else if(returnInterquantileWidth){
 			tc.w <- merge(object@tagClustersQuantileLow[[sample]], object@tagClustersQuantileUp[[sample]])
 			tc.w <- tc.w[,c(1, which(colnames(tc.w) == paste("q_", qLow, sep = "")), which(colnames(tc.w) == paste("q_", qUp, sep = "")))]

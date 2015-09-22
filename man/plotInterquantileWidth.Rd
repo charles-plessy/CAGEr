@@ -7,7 +7,7 @@
 }
 \usage{
 plotInterquantileWidth(object, clusters, tpmThreshold = 5,
-                       qLow = 0.1, qUp = 0.9)
+                       qLow = 0.1, qUp = 0.9, xlim = c(0,150), ...)
 }
 \arguments{
   \item{object}{
@@ -24,6 +24,12 @@ plotInterquantileWidth(object, clusters, tpmThreshold = 5,
 }
   \item{qUp}{
 	Position of which "upper" quantile should be used as 3' boundary.  See Details.
+}
+  \item{xlim}{
+	The x axis limits of the plot.
+}
+  \item{...}{
+	Additional arguments passed to \code{plot()} function, such as \code{ylim}, \emph{etc.}.
 }
 }
 \details{

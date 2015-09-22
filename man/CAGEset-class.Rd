@@ -4,6 +4,10 @@
 \alias{CAGEset-class}
 \alias{CAGEset}
 
+% Coercion:
+\alias{coerce,data.frame,CAGEset-method}
+
+
 \title{Class \code{"CAGEset"}}
 \description{
 This class is used to store one or more CAGE (Cap Analysis of Gene Expression) datasets in the form of TSSs derived from CAGE tags and frequency of their usage, and to store and extract all information generated during the workflow.
@@ -79,6 +83,14 @@ Objects of the class contain information on the genomic coordinates of TSSs deri
     \item{show}{\code{signature(object = "CAGEset")}: displays CAGEset object in a user friendly way }
     \item{tagClusters}{\code{signature(object = "CAGEset")}: extracts the tag clusters for specified CAGE experiment }
 	 }
+}
+
+\section{Coercion}{
+ \describe{
+    \item{}{
+      \code{as(from, "CAGEset")}: Creates a CAGEset object from a data.frame object.
+    }
+  }
 }
 
 \author{Vanja Haberle}

@@ -38,7 +38,7 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 			message("\t-> ", s)
 			d <- ctss.df[,c("chr", "pos", "strand", s)]
 			colnames(d) <- c("chr", "pos", "strand", "tpm")
-			d <- subset(d, tpm>0)
+            #d <- subset(d, tpm>0)
 			ctss.clusters <- tagClusters(object, sample = s)
 			clusters.cumsum.list <- .getCumsum(ctss.df = d, ctss.clusters = ctss.clusters, id.column = "cluster", use.multicore = useMulticore, nrCores = nrCores)
 			samples.cumsum.list[[s]] <- clusters.cumsum.list
