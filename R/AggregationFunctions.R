@@ -19,7 +19,7 @@
 			
 			clusters.q.gr = GRanges(seqnames = clusters.q$chr, ranges = IRanges(start = pmax(1, clusters.q[,start.coor] - plus.minus), end = clusters.q[,end.coor] + plus.minus), strand = clusters.q$strand, values = clusters.q)
 			o = findOverlaps(consensus.clusters.gr, clusters.q.gr)
-			consensus.clusters = rbind(consensus.clusters, data.frame(consensus.cluster = o@queryHits, as.data.frame(values(clusters.q.gr[as.vector(o@subjectHits)])), sample = names(TC.list)[i]))
+			consensus.clusters = rbind(consensus.clusters, data.frame(consensus.cluster = queryHits(o), as.data.frame(values(clusters.q.gr[as.vector(subjectHits(o))])), sample = names(TC.list)[i]))
 			
 		}
 		

@@ -16,7 +16,7 @@
 	ctss.df <- ctss.df[order(ctss.df$pos),]
 	ctss.df.ir <- IRanges(start = ctss.df$pos - 1, end = ctss.df$pos)
 	o <- findOverlaps(clusters.ir, ctss.df.ir)
-	ctss.df <- cbind(ctss.df, clusters$cluster[o@queryHits])
+	ctss.df <- cbind(ctss.df, clusters$cluster[queryHits(o)])
 	colnames(ctss.df)[ncol(ctss.df)] <- 'cluster'
 	return(ctss.df)
 	
@@ -211,7 +211,7 @@
 	if(reduceToNonoverlapping == TRUE){
 		clusters.gr <- GRanges(seqnames = clusters$chr, ranges = IRanges(start = clusters$start, end = clusters$end), strand = clusters$strand, elementMetadata = clusters)
 		o <- findOverlaps(clusters.gr, drop.self = TRUE, type = "within")
-		clusters.gr <- clusters.gr[-o@queryHits]
+		clusters.gr <- clusters.gr[-queryHits(o)]
 		clusters <- subset(clusters, paste(chr, strand, start, end, sep = ".") %in% paste(seqnames(clusters.gr), strand(clusters.gr), start(clusters.gr), end(clusters.gr), sep = "."))
 	}
 	clusters <- cbind(cluster = c(1:nrow(clusters)), clusters)
@@ -255,8 +255,8 @@
 	ctss.df <- ctss.df[order(ctss.df$pos),]
 	ctss.df.ir <- IRanges(start = ctss.df$pos, end = ctss.df$pos)
 	o <- findOverlaps(clusters.ir, ctss.df.ir)
-	ctss.df.1 <- cbind(ctss.df[o@subjectHits,], cluster = clusters$cluster[o@queryHits], start = clusters$start[o@queryHits], end = clusters$end[o@queryHits])
-	ctss.df.2 <- data.frame(chr = clusters$chr[!(clusters$cluster %in% clusters$cluster[o@queryHits])], pos = rep(NA, length(clusters$cluster[!(clusters$cluster %in% clusters$cluster[o@queryHits])])), strand = clusters$strand[!(clusters$cluster %in% clusters$cluster[o@queryHits])], tpm = rep(0, length(clusters$cluster[!(clusters$cluster %in% clusters$cluster[o@queryHits])])), cluster = clusters$cluster[!(clusters$cluster %in% clusters$cluster[o@queryHits])], start = clusters$start[!(clusters$cluster %in% clusters$cluster[o@queryHits])], end = clusters$end[!(clusters$cluster %in% clusters$cluster[o@queryHits])])
+	ctss.df.1 <- cbind(ctss.df[subjectHits(o),], cluster = clusters$cluster[queryHits(o)], start = clusters$start[queryHits(o)], end = clusters$end[queryHits(o)])
+	ctss.df.2 <- data.frame(chr = clusters$chr[!(clusters$cluster %in% clusters$cluster[queryHits(o)])], pos = rep(NA, length(clusters$cluster[!(clusters$cluster %in% clusters$cluster[queryHits(o)])])), strand = clusters$strand[!(clusters$cluster %in% clusters$cluster[queryHits(o)])], tpm = rep(0, length(clusters$cluster[!(clusters$cluster %in% clusters$cluster[queryHits(o)])])), cluster = clusters$cluster[!(clusters$cluster %in% clusters$cluster[queryHits(o)])], start = clusters$start[!(clusters$cluster %in% clusters$cluster[queryHits(o)])], end = clusters$end[!(clusters$cluster %in% clusters$cluster[queryHits(o)])])
 	ctss.df <- rbind(ctss.df.1, ctss.df.2)
 	ctss.df <- ctss.df[order(ctss.df$cluster),]
 	invisible(gc())
