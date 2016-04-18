@@ -36,6 +36,6 @@ tagClusters(object, sample, returnInterquantileWidth = FALSE,
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 
-TC <- tagClusters(object = exampleCAGEset, sample = "sample2")
+TC <- tagClusters(object = exampleCAGEset, sample = "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
 head(TC)
 }

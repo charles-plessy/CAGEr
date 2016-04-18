@@ -1,3 +1,11 @@
+Updated to version 1.13.3 (18/04/2016)
+18/04/2016	updated the vignette
+14/04/2016	modified the consensusClusters() function to allow extracting sample-specific information, such as CAGE signal, position of the dominant TSS and interquantile width in a specific sample (i.e. consensusClusters() now behaves analogously to tagClusters() function)
+10/03/2016	fixed the bandwidth of the smoothing kernel for plotting correlation density plots to always scale with the number of bins
+10/03/2016	added new argument to plotCorrelation() function that allows controlling figure size in pixels
+03/11/2015	fixed the format of exporting bed12 files for tag clusters, which contained overlapping blocks per record and caused problems when trying to convert bed to bigBed 
+03/11/2015	added an option of exporting CTSS bedGraph files to BigWig format - added a new argument to exportCTSStoBedGraph() function
+Updated to version 1.13.0 (15/10/2015, Bioconductor 3.2 release)
 Updated to version 1.10.2 in the release and 1.11.2 in the development (11/10/2015)
 11/10/2015	changed to selective import from data.table package to resolve the conflict regarding the shift function
 Updated to version 1.10.1 in the release and 1.11.1 in the development (17/09/2015)
@@ -7,7 +15,7 @@ Updated to version 1.10.1 in the release and 1.11.1 in the development (17/09/20
 11/05/2015	defined 'as' method for coercing a data.frame into a CAGEset object
 Updated to version 1.11.0 (17/04/2015, Bioconductor 3.1 release)
 Updated to version 1.9.3 (06/02/2015)
-06/02/2015	CAGEr package has now been published in NAR! If you find this package useful in your work, please cite: Haberle et al. (2015) CAGEr: precise TSS data retrieval and high-resolution promoterome mining for integrative analyses. Nucleic Acids Research 43(8):e51, doi:10.1093/nar/gkv054. Check citation(“CAGEr”) for more details.
+06/02/2015	CAGEr package has now been published in NAR! If you find this package useful in your work, please cite: Haberle et al. (2015) CAGEr: precise TSS data retrieval and high-resolution promoterome mining for integrative analyses. Nucleic Acids Research 43(8):e51, doi:10.1093/nar/gkv054. Check citation("CAGEr") for more details.
 13/01/2015	fixed the error message in tagClusters() function for the case no qLow and qUp values are specified
 Updated to version 1.9.2 (03/12/2014)
 03/12/2014	updated the vignette - fixed the references

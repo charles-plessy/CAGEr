@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{September 17, 2015}
+\date{April 18, 2016}
 
 \begin{document}
 <<setup, echo=FALSE>>=
@@ -124,8 +124,7 @@ genomic strand: should be either + or -
 number of CAGE tags supporting that TSS
 \end{itemize}
 \item
-\textbf{Publicly available CAGE datasets from R data package}: A data package \Rpackage{FANTOM3and4CAGE} containing CAGE data produced by FANTOM 
-consortium is accompanying this package. Selected subset of these data can be used as input for \Rpackage{CAGEr}.
+\textbf{Publicly available CAGE datasets from R data package}: Several data packages containing CAGE data for various organisms produced by major consortia are accompanying this package. Selected subset of these data can be used as input for \Rpackage{CAGEr}.
 \end{enumerate}
 
 In addition, the package provides a method for coercing a \Rcode{data.frame} object containing single base-pair TSS information into a \Rcode{CAGEset} object, which can be further used in the workflow described below. 
@@ -186,8 +185,7 @@ To display the created object type:
 myCAGEset
 @
 
-The supplied information can be seen in the \Rcode{Input data information} section, whereas all other slots are still empty 
-since no data has been read yet and no analysis conducted.
+The supplied information can be seen in the \Rcode{Input data information} section, whereas all other slots are still empty, since no data has been read yet and no analysis conducted.
 
 \subsubsection{Coercing a \Rcode{data.frame} into a \Rcode{CAGEset} object}
 In addition to creating an empty \Robject{CAGEset} object and reading in the TSS data from specified input files (as described in the following section), a \Rcode{CAGEset} object can be created directly by coercing a \Rcode{data.frame} containing single base-pair TSS information. To be able to do the coercion into a \Robject{CAGEset} the \Rcode{data.frame} must conform with the following:
@@ -336,14 +334,20 @@ In addition to the two provided normalization methods, a pass-through option "no
 normalized CAGE signal (denoted as tpm), will actually be raw tag counts.
 
 \subsection{Exporting CAGE signal to bedGraph}
-CAGE data can be visualized in the genomic context by exporting raw or normalized CAGE tag counts to a bedGraph file and uploading the file 
+CAGE data can be visualized in the genomic context by exporting raw or normalized CAGE tag counts to a bedGraph (or BigWig) file and uploading (or linking) the file 
 to a genome browser. Positions of TSSs and tag counts supporting them are exported using \Rfunction{exportCTSStoBedGraph} function:
 <<eval=FALSE>>=
-exportCTSStoBedGraph(myCAGEset, values = "normalized", oneFile = TRUE)
+exportCTSStoBedGraph(myCAGEset, values = "normalized", 
+				format = "bedGraph", oneFile = TRUE)
 @
 This will produce a single bedGraph file with multiple annotated tracks that can be directly visualized as custom tracks in the genome browser (Figure~\ref{fig:CTSSbedGraph}).
-There are two tracks per sample; one for TSSs on the plus strand and the other for the minus strand. Values for TSSs on minus strand are shown as 
-negative and are pointing downwards in the browser.
+There are two tracks per sample; one for TSSs on the plus strand and the other for the minus strand. Values for TSSs on minus strand are shown as negative and are pointing downwards in the browser.
+\newline
+Alternatively, the tracks can be exported to a binary BigWig format:
+<<eval=FALSE>>=
+exportCTSStoBedGraph(myCAGEset, values = "normalized", format = "BigWig")
+@
+which will produce two BigWig files per sample (one for TSSs on the plus strand and the other for the minus strand) and an accompanying text file with track headers.
 
 \begin{figure}[h!]
 \centering
@@ -356,10 +360,10 @@ negative and are pointing downwards in the browser.
 Transcription start sites are found in the promoter region of a gene and reflect the transcriptional activity of that promoter (Figure~\ref{fig:CTSSbedGraph}). 
 TSSs in the close proximity of each other give rise to a functionally equivalent set of transcripts and are likely regulated by the same promoter elements. Thus, TSSs can 
 be spatially clustered into larger transcriptional units, called tag clusters (TCs) that correspond to individual promoters. \Rpackage{CAGEr} supports three methods for spatial clustering of TSSs 
-along the genome, two "ab initio" methods driven by the data itself as well as assigning TSSs to predefined genomic regions:
+along the genome, two "ab initio" methods driven by the data itself, as well as assigning TSSs to predefined genomic regions:
 \begin{enumerate}
 \item
-simple distance-based clustering in which two neighbouring TSSs are joined together if they are closer than some specified distance
+simple distance-based clustering in which two neighbouring TSSs are joined together if they are closer than some specified distance (greedy algorithm)
 \item
 parametric clustering of data attached to sequences based on the density of the signal (\cite{Frith:2007}, \href{http://www.cbrc.jp/paraclu/}{http://www.cbrc.jp/paraclu/})
 \item
@@ -376,7 +380,7 @@ clusterCTSS(object = myCAGEset, threshold = 1, thresholdIsTpm = TRUE,
 		removeSingletons = TRUE, keepSingletonsAbove = 5)
 @
 Our final set of tag clusters will not include singletons (clusters with only one TSS), unless the normalized signal is above 5, \emph{i.e.} it is a reasonably supported TSS.
-The \Rfunction(clusterCTSS) function creates a set of clusters for each sample separately; for each cluster it returns the genomic coordinates, counts the number of TSSs within 
+The \Rfunction{clusterCTSS} function creates a set of clusters for each sample separately; for each cluster it returns the genomic coordinates, counts the number of TSSs within 
 the cluster, determines the position of the most frequently used (dominant) TSS, calculates the total CAGE signal within the cluster and CAGE signal supporting the dominant TSS only.
 We can extract tag clusters for a desired sample from the \Robject{CAGEset} object by calling \Rfunction{tagClusters} function:
 <<>>=
@@ -465,22 +469,32 @@ The histograms can also help in choosing an appropriate width threshold for sepa
 \subsection{Creating consensus promoters across samples}
 Tag clusters are created for each sample individually and they are often sample-specific, thus can be present in one sample but absent in another. In addition, 
 in many cases tag clusters do not coincide perfectly within the same promoter region, or there might be two clusters in one sample and only one larger in the other. 
-To be able to compare genome-wide transcriptional activity across samples and to perform expression profiling, a single set of consensus clusters has to be created. 
+To be able to compare genome-wide transcriptional activity across samples and to perform expression profiling, a single set of consensus clusters needs to be created. 
 This is done using \Rfunction{aggregateTagClusters} function, which aggregates tag clusters from all samples into a single set of non-overlapping consensus clusters:
 <<>>=
 aggregateTagClusters(myCAGEset, tpmThreshold = 5, 
 		qLow = 0.1, qUp = 0.9, maxDist = 100)
 @
 Tag clusters can be aggregated using their full span (from start to end) or using positions of previously calculated quantiles as their boundaries. Only tag clusters above 
-given threshold will be selected and two clusters will be aggregated together if they are \Rcode{<= maxDist} apart.
+given tag count threshold will be considered and two clusters will be aggregated together if their boundaries (i.e. either starts and ends or positions of quantiles) are \Rcode{<= maxDist} apart.
 Final set of consensus clusters can be retrieved by:
 <<>>=
 consensusCl <- consensusClusters(myCAGEset)
 head(consensusCl)
 @
-Analysis of promoter width can be performed for consensus clusters as well, using the \Rfunction{cumulativeCTSSdistribution}, \Rfunction{quantilePositions} 
-and \Rfunction{plotInterquantileWidth} functions as described above for the tag clusters, but by setting 
+which will return genomic coordinates and sum of CAGE signal across all samples for each consensus cluster (the \Rcode{tpm} column).
+\newline
+Analogously to tag clusters, analysis of promoter width can be performed for consensus clusters as well, using the same \Rfunction{cumulativeCTSSdistribution}, \Rfunction{quantilePositions} 
+and \Rfunction{plotInterquantileWidth} functions as described above, but by setting 
 the \Rcode{clusters} parameter to \Rcode{"consensusClusters"}.
+\newline
+Although consensus clusters are created to represent consensus across all samples, they obviously have different CAGE signal and can have different width or position of the dominant TSS in the different samples. Sample-specific information on consensus clusters can be retrieved with the \Rfunction{consensusClusters} function, by specifying desired sample name (analogous to retrieving tag clusters):
+<<eval=FALSE>>=
+consensusCl <- consensusClusters(myCAGEset, sample = "zf_unfertilized_egg",
+		       returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9)
+@
+This will, in addition to genomic coordinates of the consensus clusters, which are constant across all samples, also return the position of the dominant TSS, the CAGE signal (tpm) and the interquantile width specific for a given sample. Note that when specifying individual sample, only the consensus clusters that have some CAGE signal in that sample will be returned (which will be a subset of all consensus clusters).
+
 
 \subsection{Expression profiling}
 Since CAGE signal reflects level of transcription from a given TSS or promoter it can be used for 5' centered expression profiling.
@@ -558,7 +572,7 @@ initiation in the other sample. Thus, shifting score detects only the degree of 
 \newline
 To assess any general change in the TSS usage within the promoter region, a two-sample Kolmogorov-Smirnov (K-S) test on cumulative 
 sums of CAGE signal along the consensus cluster is performed. Cumulative sums in both samples are scaled to range between 0 and 1 and are considered to be empirical cumulative distribution functions (ECDF) 
-reflecting sampling of TSS positions during transcription initiation. K-S test is performed to assess whether the two underlying probability distributions differ. To obtain P-value 
+reflecting sampling of TSS positions during transcription initiation. K-S test is performed to assess whether the two underlying probability distributions differ. To obtain a P-value 
 (\emph{i.e.} the level at which the null-hypothesis can be rejected), sample sizes that generated the ECDFs are required, in addition to actual K-S statistics calculated from ECDFs. 
 These are derived either from raw tag counts, \emph{i.e.} exact number of times each TSS in the cluster was sampled during sequencing (when \Rcode{useTpmKS = FALSE}), or from normalized 
 tpm values (when \Rcode{useTpmKS = TRUE}). P-values obtained from K-S tests are further corrected for multiple testing using Benjamini and Hochenberg (BH) method and for each P-value a corresponding false-discovery rate (FDR) is also reported.

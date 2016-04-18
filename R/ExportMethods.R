@@ -74,29 +74,52 @@ function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 
 setGeneric(
 name="exportCTSStoBedGraph",
-def=function(object, values, oneFile = TRUE){
+def=function(object, values = "normalized", format = "BigWig", oneFile = TRUE){
 	standardGeneric("exportCTSStoBedGraph")
 }
 )
 
 setMethod("exportCTSStoBedGraph",
 signature(object = "CAGEset"),
-function (object, values = "normalized", oneFile = T){
+function (object, values = "normalized", format = "BigWig", oneFile = TRUE){
 		
 	sample.labels <- sampleLabels(object)
-	
+    
+    if(format == "BigWig"){
+        reference.genome <- genomeName(object)
+        if(reference.genome %in% rownames(installed.packages()) == FALSE){
+            stop("Reference genome is not installed! Please install required BSgenome package before exporting to BigWig files!")
+        }else if(!paste("package:", reference.genome, sep = "") %in% search()){
+            stop("Reference genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
+        }else{
+            genome <- get(ls(paste("package:", reference.genome, sep="")))
+        }
+    }
+    
 	if(values == "raw") {
 		data <- cbind(CTSScoordinates(object), object@tagCountMatrix)
-		.export.bedgraph.all(data = data, sample.labels = sample.labels, v = values, oneFile = oneFile)
-		message("\nBedGraph file(s) for CTSS raw tag counts have been created in your working directory (", getwd(), ")")
+        if(format == "BigWig"){
+            .export.bw.all(data = data, sample.labels = sample.labels, v = values, genome = genome)
+        }else if(format == "bedGraph"){
+            .export.bedgraph.all(data = data, sample.labels = sample.labels, v = values, oneFile = oneFile)
+        }else{
+            stop("'format' parameter must be one of the (\"BigWig\", \"bedGraph\")")
+        }
 	}else if(values == "normalized"){
-		data <- cbind(CTSScoordinates(object), as.data.frame(object@normalizedTpmMatrix))
-		.export.bedgraph.all(data = data, sample.labels = sample.labels, v = values, oneFile = oneFile)
-		message("\nBedGraph file(s) for CTSS normalized tpm have been created in your working directory (", getwd(), ")")
+        data <- cbind(CTSScoordinates(object), as.data.frame(object@normalizedTpmMatrix))
+        if(format == "BigWig"){
+            .export.bw.all(data = data, sample.labels = sample.labels, v = values, genome = genome)
+        }else if(format == "bedGraph"){
+            .export.bedgraph.all(data = data, sample.labels = sample.labels, v = values, oneFile = oneFile)
+        }else{
+            stop("'format' parameter must be one of the (\"BigWig\", \"bedGraph\")")
+        }
 	}else{
 		stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
 	}
 	
+    message("\n", format, " file(s) for CTSS ", values, " counts have been created in your working directory (", getwd(), ")")
+    
 	invisible(1)
 	
 }

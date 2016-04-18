@@ -33,6 +33,46 @@
 	export(data.ucsc, con = file_name, format = "ucsc", subformat = "bedGraph", append = append)
 }
 
+
+.export.bw.all <- function(data, sample.labels, v, genome) {
+    data.plus <- subset(data, strand == "+")
+    data.minus <- subset(data, strand == "-")
+    
+    rd.list <- lapply(as.list(sample.labels), function(x) {
+        lapply(as.list(c("plus", "minus")), function(y) {
+            d <- get(paste("data.", y, sep = ""))
+            d <- d[, c("chr", "pos", x)]
+            colnames(d) <- c("chr", "pos", "score")
+            if(nrow(d)>0){
+                d <- subset(d, score>0)
+                d.rd <- GRanges(seqnames = d$chr, ranges=IRanges(start = d$pos, end = d$pos), strand = "+", score = d$score, seqlengths=seqlengths(genome))
+            }else{
+                d.rd <- GRanges()
+                seqlengths(d.rd) <- seqlengths(genome)
+            }
+            if(y == "minus"){
+                d.rd$score <- -1 * d.rd$score
+            }
+            return(d.rd)
+							 }
+							 )
+    }
+    )
+    names(rd.list) <- sample.labels
+
+    a <- lapply(sample.labels, function(x){
+            if(length(rd.list[[x]][[1]]) > 0){
+                export.bw(rd.list[[x]][[1]], con = paste(x, ".CTSS.", v, ".plus.bw", sep = ""))
+            }
+            if(length(rd.list[[x]][[2]]) > 0){
+                export.bw(rd.list[[x]][[2]], con = paste(x, ".CTSS.", v, ".minus.bw", sep = ""))
+            }
+        })
+    
+    description.lines = data.frame(description = unlist(lapply(sample.labels, function(x) {paste('track type=bigWig name="', paste(x, "CTSS", v, c('plus"', 'minus"'), sep = " "), ' description="', paste(x, " CTSS ", v, ' (plus strand)"', sep = ""), " bigDataUrl=", paste(x, ".CTSS.", v, c(".plus", ".minus"), ".bw", sep = ""), sep = "")})))
+    write.table(description.lines, file = paste("CTSS.", v, ".all.samples.track.description.txt", sep = ""), col.names = F, row.names = F, sep = "\t", quote = F)
+}
+
 .export.bedgraph.all <- function(data, sample.labels, v, oneFile) {
 	data.plus <- subset(data, strand == "+")
 	data.minus <- subset(data, strand == "-")
@@ -222,13 +262,25 @@ value.low=min(vec), value.high=max(vec), value.mid=(value.low+value.high)/2, ...
 	block_rel_pos[which(clusters.q$dominant_ctss <= q.low.pos)] = paste(0, formatC(dominant_ctss_start[which(clusters.q$dominant_ctss <= q.low.pos)] - start[which(clusters.q$dominant_ctss <= q.low.pos)], format = 'f', digits = 0), formatC(q.low.pos[which(clusters.q$dominant_ctss <= q.low.pos)] - start[which(clusters.q$dominant_ctss <= q.low.pos)], format = 'f', digits = 0), end[which(clusters.q$dominant_ctss <= q.low.pos)] - start[which(clusters.q$dominant_ctss <= q.low.pos)] - 1, sep = ',')
 	block_rel_pos[which(clusters.q$dominant_ctss > q.up.pos)] = paste(0, formatC(q.low.pos[which(clusters.q$dominant_ctss > q.up.pos)] - start[which(clusters.q$dominant_ctss > q.up.pos)], format = 'f', digits = 0), formatC(dominant_ctss_start[which(clusters.q$dominant_ctss > q.up.pos)] - start[which(clusters.q$dominant_ctss > q.up.pos)], format = 'f', digits = 0), end[which(clusters.q$dominant_ctss > q.up.pos)] - start[which(clusters.q$dominant_ctss > q.up.pos)] - 1, sep = ',')
 	
+    removeFirstBlock <- unlist(lapply(strsplit(block_rel_pos, split = ",", fixed = T), function(x) {x[1] == x[2]}))
+    removeLastBlock <- unlist(lapply(as.list(c(1:length(end))), function(x) {s <- tail(strsplit(block_rel_pos[x], split = ",", fixed = T)[[1]],2)[1]; l <- tail(strsplit(block_lengths[x], split = ",", fixed = T)[[1]],2)[1]; return((as.integer(end[x])-as.integer(start[x])) == (as.integer(s)+as.integer(l)))}))
+    
+    block_nr[removeFirstBlock] <- block_nr[removeFirstBlock] - 1
+    block_nr[removeLastBlock] <- block_nr[removeLastBlock] - 1
+
+    block_lengths[removeFirstBlock] <- sub("[[:digit:]]+,", "", block_lengths[removeFirstBlock])
+    block_lengths[removeLastBlock] <- reverse(sub("[[:digit:]]+,", "", reverse(block_lengths[removeLastBlock])))
+    
+    block_rel_pos[removeFirstBlock] <- sub("[[:digit:]]+,", "", block_rel_pos[removeFirstBlock])
+    block_rel_pos[removeLastBlock] <- reverse(sub("[[:digit:]]+,", "", reverse(block_rel_pos[removeLastBlock])))
+    
 		if(itemRgb){
-			write(paste('track name="', track.name,'" description="', track.description,'" visibility="pack"', ' itemRgb="On"', sep = ''), file = track.file, append = app)
+            write(paste('track name="', track.name,'" description="', track.description,'" visibility="pack"', ' itemRgb="On"', sep = ''), file = track.file, append = app)
 			write.table(data.frame(chr, formatC(start, format = 'f', digits = 0), formatC(end, format = 'f', digits = 0), name, score = rep(0,length(start)), strand, formatC(dominant_ctss_start,  format = 'f', digits = 0), formatC(dominant_ctss_end, format = 'f', digits = 0), cols, block_nr, block_lengths, block_rel_pos), file = track.file, append = T, col.names = F, row.names = F, quote = F, sep = '\t')
 		}else{
-			write(paste('track name="', track.name,'" description="', track.description,'" visibility="pack" color=', cols, sep = ''), file = track.file, append = app)
+            write(paste('track name="', track.name,'" description="', track.description,'" visibility="pack" color=', cols, sep = ''), file = track.file, append = app)
 			write.table(data.frame(chr, formatC(start, format = 'f', digits = 0), formatC(end, format = 'f', digits = 0), name, score = rep(0,length(start)), strand, formatC(dominant_ctss_start,  format = 'f', digits = 0), formatC(dominant_ctss_end, format = 'f', digits = 0), rep(0, length(start)), block_nr, block_lengths, block_rel_pos), file = track.file, append = T, col.names = F, row.names = F, quote = F, sep = '\t')		
-		}
+        }
 		
 	}else{
 

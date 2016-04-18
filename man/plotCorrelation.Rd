@@ -10,7 +10,8 @@
 \usage{
 plotCorrelation(object, what = "CTSS", values = "raw",
 				samples = "all", method = "pearson",
-				tagCountThreshold = 1, applyThresholdBoth = FALSE)
+				tagCountThreshold = 1, applyThresholdBoth = FALSE,
+				plotSize = 800)
 }
 \arguments{
   \item{object}{
@@ -30,6 +31,9 @@ plotCorrelation(object, what = "CTSS", values = "raw",
 }
   \item{tagCountThreshold, applyThresholdBoth}{
 	Only TSSs with tag count \code{>= tagCountThreshold} in either one (\code{applyThresholdBoth = FALSE}) or both samples (\code{applyThresholdBoth = TRUE}) are plotted and used to calculate correlation.
+}
+  \item{plotSize}{
+	Size of the individual comparison plot in pixels - the total size of the resulting png will be \code{length(samples) * plotSize} in both dimensions.
 }
 }
 \value{

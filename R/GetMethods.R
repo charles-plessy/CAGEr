@@ -151,14 +151,58 @@ function (object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = N
 
 setGeneric(
 name="consensusClusters",
-def=function(object){
-	standardGeneric("consensusClusters")
+def=function(object, sample=NULL, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
+    standardGeneric("consensusClusters")
 })
 
 setMethod("consensusClusters",
 signature(object = "CAGEset"),
-function (object){
-	object@consensusClusters
+function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
+	
+    if(length(sample) == 0){
+        return(object@consensusClusters)
+    }else if(sample %in% object@sampleLabels){
+        
+        cc.s <- cbind(cluster = as.integer(rownames(consensusClustersTpm(object))), tpm = consensusClustersTpm(object)[,sample])
+        
+        if(returnInterquantileWidth & (length(qLow) == 0 | length(qUp) == 0)){
+            stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")
+        }else if(returnInterquantileWidth & (length(object@consensusClustersQuantileLow)==0 & length(object@consensusClustersQuantileUp)==0)){
+            stop("Interquantile width cannot be returned because no quantile positions for consensus clusters have been calculated yet! Run 'quantilePositions()' first to get the positions of the desired quantiles!")
+        }else if(returnInterquantileWidth & (!(paste("q_", qLow, sep = "") %in% colnames(object@consensusClustersQuantileLow[[sample]]) & paste("q_", qUp, sep = "") %in% colnames(object@consensusClustersQuantileUp[[sample]])))){
+            stop("Interquantile width cannot be returned because specified quantile positions have not been calculated for consensus clusters! Run 'quantilePositions()' again to get the positions of the desired quantiles!")
+        }else if(returnInterquantileWidth){
+            cc <- object@consensusClusters
+
+            cc.cumsum <- object@CTSScumulativesConsensusClusters[[sample]]
+            a <- lapply(cc.cumsum, function(x) {.get.dominant.ctss(as.numeric(x), isCumulative = T)})
+            b <- data.frame(consensus.cluster = as.integer(names(a)), dominant_ctss = unlist(a))
+            #cc <- merge(b, cc.s, by.x = 1, by.y = 1, all.x = T, all.y = F)
+            
+            cc <- merge(cc[,-which(colnames(cc) == "tpm")], b, by.x = 1, by.y = 1, all.x = F, all.y = T)
+            cc$dominant_ctss <- cc$start + cc$dominant_ctss
+            
+            cc <- merge(cc, cc.s, by.x = 1, by.y = 1, all.x = T, all.y = F)
+            
+            ctss <- CTSSnormalizedTpm(object)[,c("chr", "pos", "strand", sample)]
+            cc <- merge(cc, ctss, by.x = c("chr", "strand", "dominant_ctss"), by.y = c("chr", "strand", "pos"), all.x = T, all.y = F)
+            colnames(cc)[ncol(cc)] <- "tpm.dominant_ctss"
+            cc <- cc[,c("consensus.cluster", "chr", "start", "end", "strand", "dominant_ctss", "tpm", "tpm.dominant_ctss")]
+            
+            cc.w <- merge(object@consensusClustersQuantileLow[[sample]], object@consensusClustersQuantileUp[[sample]])
+            cc.w <- cc.w[,c(1, which(colnames(cc.w) == paste("q_", qLow, sep = "")), which(colnames(cc.w) == paste("q_", qUp, sep = "")))]
+            cc.w$interquantile_width <- cc.w[,3] - cc.w[,2] + 1
+            cc <- merge(cc, cc.w, by.x = "consensus.cluster", by.y = "cluster", all.x = T)
+        }else{
+            cc <- object@consensusClusters
+            cc <- merge(cc[,-which(colnames(cc) == "tpm")], cc.s, by.x = 1, by.y = 1, all.x = T, all.y = F)
+            cc <- subset(cc, tpm>0)
+        }
+        return(cc)
+    }else{
+        stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
+    }
+
 })
 
 
