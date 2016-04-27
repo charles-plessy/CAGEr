@@ -19,7 +19,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	sample.labels <- sampleLabels(object)
 	names(sample.labels) <- rainbow(n = length(sample.labels))
 
-	if(object@inputFilesType == "bam") {
+	if(object@inputFilesType == "bam" | object@inputFilesType == "bamPairedEnd") {
 		
 		reference.genome <- genomeName(object)
 		
@@ -43,12 +43,18 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		library.sizes <- vector()
 		first <- TRUE
 		
+        what <- c("rname", "strand", "pos", "seq", "qual", "mapq")
+        if(object@inputFilesType == "bam"){
+            param <- ScanBamParam(what = what, flag = scanBamFlag(isUnmappedQuery = FALSE))
+        }else if(object@inputFilesType == "bamPairedEnd"){
+            param <- ScanBamParam(what = what, flag = scanBamFlag(isUnmappedQuery = FALSE, isProperPair = TRUE, isFirstMateRead = TRUE))
+        }
+
+
 		for(i in 1:length(bam.files)) {
 	
 			message("\nReading in file: ", bam.files[i], "...")
 		
-			what <- c("rname", "strand", "pos", "qwidth", "seq", "qual", "mapq")
-			param <- ScanBamParam(what = what, flag = scanBamFlag(isUnmappedQuery = FALSE))
 			bam <- scanBam(bam.files[i], param = param)
 		
 			message("\t-> Filtering out low quality reads...")
@@ -70,8 +76,8 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 			reads.GRanges <- reads.GRanges[seqnames(reads.GRanges) %in% seqnames(genome)]
 			reads.GRanges <- reads.GRanges[!(end(reads.GRanges) > seqlengths(genome)[as.character(seqnames(reads.GRanges))])]
 			elementMetadata(reads.GRanges)$mapq[is.na(elementMetadata(reads.GRanges)$mapq)] <- Inf
-			reads.GRanges.plus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "+" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & (as.character(seqnames(reads.GRanges)) %in% seqnames(genome) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold)]
-			reads.GRanges.minus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "-" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & (as.character(seqnames(reads.GRanges)) %in% seqnames(genome) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold)]
+			reads.GRanges.plus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "+" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold]
+			reads.GRanges.minus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "-" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold]
 		
 			if(removeFirstG == TRUE){
 					CTSS <- .remove.added.G(reads.GRanges.plus, reads.GRanges.minus, genome, correctSystematicG = correctSystematicG)
@@ -103,7 +109,69 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		
 		}
 	
-	}else if(object@inputFilesType == "ctss") {
+	
+    }else if(object@inputFilesType == "bed") {
+    
+        reference.genome <- genomeName(object)
+    
+        if(reference.genome %in% rownames(installed.packages()) == FALSE){
+            stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
+        }else if(!paste("package:", reference.genome, sep = "") %in% search()){
+            stop("Requested genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
+        }else{
+            genome <- get(ls(paste("package:", reference.genome, sep="")))
+        }
+
+        bed.files <- inputFiles(object)
+        
+        for(f in bed.files) {
+            if(file.exists(f) == FALSE){
+                stop("Could not locate input file ", f)
+            }				
+        }
+        
+        library.sizes <- vector()
+        first <- TRUE
+        
+        for(i in 1:length(bed.files)) {
+            
+            message("\nReading in file: ", bed.files[i], "...")
+            
+            reads.GRanges <- import.bed(con = bed.files[i])
+            values(reads.GRanges) <- NULL
+            
+            reads.GRanges <- reads.GRanges[seqnames(reads.GRanges) %in% seqnames(genome)]
+            reads.GRanges <- reads.GRanges[!(end(reads.GRanges) > seqlengths(genome)[as.character(seqnames(reads.GRanges))])]
+            
+            reads.GRanges.plus <- reads.GRanges[strand(reads.GRanges) == "+"]
+            reads.GRanges.minus <- reads.GRanges[strand(reads.GRanges) == "-"]
+            
+            message("\t-> Making CTSSs and counting number of tags...")
+
+            CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = as.integer(start(reads.GRanges.plus)), strand = rep("+", times = length(reads.GRanges.plus)), stringsAsFactors = F)
+            CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = as.integer(end(reads.GRanges.minus)), strand = rep("-", times = length(reads.GRanges.minus)), stringsAsFactors = F)
+            CTSS <- rbind(CTSS.plus, CTSS.minus)
+            CTSS$tag_count <- 1
+            CTSS <- data.table(CTSS)
+            CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
+            
+            setnames(CTSS, c("chr", "pos", "strand", sample.labels[i]))
+            setkey(CTSS, chr, pos, strand)
+        
+            library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
+        
+            if(first == TRUE) {
+                CTSS.all.samples <- CTSS
+            }else{
+                CTSS.all.samples <- merge(CTSS.all.samples, CTSS, all.x = TRUE, all.y = TRUE)
+            }
+        
+            first <- FALSE
+
+        }
+        
+
+    }else if(object@inputFilesType == "ctss") {
 	
 		first <- TRUE
 
@@ -156,7 +224,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 
 	}else{
 		
-		stop("'inputFilesType' must be one of the supported file types (\"bam\", \"ctss\", \"CTSStable\")")
+		stop("'inputFilesType' must be one of the supported file types (\"bam\", \"bamPairedEnd\", \"ctss\", \"CTSStable\")")
 		
 	}
 	

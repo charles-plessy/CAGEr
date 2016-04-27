@@ -9,7 +9,7 @@ importClassesFrom("data.table", data.table)
 
 importFrom("data.table", data.table, tables, setkey, setkeyv, key, "key<-", haskey, CJ, SJ, copy, set2key, set2keyv, key2, as.data.table, is.data.table, test.data.table, last, like, "%like%", between, "%between%", timetaken, truelength, alloc.col, ":=", setattr, setnames, setcolorder, set, setDT, setDF, setorder, setorderv, setNumericRounding, getNumericRounding, chmatch, "%chin%", chorder, chgroup, rbindlist, fread, foverlaps, transpose, tstrsplit, frank, frankv, address, .SD,.N,.I,.GRP,.BY,.EACHI, rleid, rleidv, as.xts.data.table, uniqueN, melt.data.table, dcast.data.table, .rbind.data.table)
 
-importFrom(rtracklayer, export)
+importFrom(rtracklayer, export, export.bw, import.bed)
 importFrom(BSgenome, available.genomes)
 importFrom(beanplot, beanplot)
 

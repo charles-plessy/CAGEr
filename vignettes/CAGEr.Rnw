@@ -28,7 +28,7 @@
 
 \title{\textsf{CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining}}
 
-\date{April 18, 2016}
+\date{April 25, 2016}
 
 \begin{document}
 <<setup, echo=FALSE>>=
@@ -109,7 +109,7 @@ For further details on the implemented methods and for citing the \Rpackage{CAGE
 
 \begin{enumerate}
 \item
-\textbf{Sequenced CAGE tags mapped to the genome}: BAM (Binary Sequence Alignment Map) files of sequenced CAGE tags aligned to the referent genome.
+\textbf{Sequenced CAGE tags mapped to the genome}: either BAM (Binary Sequence Alignment Map) files of sequenced CAGE tags aligned to the referent genome (including the paired-end data such as CAGEscan) or BED files of CAGE tags (fragments).
 \item
 \textbf{CAGE detected TSSs (CTSSs)}: tab separated files with genomic coordinates of TSSs and number of tags supporting each TSS. The file should not contain 
 a header and the data must be organized in four columns: 
@@ -127,7 +127,9 @@ number of CAGE tags supporting that TSS
 \textbf{Publicly available CAGE datasets from R data package}: Several data packages containing CAGE data for various organisms produced by major consortia are accompanying this package. Selected subset of these data can be used as input for \Rpackage{CAGEr}.
 \end{enumerate}
 
-In addition, the package provides a method for coercing a \Rcode{data.frame} object containing single base-pair TSS information into a \Rcode{CAGEset} object, which can be further used in the workflow described below. 
+The type and the format of the input files is specified at the beginning of the workflow, when the \Rcode{CAGEset} object is created (section 4.2). This is done by setting the \Rcode{inputFilesType} argument, which accepts the following self-explanatory options referring to formats mentioned above: \Rcode{"bam", "bamPairedEnd", "bed", "ctss", "CTSStable"}.
+\newline
+In addition, the package provides a method for coercing a \Rcode{data.frame} object containing single base-pair TSS information into a \Rcode{CAGEset} object (as described in section 4.2.1), which can be further used in the workflow described below. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Getting started}
@@ -491,7 +493,7 @@ the \Rcode{clusters} parameter to \Rcode{"consensusClusters"}.
 Although consensus clusters are created to represent consensus across all samples, they obviously have different CAGE signal and can have different width or position of the dominant TSS in the different samples. Sample-specific information on consensus clusters can be retrieved with the \Rfunction{consensusClusters} function, by specifying desired sample name (analogous to retrieving tag clusters):
 <<eval=FALSE>>=
 consensusCl <- consensusClusters(myCAGEset, sample = "zf_unfertilized_egg",
-		       returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9)
+		    returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9)
 @
 This will, in addition to genomic coordinates of the consensus clusters, which are constant across all samples, also return the position of the dominant TSS, the CAGE signal (tpm) and the interquantile width specific for a given sample. Note that when specifying individual sample, only the consensus clusters that have some CAGE signal in that sample will be returned (which will be a subset of all consensus clusters).
 

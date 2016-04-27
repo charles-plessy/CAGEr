@@ -1,3 +1,7 @@
+Updated to version 1.13.4 (27/04/2016)
+26/04/2016	updated the vignette
+26/04/2016	added support for BED file CAGE tags input - included the new accepted value for inputFilesType="bed"
+24/04/2016	added support for paired-end BAM file CAGE data input (CAGEscan) - included the new accepted value for inputFilesType="bamPairedEnd"
 Updated to version 1.13.3 (18/04/2016)
 18/04/2016	updated the vignette
 14/04/2016	modified the consensusClusters() function to allow extracting sample-specific information, such as CAGE signal, position of the dominant TSS and interquantile width in a specific sample (i.e. consensusClusters() now behaves analogously to tagClusters() function)

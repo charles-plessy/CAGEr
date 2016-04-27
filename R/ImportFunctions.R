@@ -65,22 +65,22 @@
 	G.reads.minus <- which(substr(elementMetadata(reads.GRanges.minus)$seq, start = elementMetadata(reads.GRanges.minus)$read.length, stop = elementMetadata(reads.GRanges.minus)$read.length) == "C")
 	
 	if(length(G.reads.plus)>0){
-	G.mismatch.reads.plus <- G.reads.plus[getSeq(genome, resize(reads.GRanges.plus[G.reads.plus], width = 1, fix = "start"), as.character = TRUE) != "G"]
-	elementMetadata(reads.GRanges.plus)$removedG <- FALSE
-	elementMetadata(reads.GRanges.plus)$removedG[G.mismatch.reads.plus] <- TRUE
-	start(reads.GRanges.plus)[G.mismatch.reads.plus] <- start(reads.GRanges.plus)[G.mismatch.reads.plus] + as.integer(1)
-	CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = start(reads.GRanges.plus), strand = "+", removedG = elementMetadata(reads.GRanges.plus)$removedG, stringsAsFactors = FALSE)
+        G.mismatch.reads.plus <- G.reads.plus[getSeq(genome, resize(reads.GRanges.plus[G.reads.plus], width = 1, fix = "start"), as.character = TRUE) != "G"]
+        elementMetadata(reads.GRanges.plus)$removedG <- FALSE
+        elementMetadata(reads.GRanges.plus)$removedG[G.mismatch.reads.plus] <- TRUE
+        start(reads.GRanges.plus)[G.mismatch.reads.plus] <- start(reads.GRanges.plus)[G.mismatch.reads.plus] + as.integer(1)
+        CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = start(reads.GRanges.plus), strand = "+", removedG = elementMetadata(reads.GRanges.plus)$removedG, stringsAsFactors = FALSE)
 	}else{
 		G.mismatch.reads.plus <- NULL
 		CTSS.plus <- data.frame()
 	}
 	
 	if(length(G.reads.minus)>0){
-	G.mismatch.reads.minus <- G.reads.minus[getSeq(genome, resize(reads.GRanges.minus[G.reads.minus], width = 1, fix = "start"), as.character = TRUE) != "G"]
-	elementMetadata(reads.GRanges.minus)$removedG <- FALSE
-	elementMetadata(reads.GRanges.minus)$removedG[G.mismatch.reads.minus] <- TRUE
-	end(reads.GRanges.minus)[G.mismatch.reads.minus] <- end(reads.GRanges.minus)[G.mismatch.reads.minus] - as.integer(1)
-	CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = end(reads.GRanges.minus), strand = "-", removedG = elementMetadata(reads.GRanges.minus)$removedG, stringsAsFactors = FALSE)
+        G.mismatch.reads.minus <- G.reads.minus[getSeq(genome, resize(reads.GRanges.minus[G.reads.minus], width = 1, fix = "start"), as.character = TRUE) != "G"]
+        elementMetadata(reads.GRanges.minus)$removedG <- FALSE
+        elementMetadata(reads.GRanges.minus)$removedG[G.mismatch.reads.minus] <- TRUE
+        end(reads.GRanges.minus)[G.mismatch.reads.minus] <- end(reads.GRanges.minus)[G.mismatch.reads.minus] - as.integer(1)
+        CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = end(reads.GRanges.minus), strand = "-", removedG = elementMetadata(reads.GRanges.minus)$removedG, stringsAsFactors = FALSE)
 	}else{
 		G.mismatch.reads.minus <- NULL
 		CTSS.minus <- data.frame()

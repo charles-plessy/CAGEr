@@ -1,7 +1,7 @@
 Package: CAGEr
 Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for precise mapping of transcription start sites and promoterome mining
-Version: 1.13.3
-Date: 04-18-2016
+Version: 1.13.4
+Date: 04-27-2016
 Author: Vanja Haberle, Department of Biology, University of Bergen, Norway <vanja.haberle@gmail.com>
 Maintainer: Vanja Haberle <vanja.haberle@gmail.com>
 Imports: utils, Rsamtools, GenomicRanges (>= 1.23.16), IRanges (>= 2.5.27), data.table, beanplot, rtracklayer, som, VGAM
@@ -10,5 +10,5 @@ Suggests: BSgenome.Drerio.UCSC.danRer7, FANTOM3and4CAGE
 Enhances: parallel
 Description: Preprocessing of CAGE sequencing data, identification and normalization of transcription start sites and downstream analysis of transcription start sites clusters (promoters).
 License: GPL-3
-biocViews: Preprocessing, Sequencing, HighThroughputSequencing, Transcription, Clustering, Visualization
+biocViews: Preprocessing, Sequencing, Normalization, FunctionalGenomics, Transcription, GeneExpression, Clustering, Visualization
 Collate: AllClasses.R GetMethods.R ImportFunctions.R ImportMethods.R CorrelationMethods.R ExportFunctions.R ExportMethods.R MergingMethods.R NormalizationFunctions.R NormalizationMethods.R ExpressionProfilingMethods.R ClusteringFunctions.R ClusteringMethods.R CumulativeDistributionFunctions.R CumulativeDistributionMethods.R QuantileWidthFunctions.R QuantileWidthMethods.R AggregationFunctions.R AggregationMethods.R ShiftingFunctions.R ShiftingMethods.R

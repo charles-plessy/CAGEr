@@ -210,7 +210,7 @@
 	
 	if(reduceToNonoverlapping == TRUE){
 		clusters.gr <- GRanges(seqnames = clusters$chr, ranges = IRanges(start = clusters$start, end = clusters$end), strand = clusters$strand, elementMetadata = clusters)
-		o <- findOverlaps(clusters.gr, drop.self = TRUE, type = "within")
+		o <- findOverlaps(clusters.gr, ignoreSelf = TRUE, type = "within")
 		clusters.gr <- clusters.gr[-queryHits(o)]
 		clusters <- subset(clusters, paste(chr, strand, start, end, sep = ".") %in% paste(seqnames(clusters.gr), strand(clusters.gr), start(clusters.gr), end(clusters.gr), sep = "."))
 	}
