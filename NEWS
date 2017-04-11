@@ -1,3 +1,10 @@
+CHANGES in version 1.18.0 :
+
+    o Added Charles Plessy as co-maintainer.
+    o Remove warning by replacing deprecated ignoreSelf() with drop.self().
+
+CHANGES in previous versions:
+
 Updated to version 1.13.4 (27/04/2016)
 26/04/2016	updated the vignette
 26/04/2016	added support for BED file CAGE tags input - included the new accepted value for inputFilesType="bed"
