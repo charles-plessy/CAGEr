@@ -1,6 +1,8 @@
-#####################################################
-# Functions for retrieving data from CAGEset object
+################################################################
+# Functions for retrieving data from CAGEset and CAGEexp objects
 #
+
+#' genomeName
 
 setGeneric(
 name="genomeName",
@@ -14,6 +16,13 @@ function (object){
 	object@genomeName
 })
 
+setMethod("genomeName",
+signature(object = "CAGEexp"),
+function (object){
+ metadata(object)$genomeName
+})
+
+#' inputFiles
 
 setGeneric(
 name="inputFiles",
@@ -27,6 +36,13 @@ function (object){
 	object@inputFiles
 })
 
+setMethod("inputFiles",
+signature(object = "CAGEexp"),
+function (object){
+  colData(object)$inputFiles
+})
+
+#' inputFilesType
 
 setGeneric(
 name="inputFilesType",
@@ -40,6 +56,13 @@ function (object){
 	object@inputFilesType
 })
 
+setMethod("inputFilesType",
+signature(object = "CAGEexp"),
+function (object){
+  metadata(object)$inputFilesType
+})
+
+#' sampleLabels
 
 setGeneric(
 name="sampleLabels",
@@ -53,6 +76,14 @@ function (object){
 	object@sampleLabels
 })
 
+setMethod("sampleLabels",
+signature(object = "CAGEexp"),
+function (object){
+  colData(object)$sampleLabels
+})
+
+#' librarySizes
+
 setGeneric(
 name="librarySizes",
 def=function(object){
@@ -64,6 +95,14 @@ signature(object = "CAGEset"),
 function (object){
 	object@librarySizes
 })
+
+setMethod("librarySizes",
+signature(object = "CAGEexp"),
+function (object){
+  colData(object)$librarySizes
+})
+
+#' CTSScoordinates
 
 setGeneric(
 name="CTSScoordinates",
@@ -77,6 +116,16 @@ function (object){
 	object@CTSScoordinates
 })
 
+setMethod("CTSScoordinates",
+signature(object = "CAGEexp"),
+function (object){
+  gr <- rowRanges(experiments(object)$tagCountMatrix)
+  data.frame( chr = seqnames(gr)
+            , pos = start(gr)
+            , strand = strand(gr))
+})
+
+#' CTSStagCount
 
 setGeneric(
 name="CTSStagCount",
@@ -90,6 +139,12 @@ function (object){
 	cbind(object@CTSScoordinates, object@tagCountMatrix)
 })
 
+setMethod("CTSStagCount",
+signature(object = "CAGEexp"),
+function (object){
+  cbind( CTSScoordinates(object)
+       , as.data.frame(assay(experiments(object)$tagCountMatrix)))
+})
 
 setGeneric(
 name="CTSSnormalizedTpm",
