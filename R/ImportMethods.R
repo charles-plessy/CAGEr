@@ -257,6 +257,26 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 }
 )
 
+#' coerceInBSgenome
+#' 
+#' A private (non-exported) function to discard any range that is
+#' not compatible with the CAGEr object's BSgenome.
+#' 
+#' @param gr The genomic ranges to coerce.
+#' @param genome A BSgenome objet.
+#' 
+#' @return A GRanges object in which every range is guaranteed to be compatible
+#' with the given BSgenome object.  The sequnames of the GRanges are also set
+#' accordingly to the BSgenome.
+
+coerceInBSgenome <- function(gr, genome) {
+  gr <- gr[seqnames(gr) %in% seqnames(genome)]
+  gr <- gr[! end(gr) > seqlengths(genome)[as.character(seqnames(gr))]]
+  seqlevels(gr) <- levels(droplevels(seqnames(gr)))
+  seqlengths(gr) <- seqlengths(genome)[seqlevels(gr)]
+  gr
+}
+
 #' loadFileIntoGRanges
 #' 
 #' A private (non-exported) function to load from each file format supported by CAGEr
@@ -354,7 +374,9 @@ setMethod( "getCTSS"
   
   for (i in seq_along(ctss.files)) {
     message("\nReading in file: ", ctss.files[i], "...")
-    l[[i]] <- loadFileIntoGRanges(ctss.files[i], inputFilesType(object))
+    gr <- loadFileIntoGRanges(ctss.files[i], inputFilesType(object))
+    gr <- coerceInBSgenome(gr, get(genomeName(object)))
+    l[[i]] <- gr
   }
   
   # Step 2: Create GRanges representing all the nucleotides with CAGE counts in the list.
