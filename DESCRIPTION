@@ -4,11 +4,11 @@ Version: 1.19.0
 Date: 04-11-2017
 Author: Vanja Haberle <vanja.haberle@gmail.com>
 Maintainer: Vanja Haberle <vanja.haberle@gmail.com>, Charles Plessy <plessy@riken.jp>
-Imports: utils, Rsamtools, GenomicRanges (>= 1.23.16), IRanges (>= 2.5.27), data.table, beanplot, rtracklayer, som, VGAM
+Imports: MultiAssayExperiment, utils, Rsamtools, S4Vectors, SummarizedExperiment, GenomicRanges (>= 1.23.16), IRanges (>= 2.5.27), data.table, beanplot, rtracklayer, som, VGAM
 Depends: methods, R (>= 2.15.0), BSgenome
 Suggests: BSgenome.Drerio.UCSC.danRer7, FANTOM3and4CAGE 
 Enhances: parallel
 Description: Preprocessing of CAGE sequencing data, identification and normalization of transcription start sites and downstream analysis of transcription start sites clusters (promoters).
 License: GPL-3
 biocViews: Preprocessing, Sequencing, Normalization, FunctionalGenomics, Transcription, GeneExpression, Clustering, Visualization
-Collate: AllClasses.R GetMethods.R ImportFunctions.R ImportMethods.R CorrelationMethods.R ExportFunctions.R ExportMethods.R MergingMethods.R NormalizationFunctions.R NormalizationMethods.R ExpressionProfilingMethods.R ClusteringFunctions.R ClusteringMethods.R CumulativeDistributionFunctions.R CumulativeDistributionMethods.R QuantileWidthFunctions.R QuantileWidthMethods.R AggregationFunctions.R AggregationMethods.R ShiftingFunctions.R ShiftingMethods.R
+Collate: AllClasses.R CAGEexp.R GetMethods.R ImportFunctions.R ImportMethods.R CorrelationMethods.R ExportFunctions.R ExportMethods.R MergingMethods.R NormalizationFunctions.R NormalizationMethods.R ExpressionProfilingMethods.R ClusteringFunctions.R ClusteringMethods.R CumulativeDistributionFunctions.R CumulativeDistributionMethods.R QuantileWidthFunctions.R QuantileWidthMethods.R AggregationFunctions.R AggregationMethods.R ShiftingFunctions.R ShiftingMethods.R 

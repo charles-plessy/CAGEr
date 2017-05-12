@@ -1,6 +1,9 @@
 import(methods)
+import(MultiAssayExperiment)
 import(utils)
 import(Rsamtools)
+import(S4Vectors)
+import(SummarizedExperiment)
 import(GenomicRanges)
 import(IRanges)
 
@@ -17,6 +20,7 @@ importFrom(som, som)
 importFrom(VGAM, zeta)
 
 exportClasses(CAGEset)
+exportClasses(CAGEexp)
 exportMethods(mergeCAGEsets)
 exportMethods(coerce)
 exportMethods(getCTSS, importPublicData)
