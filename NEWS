@@ -1,3 +1,9 @@
+CHANGES in version 1.19.0 :
+
+    o New "CAGEexp" class extending the MultiAssayExperiment class.  It stores
+      expression data more efficiently than "CAGEset", and will support the
+      same generic functions.
+
 CHANGES in version 1.18.0 :
 
     o Added Charles Plessy as co-maintainer.

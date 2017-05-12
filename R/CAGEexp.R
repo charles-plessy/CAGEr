@@ -1,4 +1,22 @@
-#' @rdname CAGEexp
+#' @rdname CAGEexp-class
+#' 
+#' @title CAGEexp-class
+#' @aliases CAGEexp
+#'  
+#' @description CAGEr class to hold all data and metadata about one CAGE experiment.
+#' 
+#' @details
+#' The \code{CAGEr} class is a \code{\link[MultiAssayExperiment]{MultiAssayExperiment}}
+#' object containing all data and metadata about a set of CAGE libraries.  It
+#' is a replacement for the \code{\link{CAGEset}} class.  The main difference
+#' is that the expression data is stored in \code{\link[S4Vectors]{DataFrame}} objects
+#' of \code{\link[S4Vectors]{Rle}}-encoded expression values, instead of plain
+#' \code{data.frame}s.  With large datasets, this saves considerable amounts of memory.
+#' 
+#' @slot metadata A list that must at least contain \code{genomeName} and
+#' \code{inputFilesType} members.
+#'
+#' @import(MultiAssayExperiment)
 #' 
 #' @examples 
 #' 
@@ -16,8 +34,9 @@
 #'                       , inputFilesType = "ctss"))
 #' 
 #' getCTSS(myCAGEexp)
-#' 
 #' colData(myCAGEexp)
+#' 
+#' @seealso CAGEset-class
 #' 
 #' @export
 

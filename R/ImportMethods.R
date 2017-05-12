@@ -1,3 +1,10 @@
+#' @include AllClasses.R CAGEexp.R
+
+#' getCTSS
+#' 
+#' @import (S4Vectors, DataFrame)
+#' @import (S4Vectors, Rle)
+
 setGeneric(
 name="getCTSS",
 def=function(object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE, correctSystematicG = TRUE){
