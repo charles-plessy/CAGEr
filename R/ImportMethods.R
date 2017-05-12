@@ -276,8 +276,33 @@ loadFileIntoGRanges <- function( filepath
   filetype <- match.arg(filetype)
   switch( filetype
         , bam  = stop("BAM format not supported yet.")
-        , bed  = stop("BED format not supported yet.")
+        , bed  = import.bedmolecule(filepath)
         , ctss = import.CTSS(filepath))
+}
+
+#' import.bedmolecule
+#' 
+#' Imports a BED file where each line counts for one molecule in a
+#' GRanges object where each line represents one nucleotide.
+#' 
+#' @param filepath The path to the BED file.
+#' 
+#' @seealso loadFileIntoGRanges
+#' 
+#' @importFrom (rtracklayer, import.bed)
+#' 
+#' @examples
+#' # TODO: add exmaple file
+#' # import.BED(system.file("extdata", "example.bed", package = "CAGEr"))
+
+import.bedmolecule <- function(filepath) {
+  gr <- rtracklayer::import.bed(filepath)
+  mcols(gr) <- NULL
+  score(gr) <- 1
+  gr <- promoters(gr, 0, 1)
+  gr <- GRanges(coverage(gr))
+  gr <- gr[score(gr) > 0]
+  gr
 }
 
 #' import.CTSS
