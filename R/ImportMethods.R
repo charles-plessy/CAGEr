@@ -272,8 +272,8 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 coerceInBSgenome <- function(gr, genome) {
   gr <- gr[seqnames(gr) %in% seqnames(genome)]
   gr <- gr[! end(gr) > seqlengths(genome)[as.character(seqnames(gr))]]
-  seqlevels(gr) <- levels(droplevels(seqnames(gr)))
-  seqlengths(gr) <- seqlengths(genome)[seqlevels(gr)]
+  seqlevels(gr) <- seqlevels(genome)
+  seqinfo(gr) <- seqinfo(genome)
   gr
 }
 
@@ -318,11 +318,20 @@ loadFileIntoGRanges <- function( filepath
 import.bedmolecule <- function(filepath) {
   gr <- rtracklayer::import.bed(filepath)
   mcols(gr) <- NULL
-  score(gr) <- 1
+  score(gr) <- Rle(rep(1, length(gr)))
   gr <- promoters(gr, 0, 1)
-  gr <- GRanges(coverage(gr))
-  gr <- gr[score(gr) > 0]
-  gr
+  collapseCtssGRanges <- function(gr, strand) {
+    gr <- gr[strand(gr) == strand]
+    seqlevels(gr) <- unique(as.character(seqnames(gr)))
+    gr <- GRanges(coverage(gr))
+    gr <- gr[score(gr) > 0]
+    score(gr) <- Rle(score(gr))
+    strand(gr) <- strand
+    seqlengths(gr) <- NA
+    return(gr)
+  }
+  # seqlevels differ after filtration by strand, and c() warns about it.
+  suppressWarnings(c(collapseCtssGRanges(gr, "+"), collapseCtssGRanges(gr, "-")))
 }
 
 #' import.CTSS
