@@ -325,7 +325,7 @@ import.bedmolecule <- function(filepath) {
     seqlevels(gr) <- unique(as.character(seqnames(gr)))
     gr <- GRanges(coverage(gr))
     gr <- gr[score(gr) > 0]
-    score(gr) <- Rle(score(gr))
+    if (! is.null(score(gr))) score(gr) <- Rle(score(gr))
     strand(gr) <- strand
     seqlengths(gr) <- NA
     return(gr)
