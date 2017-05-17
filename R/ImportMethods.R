@@ -317,21 +317,11 @@ loadFileIntoGRanges <- function( filepath
 
 import.bedmolecule <- function(filepath) {
   gr <- rtracklayer::import.bed(filepath)
+  seqlevels(gr) <- sortSeqlevels(seqlevels(gr))
   mcols(gr) <- NULL
-  score(gr) <- Rle(rep(1, length(gr)))
   gr <- promoters(gr, 0, 1)
-  collapseCtssGRanges <- function(gr, strand) {
-    gr <- gr[strand(gr) == strand]
-    seqlevels(gr) <- unique(as.character(seqnames(gr)))
-    gr <- GRanges(coverage(gr))
-    gr <- gr[score(gr) > 0]
-    if (! is.null(score(gr))) score(gr) <- Rle(score(gr))
-    strand(gr) <- strand
-    seqlengths(gr) <- NA
-    return(gr)
-  }
-  # seqlevels differ after filtration by strand, and c() warns about it.
-  suppressWarnings(c(collapseCtssGRanges(gr, "+"), collapseCtssGRanges(gr, "-")))
+  score(gr) <- Rle(countOverlaps(gr))
+  unique(gr)
 }
 
 #' import.CTSS
@@ -390,9 +380,8 @@ setMethod( "getCTSS"
   
   # Step 2: Create GRanges representing all the nucleotides with CAGE counts in the list.
 
-  rowRanges <- unique(unlist(l))
-  rowRanges <- rowRanges[order(as.character(rowRanges))]
-  
+  rowRanges <- sort(unique(unlist(l)))
+
   # Step 3: Fold the GRangesList in a expression DataFrame of Rle-encoded counts.
   
   assay <- DataFrame(V1 = Rle(rep(0, length(rowRanges))))
