@@ -120,9 +120,10 @@ setMethod("CTSScoordinates",
 signature(object = "CAGEexp"),
 function (object){
   gr <- rowRanges(experiments(object)$tagCountMatrix)
-  data.frame( chr = seqnames(gr)
+  data.frame( chr = as.character(seqnames(gr))
             , pos = start(gr)
-            , strand = strand(gr))
+            , strand = as.character(strand(gr))
+            , stringsAsFactors = FALSE)
 })
 
 #' CTSStagCount
@@ -143,7 +144,7 @@ setMethod("CTSStagCount",
 signature(object = "CAGEexp"),
 function (object){
   cbind( CTSScoordinates(object)
-       , as.data.frame(assay(experiments(object)$tagCountMatrix)))
+       , as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer)))
 })
 
 setGeneric(
