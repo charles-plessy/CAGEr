@@ -398,11 +398,16 @@ setMethod( "getCTSS"
   
   colnames(assay) <- sampleLabels(object)
   
-  # Setp 4: Put the data in the appropriate slot of the MultiAssayExperiment.
+  # Setp 4: Put the data in the appropriate slots of the MultiAssayExperiment.
 
   object@ExperimentList$tagCountMatrix <-
     SummarizedExperiment( rowRanges = rowRanges
                         , assay = SimpleList(counts = assay))
+  
+  sampleMap(object) <- rbind(
+    sampleMap(object),
+    listToMap(list(tagCountMatrix = data.frame( primary = sampleLabels(object)
+                                              , colname = sampleLabels(object)))))
   
   # Step 5: update the sample metadata (colData).
   

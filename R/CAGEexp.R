@@ -17,13 +17,12 @@
 #' pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
 #'                                , "ctss$"
 #'                                , full.names = TRUE)
-#' 
+#' sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
 #' myCAGEexp <-
 #'   new( "CAGEexp"
 #'      , colData = DataFrame( inputFiles = pathsToInputFiles
-#'                           , sampleLabels = sub(".chr17.ctss"
-#'                                               , ""
-#'                                               , basename(pathsToInputFiles)))
+#'                           , sampleLabels = sampleLabels
+#'                           , row.names = sampleLabels)
 #'      , metadata = list( genomeName = "BSgenome.Drerio.UCSC.danRer7"
 #'                       , inputFilesType = "ctss"))
 #' 
