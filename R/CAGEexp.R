@@ -1,11 +1,5 @@
-#' @rdname CAGEexp-class
+#' CAGEr class to hold all data and metadata about one CAGE experiment.
 #' 
-#' @title CAGEexp-class
-#' @aliases CAGEexp
-#'  
-#' @description CAGEr class to hold all data and metadata about one CAGE experiment.
-#' 
-#' @details
 #' The \code{CAGEr} class is a \code{\link[MultiAssayExperiment]{MultiAssayExperiment}}
 #' object containing all data and metadata about a set of CAGE libraries.  It
 #' is a replacement for the \code{\link{CAGEset}} class.  The main difference
@@ -36,8 +30,23 @@
 #' getCTSS(myCAGEexp)
 #' colData(myCAGEexp)
 #' 
+#' # CTSS data is stored internally as a SummarizedExperiemnt that can be retreived
+#' # as a whole, or as GRanges, or as an expression DataFrame.
+#' 
+#' CTSStagCountSE(myCAGEexp)
+#' CTSScoordinatesGR(myCAGEexp)
+#' CTSStagCountDF(myCAGEexp)
+#' 
+#' # Columns of the "colData" table are accessible directly via the "$" operator.
+#' 
+#' myCAGEexp$librarySizes
+#' myCAGEexp$l1 <- colSums(CTSStagCountDf(myCAGEexp) > 0)
+#' myCAGEexp$l1
+#' 
 #' @seealso CAGEset-class
 #' 
+#' @rdname CAGEexp-class
+#' @name CAGEexp-class
 #' @export
 
 setClass("CAGEexp",

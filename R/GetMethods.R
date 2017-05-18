@@ -126,6 +126,31 @@ function (object){
             , stringsAsFactors = FALSE)
 })
 
+#' CTSScoordinatesGR
+#' 
+#' Same as CTSScoordinates, but as GRanges
+
+setGeneric(
+name="CTSScoordinatesGR",
+def=function(object){
+	standardGeneric("CTSScoordinatesGR")
+})
+
+setMethod("CTSScoordinatesGR",
+signature(object = "CAGEset"),
+function (object){
+  ctssCoord <- object@CTSScoordinates
+  ctssCoord <- GRanges(ctssCoord$chr, IRanges(ctssCoord$pos, ctssCoord$pos), ctssCoord$strand)
+  genome(ctssCoord) <- object@genomeName
+  ctssCoord
+})
+
+setMethod("CTSScoordinatesGR",
+signature(object = "CAGEexp"),
+function (object){
+  rowRanges(CTSStagCountSE(object))
+})
+
 #' CTSStagCount
 
 setGeneric(
@@ -166,6 +191,56 @@ signature(object = "CAGEexp"),
 function (object){
   as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer))
 })
+
+#' CTSStagCountDF
+#' 
+#' Same as CTSStagCountDf, but as DataFrame
+
+setGeneric(
+name="CTSStagCountDF",
+def=function(object){
+	standardGeneric("CTSStagCountDF")
+})
+
+setMethod("CTSStagCountDF",
+signature(object = "CAGEset"),
+function (object){
+	DF <- object@tagCountMatrix
+	DF <- lapply(DF, as.integer)
+	DF <- lapply(DF, Rle)
+	DataFrame(DF)
+})
+
+setMethod("CTSStagCountDF",
+signature(object = "CAGEexp"),
+function (object){
+  assay(CTSStagCountSE(object))
+})
+
+#' CTSStagCountSE
+#' 
+#' Same as CTSStagCount, but as SummarizedExperiment
+
+setGeneric(
+name="CTSStagCountSE",
+def=function(object){
+	standardGeneric("CTSStagCountSE")
+})
+
+setMethod("CTSStagCountSE",
+signature(object = "CAGEset"),
+function (object){
+	  colData <- data.frame(row.names = sampleLabels(object), samplename = sampleLabels(object), samplecolor = names(sampleLabels(object)))
+    SummarizedExperiment(assays = list(counts=CTSStagCountDF(object)), rowData = CTSScoordinatesGR(object), colData = colData)
+})
+
+setMethod("CTSStagCountSE",
+signature(object = "CAGEexp"),
+function (object){
+  experiments(object)$tagCountMatrix
+})
+
+#' CTSSnormalizedTpm
 
 setGeneric(
 name="CTSSnormalizedTpm",
