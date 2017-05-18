@@ -398,20 +398,15 @@ setMethod( "getCTSS"
   
   colnames(assay) <- sampleLabels(object)
   
-  # Setp 4: Put the data in the appropriate slots of the MultiAssayExperiment.
+  # Setp 4: Put the data in the appropriate slot of the MultiAssayExperiment.
 
-  object@ExperimentList$tagCountMatrix <-
+  CTSStagCountSE(object) <-
     SummarizedExperiment( rowRanges = rowRanges
                         , assay = SimpleList(counts = assay))
   
-  sampleMap(object) <- rbind(
-    sampleMap(object),
-    listToMap(list(tagCountMatrix = data.frame( primary = sampleLabels(object)
-                                              , colname = sampleLabels(object)))))
-  
   # Step 5: update the sample metadata (colData).
   
-  colData(object)$librarySizes <- unlist(lapply(assay(object@ExperimentList$tagCountMatrix), sum))
+  librarySizes(object) <- unlist(lapply(CTSStagCountDF(object), sum))
   
   # Setp 6: overwrite the object in the parent environment.
   
