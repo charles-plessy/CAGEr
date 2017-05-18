@@ -147,6 +147,26 @@ function (object){
        , as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer)))
 })
 
+#' CTSStagCountDf
+
+setGeneric(
+name="CTSStagCountDf",
+def=function(object){
+	standardGeneric("CTSStagCountDf")
+})
+
+setMethod("CTSStagCountDf",
+signature(object = "CAGEset"),
+function (object){
+	object@tagCountMatrix
+})
+
+setMethod("CTSStagCountDf",
+signature(object = "CAGEexp"),
+function (object){
+  as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer))
+})
+
 setGeneric(
 name="CTSSnormalizedTpm",
 def=function(object){
