@@ -381,6 +381,7 @@ setMethod( "getCTSS"
   # Step 2: Create GRanges representing all the nucleotides with CAGE counts in the list.
 
   rowRanges <- sort(unique(unlist(l)))
+  mcols(rowRanges) <- NULL
 
   # Step 3: Fold the GRangesList in a expression DataFrame of Rle-encoded counts.
   
