@@ -398,7 +398,27 @@ function (object, what){
 	}
 })
 
+#' GeneExpSE
+#' 
+#' Retreives the SummarizedExperiment containing gene expression levels.
 
+setGeneric(
+name="GeneExpSE",
+def=function(object){
+	standardGeneric("GeneExpSE")
+})
+
+setMethod("GeneExpSE",
+signature(object = "CAGEset"),
+function (object){
+	stop("Not implemented for the CAGEset class.")
+})
+
+setMethod("GeneExpSE",
+signature(object = "CAGEexp"),
+function (object){
+  experiments(object)$geneExpMatrix
+})
 
 ###############################################################
 # Function for displaying CAGEset object in user friendly way

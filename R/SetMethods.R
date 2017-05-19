@@ -108,3 +108,33 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
   experiments(object)$tagCountMatrix <- value
   if (validObject(object)) object
 })
+
+#' GeneExpSE
+#' 
+#' Since the SummarizedExperiment can hold normalized and non-normalized values,
+#' let's name it "GeneExp" instead of "GeneTagCount" if we would follow the
+#' historical CTSS name pattern of CAGEset objects.
+
+setGeneric("GeneExpSE<-", function(object, value) standardGeneric("GeneExpSE<-"))
+
+setMethod("GeneExpSE<-", "CAGEset", function (object, value){
+	stop("Not implemented for the CAGEset class.")
+})
+
+setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
+  if (! is(value, "SummarizedExperiment"))
+    stop("Value must be a SummarizedExperiment object.")
+  if (is(value, "RangedSummarizedExperiment"))
+    stop("Value must not be a RangedSummarizedExperiment object. ",
+         "(Gene symbols have no ranged coordinates).")
+  if (! all(colnames(value) == sampleLabels(object)))
+    stop ("The CTSS data must match the CAGEexp object, with samples in the same order.")
+  sampleMapSE <-
+    listToMap(list(geneExpMatrix = data.frame( primary = sampleLabels(object)
+                                             , colname = colnames(value))))
+  sampleMap(object) <-
+    rbind( sampleMap(object)[sampleMap(object)$assay != "geneExpMatrix",]
+         , sampleMapSE)
+  experiments(object)$geneExpMatrix <- value
+  if (validObject(object)) object
+})
