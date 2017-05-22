@@ -39,7 +39,7 @@ function (object){
 setMethod("inputFiles",
 signature(object = "CAGEexp"),
 function (object){
-  colData(object)$inputFiles
+  object$inputFiles
 })
 
 #' inputFilesType
@@ -79,7 +79,7 @@ function (object){
 setMethod("sampleLabels",
 signature(object = "CAGEexp"),
 function (object){
-  colData(object)$sampleLabels
+  object$sampleLabels
 })
 
 #' librarySizes
@@ -99,7 +99,7 @@ function (object){
 setMethod("librarySizes",
 signature(object = "CAGEexp"),
 function (object){
-  colData(object)$librarySizes
+  object$librarySizes
 })
 
 #' CTSScoordinates
