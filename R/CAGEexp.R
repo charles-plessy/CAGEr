@@ -68,9 +68,9 @@ setClass("CAGEexp",
       return("Missing input file type.")
     
     if (! all(object$inputFilesType %in%
-          c( "bam", "bamPairedEnd", "bed", "ctss", "CTSStable"
+          c( "bam", "bamPairedEnd", "bed", "bedctss", "ctss", "CTSStable"
            , "FANTOM5", "ENCODE", "FANTOM3and4", "ZebrafishDevelopment")))
-      return("'inputFilesType' must be one of supported input file types (\"bam\", \"bamPairedEnd\", \"bed\", \"ctss\", \"CTSStable\")!")
+      return("'inputFilesType' must be one of supported input file types (\"bam\", \"bamPairedEnd\", \"bed\", \"bedctss\", \"ctss\", \"CTSStable\")!")
     
     if (is.null(colData(object)$sampleLabels))
       return("Missing sample labels.")

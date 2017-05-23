@@ -291,13 +291,14 @@ coerceInBSgenome <- function(gr, genome) {
 #' @seealso import.CTSS
 
 loadFileIntoGRanges <- function( filepath
-                               , filetype = c("bam", "bed", "ctss")) {
+                               , filetype = c("bam", "bed", "bedctss", "ctss")) {
   if (missing(filetype)) stop("Please specify the file type.")
   filetype <- match.arg(filetype)
   switch( filetype
-        , bam  = stop("BAM format not supported yet.")
-        , bed  = import.bedmolecule(filepath)
-        , ctss = import.CTSS(filepath))
+        , bam      = stop("BAM format not supported yet.")
+        , bed      = import.bedmolecule(filepath)
+        , bedctss  = import.bedCTSS(filepath)
+        , ctss     = import.CTSS(filepath))
 }
 
 #' import.bedmolecule
@@ -322,6 +323,34 @@ import.bedmolecule <- function(filepath) {
   gr <- promoters(gr, 0, 1)
   score(gr) <- Rle(countOverlaps(gr))
   unique(gr)
+}
+
+#' import.bedCTSS
+#' 
+#' Imports a BED file where each line represents a single base, with a score
+#' counting the number of CAGE transcription start sites (CTSS).
+#' 
+#' @return A GRanges object where each line represents one nucleotide.
+#' 
+#' @param filepath The path to the BED file.
+#' 
+#' @seealso loadFileIntoGRanges
+#' 
+#' @importFrom (rtracklayer, import.bed)
+#' 
+#' @examples
+#' # TODO: add exmaple file
+#' # import.BED(system.file("extdata", "example.bed", package = "CAGEr"))
+
+import.bedCTSS <- function(filepath) {
+  gr <- rtracklayer::import.bed(filepath)
+  if (length(unique(gr)) != length(gr))
+    stop("Input must not contain the same range multiple times.")
+  if (any(countOverlaps(gr) != 1))
+    stop("Input must not contain overlapping ranges.")
+  seqlevels(gr) <- sortSeqlevels(seqlevels(gr))
+  mcols(gr) <- DataFrame(score = Rle(as.integer(score(gr))))
+  gr
 }
 
 #' import.CTSS

@@ -3,6 +3,7 @@ CHANGES in version 1.19.0 :
     o New "CAGEexp" class extending the MultiAssayExperiment class.  It stores
       expression data more efficiently than "CAGEset", and will support the
       same generic functions.
+    o New "bedctss" format to load the FANTOM5 and FANTOM6 CAGE data.
 
 CHANGES in version 1.18.0 :
 
