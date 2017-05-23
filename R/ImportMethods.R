@@ -373,7 +373,7 @@ setMethod( "getCTSS"
   
   for (i in seq_along(ctss.files)) {
     message("\nReading in file: ", ctss.files[i], "...")
-    gr <- loadFileIntoGRanges(ctss.files[i], inputFilesType(object))
+    gr <- loadFileIntoGRanges(ctss.files[i], inputFilesType(object)[i])
     gr <- coerceInBSgenome(gr, get(genomeName(object)))
     l[[i]] <- gr
   }

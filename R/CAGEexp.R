@@ -14,17 +14,19 @@
 #' 
 #' @examples 
 #' 
+#' library("BSgenome.Drerio.UCSC.danRer7")
+#' library("MultiAssayExperiment")
 #' pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
 #'                                , "ctss$"
 #'                                , full.names = TRUE)
 #' sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
 #' myCAGEexp <-
 #'   new( "CAGEexp"
-#'      , colData = DataFrame( inputFiles = pathsToInputFiles
-#'                           , sampleLabels = sampleLabels
-#'                           , row.names = sampleLabels)
-#'      , metadata = list( genomeName = "BSgenome.Drerio.UCSC.danRer7"
-#'                       , inputFilesType = "ctss"))
+#'      , colData = DataFrame( inputFiles     = pathsToInputFiles
+#'                           , sampleLabels   = sampleLabels
+#'                           , inputFilesType = "ctss"
+#'                           , row.names      = sampleLabels)
+#'      , metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7"))
 #' 
 #' getCTSS(myCAGEexp)
 #' colData(myCAGEexp)
@@ -62,12 +64,12 @@ setClass("CAGEexp",
     if (is.null(colData(object)$inputFiles))
       return("Missing input file list.")
     
-    if (is.null(metadata(object)$inputFilesType))
+    if (is.null(object$inputFilesType))
       return("Missing input file type.")
     
-    if (! metadata(object)$inputFilesType %in%
+    if (! all(object$inputFilesType %in%
           c( "bam", "bamPairedEnd", "bed", "ctss", "CTSStable"
-           , "FANTOM5", "ENCODE", "FANTOM3and4", "ZebrafishDevelopment"))
+           , "FANTOM5", "ENCODE", "FANTOM3and4", "ZebrafishDevelopment")))
       return("'inputFilesType' must be one of supported input file types (\"bam\", \"bamPairedEnd\", \"bed\", \"ctss\", \"CTSStable\")!")
     
     if (is.null(colData(object)$sampleLabels))

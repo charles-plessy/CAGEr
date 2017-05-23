@@ -59,7 +59,7 @@ function (object){
 setMethod("inputFilesType",
 signature(object = "CAGEexp"),
 function (object){
-  metadata(object)$inputFilesType
+  object$inputFilesType
 })
 
 #' sampleLabels

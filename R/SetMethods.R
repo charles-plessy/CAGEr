@@ -40,7 +40,7 @@ setMethod("inputFilesType<-", "CAGEset", function (object, value){
 })
 
 setMethod("inputFilesType<-", "CAGEexp", function (object, value){
-  metadata(object)$inputFilesType <- value
+  object$inputFilesType <- value
 	if (validObject(object)) object
 })
 
