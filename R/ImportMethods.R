@@ -291,14 +291,15 @@ coerceInBSgenome <- function(gr, genome) {
 #' @seealso import.CTSS
 
 loadFileIntoGRanges <- function( filepath
-                               , filetype = c("bam", "bed", "bedctss", "ctss")) {
+                               , filetype = c("bam", "bed", "bedctss", "CAGEscanMolecule", "ctss")) {
   if (missing(filetype)) stop("Please specify the file type.")
   filetype <- match.arg(filetype)
   switch( filetype
-        , bam      = stop("BAM format not supported yet.")
-        , bed      = import.bedmolecule(filepath)
-        , bedctss  = import.bedCTSS(filepath)
-        , ctss     = import.CTSS(filepath))
+        , bam              = stop("BAM format not supported yet.")
+        , bed              = import.bedmolecule(filepath)
+        , bedctss          = import.bedCTSS(filepath)
+        , CAGEscanMolecule = import.CAGEscanMolecule(filepath)
+        , ctss             = import.CTSS(filepath))
 }
 
 #' import.bedmolecule
@@ -377,6 +378,58 @@ import.CTSS <- function(filepath) {
            , ranges   = IRanges(CTSS$pos, width = 1)
            , strand   = CTSS$strand
            , score    = CTSS$score)
+}
+
+#' parseCAGEscanBlocksToGrangeTSS
+#' 
+#' Parse a string describing a block in a CAGEscan molecule, as output by
+#' the "CAGEscan 3.0" pipeline.
+#' 
+#' @param block A character string representing a block in a CAGEscan molecule.
+#' 
+#' @return A GRanges object representing a TSS.
+#' 
+#' In CAGEscan molecules, blocks are separated by \sQuote{|}, \sQuote{,} or
+#' \sQuote{;} for gap of coverage, splice junction (confident) and splice
+#' junction (maybe) respectively.  Strand is "+" if first coordinate is lower
+#' than the second one, and "-" otherwise.
+#' 
+#' @seealso import.CAGEscanMolecule
+#' 
+#' @examples
+#' myMolecule <- paste0( "chr11:66268633-66268693,"
+#'                     , "chr11:66271796-66271869;"
+#'                     , "chr11:66272156-66272252|"
+#'                     , "chr11:66272364-66272460")
+#' myFirstBlock <- sub("[,;|].*", "", myMolecule)
+#' 
+#' parseCAGEscanBlocksToGrangeTSS(myFirstBlock)
+
+parseCAGEscanBlocksToGrangeTSS <- function (blocks) {
+  blocks <- strsplit(blocks, "[:-]")
+  chr    <- unlist(lapply(blocks, `[[`, 1))
+  fst    <- as.integer(unlist(lapply(blocks, `[[`, 2)))
+  snd    <- as.integer(unlist(lapply(blocks, `[[`, 3)))
+  strand <- ifelse(fst < snd, "+", "-")
+  start  <- pmin(fst, snd)
+  GRanges(chr, IRanges(start, w = 1), strand)
+}
+
+#' import.CAGEscanMolecule
+#' 
+#' Imports a CAGEscan \dQuote{molecule} file in a GRanges object
+#' 
+#' @param filepath The path to the \dQuote{molecule} file.
+#' 
+#' @seealso parseCAGEscanBlocksToGrangeTSS
+#' 
+#' @examples
+#' # TODO import.CAGEscanMolecule(system.file("extdata", "example.molecule.txt", package = "CAGEr"))
+
+import.CAGEscanMolecule <- function(filepath) {
+  molecules <- unname(unlist(fread(select = 9, paste( "grep -v \\#", filepath))))
+  molecules <- sub("[,;|].*", "", molecules)
+  parseCAGEscanBlocksToGrangeTSS(molecules)
 }
 
 setMethod( "getCTSS"

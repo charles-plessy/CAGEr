@@ -4,6 +4,7 @@ CHANGES in version 1.19.0 :
       expression data more efficiently than "CAGEset", and will support the
       same generic functions.
     o New "bedctss" format to load the FANTOM5 and FANTOM6 CAGE data.
+    o New "CAGEscanMolecule" format to load CAGEscan 3.0 data.
 
 CHANGES in version 1.18.0 :
 
