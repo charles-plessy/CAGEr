@@ -217,6 +217,29 @@ function (object){
   assay(CTSStagCountSE(object))
 })
 
+#' CTSStagCountTable
+#' 
+#' For CAGEset objects, a data.frame of integers and for CAGEexp objects,
+#' a DataFrame of Rle integers.
+#' 
+#' Use this function when the next consumer can handle both formats.
+
+setGeneric(
+name="CTSStagCountTable",
+def=function(object){
+	standardGeneric("CTSStagCountTable")
+})
+
+setMethod("CTSStagCountTable",
+signature(object = "CAGEset"),
+  function(object) CTSStagCountDf(object)
+)
+
+setMethod("CTSStagCountTable",
+signature(object = "CAGEexp"),
+  function(object) CTSStagCountDF(object)
+)
+
 #' CTSStagCountSE
 #' 
 #' Same as CTSStagCount, but as SummarizedExperiment
@@ -254,6 +277,27 @@ function (object){
 	cbind(object@CTSScoordinates, object@normalizedTpmMatrix)
 })
 
+#' CTSSnormalizedTpmDf
+
+setGeneric(
+name="CTSSnormalizedTpmDf",
+def=function(object){
+	standardGeneric("CTSSnormalizedTpmDf")
+})
+
+setMethod("CTSSnormalizedTpmDf",
+signature(object = "CAGEset"),
+function (object){
+	object@normalizedTpmMatrix
+})
+
+setMethod("CTSSnormalizedTpmDf",
+signature(object = "CAGEexp"),
+function (object){
+  as.data.frame(lapply(assay(experiments(object)$normalizedTpmMatrix), as.integer))
+})
+
+#' CTSSclusteringMethod
 
 setGeneric(
 name="CTSSclusteringMethod",
@@ -267,6 +311,13 @@ function (object){
 	object@clusteringMethod
 })
 
+setMethod("CTSSclusteringMethod",
+signature(object = "CAGEexp"),
+function (object){
+	metadata(object)$clusteringMethod
+})
+
+#' tagClusters
 
 setGeneric(
 name="tagClusters",
