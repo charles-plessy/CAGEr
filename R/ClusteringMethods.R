@@ -26,10 +26,19 @@ function (object, threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE, met
 	
 	message("\nFiltering CTSSs below threshold...")
 	if(thresholdIsTpm){
+	  if (identical(myCAGEset@normalizedTpmMatrix, data.frame()))
+	    stop("Could not find normalized CAGE signal values, see ?normalizeTagCount.")
 		data <- object@normalizedTpmMatrix
 	}else{
-		data <- object@tagCountMatrix
+		if (identical(myCAGEset@tagCountMatrix, data.frame()))
+	    stop("Could not find CTSS tag counts, see ?getCTSS.")
+	  data <- object@tagCountMatrix
 	}
+	
+	if (identical(myCAGEset@normalizedTpmMatrix, data.frame()))
+	    stop("Could not find normalized CAGE signal values, see ?normalizeTagCount.\n",
+	         "clusterCTSS() needs normalized values to create its output tables, that ",
+	         "include TPM expression columns.")
 	
 	if(threshold > 0){
 		nr.pass.threshold <- apply(data, 1, function(x) {sum(x >= threshold)})
