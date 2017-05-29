@@ -9,17 +9,7 @@ setMethod("cumulativeCTSSdistribution",
 signature(object = "CAGEset"),
 function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 
-	pt <- .Platform$OS.type
-	if(useMulticore == TRUE){
-		if(pt == "unix"){
-			if("parallel" %in% rownames(installed.packages()) == FALSE){
-				stop("Cannot use multicore because package 'parallel' is not installed!")
-			}
-		}else{
-			useMulticore = FALSE
-			warning("Multicore is not supported on non-Unix platforms! Setting useMulticore=FALSE")
-		}
-	}
+  useMulticore <- CAGEr:::.checkMulticore(useMulticore)
 	
 	objName <- deparse(substitute(object))
 	sample.labels = sampleLabels(object)
