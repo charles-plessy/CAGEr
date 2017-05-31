@@ -1,22 +1,34 @@
 ######################################################################################
-# Funtions for normalizing CAGE tag count to a referent power-law distribution
-# Reference: Balwierz, P. J., Carninci, P., Daub, C. O., Kawai, J., Hayashizaki, 
-# Y., Van Belle, W., Beisel, C., et al. (2009). Methods for analyzing deep sequencing 
-# expression data: constructing the human and mouse promoterome with deepCAGE data. 
-# Genome Biology, 10(7), R79.
+# Functions for normalizing CAGE tag counts
 
 #' .powerLaw
 #' 
-#' @param tag.counts An object containing tag counts.
-#' @param fitInRange
-#' @param alpha
-#' @param T
+#' Private funtion for normalizing CAGE tag count to a referent power-law distribution.
 #' 
-#' Methods are provided for integer vectors, Rle objects, data.frame objects
+#' @rdname powerLaw
+#' 
+#' @references
+#' Balwierz, P. J., Carninci, P., Daub, C. O., Kawai, J., Hayashizaki,
+#' Y., Van Belle, W., Beisel, C., et al. (2009). Methods for analyzing deep sequencing
+#' expression data: constructing the human and mouse promoterome with deepCAGE data.
+#' Genome Biology, 10(7), R79.
+#' 
+#' @param tag.counts Numerical values whose reverse cumulative distribution will be fitted
+#'        to power-law (e.g. tag count or signal for regions, peaks, etc.)
+#' @param fitInRange Range in which the fitting is done (values outside of this range will
+#'        not be considered for fitting)
+#' @param alpha Slope of the referent power-law distribution (the actual slope has negative
+#'        sign and will be -1*alpha)
+#' @param T total number of tags (signal) in the referent power-law distribution.
+#' 
+#' @details S4 Methods are provided for integer vectors, Rle objects, data.frame objects
 #' and DataFrame objects, so that the most complex objects can be deconstructed
 #' in simpler parts, normalized and reconstructed.
 #' 
-#' @return Integers become numeric, Rle, data.frame and DataFrame are conserved.
+#' @return Normalized values (vector of the same length as input values); i.e. what would
+#' be the value of input values in the referent distribution.  Ouptut objects are numeric,
+#' possibly \code{Rle}-encoded or wrapped in \code{data.frames} or \code{DataFrames}
+#' according to the input.
 
 setGeneric(".powerLaw", function(tag.counts, fitInRange = c(10, 1000), alpha = 1.25, T = 10^6) {
   standardGeneric(".powerLaw")})
@@ -38,11 +50,18 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
   DataFrame(sapply(tag.counts, function(X) .powerLaw(X, fitInRange, alpha, T)))
 })
 
-
-# function that fits power-law distribution to reverse cumulative of given values - fitting is done using only the range specified in val.range
-# ARGUMENTS: values - numerical values whose reverse cumulative distribution will be fitted to power-law (e.g. tag count or signal for regions, peaks, etc.)
-#			 val.range - range in which the fitting is done (values outside of this range will not be considered for fitting)
-# RETURNS: two coefficients describing fitted power-law distribution (a = slope in the logX-logY plot (where X=signal, Y=number of sites that have >= of given signal), b = intercept in the logX-logY plot)
+#' .fit.power.law.to.reverse.cumulative
+#' 
+#' @noRd
+#' 
+#' Function that fits power-law distribution to reverse cumulative of given
+#' values - fitting is done using only the range specified in val.range
+#' 
+#' @return Two coefficients describing fitted power-law distribution (a = slope
+#' in the logX-logY plot (where X=signal, Y=number of sites that have >= of given
+#' signal), b = intercept in the logX-logY plot)
+#' 
+#' @importFrom data.table, data.table setkey setnames
 
 .fit.power.law.to.reverse.cumulative <- function(values, val.range = c(10, 1000)) {
 
@@ -63,17 +82,21 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 	a <- coefficients(lin.m)[2]
 	b <- coefficients(lin.m)[1]
 	return(c(a, b))
-	
 }
 
 
-# function that normalizes values fitted to power-law distribution to a referent power-law distribution
-# ARGUMENTS: values - numerical values whose reverse cumulative distribution was fitted to power-law and that will be normalized to referent power-law
-#            lin.reg.coef - two coefficients describing power-law distribution fitted to values (as returned by '.fit.power.law.to.reverse.cumulative' function)
-#			 alpha - slope of the referent power-law distribution (the actual slope has negative sign and will be -1*alpha)
-#			 T - total number of tags (signal) in the referent power-law distribution
-# RETURNS: normalized values (vector of the same length as input values); i.e. what would be the value of input values in the referent distribution 
-
+#' .normalize.to.reference.power.law.distribution
+#' 
+#' @noRd
+#' 
+#' Function that normalizes values fitted to power-law distribution to a referent
+#' power-law distribution
+#' 
+#' @param values - numerical values whose reverse cumulative distribution was fitted to
+#'        power-law and that will be normalized to referent power-law
+#' @param lin.reg.coef - two coefficients describing power-law distribution fitted to
+#'        values (as returned by '.fit.power.law.to.reverse.cumulative' function)
+#' 
 #' @importFrom VGAM zeta
 
 .normalize.to.reference.power.law.distribution <- function(values, lin.reg.coef, alpha = 1.25, T = 10^6) {
@@ -88,6 +111,8 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 }
 
 #' .simpleTpm
+#' 
+#' @noRd
 #' 
 #' @param tag.counts An object containing tag counts.
 #' 
