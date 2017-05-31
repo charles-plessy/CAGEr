@@ -1,8 +1,27 @@
 ################################################################
 # Functions for retrieving data from CAGEset and CAGEexp objects
-#
 
-#' genomeName
+#' @name genomeName
+#' 
+#' @title Extracting genome name from CAGEset and CAGEexp objects
+#' 
+#' Extracts the name of a referent genome from a \code{\link{CAGEset}}
+#' and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#' 
+#' @return Returns a name of a BSgenome package used as a referent genome.
+#' 
+#' @author Vanja Haberle
+#' 
+#' @examples 
+#' 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' genomeName(exampleCAGEset)
+#' 
+#' @docType methods
+#' @rdname genomeName
+#' @export
 
 setGeneric(
 name="genomeName",
