@@ -11,4 +11,29 @@ Enhances: parallel
 Description: Preprocessing of CAGE sequencing data, identification and normalization of transcription start sites and downstream analysis of transcription start sites clusters (promoters).
 License: GPL-3
 biocViews: Preprocessing, Sequencing, Normalization, FunctionalGenomics, Transcription, GeneExpression, Clustering, Visualization
-Collate: AllClasses.R CAGEexp.R GetMethods.R SetMethods.R ImportFunctions.R ImportMethods.R CorrelationMethods.R ExportFunctions.R ExportMethods.R MergingMethods.R NormalizationFunctions.R NormalizationMethods.R ExpressionProfilingMethods.R ClusteringFunctions.R ClusteringMethods.R CumulativeDistributionFunctions.R CumulativeDistributionMethods.R QuantileWidthFunctions.R QuantileWidthMethods.R Multicore.R AggregationFunctions.R AggregationMethods.R ShiftingFunctions.R ShiftingMethods.R 
+Collate: 
+    'AggregationFunctions.R'
+    'AggregationMethods.R'
+    'AllClasses.R'
+    'CAGEexp.R'
+    'ClusteringFunctions.R'
+    'ClusteringMethods.R'
+    'CorrelationMethods.R'
+    'CumulativeDistributionFunctions.R'
+    'CumulativeDistributionMethods.R'
+    'ExportFunctions.R'
+    'ExportMethods.R'
+    'ExpressionProfilingMethods.R'
+    'GetMethods.R'
+    'ImportFunctions.R'
+    'ImportMethods.R'
+    'MergingMethods.R'
+    'Multicore.R'
+    'NormalizationFunctions.R'
+    'NormalizationMethods.R'
+    'QuantileWidthFunctions.R'
+    'QuantileWidthMethods.R'
+    'SetMethods.R'
+    'ShiftingFunctions.R'
+    'ShiftingMethods.R'
+RoxygenNote: 6.0.1
