@@ -199,7 +199,7 @@ function (object){
 setMethod("librarySizes",
 signature(object = "CAGEexp"),
 function (object){
-  object$librarySizes
+  as.integer(object$librarySizes)
 })
 
 #' CTSScoordinates
