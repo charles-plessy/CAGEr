@@ -21,7 +21,7 @@
 setGeneric(".powerLaw", function(tag.counts, fitInRange = c(10, 1000), alpha = 1.25, T = 10^6) {
   standardGeneric(".powerLaw")})
 
-setMethod(".powerLaw", "integer", function (tag.counts, fitInRange, alpha, T) {
+setMethod(".powerLaw", "numeric", function (tag.counts, fitInRange, alpha, T) {
   fit.coef <- .fit.power.law.to.reverse.cumulative(values = tag.counts, val.range = fitInRange)
 	.normalize.to.reference.power.law.distribution(values = tag.counts, lin.reg.coef = fit.coef, alpha = alpha, T = T)
 })
