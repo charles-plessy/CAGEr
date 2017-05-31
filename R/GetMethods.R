@@ -3,19 +3,20 @@
 
 #' @name genomeName
 #' 
-#' @title Extracting genome name from CAGEset and CAGEexp objects
+#' @title Extracting genome name from CAGEr objects
 #' 
-#' Extracts the name of a referent genome from a \code{\link{CAGEset}}
-#' and \code{\link{CAGEexp}} objects.
+#' @description Extracts the name of a referent genome from a
+#' \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 #' 
 #' @param object A CAGEset or CAGEexp object.
 #' 
 #' @return Returns a name of a BSgenome package used as a referent genome.
 #' 
+#' @family CAGEr accessor methods
+#' 
 #' @author Vanja Haberle
 #' 
 #' @examples 
-#' 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' genomeName(exampleCAGEset)
 #' 
@@ -41,7 +42,27 @@ function (object){
  metadata(object)$genomeName
 })
 
-#' inputFiles
+#' @name inputFiles
+#' 
+#' @title Extracting paths to input files from CAGEr objects
+#' 
+#' @description Extracts the paths to CAGE data input files from
+#' \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#' 
+#' @return Returns a character vector of paths to CAGE data input files.
+#' 
+#' @family CAGEr accessor methods
+#' 
+#' @author Vanja Haberle
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' inputFiles(exampleCAGEset)
+#' 
+#' @docType methods
+#' @export
 
 setGeneric(
 name="inputFiles",
@@ -61,7 +82,28 @@ function (object){
   object$inputFiles
 })
 
-#' inputFilesType
+#' @name inputFilesType
+#'
+#' @title Extracting type of input files from CAGEr objects
+#' 
+#' @description Extracts the information on the type of CAGE data input
+#' files from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#' 
+#' @return Returns the label of the file type of CAGE data input files,
+#' \emph{e.g.} \code{"bam"} or \code{"ctss"}.  In the case of \code{CAGEexp}
+#' objects, the return value is character vector with one member per sample.
+#' 
+#' @author Vanja Haberle
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' inputFilesType(exampleCAGEset)
+#' 
+#' @family CAGEr accessor methods
+#' @docType methods
+#' @export
 
 setGeneric(
 name="inputFilesType",
@@ -81,7 +123,27 @@ function (object){
   object$inputFilesType
 })
 
-#' sampleLabels
+#' @name sampleLabels
+#' 
+#' @title Extracting CAGE datasets labels from CAGEr objects
+#' 
+#' @description Extracts the labels of CAGE datasets (samples, experiments)
+#' from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#' 
+#' @return Returns a character vector of labels of all CAGE datasets present
+#' in the CAGEr object.
+#' 
+#' @author Vanja Haberle
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' sampleLabels(exampleCAGEset)
+#' 
+#' @family CAGEr accessor methods
+#' @docType methods
+#' @export
 
 setGeneric(
 name="sampleLabels",
@@ -101,7 +163,26 @@ function (object){
   object$sampleLabels
 })
 
-#' librarySizes
+#' @name librarySizes
+#' 
+#' @title Extracting library sizes from CAGEr objects
+#' 
+#' @description Extracts the library sizes (total number of CAGE tags) for all CAGE datasets
+#' from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#' 
+#' @return Returns an integer vector of total number of CAGE tags (library size) for all CAGE
+#' datasets in the CAGEr object.
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' librarySizes(exampleCAGEset)
+#'
+#' @author Vanja Haberle
+#' @family CAGEr accessor methods
+#' @docType methods
+#' @export
 
 setGeneric(
 name="librarySizes",

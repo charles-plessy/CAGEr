@@ -3,10 +3,7 @@
 \docType{methods}
 \name{genomeName}
 \alias{genomeName}
-\title{Extracting genome name from CAGEset and CAGEexp objects
-
-Extracts the name of a referent genome from a \code{\link{CAGEset}}
-and \code{\link{CAGEexp}} objects.}
+\title{Extracting genome name from CAGEr objects}
 \usage{
 genomeName(object)
 }
@@ -16,11 +13,19 @@ genomeName(object)
 \value{
 Returns a name of a BSgenome package used as a referent genome.
 }
+\description{
+Extracts the name of a referent genome from a
+\code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+}
 \examples{
-
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 genomeName(exampleCAGEset)
 
+}
+\seealso{
+Other CAGEr accessor methods: \code{\link{inputFilesType}},
+  \code{\link{inputFiles}}, \code{\link{librarySizes}},
+  \code{\link{sampleLabels}}
 }
 \author{
 Vanja Haberle
