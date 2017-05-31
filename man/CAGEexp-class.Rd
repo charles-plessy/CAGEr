@@ -35,7 +35,11 @@ myCAGEexp <-
                           , row.names      = sampleLabels)
      , metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7"))
 
+# Expression data is loaded by the getCTSS() function, that also calculates
+# library sizes and store them in the object's column data.
+
 getCTSS(myCAGEexp)
+librarySizes(myCAGEexp)
 colData(myCAGEexp)
 
 # CTSS data is stored internally as a SummarizedExperiemnt that can be retreived
@@ -47,7 +51,6 @@ CTSStagCountDF(myCAGEexp)
 
 # Columns of the "colData" table are accessible directly via the "$" operator.
 
-myCAGEexp$librarySizes
 myCAGEexp$l1 <- colSums(CTSStagCountDf(myCAGEexp) > 0)
 myCAGEexp$l1
 
