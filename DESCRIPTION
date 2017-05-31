@@ -18,9 +18,9 @@ Imports:
     utils,
     VGAM
 Depends:
-    BSgenome
+    BSgenome,
     methods,
-    R (>= 2.15.0),
+    R (>= 2.15.0)
 Suggests:
     BSgenome.Drerio.UCSC.danRer7,
     FANTOM3and4CAGE 
