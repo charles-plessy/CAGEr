@@ -50,9 +50,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
   DataFrame(sapply(tag.counts, function(X) .powerLaw(X, fitInRange, alpha, T)))
 })
 
-#' .fit.power.law.to.reverse.cumulative
-#' 
-#' @noRd
+#' @name .fit.power.law.to.reverse.cumulative
 #' 
 #' Function that fits power-law distribution to reverse cumulative of given
 #' values - fitting is done using only the range specified in val.range
@@ -62,6 +60,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 #' signal), b = intercept in the logX-logY plot)
 #' 
 #' @importFrom data.table, data.table setkey setnames
+#' @noRd
 
 .fit.power.law.to.reverse.cumulative <- function(values, val.range = c(10, 1000)) {
 
@@ -87,8 +86,6 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 
 #' .normalize.to.reference.power.law.distribution
 #' 
-#' @noRd
-#' 
 #' Function that normalizes values fitted to power-law distribution to a referent
 #' power-law distribution
 #' 
@@ -98,6 +95,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 #'        values (as returned by '.fit.power.law.to.reverse.cumulative' function)
 #' 
 #' @importFrom VGAM zeta
+#' @noRd
 
 .normalize.to.reference.power.law.distribution <- function(values, lin.reg.coef, alpha = 1.25, T = 10^6) {
 	
@@ -110,8 +108,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 	
 }
 
-#' .simpleTpm
-#' 
+#' @name .simpleTpm
 #' @noRd
 #' 
 #' @param tag.counts An object containing tag counts.

@@ -251,11 +251,11 @@ function (object){
 
 #' CTSScoordinatesGR
 #' 
-#' @noRd
-#' 
 #' Same as CTSScoordinates, but as GRanges
 #' 
 #' Will be more documented if finally exported
+#' 
+#' @noRd
 
 setGeneric(
 name="CTSScoordinatesGR",
@@ -672,7 +672,7 @@ function (object, what){
 #' 
 #' Retreives the SummarizedExperiment containing gene expression levels.
 #' 
-#' @noRd for the moment
+#' @noRd
 
 setGeneric(
 name="GeneExpSE",
