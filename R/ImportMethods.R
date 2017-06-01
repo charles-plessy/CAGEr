@@ -1,9 +1,111 @@
 #' @include AllClasses.R CAGEexp.R
 
-#' getCTSS
+#' @name getCTSS
+#' 
+#' @title Reading CAGE data from input file(s) and detecting TSSs
+#' 
+#' @description Reads input CAGE datasets into CAGEr object, constructs CAGE
+#' transcriptions start sites (CTSSs) and counts number of CAGE tags supporting every
+#' CTSS in each input experiment.  Preprocessing and quality filtering of input CAGE
+#' tags, as well as correction of CAGE-specific 'G' nucleotide addition bias can be
+#' also performed before constructing TSSs.
+#' 
+#' @param object A \code{\link{CAGEset}} or a A \code{\link{CAGEexp}} object.
+#' 
+#' @param sequencingQualityThreshold Only CAGE tags with average sequencing quality
+#'   \code{>= sequencingQualityThreshold} and mapping quality \code{>=
+#'   mappingQualityThreshold} are kept. Used only if \code{inputFileType(object)
+#'   == "bam"} or \code{inputFileType(object) == "bamPairedEnd"}, \emph{i.e} when
+#'   input files are BAM files of aligned sequenced CAGE tags, otherwise ignored.  If
+#'   there are no sequencing quality values in the BAM file (\emph{e.g.} HeliScope
+#'   single molecule sequencer does not return sequencing qualities) all reads will by
+#'   default have this value set to -1.  Since the default value of
+#'   \code{sequencingQualityThreshold} is 10, all the reads will consequently be
+#'   discarded. To avoid this behaviour and keep all sequenced reads set
+#'   \code{sequencingQualityThreshold} to -1 when processing data without sequencing
+#'   qualities.  If there is no information on mapping quality in the BAM file
+#'   (\emph{e.g.} software used to align CAGE tags to the referent genome does not
+#'   provide mapping quality) the \code{mappingQualityThreshold} parameter is ignored.
+#'   In case of paired-end sequencing BAM file (i.e. \code{inputFileType(object) ==
+#'   "bamPairedEnd"}) only the first mate of the properly paired reads (i.e. the five
+#'   prime end read) will be read and subject to specified thresholds.
+#'   
+#' @param mappingQualityThreshold See sequencingQualityThreshold.
+#' 
+#' @param removeFirstG Logical, should the first nucleotide of the CAGE tag be removed
+#'   in case it is a G and it does not map to the referent genome (\emph{i.e.} it is a
+#'   mismatch).  Used only if \code{inputFileType(object) == "bam"} or
+#'   \code{inputFileType(object) == "bamPairedEnd"}, \emph{i.e} when input files are
+#'   BAM files of aligned sequenced CAGE tags, otherwise ignored.  See Details.
+#' 
+#' @param correctSystematicG Logical, should the systematic correction of the first G
+#'   nucleotide be performed for the positions where there is a G in the CAGE tag and G
+#'   in the genome.  This step is performed in addition to removing the first G of the
+#'   CAGE tags when it is a mismatch, \emph{i.e.} this option can only be used when
+#'   \code{removeFirstG = TRUE}, otherwise it is ignored.  The frequency of adding a G
+#'   to CAGE tags is estimated from mismatch cases and used to systematically correct
+#'   the G addition for positions with G in the genome.  Used only if
+#'   \code{inputFileType(object) == "bam"} or \code{inputFileType(object) ==
+#'   "bamPairedEnd"}, \emph{i.e} when input files are BAM files of aligned sequenced
+#'   CAGE tags, otherwise ignored.  See Details.
+#' 
+#' @details In the CAGE experimental protocol an additional G nucleotide is often attached
+#' to the 5' end of the tag by the template-free activity of the reverse transcriptase used
+#' to prepare cDNA (Harbers and Carninci, Nature Methods 2005).  In cases where there is a
+#' G at the 5' end of the CAGE tag that does not map to the corresponding genome sequence,
+#' it can confidently be considered spurious and should be removed from the tag to avoid
+#' misannotating actual TSS. Thus, setting \code{removeFirstG = TRUE} is highly recommended.
+#' 
+#' However, when there is a G both at the beginning of the CAGE tag and in the genome, it is
+#' not clear whether the original CAGE tag really starts at this position or the G nucleotide
+#' was added later in the experimental protocol.  To systematically correct CAGE tags mapping
+#' at such positions, a general frequency of adding a G to CAGE tags can be calculated from
+#' mismatch cases and applied to estimate the number of CAGE tags that have G added and
+#' should actually start at the next nucleotide/position.  The option \code{correctSystematicG}
+#' is an implementation of the correction algorithm described in Carninci \emph{et al.},
+#' Nature Genetics 2006, Supplementary Information section 3-e.
+#' 
+#' @return For \code{\link{CAGEset}} objects, the slots \code{librarySizes}, \code{CTSScoordinates}
+#' and \code{tagCountMatrix} will be occupied by the information on CTSSs created from input CAGE
+#' files.  For \code{\link{CAGEexp}} objects, the \code{tagCountMatrix} experiment will be
+#' occupied by a \code{SummarizedExperiment} containing the expression data as a \code{DataFrame}
+#' of \code{Rle} integers, and the CTSS coordinates as a \code{GRanges} object.  In both cases
+#' the expression data can be retreived with \code{\link{CTSStagCount*}} functions.  In addition,
+#' the library sizes are calculated and stored in the object.
+#' 
+#' @references 
+#' 
+#' Harbers and Carninci (2005) Tag-based approaches for transcriptome research and genome
+#' annotation, \emph{Nature Methods} \bold{2}(7):495-502.
+#' 
+#' Carninci \emph{et al.} (2006) Genome-wide analysis of mammalian promoter architecture and
+#' evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
+#' 
+#' @author Vanja Haberle
+#' 
+#' @seealso \code{\link{CTSScoordinates}}, \code{\link{CTSStagCount}},
+#'   \code{\link{CTSStagCountTable}}, \code{\link{librarySizes}}.
+#' 
+#' @family CAGEr object modifiers
+#' 
+#' @examples
+#' library(BSgenome.Drerio.UCSC.danRer7)
+#' 
+#' pathsToInputFiles <- system.file("extdata", c("Zf.unfertilized.egg.chr17.ctss",
+#'   "Zf.30p.dome.chr17.ctss", "Zf.prim6.rep1.chr17.ctss"), package="CAGEr")
+#'   
+#' labels <- paste("sample", seq(1,3,1), sep = "")
+#' 
+#' myCAGEset <- new("CAGEset", genomeName = "BSgenome.Drerio.UCSC.danRer7",
+#'  inputFiles = pathsToInputFiles, inputFilesType = "ctss", sampleLabels = labels)
+#' 
+#' getCTSS(myCAGEset)
+#' 
+#' @docType methods
 #' 
 #' @import (S4Vectors, DataFrame)
 #' @import (S4Vectors, Rle)
+#' @export
 
 setGeneric(
 name="getCTSS",
