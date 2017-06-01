@@ -172,12 +172,14 @@ function (object){
 #' 
 #' @param object A CAGEset or CAGEexp object.
 #' 
-#' @details Library sizes are stored in the \code{librarySizes} slot of \code{\link{CAGEset}}
-#' objects, and in the \code{librarySizes} column of the \code{colData} ov \code{\link{CAGEexp}}
-#' objects.
+#' @details Library sizes are calculated when loading data with the \code{getCTSS}
+#' function and stored in the \code{librarySizes} slot of \code{CAGEset} objects,
+#' or in the \code{librarySizes} column of the \code{colData} ov \code{CAGEexp} objects.
 #' 
 #' @return Returns an integer vector of total number of CAGE tags (library size) for all CAGE
 #' datasets in the CAGEr object.
+#' 
+#' @seealso \code{\link{getCTSS}}
 #' 
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))

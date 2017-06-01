@@ -19,9 +19,9 @@ Extracts the library sizes (total number of CAGE tags) for all CAGE datasets
 from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
 \details{
-Library sizes are stored in the \code{librarySizes} slot of \code{\link{CAGEset}}
-objects, and in the \code{librarySizes} column of the \code{colData} ov \code{\link{CAGEexp}}
-objects.
+Library sizes are calculated when loading data with the \code{getCTSS}
+function and stored in the \code{librarySizes} slot of \code{CAGEset} objects,
+or in the \code{librarySizes} column of the \code{colData} ov \code{CAGEexp} objects.
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
@@ -29,6 +29,8 @@ librarySizes(exampleCAGEset)
 
 }
 \seealso{
+\code{\link{getCTSS}}
+
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSScoordinates}},
   \code{\link{CTSSnormalizedTpm}},
