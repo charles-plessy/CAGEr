@@ -172,6 +172,10 @@ function (object){
 #' 
 #' @param object A CAGEset or CAGEexp object.
 #' 
+#' @details Library sizes are stored in the \code{librarySizes} slot of \code{\link{CAGEset}}
+#' objects, and in the \code{librarySizes} column of the \code{colData} ov \code{\link{CAGEexp}}
+#' objects.
+#' 
 #' @return Returns an integer vector of total number of CAGE tags (library size) for all CAGE
 #' datasets in the CAGEr object.
 #' 

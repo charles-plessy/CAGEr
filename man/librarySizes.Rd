@@ -18,6 +18,11 @@ datasets in the CAGEr object.
 Extracts the library sizes (total number of CAGE tags) for all CAGE datasets
 from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
+\details{
+Library sizes are stored in the \code{librarySizes} slot of \code{\link{CAGEset}}
+objects, and in the \code{librarySizes} column of the \code{colData} ov \code{\link{CAGEexp}}
+objects.
+}
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 librarySizes(exampleCAGEset)
