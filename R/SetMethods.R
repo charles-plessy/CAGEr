@@ -2,7 +2,12 @@
 # Functions for setting internal data in CAGEset and CAGEexp objects
 #
 
-#' genomeName
+#' @name genomeName
+#' @aliases genomeName<-
+#' @family CAGEr setter methods
+#' @docType methods
+#' @author Charles Plessy
+#' @export
 
 setGeneric("genomeName<-", function(object, value) standardGeneric("genomeName<-"))
 
@@ -16,7 +21,12 @@ setMethod("genomeName<-", "CAGEexp", function (object, value){
 	if (validObject(object)) object
 })
 
-#' inputFiles
+#' @name inputFiles
+#' @aliases inputFiles<-
+#' @family CAGEr setter methods
+#' @docType methods
+#' @author Charles Plessy
+#' @export
 
 setGeneric("inputFiles<-", function(object, value) standardGeneric("inputFiles<-"))
 
@@ -30,7 +40,12 @@ setMethod("inputFiles<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-#' inputFilesType
+#' @name inputFilesType
+#' @aliases inputFilesType<-
+#' @family CAGEr setter methods
+#' @docType methods
+#' @author Charles Plessy
+#' @export
 
 setGeneric("inputFilesType<-", function(object, value) standardGeneric("inputFilesType<-"))
 
@@ -44,7 +59,12 @@ setMethod("inputFilesType<-", "CAGEexp", function (object, value){
 	if (validObject(object)) object
 })
 
-#' sampleLabels
+#' @name sampleLabels
+#' @aliases sampleLabels<-
+#' @family CAGEr setter methods
+#' @docType methods
+#' @author Charles Plessy
+#' @export
 
 setGeneric("sampleLabels<-", function(object, value) standardGeneric("sampleLabels<-"))
 
@@ -58,7 +78,9 @@ setMethod("sampleLabels<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-#' librarySizes
+# librarySizes
+#
+# Not exported as it does not make sense to set library sizes after the data is loaded.
 
 setGeneric("librarySizes<-", function(object, value) standardGeneric("librarySizes<-"))
 
@@ -72,7 +94,9 @@ setMethod("librarySizes<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-#' CTSScoordinatesGR
+# CTSScoordinatesGR
+# 
+# Not exported for the moment.
 
 setGeneric("CTSScoordinatesGR<-", function(object, value) standardGeneric("CTSScoordinatesGR<-"))
 
@@ -86,7 +110,9 @@ setMethod("CTSScoordinatesGR<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-#' CTSStagCountSE
+# CTSStagCountSE
+# 
+# Not exported for the moment.
 
 setGeneric("CTSStagCountSE<-", function(object, value) standardGeneric("CTSStagCountSE<-"))
 
@@ -109,11 +135,13 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-#' GeneExpSE
-#' 
-#' Since the SummarizedExperiment can hold normalized and non-normalized values,
-#' let's name it "GeneExp" instead of "GeneTagCount" if we would follow the
-#' historical CTSS name pattern of CAGEset objects.
+# GeneExpSE
+# 
+# Since the SummarizedExperiment can hold normalized and non-normalized values,
+# let's name it "GeneExp" instead of "GeneTagCount" if we would follow the
+# historical CTSS name pattern of CAGEset objects.
+#
+# Not exported for the moment.
 
 setGeneric("GeneExpSE<-", function(object, value) standardGeneric("GeneExpSE<-"))
 
