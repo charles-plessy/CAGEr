@@ -202,7 +202,30 @@ function (object){
   as.integer(object$librarySizes)
 })
 
-#' CTSScoordinates
+#' @name CTSScoordinates
+#' 
+#' @title Extracting genomic coordinates of TSSs from CAGEr object
+#' 
+#' @description Extracts the genomic coordinates of all detected TSSs
+#' from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#' 
+#' @return Returns a \code{data.frame} with genomic coordinates of all TSSs. \code{pos}
+#' column contains 1-based coordinate of the TSS.
+#' 
+#' @seealso
+#' \code{\link{getCTSS}}
+#' 
+#' @examples
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' CTSS <- CTSScoordinates(exampleCAGEset)
+#' head(CTSS)
+#'
+#' @author Vanja Haberle
+#' @family CAGEr accessor methods
+#' @docType methods
+#' @export
 
 setGeneric(
 name="CTSScoordinates",
@@ -228,7 +251,11 @@ function (object){
 
 #' CTSScoordinatesGR
 #' 
+#' @noRd
+#' 
 #' Same as CTSScoordinates, but as GRanges
+#' 
+#' Will be more documented if finally exported
 
 setGeneric(
 name="CTSScoordinatesGR",
@@ -251,7 +278,29 @@ function (object){
   rowRanges(CTSStagCountSE(object))
 })
 
-#' CTSStagCount
+#' @name CTSStagCount
+#' 
+#' @title Extracting CAGE tag count for TSSs from CAGEr objects
+#' 
+#' @description Extracts the tag count for all detected TSSs in all CAGE datasets
+#'              from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#'  
+#' @return Returns a \code{data.frame} with number of CAGE tags supporting each TSS
+#' (rows) in every CAGE dataset (columns).
+#' 
+#' @seealso \code{\link{getCTSS}}
+#' 
+#' @examples
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' tagCount <- CTSStagCount(exampleCAGEset)
+#' head(tagCount)
+#' 
+#' @author Vanja Haberle
+#' @family CAGEr accessor methods
+#' @docType methods
+#' @export
 
 setGeneric(
 name="CTSStagCount",
@@ -273,6 +322,8 @@ function (object){
 })
 
 #' CTSStagCountDf
+#' 
+#' @noRd
 
 setGeneric(
 name="CTSStagCountDf",
@@ -295,6 +346,8 @@ function (object){
 #' CTSStagCountDF
 #' 
 #' Same as CTSStagCountDf, but as DataFrame
+#' 
+#' @noRd
 
 setGeneric(
 name="CTSStagCountDF",
@@ -317,12 +370,31 @@ function (object){
   assay(CTSStagCountSE(object))
 })
 
-#' CTSStagCountTable
+#' @name CTSStagCountTable
 #' 
-#' For CAGEset objects, a data.frame of integers and for CAGEexp objects,
-#' a DataFrame of Rle integers.
+#' @title Extracting CAGE tag count for TSSs from CAGEr objects
 #' 
-#' Use this function when the next consumer can handle both formats.
+#' @description Extracts the tag count for all detected TSSs in all CAGE datasets
+#' from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#'  
+#' @return Returns an expression table with the number of CAGE tags supporting each
+#' TSS (rows) in every CAGE dataset (columns).  The table is in \code{data.frame}
+#' format for \code{CAGEset} objects and in \code{DataFrame} format for \code{CAGEexp}
+#' objects.  Use this function when the next consumer can handle both formats.
+#' 
+#' @seealso \code{\link{getCTSS}}
+#' 
+#' @examples
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' tagCount <- CTSStagCount(exampleCAGEset)
+#' head(tagCount)
+#' 
+#' @author Vanja Haberle
+#' @family CAGEr accessor methods
+#' @docType methods
+#' @export
 
 setGeneric(
 name="CTSStagCountTable",
@@ -343,6 +415,8 @@ signature(object = "CAGEexp"),
 #' CTSStagCountSE
 #' 
 #' Same as CTSStagCount, but as SummarizedExperiment
+#' 
+#' @noRd
 
 setGeneric(
 name="CTSStagCountSE",
@@ -363,7 +437,30 @@ function (object){
   experiments(object)$tagCountMatrix
 })
 
-#' CTSSnormalizedTpm
+#' @name CTSSnormalizedTpm
+#' 
+#' @title Extracting normalized CAGE signal for TSSs from CAGEr objects
+#' 
+#' @description Extracts the normalized CAGE signal for all detected TSSs
+#' in all CAGE datasets from \code{\link{CAGEset}} and
+#' \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#' 
+#' @return Returns a \code{data.frame} with normalized CAGE signal supporting
+#' each TSS (rows) in every CAGE dataset (columns).
+#' 
+#' @seealso \code{\link{normalizeTagCount}}
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' CAGEsignal <- CTSSnormalizedTpm(exampleCAGEset)
+#' head(CAGEsignal)
+#' 
+#' @author Vanja Haberle
+#' @family CAGEr accessor methods
+#' @docType methods
+#' @export
 
 setGeneric(
 name="CTSSnormalizedTpm",
@@ -378,6 +475,8 @@ function (object){
 })
 
 #' CTSSnormalizedTpmDf
+#' 
+#' @noRd
 
 setGeneric(
 name="CTSSnormalizedTpmDf",
@@ -397,7 +496,27 @@ function (object){
   as.data.frame(lapply(assay(experiments(object)$normalizedTpmMatrix), as.integer))
 })
 
-#' CTSSclusteringMethod
+#' @name CTSSclusteringMethod
+#' 
+#' @title Extracting CTSS clustering method from CAGEr objects.
+#' 
+#' @description Extracts the label of the method used for CTSS clustering into tag
+#' clusters from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEset or CAGEexp object.
+#' 
+#' @return Returns a label of the method used for CTSS clustering.
+#' 
+#' @seealso \code{\link{clusterCTSS}}
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' CTSSclusteringMethod(exampleCAGEset)
+#' 
+#' @author Vanja Haberle
+#' @family CAGEr accessor methods
+#' @docType methods
+#' @export
 
 setGeneric(
 name="CTSSclusteringMethod",
@@ -417,7 +536,7 @@ function (object){
 	metadata(object)$clusteringMethod
 })
 
-#' tagClusters
+# tagClusters
 
 setGeneric(
 name="tagClusters",
@@ -552,6 +671,8 @@ function (object, what){
 #' GeneExpSE
 #' 
 #' Retreives the SummarizedExperiment containing gene expression levels.
+#' 
+#' @noRd for the moment
 
 setGeneric(
 name="GeneExpSE",

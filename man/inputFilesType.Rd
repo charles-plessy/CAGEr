@@ -25,7 +25,11 @@ inputFilesType(exampleCAGEset)
 
 }
 \seealso{
-Other CAGEr accessor methods: \code{\link{genomeName}},
+Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
+  \code{\link{CTSScoordinates}},
+  \code{\link{CTSSnormalizedTpm}},
+  \code{\link{CTSStagCountTable}},
+  \code{\link{CTSStagCount}}, \code{\link{genomeName}},
   \code{\link{inputFiles}}, \code{\link{librarySizes}},
   \code{\link{sampleLabels}}
 }
