@@ -9,6 +9,10 @@
 #' 
 #' @slot metadata A list that must at least contain \code{genomeName} and
 #' \code{inputFilesType} members.
+#' 
+#' @details If \code{genomeName} is \code{NULL}, checks of chromosome names will be
+#' disabled and G-correction will not be possible.  See https://support.bioconductor.org/p/86437/
+#' for an example on how to create a BSgenome package.
 #'
 #' @import(MultiAssayExperiment)
 #' 
@@ -51,6 +55,7 @@
 #' 
 #' @rdname CAGEexp-class
 #' @name CAGEexp-class
+#' @importFrom BSgenome available.genomes
 #' @export
 
 setClass("CAGEexp",
@@ -61,8 +66,10 @@ setClass("CAGEexp",
     #		if(object@genomeName %in% rownames(installed.packages()) == FALSE)
     #		return("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
     
-    if (is.null(metadata(object)$genomeName))
-      return("Missing BSgenome.")
+    if (! is.null(genomeName(object)))
+      if (! genomeName(object) %in% available.genomes())
+        return( paste0(sQuote("genomeName"), " must be the name an installed genome package. "
+              , "See ", sQuote("BSgenome::available.genomes()"), "."))
     
     if (is.null(colData(object)$inputFiles))
       return("Missing input file list.")

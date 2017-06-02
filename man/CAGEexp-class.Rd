@@ -12,6 +12,11 @@ is that the expression data is stored in \code{\link[S4Vectors]{DataFrame}} obje
 of \code{\link[S4Vectors]{Rle}}-encoded expression values, instead of plain
 \code{data.frame}s.  With large datasets, this saves considerable amounts of memory.
 }
+\details{
+If \code{genomeName} is \code{NULL}, checks of chromosome names will be
+disabled and G-correction will not be possible.  See https://support.bioconductor.org/p/86437/
+for an example on how to create a BSgenome package.
+}
 \section{Slots}{
 
 \describe{

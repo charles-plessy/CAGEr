@@ -367,13 +367,17 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 #' not compatible with the CAGEr object's BSgenome.
 #' 
 #' @param gr The genomic ranges to coerce.
-#' @param genome A BSgenome objet.
+#' @param genome The name of a BSgenome package, which must me installed,
+#'   or \code{NULL} to skip coercion.
 #' 
 #' @return A GRanges object in which every range is guaranteed to be compatible
 #' with the given BSgenome object.  The sequnames of the GRanges are also set
 #' accordingly to the BSgenome.
 
 coerceInBSgenome <- function(gr, genome) {
+  if (is.null(genome)) return(gr)
+  requireNamespace(genome)
+  genome <- get(genome, paste0("package:", genome))
   gr <- gr[seqnames(gr) %in% seqnames(genome)]
   gr <- gr[! end(gr) > seqlengths(genome)[as.character(seqnames(gr))]]
   seqlevels(gr) <- seqlevels(genome)
@@ -560,7 +564,7 @@ setMethod( "getCTSS"
   for (i in seq_along(ctss.files)) {
     message("\nReading in file: ", ctss.files[i], "...")
     gr <- loadFileIntoGRanges(ctss.files[i], inputFilesType(object)[i])
-    gr <- coerceInBSgenome(gr, get(genomeName(object)))
+  gr <- coerceInBSgenome(gr, genomeName(object))
     l[[i]] <- gr
   }
   
