@@ -82,7 +82,10 @@ setClass("CAGEexp",
     if (! all(inputFilesType(object) %in% supportedTypes))
       return( paste(sQuote("inputFilesType"), "must be one of supported input file types:"
             , paste(sQuote(supportedTypes), collapse = ", "), "."))
-    
+ 
+    if (is.null(rownames(colData(object))))
+      return("Rownames are missing in colData().  Did you forget to specify them?")
+       
     if (is.null(colData(object)$sampleLabels))
       return("Missing sample labels.")
     
