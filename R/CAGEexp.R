@@ -19,11 +19,12 @@
 #' @examples 
 #' 
 #' library("MultiAssayExperiment")
+#' library("SummarizedExperiment")
 #' pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
 #'                                , "ctss$"
 #'                                , full.names = TRUE)
 #' sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
-#' myCAGEexp <-
+#' ce <-
 #'   new( "CAGEexp"
 #'      , colData = DataFrame( inputFiles     = pathsToInputFiles
 #'                           , sampleLabels   = sampleLabels
@@ -34,21 +35,21 @@
 #' # Expression data is loaded by the getCTSS() function, that also calculates
 #' # library sizes and store them in the object's column data.
 #' 
-#' getCTSS(myCAGEexp)
-#' librarySizes(myCAGEexp)
-#' colData(myCAGEexp)
+#' getCTSS(ce)
+#' librarySizes(ce)
+#' colData(ce)
 #' 
 #' # CTSS data is stored internally as a SummarizedExperiemnt that can be retreived
 #' # as a whole, or as GRanges, or as an expression DataFrame.
 #' 
-#' CTSStagCountSE(myCAGEexp)
-#' CTSScoordinatesGR(myCAGEexp)
-#' CTSStagCountDF(myCAGEexp)
+#' CTSStagCountSE(ce)
+#' CTSScoordinatesGR(ce)
+#' CTSStagCountDF(ce)
 #' 
 #' # Columns of the "colData" table are accessible directly via the "$" operator.
 #' 
-#' myCAGEexp$l1 <- colSums(CTSStagCountDf(myCAGEexp) > 0)
-#' myCAGEexp$l1
+#' ce$l1 <- colSums(CTSStagCountDf(ce) > 0)
+#' ce$l1
 #' 
 #' @seealso CAGEset-class
 #' 
