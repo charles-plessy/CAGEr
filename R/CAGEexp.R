@@ -70,10 +70,11 @@ setClass("CAGEexp",
     if (is.null(object$inputFilesType))
       return("Missing input file type.")
     
-    if (! all(object$inputFilesType %in%
-          c( "bam", "bamPairedEnd", "bed", "bedctss", "CAGEscanMolecule", "ctss", "CTSStable"
-           , "FANTOM5", "ENCODE", "FANTOM3and4", "ZebrafishDevelopment")))
-      return("'inputFilesType' must be one of supported input file types (\"bam\", \"bamPairedEnd\", \"bed\", \"bedctss\", \"CAGEscanMolecule\", \"ctss\", \"CTSStable\")!")
+    supportedTypes <- c("bed", "bedmolecule", "CAGEscanMolecule", "ctss")
+    
+    if (! all(inputFilesType(object) %in% supportedTypes))
+      return( paste(sQuote("inputFilesType"), "must be one of supported input file types:"
+            , paste(sQuote(supportedTypes), collapse = ", "), "."))
     
     if (is.null(colData(object)$sampleLabels))
       return("Missing sample labels.")
