@@ -377,7 +377,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 coerceInBSgenome <- function(gr, genome) {
   if (is.null(genome)) return(gr)
   requireNamespace(genome)
-  genome <- get(genome, paste0("package:", genome))
+  genome <- getExportedValue(genome, genome)
   gr <- gr[seqnames(gr) %in% seqnames(genome)]
   gr <- gr[! end(gr) > seqlengths(genome)[as.character(seqnames(gr))]]
   seqlevels(gr) <- seqlevels(genome)

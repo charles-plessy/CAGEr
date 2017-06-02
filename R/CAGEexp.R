@@ -18,7 +18,6 @@
 #' 
 #' @examples 
 #' 
-#' library("BSgenome.Drerio.UCSC.danRer7")
 #' library("MultiAssayExperiment")
 #' pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
 #'                                , "ctss$"
