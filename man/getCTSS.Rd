@@ -61,7 +61,8 @@ the library sizes are calculated and stored in the object.
 \description{
 Reads input CAGE datasets into CAGEr object, constructs CAGE
 transcriptions start sites (CTSSs) and counts number of CAGE tags supporting every
-CTSS in each input experiment.  Preprocessing and quality filtering of input CAGE
+CTSS in each input experiment.  See \code{\link{inputFilesType}} for details on
+the supported input formats. Preprocessing and quality filtering of input CAGE
 tags, as well as correction of CAGE-specific 'G' nucleotide addition bias can be
 also performed before constructing TSSs.
 }
@@ -105,7 +106,8 @@ evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
 }
 \seealso{
 \code{\link{CTSScoordinates}}, \code{\link{CTSStagCount}},
-  \code{\link{CTSStagCountTable}}, \code{\link{librarySizes}}.
+  \code{\link{CTSStagCountTable}}, \code{\link{inputFilesType}},
+   \code{\link{librarySizes}}.
 }
 \author{
 Vanja Haberle

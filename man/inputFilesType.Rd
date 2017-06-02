@@ -23,12 +23,50 @@ objects, the return value is character vector with one member per sample.
 Extracts the information on the type of CAGE data input
 files from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
+\details{
+The following input file types are supported:
+
+\itemize{
+  \item{\code{bam}:}
+  {A single-ended BAM file.}
+
+  \item{\code{bamPairedEnd}:}
+  {A paired-ended BAM file.}
+
+  \item{\code{bed}:}
+  {A BED file where the score indicates a number of counts for a
+  given position}
+
+  \item{\code{bedmolecule}:}
+  {A BED file where each line counts for one molecule.}
+
+  \item{\code{CAGEscanMolecule}:}
+  {Experimental.  For the CAGEscan 3.0 pipeline.}
+
+  \item{\code{ctss}:}
+  {A tabulation-delimited file describing CAGE Transcription
+  Start Sites (CTSS) with four columns indicating \emph{chromosome},
+  \emph{1-based coordinate}, \emph{strand} and \emph{score} respectively.}
+
+  \item{\code{CTSStable}}{}
+
+  \item{\code{FANTOM5}}{}
+
+  \item {\code{ENCODE}}{}
+
+  \item{\code{FANTOM3and4}}{}
+
+  \item{\code{ZebrafishDevelopment}}{}
+}
+}
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 inputFilesType(exampleCAGEset)
 
 }
 \seealso{
+\code{\link{getCTSS}}
+
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSScoordinates}},
   \code{\link{CTSSnormalizedTpm}},
