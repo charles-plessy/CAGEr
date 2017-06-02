@@ -172,6 +172,9 @@ function (object){
 #' @return Returns a character vector of labels of all CAGE datasets present
 #' in the CAGEr object.
 #' 
+#' @details Renaming samples is possible only in \code{CAGEexp} objects, before
+#' data is loaded.
+#' 
 #' @author Vanja Haberle
 #' 
 #' @examples 

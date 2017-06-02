@@ -74,7 +74,10 @@ setMethod("sampleLabels<-", "CAGEset", function (object, value){
 })
 
 setMethod("sampleLabels<-", "CAGEexp", function (object, value){
-  object$sampleLabels <- value
+  if (length(sampleLabels(object)) != length(value))
+    stop("Number of labels differ from number of samples.")
+  object$sampleLabels       <- value
+  rownames(colData(object)) <- value
   if (validObject(object)) object
 })
 
