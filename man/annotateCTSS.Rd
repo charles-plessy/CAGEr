@@ -20,7 +20,7 @@ The input object with the following modifications:
   \item The Genomic Ranges of the \code{tagCountMatrix} experiment cains a
     \code{annotation} metadata column, with levels such as \dQuote{promoter},
     \dQuote{exon}, \dQuote{intron} and \dQuote{unknown"}.
-  \item Column data are added with the raw counts in each of the annotation
+  \item New column data added, indicating total counts in each of the annotation
     levels.
 }
 }
@@ -36,8 +36,8 @@ annotateCTSS(object)
 \seealso{
 The \code{\link{Zv9_annot}} example data.
 
-Other CAGEr object modifiers: \code{\link{getCTSS}},
-  \code{\link{normalizeTagCount}}
+Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{getCTSS}}, \code{\link{normalizeTagCount}}
 
 Other CAGEr annotation functions: \code{\link{plotAnnot}},
   \code{\link{ranges2annot}}, \code{\link{ranges2genes}}

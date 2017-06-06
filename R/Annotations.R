@@ -275,7 +275,7 @@ mapStats <- function( libs
 #'   \item The Genomic Ranges of the \code{tagCountMatrix} experiment cains a
 #'     \code{annotation} metadata column, with levels such as \dQuote{promoter},
 #'     \dQuote{exon}, \dQuote{intron} and \dQuote{unknown"}.
-#'   \item Column data are added with the raw counts in each of the annotation
+#'   \item New column data added, indicating total counts in each of the annotation
 #'     levels.
 #' }
 #' 
@@ -504,3 +504,69 @@ ranges2genes <- function(ranges, genes) {
 #' @examples 
 #' readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 NULL
+
+#' @name CTSStoGenes
+#' 
+#' @title Make a gene expression table.
+#' 
+#' @description Add a gene expression table in the \code{GeneExpSE} experiment
+#' of an annotated \code{\link{CAGEexp}} object.
+#' 
+#' @param object A CAGEexp object that was annotated with the \code{annotateCTSS} function.
+#' 
+#' @return The input object with the following modifications:
+#' 
+#' \itemize{
+#'   \item A new \code{GeneExpSE} experiment containing gene expression levels as
+#'     a \code{SummarizedExperiemnt} object with one assay called \code{counts}, which
+#'     is a \code{DataFrame} of \code{Rle} integers.
+#'   \item New \code{genes} column data added, indicating total number of gene symbols
+#'     detected per library.
+#' }
+#' 
+#' @author Charles Plessy
+#' 
+#' @seealso \code{\link{annotateCTSS}}.
+#' 
+#' @family CAGEr object modifiers
+#' 
+#' @examples 
+#' \dontrun{
+#' CTSStoGenes(ce)
+#' }
+#' 
+#' @docType methods
+#' @importFrom SummarizedExperiment SummarizedExperiment
+#' @importFrom S4Vectors DataFrame Rle
+#' @export
+
+setGeneric("CTSStoGenes", function(object) standardGeneric("CTSStoGenes"))
+
+setMethod( "CTSStoGenes"
+         , signature(object = "CAGEset")
+         , function (object)
+  stop("Not supported for ", dQuote("CAGEset"), " objects.")
+)
+
+setMethod( "CTSStoGenes"
+         , signature(object = "CAGEexp")
+         , function (object){
+  objName <- deparse(substitute(object))
+  if (is.null(CTSScoordinatesGR(object)$genes))
+    stop(objName, " is not annotated, see ", dQuote("annotateCTSS()"), ".")
+
+  genes <- rowsum(CTSStagCountDf(object), CTSScoordinatesGR(object)$genes)
+  genes <- lapply(genes, Rle)
+  genes <- DataFrame(genes, row.names = levels(factor(CTSScoordinatesGR(object)$genes)))
+
+  GeneExpSE(object) <- SummarizedExperiment( assay   = SimpleList(counts = genes)
+                                           , rowData = DataFrame(symbol = rownames(genes)))
+  
+  object$genes       <- colSums(assay(GeneExpSE(object)) %>% as.data.frame > 0)
+  # object$geneSymbols <- countSymbols(assay(GeneExpSE(object)) %>% as.data.frame)
+  
+  if (validObject(object)) {
+    assign(objName, object, envir = parent.frame())
+    invisible(1)
+  }
+})
