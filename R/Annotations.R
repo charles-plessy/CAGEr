@@ -171,7 +171,7 @@ mapStats <- function( libs
   if (scope == "counts") {
     totalIs("librarySizes")
     columns <- c("Promoter", "Exon", "Intron", "Intergenic")
-    libs %<>% within({
+    libs <- within(libs, {
       Promoter   <- promoter
       Exon       <- exon
       Intron     <- intron
@@ -187,7 +187,7 @@ mapStats <- function( libs
     totalIs("mapped")
     columns <- c( "Promoter", "Exon", "Intron", "Intergenic"
                 , "Duplicates", "Non_proper")
-    libs %<>% within({
+    libs <- within(libs, {
       Non_proper <- mapped - properpairs
       Duplicates <- properpairs - librarySizes
       Intergenic <- librarySizes - promoter - intron - exon
@@ -199,7 +199,7 @@ mapStats <- function( libs
     totalIs("extracted")
     columns <- c( "Tag_dust", "rDNA", "Spikes", "Unmapped"
                 , "Non_proper", "Duplicates", "librarySizes")
-    libs %<>% within({
+    libs <- within(libs, {
       Tag_dust     <- extracted   - rdna - spikes - cleaned
       rDNA         <- rdna
       Spikes       <- spikes
@@ -211,7 +211,7 @@ mapStats <- function( libs
    } else if (scope == "steps") {
     totalIs("extracted")
     columns <- c("Cleaning", "Mapping", "Deduplication", "librarySizes")
-    libs %<>% within({
+    libs <- within(libs, {
       Cleaning      <- extracted   - cleaned
       Mapping       <- cleaned     - properpairs
       Deduplication <- properpairs - librarySizes
@@ -226,7 +226,7 @@ mapStats <- function( libs
     if (scope == "all")        totalIs("extracted")
     if (scope == "annotation") totalIs("mapped")
     columns <- c("promoter","exon","intron","mapped","rdna", "tagdust")
-    libs %<>% within({
+    libs <- within(libs, {
        mapped <- mapped - promoter - intron - exon
     })
   }
@@ -236,12 +236,12 @@ mapStats <- function( libs
   
   # "simplify" needs to be FALSE so that conversion to data frame works even
   # when the group contains only a single level.
-  mapstats          <- sapply(columns, doMean, simplify = FALSE) %>% data.frame
+  mapstats          <- data.frame(sapply(columns, doMean, simplify = FALSE))
   mapstats$group    <- rownames(mapstats)
   mapstats[gtools::mixedorder(mapstats$group), ]
-    mapstats$group    %<>% factor(mapstats$group %>% unique)
+  mapstats$group    <- factor(mapstats$group, unique(mapstats$group))
   
-  mapstats.sd       <- sapply(columns, doSd, simplify = FALSE)   %>% data.frame
+  mapstats.sd       <- data.frame(sapply(columns, doSd, simplify = FALSE))
   mapstats.sd$group <- rownames(mapstats.sd)
   
   mapstats          <- reshape::melt(mapstats,    id.vars="group")
@@ -331,6 +331,7 @@ setMethod("annotateCTSS", "CAGEexp", function (object, ranges){
 #'         indicating if the interval is promoter, exon, intron or unknown.
 #'         
 #' @family CAGEr annotation functions
+#' @seealso \code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
 #' 
 #' @author Charles Plessy
 #' 
@@ -344,7 +345,6 @@ setMethod("annotateCTSS", "CAGEexp", function (object, ranges){
 #'   DataFrame(t(sapply(CTSStagCountDF(ce), function(X) tapply(X, CTSScoordinatesGR(ce)$annotation, sum))))
 #' }
 #' 
-#' @export ranges2annot
 #' @importFrom GenomicRanges findOverlaps promoters
 #' @importFrom S4Vectors Rle
 
@@ -358,8 +358,11 @@ ranges2annot <- function(ranges, annot, showClasses=NULL) {
   
   if (! missing(showClasses) ) return(classes)
   
-  findOverlapsBool <- function(A, B)
-    findOverlaps(A, B) %>% as(., "List") %>% any
+  findOverlapsBool <- function(A, B) {
+    overlap <- findOverlaps(A, B)
+    overlap <- as(overlap, "List")
+    any(overlap)
+  }
   
   p <- findOverlapsBool( ranges
                          , promoters( annot[ annot$type == "transcript"
@@ -368,12 +371,14 @@ ranges2annot <- function(ranges, annot, showClasses=NULL) {
   e <- findOverlapsBool(ranges, annot[annot$type == "exon"])
   t <- findOverlapsBool(ranges, annot[annot$type == "transcript"])
   
-  sapply( 1:length(ranges), function(i) {
+  annot <- sapply( 1:length(ranges), function(i) {
     if (p[i]) {classes[1]}
     else if (e[i]) {classes[2]}
     else if (t[i]) {classes[3]}
     else           {classes[4]}
-  }) %>% factor(levels = classes) %>% Rle
+  })
+  annot <- factor(annot, levels = classes)
+  Rle(annot)
 }
 
 #' ranges2genes
@@ -391,7 +396,7 @@ ranges2annot <- function(ranges, annot, showClasses=NULL) {
 #'         range.
 #'         
 #' @family CAGEr annotation functions
-#' @seealso \code{\link{CTSScoordinatesGR}}
+#' @seealso \code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
 #' 
 #' @author Charles Plessy
 #' 
@@ -399,22 +404,23 @@ ranges2annot <- function(ranges, annot, showClasses=NULL) {
 #' \dontrun{
 #' # With a CAGEexp object called "ce" and a GRanges object called "gff"
 #' # containing transcript/exon information like with GENCODE:
+#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 #' CTSScoordinatesGR(ce)$genes <- ranges2genes(CTSScoordinatesGR(ce), gff)
 #' }
 #' 
-#' @export ranges2genes
 #' @importFrom GenomicRanges findOverlaps
-#' @importFrom S4Vectors List unstrsplit
+#' @importFrom S4Vectors List Rle unstrsplit
 #' @importFrom IRanges extractList
 
 ranges2genes <- function(ranges, genes) {
   if (is.null(genes$gene_name))
     stop("Annotation must contain ", dQuote("gene_name"), " metdata.")
-  findOverlaps(ranges, genes) %>%
-    as(., "List") %>%
-    extractList(genes$gene_name, .) %>%
-    unique %>%
-    unstrsplit(";")
+  gnames <- findOverlaps(ranges, genes)
+  gnames <- as(gnames, "List")
+  gnames <- extractList(genes$gene_name, gnames)
+  gnames <- unique(gnames)
+  gnames <- unstrsplit(gnames, ";")
+  Rle(gnames)
 }
 
 #' @name Zv9_annot
@@ -502,7 +508,7 @@ ranges2genes <- function(ranges, genes) {
 #' saveRDS(gff, "inst/extdata/Zv9_annot.rds")}
 #' 
 #' @examples 
-#' readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
+#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 NULL
 
 #' @name CTSStoGenes
@@ -555,14 +561,14 @@ setMethod( "CTSStoGenes"
   if (is.null(CTSScoordinatesGR(object)$genes))
     stop(objName, " is not annotated, see ", dQuote("annotateCTSS()"), ".")
 
-  genes <- rowsum(CTSStagCountDf(object), CTSScoordinatesGR(object)$genes)
+  genes <- rowsum(CTSStagCountDf(object), as.factor(CTSScoordinatesGR(object)$genes))
   genes <- lapply(genes, Rle)
   genes <- DataFrame(genes, row.names = levels(factor(CTSScoordinatesGR(object)$genes)))
 
   GeneExpSE(object) <- SummarizedExperiment( assay   = SimpleList(counts = genes)
                                            , rowData = DataFrame(symbol = rownames(genes)))
   
-  object$genes       <- colSums(assay(GeneExpSE(object)) %>% as.data.frame > 0)
+  object$genes       <- colSums(as.data.frame(assay(GeneExpSE(object))) > 0)
   # object$geneSymbols <- countSymbols(assay(GeneExpSE(object)) %>% as.data.frame)
   
   if (validObject(object)) {

@@ -34,6 +34,8 @@ colData(ce)[levels(CTSScoordinatesGR(ce)$annotation)] <-
 
 }
 \seealso{
+\code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
+
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
   \code{\link{plotAnnot}}, \code{\link{ranges2genes}}
 }

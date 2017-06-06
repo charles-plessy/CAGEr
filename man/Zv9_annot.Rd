@@ -81,7 +81,7 @@ seqlevels(gff) <- seqlevelsInUse(gff)
 saveRDS(gff, "inst/extdata/Zv9_annot.rds")}
 }
 \examples{
-readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
+gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 }
 \references{
 \url{http://mar2015.archive.ensembl.org/biomart/}

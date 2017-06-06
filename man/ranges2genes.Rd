@@ -25,12 +25,13 @@ Assign gene symbol(s) to Genomic Ranges.
 \dontrun{
 # With a CAGEexp object called "ce" and a GRanges object called "gff"
 # containing transcript/exon information like with GENCODE:
+gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 CTSScoordinatesGR(ce)$genes <- ranges2genes(CTSScoordinatesGR(ce), gff)
 }
 
 }
 \seealso{
-\code{\link{CTSScoordinatesGR}}
+\code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
 
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
   \code{\link{plotAnnot}}, \code{\link{ranges2annot}}
