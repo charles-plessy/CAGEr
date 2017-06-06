@@ -39,4 +39,4 @@ exportMethods(scoreShift, getShiftingPromoters)
 
 exportMethods(genomeName, "genomeName<-")
 
-export(genomeName, "genomeName<-", inputFiles, "inputFiles<-", inputFilesType, "inputFilesType<-", sampleLabels, "sampleLabels<-", librarySizes, "librarySizes<-", CTSScoordinates, CTSScoordinatesGR, "CTSScoordinatesGR<-", CTSStagCount, CTSStagCountDf, CTSStagCountDF, CTSStagCountSE, "CTSStagCountSE<-", CTSSnormalizedTpm, CTSSclusteringMethod, tagClusters, consensusClusters, consensusClustersTpm, expressionClasses, GeneExpSE, "GeneExpSE<-")
+export(annotateCTSS, plotAnnot, genomeName, "genomeName<-", inputFiles, "inputFiles<-", inputFilesType, "inputFilesType<-", sampleLabels, "sampleLabels<-", librarySizes, "librarySizes<-", CTSScoordinates, CTSScoordinatesGR, "CTSScoordinatesGR<-", CTSStagCount, CTSStagCountDf, CTSStagCountDF, CTSStagCountSE, "CTSStagCountSE<-", CTSSnormalizedTpm, CTSSclusteringMethod, tagClusters, consensusClusters, consensusClustersTpm, expressionClasses, GeneExpSE, "GeneExpSE<-")

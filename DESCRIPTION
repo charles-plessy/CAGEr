@@ -8,6 +8,7 @@ Imports:
     beanplot,
     data.table,
     GenomicRanges (>= 1.23.16),
+    ggplot2 (>= 2.2.0),
     IRanges (>= 2.5.27),
     MultiAssayExperiment,
     Rsamtools,
@@ -25,7 +26,7 @@ Suggests:
     BSgenome.Drerio.UCSC.danRer7,
     FANTOM3and4CAGE 
 Enhances: parallel
-Description:  Preprocessing of CAGE sequencing data, identification and
+Description: Preprocessing of CAGE sequencing data, identification and
  normalization of transcription start sites and downstream analysis of
  transcription start sites clusters (promoters).
 License: GPL-3
@@ -34,6 +35,7 @@ Collate:
     'AggregationFunctions.R'
     'AggregationMethods.R'
     'AllClasses.R'
+    'Annotations.R'
     'CAGEexp.R'
     'ClusteringFunctions.R'
     'ClusteringMethods.R'
