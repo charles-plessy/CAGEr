@@ -575,10 +575,10 @@ setMethod( "getCTSS"
 
   # Step 3: Fold the GRangesList in a expression DataFrame of Rle-encoded counts.
   
-  assay <- DataFrame(V1 = Rle(rep(0, length(rowRanges))))
+  assay <- DataFrame(V1 = Rle(rep(0L, length(rowRanges))))
   
   expandRange <- function(global, local) {
-    x <- Rle(rep(0, length(global)))
+    x <- Rle(rep(0L, length(global)))
     x[global %in% local] <- score(local)
     x
   }
