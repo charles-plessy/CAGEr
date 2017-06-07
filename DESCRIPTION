@@ -54,6 +54,7 @@ Collate:
     'NormalizationMethods.R'
     'QuantileWidthFunctions.R'
     'QuantileWidthMethods.R'
+    'Richness.R'
     'SetMethods.R'
     'ShiftingFunctions.R'
     'ShiftingMethods.R'
