@@ -72,7 +72,8 @@ constructing the human and mouse promoterome with deepCAGE data, \emph{Genome Bi
 \seealso{
 \code{\link{plotReverseCumulatives}}, \code{\link{CTSSnormalizedTpm}}
 
-Other CAGEr object modifiers: \code{\link{getCTSS}}
+Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{annotateCTSS}}, \code{\link{getCTSS}}
 }
 \author{
 Vanja Haberle

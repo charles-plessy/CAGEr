@@ -1,3 +1,20 @@
+#' @name CAGEset-class
+#' @docType class
+#' @noRd
+#' @import methods
+#' @export
+#'
+#' @import data.table
+#' @import utils
+#' @import Rsamtools
+#' @import S4Vectors
+#' @import GenomicRanges
+#' @import IRanges
+# Import whole packages above, following earlier versions of CAGEr.  It may be worth
+# trying to replace them by ad-hoc importFrom directives.  This would also remove the
+# character(0) warning messages when running Roxygen2.
+# https://stackoverflow.com/questions/26104401/character0-warnings-when-running-devtoolsload-all-in-rstudio
+
 setClass(Class = "CAGEset",
 
 	representation(
@@ -85,6 +102,10 @@ setClass(Class = "CAGEset",
 
 ###############################################################
 # Function for displaying CAGEset object in user friendly way
+
+#' @name show
+#' @noRd
+#' @exportMethod show
 
 setMethod("show", 
 
@@ -178,6 +199,10 @@ setMethod("show",
 ############
 # Coercion
 
+#' @name coerce
+#' @noRd
+#' @exportMethod coerce
+
 setAs("data.frame", "CAGEset",
     function(from){
         
@@ -225,6 +250,9 @@ setAs("data.frame", "CAGEset",
 ######################
 # Merge two CAGEsets
 
+#' mergeCAGEsets
+#' @noRd
+#' @export
 
 setGeneric(
 name="mergeCAGEsets",

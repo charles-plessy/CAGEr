@@ -10,6 +10,8 @@
 #' 
 #' @family CAGEr multicore-enabled functions
 #' 
+#' @noRd
+#' 
 #' @examples 
 #' useMulticore <- CAGEr:::.checkMulticore(useMulticore)
 

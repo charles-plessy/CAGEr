@@ -13,8 +13,6 @@
 #' @details If \code{genomeName} is \code{NULL}, checks of chromosome names will be
 #' disabled and G-correction will not be possible.  See https://support.bioconductor.org/p/86437/
 #' for an example on how to create a BSgenome package.
-#'
-#' @import(MultiAssayExperiment)
 #' 
 #' @examples 
 #' 
@@ -55,6 +53,9 @@
 #' 
 #' @rdname CAGEexp-class
 #' @name CAGEexp-class
+#' @import MultiAssayExperiment
+#' @import SummarizedExperiment
+#' @import methods
 #' @importFrom BSgenome available.genomes
 #' @export
 

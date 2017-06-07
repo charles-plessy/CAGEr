@@ -1,3 +1,7 @@
+#' @name plotCorrelation
+#' @noRd
+#' @export
+
 setGeneric(
 name="plotCorrelation",
 def=function(object, what = "CTSS", values = "raw", samples = "all", method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE, plotSize=800){

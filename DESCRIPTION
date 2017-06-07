@@ -33,10 +33,10 @@ License: GPL-3
 biocViews: Preprocessing, Sequencing, Normalization, FunctionalGenomics, Transcription, GeneExpression, Clustering, Visualization
 Collate: 
     'AggregationFunctions.R'
-    'AggregationMethods.R'
-    'AllClasses.R'
-    'Annotations.R'
     'CAGEexp.R'
+    'AllClasses.R'
+    'AggregationMethods.R'
+    'Annotations.R'
     'ClusteringFunctions.R'
     'ClusteringMethods.R'
     'CorrelationMethods.R'

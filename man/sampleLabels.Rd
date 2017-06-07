@@ -22,6 +22,10 @@ in the CAGEr object.
 Extracts the labels of CAGE datasets (samples, experiments)
 from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
+\details{
+Renaming samples is possible only in \code{CAGEexp} objects, before
+data is loaded.
+}
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 sampleLabels(exampleCAGEset)

@@ -105,8 +105,8 @@
 #' 
 #' @docType methods
 #' 
-#' @import (S4Vectors, DataFrame)
-#' @import (S4Vectors, Rle)
+#' @importFrom  S4Vectors DataFrame
+#' @importFrom  S4Vectors Rle
 #' @export
 
 setGeneric(
@@ -419,7 +419,7 @@ loadFileIntoGRanges <- function( filepath
 #' 
 #' @seealso loadFileIntoGRanges
 #' 
-#' @importFrom (rtracklayer, import.bed)
+#' @importFrom rtracklayer import.bed
 #' 
 #' @examples
 #' # TODO: add exmaple file
@@ -445,7 +445,7 @@ import.bedmolecule <- function(filepath) {
 #' 
 #' @seealso loadFileIntoGRanges
 #' 
-#' @importFrom (rtracklayer, import.bed)
+#' @importFrom rtracklayer import.bed
 #' 
 #' @examples
 #' # TODO: add exmaple file
@@ -605,6 +605,8 @@ setMethod( "getCTSS"
 })
 
 #' importPublicData
+#' @noRd
+#' @export
 
 setGeneric(
 name="importPublicData",
@@ -937,7 +939,9 @@ function (source, dataset, group, sample){
 )
 
 
-
+#' setColors
+#' @noRd
+#' @export
 
 setGeneric(
 name="setColors",

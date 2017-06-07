@@ -1,3 +1,7 @@
+#' mergeSamples
+#' @noRd
+#' @export
+
 setGeneric(
 name="mergeSamples",
 def=function(object, mergeIndex, mergedSampleLabels){

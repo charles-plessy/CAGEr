@@ -1,9 +1,11 @@
-#` plotAnnot
+#' @include AllClasses.R CAGEexp.R
+
+#' @name plotAnnot
 #'
-#' Plot annotation statistics
+#' @title Plot annotation statistics
 #' 
-#' Plot maping statistics of an object containing mapping statistics in counts as
-#' percentages in stacked barplots.
+#' @description Plot maping statistics of an object containing mapping statistics in
+#' counts as percentages in stacked barplots.
 #' 
 #' Stacked barplots with error bars inspired from
 #' <http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2>.

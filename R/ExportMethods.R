@@ -2,6 +2,9 @@
 # Functions for exporting results (graphical and textual)
 #
 
+#' @name plotReverseCumulatives
+#' @noRd
+#' @export
 
 setGeneric(
 name="plotReverseCumulatives",
@@ -71,6 +74,9 @@ function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 }
 )
 
+#' @name exportCTSStoBedGraph
+#' @noRd
+#' @export
 
 setGeneric(
 name="exportCTSStoBedGraph",
@@ -125,6 +131,9 @@ function (object, values = "normalized", format = "BigWig", oneFile = TRUE){
 }
 )
 
+#' @name plotInterquantileWidth
+#' @noRd
+#' @export
 
 setGeneric(
 name="plotInterquantileWidth",
@@ -207,6 +216,9 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 }
 )
 
+#' @name plotExpressionProfiles
+#' @noRd
+#' @export
 
 setGeneric(
 name="plotExpressionProfiles",
@@ -258,6 +270,9 @@ function (object, what){
 }
 )
 
+#' @name exportToBed
+#' @noRd
+#' @export
 
 setGeneric(
 name="exportToBed",

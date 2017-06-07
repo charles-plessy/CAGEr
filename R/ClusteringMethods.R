@@ -1,3 +1,7 @@
+#' @name clusterCTSS
+#' @noRd
+#' @export
+
 setGeneric(
 name="clusterCTSS",
 def=function(object, threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE, method = "distclu", maxDist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, minStability = 1, maxLength = 500, reduceToNonoverlapping = TRUE, customClusters = NULL, useMulticore = FALSE, nrCores = NULL){

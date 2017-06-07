@@ -59,7 +59,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 #' in the logX-logY plot (where X=signal, Y=number of sites that have >= of given
 #' signal), b = intercept in the logX-logY plot)
 #' 
-#' @importFrom data.table, data.table setkey setnames
+#' @importFrom data.table data.table setkey setnames
 #' @noRd
 
 .fit.power.law.to.reverse.cumulative <- function(values, val.range = c(10, 1000)) {

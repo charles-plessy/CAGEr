@@ -1,6 +1,12 @@
+#' @include AllClasses.R CAGEexp.R
+
 ###################################################################
 # Functions for aggregating tag clusters (TCs) across all samples
 #
+
+#' @name aggregateTagClusters
+#' @noRd
+#' @export
 
 setGeneric(
 name="aggregateTagClusters",

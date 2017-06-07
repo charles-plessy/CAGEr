@@ -1,3 +1,7 @@
+#' quantilePositions
+#' @noRd
+#' @export
+
 setGeneric(
 name="quantilePositions",
 def=function(object, clusters, qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCores = NULL){

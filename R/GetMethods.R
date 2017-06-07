@@ -302,6 +302,7 @@ function (object){
 #' Will be more documented if finally exported
 #' 
 #' @noRd
+#' @export
 
 setGeneric(
 name="CTSScoordinatesGR",
@@ -370,6 +371,7 @@ function (object){
 #' CTSStagCountDf
 #' 
 #' @noRd
+#' @export
 
 setGeneric(
 name="CTSStagCountDf",
@@ -394,6 +396,7 @@ function (object){
 #' Same as CTSStagCountDf, but as DataFrame
 #' 
 #' @noRd
+#' @export
 
 setGeneric(
 name="CTSStagCountDF",
@@ -463,6 +466,7 @@ signature(object = "CAGEexp"),
 #' Same as CTSStagCount, but as SummarizedExperiment
 #' 
 #' @noRd
+#' @export
 
 setGeneric(
 name="CTSStagCountSE",
@@ -582,7 +586,9 @@ function (object){
 	metadata(object)$clusteringMethod
 })
 
-# tagClusters
+#' tagClusters
+#' @noRd
+#' @export
 
 setGeneric(
 name="tagClusters",
@@ -615,6 +621,9 @@ function (object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = N
 	}
 })
 
+#' consensusClusters
+#' @noRd
+#' @export
 
 setGeneric(
 name="consensusClusters",
@@ -672,6 +681,9 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
 
 })
 
+#' consensusClustersTpm
+#' @noRd
+#' @export
 
 setGeneric(
 name="consensusClustersTpm",
@@ -685,6 +697,9 @@ function (object){
 	object@consensusClustersTpmMatrix
 })
 
+#' expressionClasses
+#' @noRd
+#' @export
 
 setGeneric(
 name="expressionClasses",
@@ -719,6 +734,7 @@ function (object, what){
 #' Retreives the SummarizedExperiment containing gene expression levels.
 #' 
 #' @noRd
+#' @export
 
 setGeneric(
 name="GeneExpSE",

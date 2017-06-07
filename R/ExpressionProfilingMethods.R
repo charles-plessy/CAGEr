@@ -2,6 +2,10 @@
 # Functions for clustering by expression (expression profiling)
 #
 
+#' @name getExpressionProfiles
+#' @noRd
+#' @export
+
 setGeneric(
 name="getExpressionProfiles",
 def=function(object, what, tpmThreshold = 5, nrPassThreshold = 1, method = "som", xDim = 5, yDim = 5){
@@ -50,6 +54,9 @@ function (object, what, tpmThreshold, nrPassThreshold, method, xDim, yDim){
 }
 )
 
+#' @name .clusterExpression
+#' @noRd
+#' @importFrom som som
 
 .clusterExpression <- function(tpm.mx, sample.labels, tpmThreshold = 5, nrPassThreshold = 1, method, xDim = 5, yDim = 5) {
 	
@@ -72,7 +79,9 @@ function (object, what, tpmThreshold, nrPassThreshold, method, xDim, yDim){
 	
 }
 
-
+#' @name extractExpressionClass
+#' @noRd
+#' @export
 
 setGeneric(
 name="extractExpressionClass",

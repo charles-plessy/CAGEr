@@ -1,3 +1,7 @@
+#' @name cumulativeCTSSdistribution
+#' @noRd
+#' @export
+
 setGeneric(
 name="cumulativeCTSSdistribution",
 def=function(object, clusters, useMulticore = FALSE, nrCores = NULL){

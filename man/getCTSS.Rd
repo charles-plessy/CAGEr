@@ -109,7 +109,9 @@ evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
   \code{\link{CTSStagCountTable}}, \code{\link{inputFilesType}},
    \code{\link{librarySizes}}.
 
-Other CAGEr object modifiers: \code{\link{normalizeTagCount}}
+Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{annotateCTSS}},
+  \code{\link{normalizeTagCount}}
 }
 \author{
 Vanja Haberle

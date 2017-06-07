@@ -27,12 +27,19 @@
 	
 }
 
+#' .export.bedgraph
+#' @noRd
+#' @importFrom rtracklayer export
+
 .export.bedgraph <- function(data.rd, name, description, file_name, append = F) {
 	data.ucsc <- as(data.rd, "UCSCData")
 	data.ucsc@trackLine <- new("BasicTrackLine", name = name, description = description, visibility="full")	
 	export(data.ucsc, con = file_name, format = "ucsc", subformat = "bedGraph", append = append)
 }
 
+#' .export.bw.all
+#' @noRd
+#' @importFrom rtracklayer export.bw
 
 .export.bw.all <- function(data, sample.labels, v, genome) {
     data.plus <- subset(data, strand == "+")
@@ -193,6 +200,10 @@ value.low=min(vec), value.high=max(vec), value.mid=(value.low+value.high)/2, ...
 #			 plot.file - path of the plot file
 #			 cols - vector of 4 colors (corners: bottomleft, topleft, bottomright, topright) for designing a color matrix for SOM map
 # RETURNS: plots beanplots of distribution of signal for different SOM classes of CTSSs across given samples/stages (SOM classes map)
+
+#' @name .plot.clusters.beanplots
+#' @noRd
+#' @importFrom beanplot beanplot
 
 .plot.clusters.beanplots <- function(value.matrix, cl, cl.method, dim.som.x, dim.som.y, ylim = c(0,2), las = 0, labels = colnames(value.matrix), titles = 'number', cex.axis = 1, cex.main = 5, cex.lab = 3, cols = c("red", "gold", "green", "blue")) {
 	

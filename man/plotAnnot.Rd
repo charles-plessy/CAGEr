@@ -26,10 +26,9 @@ for the definition of custom scopes.}
 \item{normalise}{Whether to normalise or not. Default: TRUE.}
 }
 \description{
-Plot maping statistics of an object containing mapping statistics in counts as
-percentages in stacked barplots.
-}
-\details{
+Plot maping statistics of an object containing mapping statistics in
+counts as percentages in stacked barplots.
+
 Stacked barplots with error bars inspired from
 <http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2>.
 See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.

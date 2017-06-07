@@ -1,3 +1,7 @@
+#' scoreShift
+#' @noRd
+#' @export
+
 setGeneric(
 name="scoreShift",
 def=function(object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore = F, nrCores = NULL){
@@ -147,6 +151,9 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 }
 )
 
+#' getShiftingPromoters
+#' @noRd
+#' @export
 
 setGeneric(
 name="getShiftingPromoters",
