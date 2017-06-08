@@ -33,12 +33,14 @@
 #' @author Charles Plessy
 #' 
 #' @examples
-#' # ce <- To Do: prepare an example CAGEexp object
-#' p <- plotAnnot(ce, 'qc', 'Here is the title')
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
+#' annotateCTSS(ce, gff)
+#' p <- plotAnnot(ce, 'counts', 'Here is the title')
 #' print(p)
 #' p + ggplot2::theme_bw()
 #' ggplot2::theme_set(ggplot2::theme_bw()) ; p
-#' plotAnnot(ce, 'qc', 'Same, non-normalised', normalise = FALSE)
+#' plotAnnot(ce, 'counts', 'Same, non-normalised', normalise = FALSE)
 #' 
 #' @docType methods
 #' @import ggplot2
@@ -79,7 +81,15 @@ setMethod("plotAnnot", "DataFrame",
 
 setMethod("plotAnnot", "CAGEexp",
   function( x, scope, title, group, customScope, normalise) {
-  if (missing(group)) group <- sampleLabels(x)
+  if (missing(group)) {
+    group <- sampleLabels(x)
+  } else {
+    if (length(group) == 1) {
+      if (exists(group, data.frame(colData(x)))) {
+        group <- colData(x)[[group]]
+      }
+    }
+  }
   if (missing(title)) title <- paste("CAGEr object", dQuote(deparse(substitute(x))))
   plotAnnot( colData(x)
            , scope=scope, title=title, group=group, customScope=customScope, normalise=normalise)
@@ -120,13 +130,17 @@ setMethod("plotAnnot", "CAGEexp",
 #' 
 #' @author Charles Plessy
 #' 
-#' @family smallCAGEqc annotation functions
-#'  
+#' @seealso plotAnnot
+#' 
 #' @examples
-#' example(loadMoiraiStats)
-#' mapStats(libs, "qc")
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
+#' annotateCTSS(ce, gff)
+#' mapStats(as.data.frame(colData(ce)), "counts", sampleLabels(ce))
+#' mapStats(as.data.frame(colData(ce)), "counts", c("A", "A", "B", "B", "C"))
 #' 
 #' @importFrom gtools mixedorder
+#' @importFrom plyr ddply
 #' @importFrom reshape melt
 
 mapStats <- function( libs
@@ -288,9 +302,10 @@ mapStats <- function( libs
 #' @author Charles Plessy
 #' 
 #' @examples 
-#' \dontrun{
-#' annotateCTSS(object)
-#' }
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
+#' annotateCTSS(ce, gff)
+#' colData(ce)
 #' 
 #' @export
 
@@ -338,14 +353,11 @@ setMethod("annotateCTSS", "CAGEexp", function (object, ranges){
 #' @author Charles Plessy
 #' 
 #' @examples
-#' \dontrun{
-#' # With a CAGEexp object called "ce" and a GRanges object called "gff"
-#' # containing transcript/exon information like with GENCODE:
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 #' CTSScoordinatesGR(ce)$annotation <- ranges2annot(CTSScoordinatesGR(ce), gff)
 #' colData(ce)[levels(CTSScoordinatesGR(ce)$annotation)] <-
 #'   DataFrame(t(sapply(CTSStagCountDF(ce), function(X) tapply(X, CTSScoordinatesGR(ce)$annotation, sum))))
-#' }
 #' 
 #' @importFrom GenomicRanges findOverlaps promoters
 #' @importFrom S4Vectors Rle
@@ -403,12 +415,9 @@ ranges2annot <- function(ranges, annot, showClasses=NULL) {
 #' @author Charles Plessy
 #' 
 #' @examples
-#' \dontrun{
-#' # With a CAGEexp object called "ce" and a GRanges object called "gff"
-#' # containing transcript/exon information like with GENCODE:
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 #' CTSScoordinatesGR(ce)$genes <- ranges2genes(CTSScoordinatesGR(ce), gff)
-#' }
 #' 
 #' @importFrom GenomicRanges findOverlaps
 #' @importFrom S4Vectors List Rle unstrsplit
@@ -540,6 +549,7 @@ NULL
 #' 
 #' @examples 
 #' \dontrun{
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' CTSStoGenes(ce)
 #' }
 #' 
