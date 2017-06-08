@@ -18,7 +18,8 @@ to the \code{mapStats} function.}
 
 \item{title}{The title of the plot.}
 
-\item{group}{A factor to group the samples.}
+\item{group}{A factor to group the samples, or the name of a \code{colData}
+column of a \code{CAGEexp} object.}
 
 \item{customScope}{A function passed to the internal function \code{\link{mapStats}}
 for the definition of custom scopes.}
@@ -34,17 +35,23 @@ Stacked barplots with error bars inspired from
 See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
 }
 \examples{
-# ce <- To Do: prepare an example CAGEexp object
-p <- plotAnnot(ce, 'qc', 'Here is the title')
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
+annotateCTSS(ce, gff)
+p <- plotAnnot(ce, 'counts', 'Here is the title')
 print(p)
 p + ggplot2::theme_bw()
 ggplot2::theme_set(ggplot2::theme_bw()) ; p
-plotAnnot(ce, 'qc', 'Same, non-normalised', normalise = FALSE)
+plotAnnot(ce, 'counts', 'Same, non-normalised', normalise = FALSE)
+ce$myGroups <- c("A", "A", "B", "B", "C")
+plotAnnot(ce, 'counts', group = "myGroups")
 
 }
 \seealso{
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
   \code{\link{ranges2annot}}, \code{\link{ranges2genes}}
+
+Other CAGEr plot functions: \code{\link{hanabiPlot}}
 }
 \author{
 Charles Plessy

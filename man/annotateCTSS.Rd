@@ -28,9 +28,10 @@ The input object with the following modifications:
 Annotate the CTSS of a CAGEr object and compute annotation statistics.
 }
 \examples{
-\dontrun{
-annotateCTSS(object)
-}
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
+annotateCTSS(ce, gff)
+colData(ce)
 
 }
 \seealso{

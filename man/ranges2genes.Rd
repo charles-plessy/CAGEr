@@ -22,12 +22,9 @@ A character vector of same length as the GRanges object, indicating
 Assign gene symbol(s) to Genomic Ranges.
 }
 \examples{
-\dontrun{
-# With a CAGEexp object called "ce" and a GRanges object called "gff"
-# containing transcript/exon information like with GENCODE:
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 CTSScoordinatesGR(ce)$genes <- ranges2genes(CTSScoordinatesGR(ce), gff)
-}
 
 }
 \seealso{

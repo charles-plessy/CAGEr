@@ -20,7 +20,8 @@
 #' 
 #' @param title The title of the plot.
 #' 
-#' @param group A factor to group the samples.
+#' @param group A factor to group the samples, or the name of a \code{colData}
+#'        column of a \code{CAGEexp} object.
 #' 
 #' @param customScope A function passed to the internal function \code{\link{mapStats}}
 #'   for the definition of custom scopes.
@@ -41,6 +42,8 @@
 #' p + ggplot2::theme_bw()
 #' ggplot2::theme_set(ggplot2::theme_bw()) ; p
 #' plotAnnot(ce, 'counts', 'Same, non-normalised', normalise = FALSE)
+#' ce$myGroups <- c("A", "A", "B", "B", "C")
+#' plotAnnot(ce, 'counts', group = "myGroups")
 #' 
 #' @docType methods
 #' @import ggplot2

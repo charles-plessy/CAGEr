@@ -23,14 +23,11 @@ A Run-length-encoded (Rle) factor of same length as the GRanges object,
 hierarchical annotation of a Genomic Range as promoter, exon or intron.
 }
 \examples{
-\dontrun{
-# With a CAGEexp object called "ce" and a GRanges object called "gff"
-# containing transcript/exon information like with GENCODE:
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 CTSScoordinatesGR(ce)$annotation <- ranges2annot(CTSScoordinatesGR(ce), gff)
 colData(ce)[levels(CTSScoordinatesGR(ce)$annotation)] <-
   DataFrame(t(sapply(CTSStagCountDF(ce), function(X) tapply(X, CTSScoordinatesGR(ce)$annotation, sum))))
-}
 
 }
 \seealso{
