@@ -200,7 +200,7 @@ mapStats <- function( libs
   } else if (scope == "qc") {
     totalIs("extracted")
     columns <- c( "Tag_dust", "rDNA", "Spikes", "Unmapped"
-                , "Non_proper", "Duplicates", "librarySizes")
+                , "Non_proper", "Duplicates", "Counts")
     libs <- within(libs, {
       Tag_dust     <- extracted   - rdna - spikes - cleaned
       rDNA         <- rdna
@@ -212,7 +212,7 @@ mapStats <- function( libs
     })
    } else if (scope == "steps") {
     totalIs("extracted")
-    columns <- c("Cleaning", "Mapping", "Deduplication", "librarySizes")
+    columns <- c("Cleaning", "Mapping", "Deduplication", "Counts")
     libs <- within(libs, {
       Cleaning      <- extracted   - cleaned
       Mapping       <- cleaned     - properpairs
