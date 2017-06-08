@@ -86,11 +86,11 @@ setMethod("hanabi", "integer", function(x, n, step, from) {
 # outside the list, taking advantage of the base class SimpleList.
 
 setMethod("hanabi", "DataFrame", function(x, n, step, from) {
-  unlist(SimpleList(lapply(d, hanabi, n = n, step = step, from = from)))
+  unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
 })
 
 setMethod("hanabi", "data.frame", function(x, n, step, from) {
-  unlist(SimpleList(lapply(d, hanabi, n = n, step = step, from = from)))
+  unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
 })
 
 #' points.hanabi
@@ -194,8 +194,8 @@ plot.hanabi <-
 #' function, so that the result is easily cached.
 #' 
 #' @param x A hanabi object.
-#' @param group A vector grouping the samples.  Coerced to factor.
-#' @param col A vector of colors
+#' @param group A character vector or a factor grouping the samples.
+#' @param col A character vector colors (at most one per group).
 #' @param legend.pos Position of the legend, passed to the \code{legend} function.
 #' @param pch Plot character at the tip of the lines and in the legend.
 #' @param ... Further arguments to be passed to the \code{plot.hanabi} function.
@@ -207,40 +207,50 @@ plot.hanabi <-
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' h <- hanabi(CTSStagCountDF(ce))
 #' hanabiPlot(h, group = 1:5)
-#' hanabiPlot(hanabi(CTSStagCountDF(ce), n = 20, step = 0.8, from = 0))
-#' hanabiPlot(hanabi(CTSStagCountDF(ce), n = 10, step = 0.95))
-#' hanabiPlot(h, group = c("A", "A", "B", "C", "B"), col=c("red", "green", "blue"))
-#' hanabiPlot(h, col="purple")
+#' hanabiPlot(hanabi(CTSStagCountDF(ce), n = 20, step = 0.8, from = 25000), group = 1:5)
+#' hanabiPlot(hanabi(CTSStagCountDF(ce), n = 10, step = 0.98), group = 1:5)
+#' hanabiPlot(h, group=c("A", "A", "B", "C", "B"), col=c("red", "green", "blue"))
+#' hanabiPlot(h, group = 1:5, pch=1:5, col="purple")
 #' 
 #' @family CAGEr richness functions
 #' @family CAGEr plot functions
 #' 
-#' @importFrom vegan rarefy
 #' @export hanabiPlot
 
 hanabiPlot <- function ( x
-                       , group=NULL
-                       , col = "black"
+                       , group
+                       , col = NULL
                        , legend.pos = "topleft"
-                       , pch
+                       , pch = 1
                        , ...) {
-  # Coerce group to factor
-  if (! is.null(group)) group <- factor(group)
+  if(missing(group))
+    stop("Missing ", dQuote("group"), " argument. If no group is needed use directly the ",
+         dQuote("plot()"), " function instead.")
   
-  # Take user-provided color, or take group levels as colors.
+  # When coercing to factor, make sure that 1) levels are in their order of
+  # appearance in the original character vector and 2) levels are not reordered
+  # if the coerced object was already a factor.
+  if (! is.factor(group))
+    group <- factor(group, unique(group))
   
-  if (missing(col) & ! is.null(group)) {
-    col  <- 1:nlevels(group)
-    cols <- as.numeric(group)
+  if (length(col) > nlevels(group))
+    stop("More colors than levels!")
+  
+  if (is.null(col)) {
+    # Take group levels as colors if no colors were provided.
+    col <- group
+    levels(col) <- 1:nlevels(col)
+  } else {
+    # Recycle color vector and give color to the groups.
+    col.r <- rep(col, length.out = nlevels(group))
+    col <- group
+    levels(col) <- col.r
   }
 
-  plot(x, pch = pch, col = col, ...)
-  
-  if (! is.null(group)) {
-    legend( x = legend.pos
+  plot(x, pch = pch, col = as.character(col), ...)
+  legend( x = legend.pos
           , legend = levels(group)
-          , col = levels(factor(col))
+          , col = levels(col)
           , pch = pch)
-  }
   invisible()
 }

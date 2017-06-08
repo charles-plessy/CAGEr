@@ -4,15 +4,14 @@
 \alias{hanabiPlot}
 \title{hanabiPlot}
 \usage{
-hanabiPlot(x, group = NULL, col = "black", legend.pos = "topleft", pch,
-  ...)
+hanabiPlot(x, group, col = NULL, legend.pos = "topleft", pch = 1, ...)
 }
 \arguments{
 \item{x}{A hanabi object.}
 
-\item{group}{A vector grouping the samples.  Coerced to factor.}
+\item{group}{A character vector or a factor grouping the samples.}
 
-\item{col}{A vector of colors}
+\item{col}{A character vector colors (at most one per group).}
 
 \item{legend.pos}{Position of the legend, passed to the \code{legend} function.}
 
@@ -38,10 +37,10 @@ function, so that the result is easily cached.
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 h <- hanabi(CTSStagCountDF(ce))
 hanabiPlot(h, group = 1:5)
-hanabiPlot(hanabi(CTSStagCountDF(ce), n = 20, step = 0.8, from = 0))
-hanabiPlot(hanabi(CTSStagCountDF(ce), n = 10, step = 0.95))
-hanabiPlot(h, group = c("A", "A", "B", "C", "B"), col=c("red", "green", "blue"))
-hanabiPlot(h, col="purple")
+hanabiPlot(hanabi(CTSStagCountDF(ce), n = 20, step = 0.8, from = 25000), group = 1:5)
+hanabiPlot(hanabi(CTSStagCountDF(ce), n = 10, step = 0.98), group = 1:5)
+hanabiPlot(h, group=c("A", "A", "B", "C", "B"), col=c("red", "green", "blue"))
+hanabiPlot(h, group = 1:5, pch=1:5, col="purple")
 
 }
 \seealso{
