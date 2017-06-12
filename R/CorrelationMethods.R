@@ -61,7 +61,7 @@ def=function(object, what = "CTSS", values = "raw", samples = "all", method = "p
 
 setMethod("plotCorrelation",
 signature(object = "CAGEset"),
-function (object, what = "CTSS", values = "raw", samples = "all", method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE, plotSize=800){
+function (object, what, values, samples, method, tagCountThreshold, applyThresholdBoth, plotSize){
 	
 	sample.labels <- sampleLabels(object)
 	
