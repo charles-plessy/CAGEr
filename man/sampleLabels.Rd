@@ -12,19 +12,25 @@ sampleLabels(object)
 sampleLabels(object) <- value
 }
 \arguments{
-\item{object}{A CAGEset or CAGEexp object.}
+\item{object}{A CAGEr object.}
 }
 \value{
-Returns a character vector of labels of all CAGE datasets present
-in the CAGEr object.
+Returns a named character vector of labels of all CAGE datasets
+present in the CAGEr object.  The values are the lables and the names
+are the colors.
 }
 \description{
-Extracts the labels of CAGE datasets (samples, experiments)
+Extracts the labels and colors of CAGE datasets
 from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
 \details{
 Renaming samples is possible only in \code{CAGEexp} objects, before
 data is loaded.
+}
+\note{
+If no colors are supplied, then default colors will be assigned
+usign the \code{rainbow} function.  Assigned colors are not guaranteed
+to be stable.
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
@@ -32,6 +38,8 @@ sampleLabels(exampleCAGEset)
 
 }
 \seealso{
+\code{\link{setColors}}
+
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSScoordinates}},
   \code{\link{CTSSnormalizedTpm}},

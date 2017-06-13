@@ -1,3 +1,5 @@
+#' @include CAGEr.R
+
 ################################################################
 # Functions for retrieving data from CAGEset and CAGEexp objects
 
@@ -164,13 +166,18 @@ function (object){
 #' 
 #' @title Extracting CAGE datasets labels from CAGEr objects
 #' 
-#' @description Extracts the labels of CAGE datasets (samples, experiments)
+#' @description Extracts the labels and colors of CAGE datasets
 #' from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 #' 
-#' @param object A CAGEset or CAGEexp object.
+#' @param object A CAGEr object.
 #' 
-#' @return Returns a character vector of labels of all CAGE datasets present
-#' in the CAGEr object.
+#' @return Returns a named character vector of labels of all CAGE datasets
+#' present in the CAGEr object.  The values are the lables and the names
+#' are the colors.
+#' 
+#' @note If no colors are supplied, then default colors will be assigned
+#' usign the \code{rainbow} function.  Assigned colors are not guaranteed
+#' to be stable.
 #' 
 #' @details Renaming samples is possible only in \code{CAGEexp} objects, before
 #' data is loaded.
@@ -182,7 +189,10 @@ function (object){
 #' sampleLabels(exampleCAGEset)
 #' 
 #' @family CAGEr accessor methods
+#' @seealso \code{\link{setColors}}
 #' @docType methods
+#' 
+#' @importFrom grDevices rainbow
 #' @export
 
 setGeneric(
@@ -200,7 +210,13 @@ function (object){
 setMethod("sampleLabels",
 signature(object = "CAGEexp"),
 function (object){
-  object$sampleLabels
+  sl <- object$sampleLabels
+  if (! is.null(object$Colors)) {
+    names(sl) <- object$Colors }
+  else {
+    names(sl) <- rainbow(length(sl))
+  }
+  sl
 })
 
 #' @name librarySizes
