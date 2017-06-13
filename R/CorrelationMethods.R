@@ -1,12 +1,13 @@
+#' @include CAGEr.R
+
 #' @name plotCorrelation
 #' 
-#' @title Plotting pairwise scatter plots of CAGE signal and calculating
-#' correlation between samples 
+#' @title Pairwise scatter plots of CAGE signal and correlation
 #' 
 #' @description Creates PNG file with scatter plots of CAGE signal for all
 #' pairs of selected samples and calculates the correlation between them.
 #' 
-#' @param object A \code{\link{CAGEset}} or a \code{\link{CAGEexp}} object.
+#' @param object A \code{\link{CAGEr}} object.
 #' 
 #' @param what Which level should be used for plotting and calculating
 #'   correlation.  Can be either \code{"CTSS"} to use individual TSSs or
@@ -60,21 +61,21 @@ def=function(object, what = "CTSS", values = "raw", samples = "all", method = "p
 )
 
 setMethod("plotCorrelation",
-signature(object = "CAGEset"),
+signature(object = "CAGEr"),
 function (object, what, values, samples, method, tagCountThreshold, applyThresholdBoth, plotSize){
 	
 	sample.labels <- sampleLabels(object)
 	
 	if(what == "CTSS"){
 		if(values == "raw"){
-			tag.count <- object@tagCountMatrix
+			tag.count <- CTSStagCountDf(object)
 		}else if(values == "normalized"){
-			tag.count <- object@normalizedTpmMatrix
+			tag.count <- CTSSnormalizedTpmDf(object) %>% head
 		}else{
 			stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
 		}
 	}else if(what == "consensusClusters"){
-		tag.count <- as.data.frame(object@consensusClustersTpmMatrix)
+		tag.count <- consensusClustersTpmDf(object)
 	}else{
 		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
 	}
