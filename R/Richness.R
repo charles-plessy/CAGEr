@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEexp.R
+#' @include CAGEr.R
 
 #' @name hanabi-class
 #' 

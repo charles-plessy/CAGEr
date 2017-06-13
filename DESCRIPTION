@@ -37,6 +37,7 @@ Collate:
     'AllClasses.R'
     'AggregationMethods.R'
     'Annotations.R'
+    'CAGEr.R'
     'ClusteringFunctions.R'
     'ClusteringMethods.R'
     'CorrelationMethods.R'
