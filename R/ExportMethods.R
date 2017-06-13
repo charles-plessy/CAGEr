@@ -14,7 +14,7 @@
 #' normalization: the range of values to fit the power-law and the slope of the
 #' referent power-law distribution (Balwierz \emph{et al}., Genome Biology 2009).
 #' 
-#' @param object	A CAGEr object
+#' @param object A CAGEr object
 #' 
 #' @param values Specifies which values should be plotted.  Can be either
 #' \code{"raw"} to plot reverse cumulatives of raw CAGE tag counts or
@@ -46,7 +46,7 @@
 #' \code{\link{normalizeTagCount}} function.
 #' 
 #' @return Plots of reverse cumulative number of CAGE tags per CTSS for each CAGE
-#' dataset within CAGEset object.  Alpha values of fitted power-laws and suggested
+#' dataset within CAGEr object.  Alpha values of fitted power-laws and suggested
 #' referent power-law distribution are reported on the plot in case \code{values = "raw"}.
 #' 
 #' @references Balwierz \emph{et al}. (2009) Methods for analyzing deep sequencing
@@ -73,14 +73,14 @@ def=function(object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 )
 
 setMethod("plotReverseCumulatives",
-signature(object = "CAGEset"),
+signature(object = "CAGEr"),
 function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 		
 	sample.labels <- sampleLabels(object)
 	if(values == "raw"){
-		tag.count <- object@tagCountMatrix
+		tag.count <- CTSStagCountDf(object)
 	}else if(values == "normalized"){
-		tag.count <- object@normalizedTpmMatrix
+		tag.count <- CTSSnormalizedTpmDf(object)
 	}else{
 		stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
 	}

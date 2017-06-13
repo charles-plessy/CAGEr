@@ -23,12 +23,9 @@ See Details.}
 plot (TRUE) or in separate plots (FALSE) within the same PDF file.}
 }
 \value{
-Creates PDF file named "CTSS_reverse_cumulatives_*_all_samples.pdf" in
-the working directory, where * denotes either "raw" or "normalized" depending on
-specified \code{values} parameter.  The file contains plots of reverse cumulative
-number of CAGE tags per CTSS for each CAGE dataset within CAGEset object.  Alpha
-values of fitted power-laws and suggested referent power-law distribution are
-reported on the plot in case \code{values = "raw"}.
+Plots of reverse cumulative number of CAGE tags per CTSS for each CAGE
+dataset within CAGEr object.  Alpha values of fitted power-laws and suggested
+referent power-law distribution are reported on the plot in case \code{values = "raw"}.
 }
 \description{
 Creates PDF file with plots of reverse cumulative number of CAGE
