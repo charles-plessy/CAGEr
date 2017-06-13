@@ -57,7 +57,8 @@ plotCorrelation(object = exampleCAGEset)
 }
 \seealso{
 Other CAGEr plot functions: \code{\link{hanabiPlot}},
-  \code{\link{plotAnnot}}
+  \code{\link{plotAnnot}},
+  \code{\link{plotReverseCumulatives}}
 }
 \author{
 Vanja Haberle
