@@ -45,12 +45,9 @@
 #' which all samples will be normalized. For details about normalization see
 #' \code{\link{normalizeTagCount}} function.
 #' 
-#' @return Creates PDF file named "CTSS_reverse_cumulatives_*_all_samples.pdf" in
-#' the working directory, where * denotes either "raw" or "normalized" depending on
-#' specified \code{values} parameter.  The file contains plots of reverse cumulative
-#' number of CAGE tags per CTSS for each CAGE dataset within CAGEset object.  Alpha
-#' values of fitted power-laws and suggested referent power-law distribution are
-#' reported on the plot in case \code{values = "raw"}.
+#' @return Plots of reverse cumulative number of CAGE tags per CTSS for each CAGE
+#' dataset within CAGEset object.  Alpha values of fitted power-laws and suggested
+#' referent power-law distribution are reported on the plot in case \code{values = "raw"}.
 #' 
 #' @references Balwierz \emph{et al}. (2009) Methods for analyzing deep sequencing
 #' expression data: constructing the human and mouse promoterome with deepCAGE data,
@@ -65,6 +62,7 @@
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' plotReverseCumulatives(exampleCAGEset, values = "raw",fitInRange = c(10,500), onePlot = TRUE)
 #' 
+#' @importFrom VGAM zeta
 #' @export
 
 setGeneric(
@@ -87,7 +85,7 @@ function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 		stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
 	}
 	
-	pdf(file = paste("CTSS_reverse_cumulatives_", values, "_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
+	#pdf(file = paste("CTSS_reverse_cumulatives_", values, "_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
 	par(mar = c(5,5,5,2))
 	cols <- names(sample.labels)
 	
@@ -99,7 +97,7 @@ function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 		library.sizes <- librarySizes(object)
 		reference.library.size <- 10^floor(log10(median(library.sizes)))
 #reference.intercept <- log(reference.library.size/zeta(-1*reference.slope))  # intercept on natural logarithm scale
-		reference.intercept <- log10(reference.library.size/zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
+		reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
 	}else if(values == "normalized"){
 #		fit.coefs.m <- apply(tag.count, 2, function(x) {.fit.power.law.to.reverse.cumulative(values = x, val.range = fitInRange)})
 	}
@@ -129,8 +127,8 @@ function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 			sapply(sample.labels, function(x) {vals <- tag.count[, x]; .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)])})
 		}
 	}
-	dev.off()
-	message("\nFile 'CTSS_reverse_cumulatives_", values, "_all_samples.pdf' has been created in your working directory (", getwd(), ")")
+	#dev.off()
+	#message("\nFile 'CTSS_reverse_cumulatives_", values, "_all_samples.pdf' has been created in your working directory (", getwd(), ")")
 	
 }
 )
