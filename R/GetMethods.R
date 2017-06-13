@@ -681,9 +681,40 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
 
 })
 
-#' consensusClustersTpm
-#' @noRd
-#' @export
+#' @name consensusClustersTpm
+#' @aliases consensusClustersTpm consensusClustersTpmDf consensusClustersTpmDF
+#' 
+#' @title Extracting consensus clusters tpm matrix from CAGEset object
+#' 
+#' @usage
+#' consensusClustersTpm(object)
+#' consensusClustersTpmDf(object)
+#' consensusClustersTpmDF(object)
+#' 
+#' @description Extracts a table with normalized CAGE tag values for consensus
+#' clusters across all samples from a \code{\link{CAGEr}} object.
+#' 
+#' @param object A CAGEr object.
+#' 
+#' @return Returns normalized expression valuse of CAGE clusters across all samples.
+#' \itemize{
+#'   \item For \code{consensusClustersTpm}, a \code{matrix}.
+#'   \item For \code{consensusClustersTpmDf}, a \code{data.frame}.
+#'   \item For \code{consensusClustersTpmDF}, a \code{DataFrame}.
+#' }
+#' 
+#' @author Vanja Haberle
+#' 
+#' @family CAGEr clustering methods
+#' @seealso \code{\link{consensusClusters}}
+#' 
+#' @examples
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' clusters.tpm <- consensusClustersTpm(exampleCAGEset)
+#' head(clusters.tpm)
+#' consensusClustersTpmDF(exampleCAGEset)
+#' 
+#' @export consensusClustersTpm
 
 setGeneric(
 name="consensusClustersTpm",
@@ -695,6 +726,55 @@ setMethod("consensusClustersTpm",
 signature(object = "CAGEset"),
 function (object){
 	object@consensusClustersTpmMatrix
+})
+
+setMethod("consensusClustersTpm",
+signature(object = "CAGEexp"),
+function (object){
+  consensusClustersSE <- object[["consensusClusters"]]
+  as.matrix(assays(consensusClustersSE)[["normalized"]])
+})
+
+#' @export consensusClustersTpmDf
+
+setGeneric(
+name="consensusClustersTpmDf",
+def=function(object){
+	standardGeneric("consensusClustersTpmDf")
+})
+
+setMethod("consensusClustersTpmDf",
+signature(object = "CAGEset"),
+function (object){
+	as.data.frame(object@consensusClustersTpmMatrix)
+})
+
+setMethod("consensusClustersTpmDf",
+signature(object = "CAGEexp"),
+function (object){
+  consensusClustersSE <- object[["consensusClusters"]]
+  as.data.frame(assays(consensusClustersSE)[["normalized"]])
+})
+
+#' @export consensusClustersTpmDF
+
+setGeneric(
+name="consensusClustersTpmDF",
+def=function(object){
+	standardGeneric("consensusClustersTpmDF")
+})
+
+setMethod("consensusClustersTpmDF",
+signature(object = "CAGEset"),
+function (object){
+	DataFrame(object@consensusClustersTpmMatrix)
+})
+
+setMethod("consensusClustersTpmDF",
+signature(object = "CAGEexp"),
+function (object){
+  consensusClustersSE <- object[["consensusClusters"]]
+  assays(consensusClustersSE)[["normalized"]]
 })
 
 #' expressionClasses
