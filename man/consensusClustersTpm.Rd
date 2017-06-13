@@ -7,8 +7,8 @@
 \title{Extracting consensus clusters tpm matrix from CAGEset object}
 \usage{
 consensusClustersTpm(object)
-  consensusClustersTpmDf(object)
-  consensusClustersTpmDF(object)
+consensusClustersTpmDf(object)
+consensusClustersTpmDF(object)
 }
 \arguments{
 \item{object}{A CAGEr object.}
@@ -22,13 +22,14 @@ Returns normalized expression valuse of CAGE clusters across all samples.
 }
 }
 \description{
-Extracts the matrix with normalized CAGE tag values for consensus
+Extracts a table with normalized CAGE tag values for consensus
 clusters across all samples from a \code{\link{CAGEr}} object.
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 clusters.tpm <- consensusClustersTpm(exampleCAGEset)
 head(clusters.tpm)
+consensusClustersTpmDF(exampleCAGEset)
 
 }
 \seealso{

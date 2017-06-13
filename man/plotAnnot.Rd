@@ -51,7 +51,8 @@ plotAnnot(ce, 'counts', group = "myGroups")
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
   \code{\link{ranges2annot}}, \code{\link{ranges2genes}}
 
-Other CAGEr plot functions: \code{\link{hanabiPlot}}
+Other CAGEr plot functions: \code{\link{hanabiPlot}},
+  \code{\link{plotCorrelation}}
 }
 \author{
 Charles Plessy

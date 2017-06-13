@@ -2,15 +2,14 @@
 % Please edit documentation in R/CorrelationMethods.R
 \name{plotCorrelation}
 \alias{plotCorrelation}
-\title{Plotting pairwise scatter plots of CAGE signal and calculating
-correlation between samples}
+\title{Pairwise scatter plots of CAGE signal and correlation}
 \usage{
 plotCorrelation(object, what = "CTSS", values = "raw", samples = "all",
   method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
   plotSize = 800)
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} or a \code{\link{CAGEexp}} object.}
+\item{object}{A \code{\link{CAGEr}} object.}
 
 \item{what}{Which level should be used for plotting and calculating
 correlation.  Can be either \code{"CTSS"} to use individual TSSs or
