@@ -166,7 +166,7 @@ columns as described above in the section about  input data formats.
 First we have to define paths to the input files:
 <<>>=
 inputDir <- system.file("extdata", package = "CAGEr")
-pathsToInputFiles <- list.files(inputDir, full.names = TRUE)
+pathsToInputFiles <- list.files(inputDir, "Zf.*.chr17.ctss", full.names = TRUE)
 basename(pathsToInputFiles)
 @
 
