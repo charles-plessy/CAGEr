@@ -38,7 +38,8 @@ colData(ce)
 The \code{\link{Zv9_annot}} example data.
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
-  \code{\link{getCTSS}}, \code{\link{normalizeTagCount}}
+  \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},
+  \code{\link{quantilePositions}}
 
 Other CAGEr annotation functions: \code{\link{plotAnnot}},
   \code{\link{ranges2annot}}, \code{\link{ranges2genes}}

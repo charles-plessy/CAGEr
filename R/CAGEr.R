@@ -12,13 +12,12 @@
 #'   as when published in Haberle V, Forrest ARR, Hayashizaki Y, Carninci P and
 #'   Lenhard B (2015). \dQuote{CAGEr: precise TSS data retrieval and high-resolution
 #'   promoterome mining for integrative analyses.} \emph{Nucleic Acids Research},
-#'   43, pp. e51., \href{http://nar.oxfordjournals.org/content/43/8/e51}
-#'   {http://nar.oxfordjournals.org/content/43/8/e51}. 
+#'   43, pp. e51., \href{http://nar.oxfordjournals.org/content/43/8/e51}{http://nar.oxfordjournals.org/content/43/8/e51}. 
 #'   
 #'   \item The \code{\link{CAGEexp}} class is a new class format in 2017, which
 #'   is based on the \code{\link{MultiAssayExperiment}} class.  In comparison with
 #'   \code{CAGEset}, objects, \code{CAGEexp} objects benefit from a a more efficient
-#'   data storage, using \code{DataFrame}s of run-length-encodedy (\code{Rle})
+#'   data storage, using \code{DataFrame}s of run-length-encoded (\code{Rle})
 #'   integers, allowing for the loading and use of much larger transcriptome datasets.
 #' }
 #' Most CAGEr functions support both classes interchangabely, and the \code{CAGEr}
@@ -26,6 +25,7 @@
 #' 
 #' @docType class
 #' @import methods
+#' @import BiocGenerics
 #' @exportClass CAGEr
 
 setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))

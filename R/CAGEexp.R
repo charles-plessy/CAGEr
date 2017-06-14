@@ -55,7 +55,6 @@
 #' @name CAGEexp-class
 #' @import MultiAssayExperiment
 #' @import SummarizedExperiment
-#' @import methods
 #' @importFrom BSgenome available.genomes
 #' @export
 

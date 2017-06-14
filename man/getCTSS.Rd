@@ -111,7 +111,8 @@ evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{annotateCTSS}},
-  \code{\link{normalizeTagCount}}
+  \code{\link{normalizeTagCount}},
+  \code{\link{quantilePositions}}
 }
 \author{
 Vanja Haberle

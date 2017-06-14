@@ -105,6 +105,8 @@
 #' 
 #' @docType methods
 #' 
+#' @importFrom  data.table setnames
+#' @importFrom  data.table setkeyv
 #' @importFrom  S4Vectors DataFrame
 #' @importFrom  S4Vectors Rle
 #' @export
@@ -373,6 +375,11 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 #' @return A GRanges object in which every range is guaranteed to be compatible
 #' with the given BSgenome object.  The sequnames of the GRanges are also set
 #' accordingly to the BSgenome.
+#' 
+#' @importFrom GenomeInfoDb seqinfo
+#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom GenomeInfoDb seqnames
+#' @importFrom S4Vectors %in%
 
 coerceInBSgenome <- function(gr, genome) {
   if (is.null(genome)) return(gr)

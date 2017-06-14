@@ -1,15 +1,13 @@
 #' @name CAGEset-class
 #' @docType class
 #' @noRd
-#' @import methods
 #' @export
 #'
-#' @import data.table
-#' @import utils
-#' @import Rsamtools
-#' @import S4Vectors
-#' @import GenomicRanges
-#' @import IRanges
+# @import data.table
+# @import Rsamtools
+# @import S4Vectors
+# @import GenomicRanges
+# @import IRanges
 # Import whole packages above, following earlier versions of CAGEr.  It may be worth
 # trying to replace them by ad-hoc importFrom directives.  This would also remove the
 # character(0) warning messages when running Roxygen2.
