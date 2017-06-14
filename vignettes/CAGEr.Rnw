@@ -250,7 +250,7 @@ After the data has been read we can start exploring the data by looking at the c
 function will plot pairwise scatter plots of CAGE tag count per TSS and calculate correlation between all possible pairs of samples. A tag count 
 threshold can be set, so that only TSSs with tag count above the threshold (either in one or both samples) are considered when calculating 
 correlation. Three different correlation measures are supported: Pearson's, Spearman's and Kendall's correlation coefficients.
-<<eval=FALSE>>=
+<<>>=
 corr.m <- plotCorrelation(myCAGEset, samples = "all", method = "pearson")
 @
 The command above will create a PNG file with pairwise scatter plots and calculated correlation coefficients (Figure~\ref{fig:CorrelationScatterPlots}), 
@@ -298,7 +298,7 @@ On a log-log scale this reverse cumulative distribution will manifest as a monot
 and is fully determined by the slope \Rcode{alpha} and total number of tags T (which together with \Rcode{alpha} determines the value of \Rcode{beta}).
 \newline
 To check whether our CAGE datasets follow power-law distribution and in which range of values, we can use the \Rfunction{plotReverseCumulatives} function:
-<<eval=FALSE>>=
+<<eval>>=
 plotReverseCumulatives(myCAGEset, fitInRange = c(5, 1000), onePlot = TRUE)
 @
 This will create a PDF file with reverse cumulative plots (Figure~\ref{fig:ReverseCumulatives}) in your working directory. In addition, a power-law distribution will be fitted to each reverse cumulative 
@@ -453,7 +453,7 @@ block denotes the position of the dominant TSS.
 
 Once the cumulative distributions and the positions of quantiles have been calculated, the histograms of interquantile width can be plotted to 
 globally compare the promoter width across different samples (Figure~\ref{fig:TagClustersInterquantileWidth}):
-<<eval=FALSE>>=
+<<>>=
 plotInterquantileWidth(myCAGEset, clusters = "tagClusters", 
 		tpmThreshold = 3, qLow = 0.1, qUp = 0.9)
 @
@@ -513,7 +513,7 @@ getExpressionProfiles(myCAGEset, what = "consensusClusters", tpmThreshold = 10,
 @
 Distribution of expression across samples for 8 clusters returned by SOM (4 x 2 map) can be visualized using \Rfunction{plotExpressionProfiles} function 
 as shown in Figure~\ref{fig:ConsensusClustersExpressionProfiles}:
-<<eval=FALSE>>=
+<<>>=
 plotExpressionProfiles(myCAGEset, what = "consensusClusters")
 @
 
