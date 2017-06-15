@@ -46,7 +46,8 @@
 #' plotAnnot(ce, 'counts', group = "myGroups")
 #' 
 #' @docType methods
-#' @import ggplot2
+#' @importFrom ggplot2 aes coord_flip geom_bar geom_segment geom_point
+#' @importFrom ggplot2 ggplot ggtitle position_stack
 #' @export
 
 setGeneric("plotAnnot", function( x, scope, title, group = "default"
