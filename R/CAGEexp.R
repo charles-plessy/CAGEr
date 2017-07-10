@@ -55,21 +55,22 @@
 #' @name CAGEexp-class
 #' @import MultiAssayExperiment
 #' @import SummarizedExperiment
-#' @importFrom BSgenome available.genomes
+#' @importFrom BSgenome installed.genomes
 #' @export
 
 setClass("CAGEexp",
   contains = "MultiAssayExperiment",
   validity = function(object) {
-    #		if(!(object@genomeName %in% suppressWarnings(suppressMessages(BSgenome::available.genomes()))))
-    #		return("'genomeName' must be a name of one of the genome packages available in BSgenome! See 'available.genomes()'")
+    #		if(!(object@genomeName %in% suppressWarnings(suppressMessages(BSgenome::installed.genomes()()))))
+    #		return("'genomeName' must be a name of one of the genome packages available in BSgenome! See 'BSgenome::installed.genomes()'")
     #		if(object@genomeName %in% rownames(installed.packages()) == FALSE)
     #		return("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
     
     if (! is.null(genomeName(object)))
-      if (! genomeName(object) %in% available.genomes())
+      if (! genomeName(object) %in% installed.genomes())
         return( paste0(sQuote("genomeName"), " must be the name an installed genome package. "
-              , "See ", sQuote("BSgenome::available.genomes()"), "."))
+              , "See ", sQuote("BSgenome::installed.genomes()")
+              , " and ", sQuote("BSgenome::available.genomes()"), "."))
     
     if (is.null(colData(object)$inputFiles))
       return("Missing input file list.")
@@ -77,7 +78,7 @@ setClass("CAGEexp",
     if (is.null(object$inputFilesType))
       return("Missing input file type.")
     
-    supportedTypes <- c("bed", "bedmolecule", "CAGEscanMolecule", "ctss")
+    supportedTypes <- c("bed", "bedmolecule", "bedctss", "CAGEscanMolecule", "ctss")
     
     if (! all(inputFilesType(object) %in% supportedTypes))
       return( paste(sQuote("inputFilesType"), "must be one of supported input file types:"

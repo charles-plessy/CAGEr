@@ -76,8 +76,8 @@ setClass(Class = "CAGEset",
 	),
 
 	validity = function(object) {
-#		if(!(object@genomeName %in% suppressWarnings(suppressMessages(BSgenome::available.genomes()))))
-#		return("'genomeName' must be a name of one of the genome packages available in BSgenome! See 'available.genomes()'")
+#		if(!(object@genomeName %in% suppressWarnings(suppressMessages(BSgenome::installed.genomes()))))
+#		return("'genomeName' must be a name of one of the genome packages available in BSgenome! See 'BSgenome::installed.genomes()'")
 #		if(object@genomeName %in% rownames(installed.packages()) == FALSE)
 #		return("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
 	  supportedTypes <- c("bam", "bamPairedEnd", "bed", "bedmolecule", "ctss", "CTSStable", "FANTOM5", "ENCODE", "FANTOM3and4", "ZebrafishDevelopment")
