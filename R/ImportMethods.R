@@ -540,9 +540,11 @@ parseCAGEscanBlocksToGrangeTSS <- function (blocks) {
 #' 
 #' @examples
 #' # TODO import.CAGEscanMolecule(system.file("extdata", "example.molecule.txt", package = "CAGEr"))
+#' 
+#' @importFrom data.table fread
 
 import.CAGEscanMolecule <- function(filepath) {
-  molecules <- unname(unlist(fread(select = 9, paste( "grep -v \\#", filepath))))
+  molecules <- unname(unlist(data.table::fread(select = 9, paste( "grep -v \\#", filepath))))
   molecules <- sub("[,;|].*", "", molecules)
   parseCAGEscanBlocksToGrangeTSS(molecules)
 }

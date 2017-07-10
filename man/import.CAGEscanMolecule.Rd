@@ -14,6 +14,7 @@ Imports a CAGEscan \dQuote{molecule} file in a GRanges object
 }
 \examples{
 # TODO import.CAGEscanMolecule(system.file("extdata", "example.molecule.txt", package = "CAGEr"))
+
 }
 \seealso{
 parseCAGEscanBlocksToGrangeTSS
