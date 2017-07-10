@@ -396,7 +396,7 @@ coerceInBSgenome <- function(gr, genome) {
 #' 
 #' A private (non-exported) function to load from each file format supported by CAGEr
 #' 
-#' @param filepatch The path to the file to load.
+#' @param filepath The path to the file to load.
 #' @param filetype The type of the file
 #' 
 #' @return A GRanges object, where each range represents a single nucleotide,
