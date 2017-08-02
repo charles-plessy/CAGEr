@@ -107,6 +107,9 @@
 #' 
 #' @importFrom  data.table setnames
 #' @importFrom  data.table setkeyv
+#' @importFrom  Rsamtools ScanBamParam
+#' @importFrom  Rsamtools scanBamFlag
+#' @importFrom  Rsamtools scanBam
 #' @importFrom  S4Vectors DataFrame
 #' @importFrom  S4Vectors Rle
 #' @export
