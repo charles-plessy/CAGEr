@@ -427,6 +427,7 @@ loadFileIntoGRanges <- function( filepath
 #' @seealso loadFileIntoGRanges
 #' 
 #' @importFrom rtracklayer import.bed
+#' @importFrom S4Vectors Rle
 #' 
 #' @examples
 #' # TODO: add exmaple file
@@ -434,11 +435,10 @@ loadFileIntoGRanges <- function( filepath
 
 import.bedmolecule <- function(filepath) {
   gr <- rtracklayer::import.bed(filepath)
-  seqlevels(gr) <- sortSeqlevels(seqlevels(gr))
-  mcols(gr) <- NULL
-  gr <- promoters(gr, 0, 1)
-  score(gr) <- Rle(countOverlaps(gr))
-  unique(gr)
+  tb <- table(promoters(gr, 0, 1))
+  gr <- as(names(tb), "GRanges")
+  score(gr) <- Rle(as.integer(tb))
+  gr
 }
 
 #' import.bedCTSS
