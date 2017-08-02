@@ -121,6 +121,21 @@ def=function(object, sequencingQualityThreshold = 10, mappingQualityThreshold = 
 }
 )
 
+checkRefGenomeIsLoaded <- function(reference.genome) {
+  if(reference.genome %in% rownames(installed.packages()) == FALSE){
+			stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
+		}else if(!paste("package:", reference.genome, sep = "") %in% search()){
+			stop("Requested genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
+		}else{
+			genome <- get(ls(paste("package:", reference.genome, sep="")))
+		}
+}
+
+checkFilesExist <- function(paths) {
+  for (f in paths)
+    if (! file.exists(f)) stop("Could not locate input file ", f)
+}
+
 setMethod("getCTSS",
 signature(object = "CAGEset"),
 function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE, correctSystematicG = TRUE){
@@ -137,24 +152,11 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 
 	if(object@inputFilesType == "bam" | object@inputFilesType == "bamPairedEnd") {
 		
-		reference.genome <- genomeName(object)
-		
-		if(reference.genome %in% rownames(installed.packages()) == FALSE){
-			stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
-		}else if(!paste("package:", reference.genome, sep = "") %in% search()){
-			stop("Requested genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
-		}else{
-			genome <- get(ls(paste("package:", reference.genome, sep="")))
-		}
-
+	  checkRefGenomeIsLoaded(genomeName(object))
 		
 		bam.files <- inputFiles(object)
 
-		for(f in bam.files) {
-			if(file.exists(f) == FALSE){
-				stop("Could not locate input file ", f)
-			}				
-		}
+		checkFilesExist(bam.files)
 					
 		library.sizes <- vector()
 		first <- TRUE
@@ -228,23 +230,11 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	
     }else if(object@inputFilesType == "bed") {
     
-        reference.genome <- genomeName(object)
-    
-        if(reference.genome %in% rownames(installed.packages()) == FALSE){
-            stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
-        }else if(!paste("package:", reference.genome, sep = "") %in% search()){
-            stop("Requested genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
-        }else{
-            genome <- get(ls(paste("package:", reference.genome, sep="")))
-        }
+        checkRefGenomeIsLoaded(genomeName(object))
 
         bed.files <- inputFiles(object)
         
-        for(f in bed.files) {
-            if(file.exists(f) == FALSE){
-                stop("Could not locate input file ", f)
-            }				
-        }
+        checkFilesExist(bed.files)
         
         library.sizes <- vector()
         first <- TRUE
@@ -293,13 +283,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 
 		ctss.files <- inputFiles(object)
 		
-		for(f in ctss.files) {
-			
-			if(file.exists(f) == FALSE){
-				stop("Could not locate input file ", f)
-			}			
-			
-		}
+		checkFilesExist(ctss.files)
 				
 		for(i in 1:length(ctss.files)) {
 			
@@ -328,9 +312,8 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		if(length(ctss.table.file) > 1){
 			stop("Only one file should be provided when inputFilesType = \"CTSStable\"!")
 		}
-		if(file.exists(ctss.table.file) == FALSE){
-			stop("Could not locate input file ", ctss.table.file)
-		}			
+		
+		checkFilesExist(ctss.table.file)
 		
 		CTSS.all.samples <- read.table(file = ctss.table.file, header = F, stringsAsFactors = FALSE)
 		if(ncol(CTSS.all.samples) != (length(sample.labels) + 3)){
@@ -566,8 +549,7 @@ setMethod( "getCTSS"
   
   # Step 0: Test existance of each file before spending time loading them.
   
-  for (f in ctss.files)
-    if (! file.exists(f)) stop("Could not locate input file ", f)
+  checkFilesExist(ctss.files)
   
   # Step 1: Load each file as GRangesList where each GRange is a CTSS data.
   
