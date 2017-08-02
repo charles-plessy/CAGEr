@@ -139,11 +139,6 @@ checkFilesExist <- function(paths) {
 setMethod("getCTSS",
 signature(object = "CAGEset"),
 function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE, correctSystematicG = TRUE){
-
-	if(!is(object,"CAGEset")){
-		stop("Need to initialize the CAGEset object")
-	}
-	
 	
 	objName <- deparse(substitute(object))
 			
