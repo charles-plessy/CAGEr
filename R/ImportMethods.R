@@ -119,14 +119,12 @@ def=function(object, sequencingQualityThreshold = 10, mappingQualityThreshold = 
 }
 )
 
-checkRefGenomeIsLoaded <- function(reference.genome) {
-  if(reference.genome %in% rownames(installed.packages()) == FALSE){
-			stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
-		}else if(!paste("package:", reference.genome, sep = "") %in% search()){
-			stop("Requested genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
-		}else{
-			genome <- get(ls(paste("package:", reference.genome, sep="")))
-		}
+getRefGenome <- function(reference.genome) {
+  if(reference.genome %in% rownames(installed.packages()) == FALSE)
+    stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
+  if(!paste("package:", reference.genome, sep = "") %in% search())
+    stop("Requested genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
+  get(ls(paste("package:", reference.genome, sep="")))
 }
 
 checkFilesExist <- function(paths) {
@@ -180,7 +178,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 
 	if(inputFilesType(object) == "bam" | inputFilesType(object) == "bamPairedEnd") {
 		
-	  checkRefGenomeIsLoaded(genomeName(object))
+	  genome <- getRefGenome(genomeName(object))
 		
 		bam.files <- inputFiles(object)
 		checkFilesExist(bam.files)
@@ -211,7 +209,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 			reads.GRanges <- reads.GRanges[(reads.GRanges$qual >= sequencingQualityThreshold) & reads.GRanges$mapq >= mappingQualityThreshold]
 		
 			if(removeFirstG == TRUE){
-			  CTSS <- .remove.added.G(reads.GRanges, genome, correctSystematicG = correctSystematicG)
+			  CTSS <- .remove.added.G(reads.GRanges, genome, correctSystematicG = correctSystematicG, sample.label = sample.labels[i])
 			}else{
 			  CTSS <- toCTSSdt(reads.GRanges, sample.labels[i])
 			}
@@ -226,7 +224,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	
     }else if(inputFilesType(object) == "bed") {
     
-        checkRefGenomeIsLoaded(genomeName(object))
+        genome <- getRefGenome(genomeName(object))
 
         bed.files <- inputFiles(object)
         
@@ -298,7 +296,6 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	for(i in 4:ncol(CTSS.all.samples)){
 		CTSS.all.samples[is.na(CTSS.all.samples[,i]),i] <- as.integer(0)
 	}
-	colnames(CTSS.all.samples) <- c("chr", "pos", "strand", sample.labels)
 	CTSS.all.samples <- CTSS.all.samples[order(CTSS.all.samples$chr, CTSS.all.samples$pos),]
 	rownames(CTSS.all.samples) <- c(1:nrow(CTSS.all.samples))
 	
