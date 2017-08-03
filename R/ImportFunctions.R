@@ -56,6 +56,12 @@
 	
 }
 
+#' .remove.added.G 
+#' 
+#' Non-exported private helper function
+#' 
+#' @noRd
+#' @importFrom BSgenome getSeq
 
 .remove.added.G <- function(reads.GRanges.plus, reads.GRanges.minus, genome, correctSystematicG = TRUE) {
 
