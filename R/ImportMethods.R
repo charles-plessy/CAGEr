@@ -145,7 +145,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	sample.labels <- sampleLabels(object)
 	names(sample.labels) <- rainbow(n = length(sample.labels))
 
-	if(object@inputFilesType == "bam" | object@inputFilesType == "bamPairedEnd") {
+	if(inputFilesType(object) == "bam" | inputFilesType(object) == "bamPairedEnd") {
 		
 	  checkRefGenomeIsLoaded(genomeName(object))
 		
@@ -158,7 +158,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		
     param <- ScanBamParam( what = c("rname", "strand", "pos", "seq", "qual", "mapq")
                          , flag = scanBamFlag(isUnmappedQuery = FALSE))
-    if (object@inputFilesType == "bamPairedEnd")
+    if (inputFilesType(object) == "bamPairedEnd")
       bamFlag(param) <- scanBamFlag(isUnmappedQuery = FALSE, isProperPair = TRUE, isFirstMateRead = TRUE)
 
 		for(i in 1:length(bam.files)) {
@@ -220,7 +220,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		}
 	
 	
-    }else if(object@inputFilesType == "bed") {
+    }else if(inputFilesType(object) == "bed") {
     
         checkRefGenomeIsLoaded(genomeName(object))
 
@@ -269,7 +269,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
         }
         
 
-    }else if(object@inputFilesType == "ctss") {
+    }else if(inputFilesType(object) == "ctss") {
 	
 		first <- TRUE
 
@@ -297,7 +297,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		CTSS.all.samples <- data.frame(CTSS.all.samples)
 		library.sizes <- as.integer(colSums(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)), drop = F], na.rm = T))
 		
-	}else if(object@inputFilesType == "CTSStable"){
+	}else if(inputFilesType(object) == "CTSStable"){
 	
 		ctss.table.file <- inputFiles(object)
 		
