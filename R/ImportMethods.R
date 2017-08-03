@@ -134,27 +134,37 @@ checkFilesExist <- function(paths) {
     if (! file.exists(f)) stop("Could not locate input file ", f)
 }
 
-#' toCTSSdfPlusMinus 
+#' toCTSSdt
 #' 
 #' Non-exported private helper function
+#' 
+#' @return Returns a \code{data.table} with TSS indicated in the \dQuote{chr},
+#' \dQuote{pos} and \dQuote{strand} columns, and a score column named with
+#' the sample label.
 #' 
 #' @noRd
 #' @importFrom data.table data.table
 #' @importFrom data.table setkeyv
 #' @importFrom data.table setnames
 
-toCTSSdtPlusMinus <- function(reads.GRanges) {
+toCTSSdt <- function(reads.GRanges, sample.label) {
   reads.GRanges.plus  <- reads.GRanges[strand(reads.GRanges) == "+"]
   reads.GRanges.minus <- reads.GRanges[strand(reads.GRanges) == "-"]
   CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = as.integer(start(reads.GRanges.plus)), strand = rep("+", times = length(reads.GRanges.plus)), stringsAsFactors = F)
 	CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = as.integer(end(reads.GRanges.minus)), strand = rep("-", times = length(reads.GRanges.minus)), stringsAsFactors = F)
   CTSS <- rbind(CTSS.plus, CTSS.minus)
 	CTSS$tag_count <- 1
-	CTSS <- data.table::data.table(CTSS)
+	CTSS <- data.table(CTSS)
 	CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
-	setnames(CTSS, c("chr", "pos", "strand", sample.labels[i])) 
+	setnames(CTSS, c("chr", "pos", "strand", sample.label)) 
 	setkey(CTSS, chr, pos, strand)
 	CTSS
+}
+
+addCTSScolumn <- function(CTSS.all.samples, CTSS) {
+  if(is.null(CTSS.all.samples))
+    return(CTSS)
+  merge(CTSS.all.samples, CTSS, all.x = TRUE, all.y = TRUE)
 }
 
 setMethod("getCTSS",
@@ -166,6 +176,8 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	sample.labels <- sampleLabels(object)
 	names(sample.labels) <- rainbow(n = length(sample.labels))
 
+  CTSS.all.samples <- NULL
+
 	if(inputFilesType(object) == "bam" | inputFilesType(object) == "bamPairedEnd") {
 		
 	  checkRefGenomeIsLoaded(genomeName(object))
@@ -174,8 +186,6 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		checkFilesExist(bam.files)
 					
 		library.sizes <- vector()
-		
-		first <- TRUE
 		
     param <- ScanBamParam( what = c("rname", "strand", "pos", "seq", "qual", "mapq")
                          , flag = scanBamFlag(isUnmappedQuery = FALSE))
@@ -203,21 +213,14 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 			if(removeFirstG == TRUE){
 			  CTSS <- .remove.added.G(reads.GRanges, genome, correctSystematicG = correctSystematicG)
 			}else{
-			  CTSS <- toCTSSdtPlusMinus(reads.GRanges)
+			  CTSS <- toCTSSdt(reads.GRanges, sample.labels[i])
 			}
 
 			message("\t-> Making CTSSs and counting number of tags...")
 				
 			library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
 		
-			if(first == TRUE) {
-				CTSS.all.samples <- CTSS
-			}else{
-				CTSS.all.samples <- merge(CTSS.all.samples, CTSS, all.x = TRUE, all.y = TRUE)
-			}
-		
-			first <- FALSE
-		
+      CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
 		}
 	
 	
@@ -230,8 +233,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
         checkFilesExist(bed.files)
         
         library.sizes <- vector()
-        first <- TRUE
-        
+
         for(i in 1:length(bed.files)) {
             
             message("\nReading in file: ", bed.files[i], "...")
@@ -243,25 +245,16 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
             
             message("\t-> Making CTSSs and counting number of tags...")
             
-            CTSS <- toCTSSdtPlusMinus(reads.GRanges)
+            CTSS <- toCTSSdt(reads.GRanges, sample.labels[i])
         
             library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
-        
-            if(first == TRUE) {
-                CTSS.all.samples <- CTSS
-            }else{
-                CTSS.all.samples <- merge(CTSS.all.samples, CTSS, all.x = TRUE, all.y = TRUE)
-            }
-        
-            first <- FALSE
-
+            
+            CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
         }
         
 
     }else if(inputFilesType(object) == "ctss") {
 	
-		first <- TRUE
-
 		ctss.files <- inputFiles(object)
 		
 		checkFilesExist(ctss.files)
@@ -274,16 +267,9 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 			CTSS <- data.table(CTSS)
 			setkeyv(CTSS, cols = c("chr", "pos", "strand"))
 			
-			if(first == TRUE) {
-				CTSS.all.samples <- CTSS
-				first <- FALSE
-			}else{
-				CTSS.all.samples <- merge(CTSS.all.samples, CTSS, all.x = TRUE, all.y = TRUE)
-			}			
-			
+			CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
 		}
 		
-		CTSS.all.samples <- data.frame(CTSS.all.samples)
 		library.sizes <- as.integer(colSums(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)), drop = F], na.rm = T))
 		
 	}else if(inputFilesType(object) == "CTSStable"){
