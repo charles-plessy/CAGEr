@@ -105,8 +105,6 @@
 #' 
 #' @docType methods
 #' 
-#' @importFrom  data.table setnames
-#' @importFrom  data.table setkeyv
 #' @importFrom  Rsamtools ScanBamParam
 #' @importFrom  Rsamtools scanBamFlag
 #' @importFrom  Rsamtools scanBam
@@ -134,6 +132,29 @@ checkRefGenomeIsLoaded <- function(reference.genome) {
 checkFilesExist <- function(paths) {
   for (f in paths)
     if (! file.exists(f)) stop("Could not locate input file ", f)
+}
+
+#' toCTSSdfPlusMinus 
+#' 
+#' Non-exported private helper function
+#' 
+#' @noRd
+#' @importFrom data.table data.table
+#' @importFrom data.table setkeyv
+#' @importFrom data.table setnames
+
+toCTSSdtPlusMinus <- function(reads.GRanges) {
+  reads.GRanges.plus  <- reads.GRanges[strand(reads.GRanges) == "+"]
+  reads.GRanges.minus <- reads.GRanges[strand(reads.GRanges) == "-"]
+  CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = as.integer(start(reads.GRanges.plus)), strand = rep("+", times = length(reads.GRanges.plus)), stringsAsFactors = F)
+	CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = as.integer(end(reads.GRanges.minus)), strand = rep("-", times = length(reads.GRanges.minus)), stringsAsFactors = F)
+  CTSS <- rbind(CTSS.plus, CTSS.minus)
+	CTSS$tag_count <- 1
+	CTSS <- data.table::data.table(CTSS)
+	CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
+	setnames(CTSS, c("chr", "pos", "strand", sample.labels[i])) 
+	setkey(CTSS, chr, pos, strand)
+	CTSS
 }
 
 setMethod("getCTSS",
@@ -177,24 +198,13 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 			
 			reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
 			reads.GRanges$mapq[is.na(reads.GRanges$mapq)] <- Inf
-			reads.GRanges.plus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "+" & reads.GRanges$qual >= sequencingQualityThreshold) & reads.GRanges$mapq >= mappingQualityThreshold]
-			reads.GRanges.minus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "-" & reads.GRanges$qual >= sequencingQualityThreshold) & reads.GRanges$mapq >= mappingQualityThreshold]
+			reads.GRanges <- reads.GRanges[(reads.GRanges$qual >= sequencingQualityThreshold) & reads.GRanges$mapq >= mappingQualityThreshold]
 		
 			if(removeFirstG == TRUE){
-					CTSS <- .remove.added.G(reads.GRanges.plus, reads.GRanges.minus, genome, correctSystematicG = correctSystematicG)
+			  CTSS <- .remove.added.G(reads.GRanges, genome, correctSystematicG = correctSystematicG)
 			}else{
-		
-				CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = as.integer(start(reads.GRanges.plus)), strand = rep("+", times = length(reads.GRanges.plus)), stringsAsFactors = F)
-				CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = as.integer(end(reads.GRanges.minus)), strand = rep("-", times = length(reads.GRanges.minus)), stringsAsFactors = F)
-				CTSS <- rbind(CTSS.plus, CTSS.minus)
-				CTSS$tag_count <- 1
-				CTSS <- data.table(CTSS)
-				CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
-			
+			  CTSS <- toCTSSdtPlusMinus(reads.GRanges)
 			}
-		
-			setnames(CTSS, c("chr", "pos", "strand", sample.labels[i])) 
-			setkey(CTSS, chr, pos, strand)
 
 			message("\t-> Making CTSSs and counting number of tags...")
 				
@@ -229,23 +239,11 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
             reads.GRanges <- import.bed(con = bed.files[i])
             values(reads.GRanges) <- NULL
             
-            reads.GRanges <- reads.GRanges[seqnames(reads.GRanges) %in% seqnames(genome)]
-            reads.GRanges <- reads.GRanges[!(end(reads.GRanges) > seqlengths(genome)[as.character(seqnames(reads.GRanges))])]
-            
-            reads.GRanges.plus <- reads.GRanges[strand(reads.GRanges) == "+"]
-            reads.GRanges.minus <- reads.GRanges[strand(reads.GRanges) == "-"]
+            reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
             
             message("\t-> Making CTSSs and counting number of tags...")
-
-            CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = as.integer(start(reads.GRanges.plus)), strand = rep("+", times = length(reads.GRanges.plus)), stringsAsFactors = F)
-            CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = as.integer(end(reads.GRanges.minus)), strand = rep("-", times = length(reads.GRanges.minus)), stringsAsFactors = F)
-            CTSS <- rbind(CTSS.plus, CTSS.minus)
-            CTSS$tag_count <- 1
-            CTSS <- data.table(CTSS)
-            CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
             
-            setnames(CTSS, c("chr", "pos", "strand", sample.labels[i]))
-            setkey(CTSS, chr, pos, strand)
+            CTSS <- toCTSSdtPlusMinus(reads.GRanges)
         
             library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
         

@@ -63,9 +63,12 @@
 #' @noRd
 #' @importFrom BSgenome getSeq
 
-.remove.added.G <- function(reads.GRanges.plus, reads.GRanges.minus, genome, correctSystematicG = TRUE) {
+.remove.added.G <- function(reads.GRanges, genome, correctSystematicG = TRUE) {
 
 	message("\t-> Removing the first base of the reads if 'G' and not aligned to the genome...")
+  
+  reads.GRanges.plus  <- reads.GRanges[strand(reads.GRanges) == "+"]
+  reads.GRanges.minus <- reads.GRanges[strand(reads.GRanges) == "-"]
 	
 	G.reads.plus <- which(substr(reads.GRanges.plus$seq, start = 1, stop = 1) == "G")
 	G.reads.minus <- which(substr(reads.GRanges.minus$seq, start = reads.GRanges.minus$read.length, stop = reads.GRanges.minus$read.length) == "C")
@@ -150,7 +153,9 @@
 		CTSS <- CTSS[,c("chr", "pos", "strand")]
 		CTSS$tag_count <- 1
 		CTSS <- data.table(CTSS)
-		CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]		
+		CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
+		setnames(CTSS, c("chr", "pos", "strand", sample.labels[i])) 
+		setkey(CTSS, chr, pos, strand)
 	
 	}
 	
