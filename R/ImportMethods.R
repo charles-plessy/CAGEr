@@ -172,6 +172,9 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 			qa.avg <- as.integer(mean(as(bam[[1]]$qual, "IntegerList")))
 		
 			reads.GRanges <- GRanges(seqnames = as.vector(bam[[1]]$rname), IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq)), strand = bam[[1]]$strand, qual = qa.avg, mapq = bam[[1]]$mapq, seq = bam[[1]]$seq, read.length = width(bam[[1]]$seq))	
+			
+			rm(bam)
+			
 			reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
 			reads.GRanges$mapq[is.na(reads.GRanges$mapq)] <- Inf
 			reads.GRanges.plus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "+" & reads.GRanges$qual >= sequencingQualityThreshold) & reads.GRanges$mapq >= mappingQualityThreshold]
