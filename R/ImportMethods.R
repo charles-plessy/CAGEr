@@ -172,8 +172,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 			qa.avg <- as.integer(mean(as(bam[[1]]$qual, "IntegerList")))
 		
 			reads.GRanges <- GRanges(seqnames = as.vector(bam[[1]]$rname), IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq)), strand = bam[[1]]$strand, qual = qa.avg, mapq = bam[[1]]$mapq, seq = bam[[1]]$seq, read.length = width(bam[[1]]$seq))	
-			reads.GRanges <- reads.GRanges[seqnames(reads.GRanges) %in% seqnames(genome)]
-			reads.GRanges <- reads.GRanges[!(end(reads.GRanges) > seqlengths(genome)[as.character(seqnames(reads.GRanges))])]
+			reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
 			elementMetadata(reads.GRanges)$mapq[is.na(elementMetadata(reads.GRanges)$mapq)] <- Inf
 			reads.GRanges.plus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "+" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold]
 			reads.GRanges.minus <- reads.GRanges[(as.character(strand(reads.GRanges)) == "-" & elementMetadata(reads.GRanges)$qual >= sequencingQualityThreshold) & elementMetadata(reads.GRanges)$mapq >= mappingQualityThreshold]
