@@ -156,12 +156,10 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 		
 		first <- TRUE
 		
-    what <- c("rname", "strand", "pos", "seq", "qual", "mapq")
-    if(object@inputFilesType == "bam"){
-        param <- ScanBamParam(what = what, flag = scanBamFlag(isUnmappedQuery = FALSE))
-    }else if(object@inputFilesType == "bamPairedEnd"){
-        param <- ScanBamParam(what = what, flag = scanBamFlag(isUnmappedQuery = FALSE, isProperPair = TRUE, isFirstMateRead = TRUE))
-    }
+    param <- ScanBamParam( what = c("rname", "strand", "pos", "seq", "qual", "mapq")
+                         , flag = scanBamFlag(isUnmappedQuery = FALSE))
+    if (object@inputFilesType == "bamPairedEnd")
+      bamFlag(param) <- scanBamFlag(isUnmappedQuery = FALSE, isProperPair = TRUE, isFirstMateRead = TRUE)
 
 		for(i in 1:length(bam.files)) {
 	
