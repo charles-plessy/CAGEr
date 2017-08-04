@@ -168,150 +168,110 @@ addCTSScolumn <- function(CTSS.all.samples, CTSS) {
 setMethod("getCTSS",
 signature(object = "CAGEset"),
 function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE, correctSystematicG = TRUE){
-	
-	objName <- deparse(substitute(object))
-			
-	sample.labels <- sampleLabels(object)
-	names(sample.labels) <- rainbow(n = length(sample.labels))
-
+  
+  # Initialise values
+  objName <- deparse(substitute(object))
+  sample.labels <- sampleLabels(object)
+  names(sample.labels) <- rainbow(n = length(sample.labels))
   CTSS.all.samples <- NULL
+  
+  # Switch on file types
 
-	if(inputFilesType(object) == "bam" | inputFilesType(object) == "bamPairedEnd") {
-		
-	  genome <- getRefGenome(genomeName(object))
-		
-		bam.files <- inputFiles(object)
-		checkFilesExist(bam.files)
-					
-		library.sizes <- vector()
-		
+  if(inputFilesType(object) == "bam" | inputFilesType(object) == "bamPairedEnd") {
+    genome <- getRefGenome(genomeName(object))
+    bam.files <- inputFiles(object)
+    checkFilesExist(bam.files)
+    library.sizes <- vector()
     param <- ScanBamParam( what = c("rname", "strand", "pos", "seq", "qual", "mapq")
                          , flag = scanBamFlag(isUnmappedQuery = FALSE))
     if (inputFilesType(object) == "bamPairedEnd")
       bamFlag(param) <- scanBamFlag(isUnmappedQuery = FALSE, isProperPair = TRUE, isFirstMateRead = TRUE)
-
-		for(i in 1:length(bam.files)) {
-	
-			message("\nReading in file: ", bam.files[i], "...")
-		
-			bam <- scanBam(bam.files[i], param = param)
-		
-			message("\t-> Filtering out low quality reads...")
-		
-			qa.avg <- as.integer(mean(as(bam[[1]]$qual, "IntegerList")))
-		
-			reads.GRanges <- GRanges(seqnames = as.vector(bam[[1]]$rname), IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq)), strand = bam[[1]]$strand, qual = qa.avg, mapq = bam[[1]]$mapq, seq = bam[[1]]$seq, read.length = width(bam[[1]]$seq))	
-			
-			rm(bam)
-			
-			reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
-			reads.GRanges$mapq[is.na(reads.GRanges$mapq)] <- Inf
-			reads.GRanges <- reads.GRanges[(reads.GRanges$qual >= sequencingQualityThreshold) & reads.GRanges$mapq >= mappingQualityThreshold]
-		
-			if(removeFirstG == TRUE){
-			  CTSS <- .remove.added.G(reads.GRanges, genome, correctSystematicG = correctSystematicG, sample.label = sample.labels[i])
-			}else{
-			  CTSS <- toCTSSdt(reads.GRanges, sample.labels[i])
-			}
-
-			message("\t-> Making CTSSs and counting number of tags...")
-				
-			library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
-		
+    for(i in 1:length(bam.files)) {
+      message("\nReading in file: ", bam.files[i], "...")
+      bam <- scanBam(bam.files[i], param = param)
+      message("\t-> Filtering out low quality reads...")
+      qa.avg <- as.integer(mean(as(bam[[1]]$qual, "IntegerList")))
+      reads.GRanges <- GRanges(seqnames = as.vector(bam[[1]]$rname), IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq)), strand = bam[[1]]$strand, qual = qa.avg, mapq = bam[[1]]$mapq, seq = bam[[1]]$seq, read.length = width(bam[[1]]$seq))	
+      rm(bam)
+      reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
+      reads.GRanges$mapq[is.na(reads.GRanges$mapq)] <- Inf
+      reads.GRanges <- reads.GRanges[(reads.GRanges$qual >= sequencingQualityThreshold) & reads.GRanges$mapq >= mappingQualityThreshold]
+      if(removeFirstG == TRUE){
+        CTSS <- .remove.added.G(reads.GRanges, genome, correctSystematicG = correctSystematicG, sample.label = sample.labels[i])
+      }else{
+        CTSS <- toCTSSdt(reads.GRanges, sample.labels[i])
+      }
+      message("\t-> Making CTSSs and counting number of tags...")
+      library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
       CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
-		}
-	
-	
-    }else if(inputFilesType(object) == "bed") {
+    }
+
+  }else if(inputFilesType(object) == "bed") {
     
-        genome <- getRefGenome(genomeName(object))
+    genome <- getRefGenome(genomeName(object))
+    bed.files <- inputFiles(object)
+    checkFilesExist(bed.files)
+    library.sizes <- vector()
+    for(i in 1:length(bed.files)) {
+      message("\nReading in file: ", bed.files[i], "...")
+      reads.GRanges <- import.bed(con = bed.files[i])
+      values(reads.GRanges) <- NULL
+      reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
+      message("\t-> Making CTSSs and counting number of tags...")
+      CTSS <- toCTSSdt(reads.GRanges, sample.labels[i])
+      library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
+      CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
+    }
 
-        bed.files <- inputFiles(object)
-        
-        checkFilesExist(bed.files)
-        
-        library.sizes <- vector()
+  }else if(inputFilesType(object) == "ctss") {
+    
+    ctss.files <- inputFiles(object)
+    checkFilesExist(ctss.files)
+    for(i in 1:length(ctss.files)) {
+      message("\nReading in file: ", ctss.files[i], "...")
+      CTSS <- read.table(file = ctss.files[i], header = F, sep = "\t", colClasses = c("character", "integer", "character", "integer"), col.names = c("chr", "pos", "strand", sample.labels[i]))
+      CTSS <- data.table(CTSS)
+      setkeyv(CTSS, cols = c("chr", "pos", "strand"))
+      CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
+    }
+    library.sizes <- as.integer(colSums(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)), drop = F], na.rm = T))
+		
+  }else if(inputFilesType(object) == "CTSStable"){
+    
+    ctss.table.file <- inputFiles(object)
+    if(length(ctss.table.file) > 1)
+      stop("Only one file should be provided when inputFilesType = \"CTSStable\"!")
+    checkFilesExist(ctss.table.file)
+    CTSS.all.samples <- read.table(file = ctss.table.file, header = F, stringsAsFactors = FALSE)
+    if(ncol(CTSS.all.samples) != (length(sample.labels) + 3))
+      stop("Number of provided sample labels must match the number of samples in the CTSS table!")
+    library.sizes <- as.integer(apply(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)),drop=F], 2, sum))
 
-        for(i in 1:length(bed.files)) {
-            
-            message("\nReading in file: ", bed.files[i], "...")
-            
-            reads.GRanges <- import.bed(con = bed.files[i])
-            values(reads.GRanges) <- NULL
-            
-            reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
-            
-            message("\t-> Making CTSSs and counting number of tags...")
-            
-            CTSS <- toCTSSdt(reads.GRanges, sample.labels[i])
-        
-            library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
-            
-            CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
-        }
-        
-
-    }else if(inputFilesType(object) == "ctss") {
+  }else{
+	  
+    stop("'inputFilesType' must be one of the supported file types (\"bam\", \"bamPairedEnd\", \"ctss\", \"CTSStable\")")
+  }
+  
+  # Brush up the CTSS table
+  
+  CTSS.all.samples <- data.frame(CTSS.all.samples)
+  for(i in 4:ncol(CTSS.all.samples)){
+    CTSS.all.samples[is.na(CTSS.all.samples[,i]),i] <- as.integer(0)
+  }
+  CTSS.all.samples <- CTSS.all.samples[order(CTSS.all.samples$chr, CTSS.all.samples$pos),]
+  rownames(CTSS.all.samples) <- c(1:nrow(CTSS.all.samples))
 	
-		ctss.files <- inputFiles(object)
-		
-		checkFilesExist(ctss.files)
-				
-		for(i in 1:length(ctss.files)) {
-			
-			message("\nReading in file: ", ctss.files[i], "...")
-			
-			CTSS <- read.table(file = ctss.files[i], header = F, sep = "\t", colClasses = c("character", "integer", "character", "integer"), col.names = c("chr", "pos", "strand", sample.labels[i]))
-			CTSS <- data.table(CTSS)
-			setkeyv(CTSS, cols = c("chr", "pos", "strand"))
-			
-			CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
-		}
-		
-		library.sizes <- as.integer(colSums(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)), drop = F], na.rm = T))
-		
-	}else if(inputFilesType(object) == "CTSStable"){
+	# Update the object
 	
-		ctss.table.file <- inputFiles(object)
-		
-		if(length(ctss.table.file) > 1){
-			stop("Only one file should be provided when inputFilesType = \"CTSStable\"!")
-		}
-		
-		checkFilesExist(ctss.table.file)
-		
-		CTSS.all.samples <- read.table(file = ctss.table.file, header = F, stringsAsFactors = FALSE)
-		if(ncol(CTSS.all.samples) != (length(sample.labels) + 3)){
-			stop("Number of provided sample labels must match the number of samples in the CTSS table!")
-		}
-		library.sizes <- as.integer(apply(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)),drop=F], 2, sum))
-
-	}else{
-		
-		stop("'inputFilesType' must be one of the supported file types (\"bam\", \"bamPairedEnd\", \"ctss\", \"CTSStable\")")
-		
-	}
-	
-	CTSS.all.samples <- data.frame(CTSS.all.samples)
-	for(i in 4:ncol(CTSS.all.samples)){
-		CTSS.all.samples[is.na(CTSS.all.samples[,i]),i] <- as.integer(0)
-	}
-	CTSS.all.samples <- CTSS.all.samples[order(CTSS.all.samples$chr, CTSS.all.samples$pos),]
-	rownames(CTSS.all.samples) <- c(1:nrow(CTSS.all.samples))
-	
-	names(library.sizes) <- sample.labels
-	object@sampleLabels <- sample.labels
-	object@librarySizes <- library.sizes
-	object@CTSScoordinates <- CTSS.all.samples[,c("chr", "pos", "strand")]
-	object@tagCountMatrix <- as.data.frame(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)),drop=F])
-	
-	cat("\n")
-	
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
-	
-}
-)
+  names(library.sizes) <- sample.labels
+  object@sampleLabels <- sample.labels
+  object@librarySizes <- library.sizes
+  object@CTSScoordinates <- CTSS.all.samples[,c("chr", "pos", "strand")]
+  object@tagCountMatrix <- as.data.frame(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)),drop=F])
+  cat("\n")
+  assign(objName, object, envir = parent.frame())
+  invisible(1)
+})
 
 #' coerceInBSgenome
 #' 
