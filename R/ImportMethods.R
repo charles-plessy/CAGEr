@@ -180,7 +180,6 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 
   if(inputFilesType(object) == "bam" | inputFilesType(object) == "bamPairedEnd") {
     genome <- getRefGenome(genomeName(object))
-    library.sizes <- vector()
     param <- ScanBamParam( what = c("rname", "strand", "pos", "seq", "qual", "mapq")
                          , flag = scanBamFlag(isUnmappedQuery = FALSE))
     if (inputFilesType(object) == "bamPairedEnd")
@@ -201,14 +200,12 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
         CTSS <- toCTSSdt(reads.GRanges, sample.labels[i])
       }
       message("\t-> Making CTSSs and counting number of tags...")
-      library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
       CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
     }
 
   }else if(inputFilesType(object) == "bed") {
     
     genome <- getRefGenome(genomeName(object))
-    library.sizes <- vector()
     for(i in 1:length(inputFiles(object))) {
       message("\nReading in file: ", inputFiles(object)[i], "...")
       reads.GRanges <- import.bed(con = inputFiles(object)[i])
@@ -216,7 +213,6 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
       reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
       message("\t-> Making CTSSs and counting number of tags...")
       CTSS <- toCTSSdt(reads.GRanges, sample.labels[i])
-      library.sizes <- c(library.sizes, as.integer(sum(data.frame(CTSS)[,4])))
       CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
     }
 
@@ -229,8 +225,7 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
       setkeyv(CTSS, cols = c("chr", "pos", "strand"))
       CTSS.all.samples <- addCTSScolumn(CTSS.all.samples, CTSS)
     }
-    library.sizes <- as.integer(colSums(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)), drop = F], na.rm = T))
-		
+  
   }else if(inputFilesType(object) == "CTSStable"){
     
     if(length(inputFiles(object)) > 1)
@@ -238,7 +233,6 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
     CTSS.all.samples <- read.table(file = inputFiles(object), header = F, stringsAsFactors = FALSE)
     if(ncol(CTSS.all.samples) != (length(sample.labels) + 3))
       stop("Number of provided sample labels must match the number of samples in the CTSS table!")
-    library.sizes <- as.integer(apply(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)),drop=F], 2, sum))
 
   }else{
 	  
@@ -256,12 +250,12 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 	
 	# Update the object
 	
-  names(library.sizes) <- sample.labels
   object@sampleLabels <- sample.labels
-  object@librarySizes <- library.sizes
   object@CTSScoordinates <- CTSS.all.samples[,c("chr", "pos", "strand")]
   object@tagCountMatrix <- as.data.frame(CTSS.all.samples[,c(4:ncol(CTSS.all.samples)),drop=F])
   cat("\n")
+  object@librarySizes <- as.integer(colSums(object@tagCountMatrix))
+  names(object@librarySizes) <- object@sampleLabels
   assign(objName, object, envir = parent.frame())
   invisible(1)
 })
