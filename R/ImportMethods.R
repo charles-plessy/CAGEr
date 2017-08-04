@@ -105,9 +105,6 @@
 #' 
 #' @docType methods
 #' 
-#' @importFrom  Rsamtools ScanBamParam
-#' @importFrom  Rsamtools scanBamFlag
-#' @importFrom  Rsamtools scanBam
 #' @importFrom  S4Vectors DataFrame
 #' @importFrom  S4Vectors Rle
 #' @export
@@ -180,19 +177,11 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 
   if(inputFilesType(object) == "bam" | inputFilesType(object) == "bamPairedEnd") {
     genome <- getRefGenome(genomeName(object))
-    param <- ScanBamParam( what = c("rname", "strand", "pos", "seq", "qual", "mapq")
-                         , flag = scanBamFlag(isUnmappedQuery = FALSE))
-    if (inputFilesType(object) == "bamPairedEnd")
-      bamFlag(param) <- scanBamFlag(isUnmappedQuery = FALSE, isProperPair = TRUE, isFirstMateRead = TRUE)
     for(i in 1:length(inputFiles(object))) {
       message("\nReading in file: ", inputFiles(object)[i], "...")
-      bam <- scanBam(inputFiles(object)[i], param = param)
-      message("\t-> Filtering out low quality reads...")
-      qa.avg <- as.integer(mean(as(bam[[1]]$qual, "IntegerList")))
-      reads.GRanges <- GRanges(seqnames = as.vector(bam[[1]]$rname), IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq)), strand = bam[[1]]$strand, qual = qa.avg, mapq = bam[[1]]$mapq, seq = bam[[1]]$seq, read.length = width(bam[[1]]$seq))	
-      rm(bam)
+      reads.GRanges <- import.bam( filepath = inputFiles(object)[i]
+                                 , filetype = inputFilesType(object)[i])
       reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
-      reads.GRanges$mapq[is.na(reads.GRanges$mapq)] <- Inf
       reads.GRanges <- reads.GRanges[(reads.GRanges$qual >= sequencingQualityThreshold) & reads.GRanges$mapq >= mappingQualityThreshold]
       if(removeFirstG == TRUE){
         CTSS <- .remove.added.G(reads.GRanges, genome, correctSystematicG = correctSystematicG, sample.label = sample.labels[i])
@@ -312,6 +301,43 @@ loadFileIntoGRanges <- function( filepath
         , bedctss          = import.bedCTSS(filepath)
         , CAGEscanMolecule = import.CAGEscanMolecule(filepath)
         , ctss             = import.CTSS(filepath))
+}
+
+#' import.bam
+#' 
+#' Imports CTSS data from a BAM file.
+#' 
+#' @param filepath The path to the BAM file.
+#' @param filetype bam or bamPairedEnd.
+#' 
+#' @seealso loadFileIntoGRanges
+#' 
+#' @importFrom Rsamtools ScanBamParam
+#' @importFrom Rsamtools scanBamFlag
+#' @importFrom Rsamtools scanBam
+#' 
+#' @examples
+#' # TODO: add exmaple file
+#' # import.bam(system.file("extdata", "example.bam", package = "CAGEr"))
+
+import.bam <- function(filepath, filetype) {
+  param <- ScanBamParam( what = c("rname", "strand", "pos", "seq", "qual", "mapq")
+                       , flag = scanBamFlag(isUnmappedQuery = FALSE))
+  if (filetype == "bamPairedEnd")
+    bamFlag(param) <- scanBamFlag( isUnmappedQuery = FALSE
+                                 , isProperPair    = TRUE
+                                 , isFirstMateRead = TRUE)
+  bam <- scanBam(filepath, param = param)
+  message("\t-> Filtering out low quality reads...")
+  gr <- GRanges( seqnames    = as.vector(bam[[1]]$rname)
+               , ranges      = IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq))
+               , strand      = bam[[1]]$strand
+               , qual        = as.integer(mean(as(bam[[1]]$qual, "IntegerList")))
+               , mapq        = bam[[1]]$mapq
+               , seq         = bam[[1]]$seq
+               , read.length = width(bam[[1]]$seq))	
+  gr$mapq[is.na(gr$mapq)] <- Inf
+  gr
 }
 
 #' import.bedmolecule
