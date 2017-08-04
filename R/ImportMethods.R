@@ -179,10 +179,11 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
     genome <- getRefGenome(genomeName(object))
     for(i in 1:length(inputFiles(object))) {
       message("\nReading in file: ", inputFiles(object)[i], "...")
-      reads.GRanges <- import.bam( filepath = inputFiles(object)[i]
-                                 , filetype = inputFilesType(object)[i])
+      reads.GRanges <- import.bam( filepath                   = inputFiles(object)[i]
+                                 , filetype                   = inputFilesType(object)[i]
+                                 , sequencingQualityThreshold = sequencingQualityThreshold
+                                 , mappingQualityThreshold    = mappingQualityThreshold)
       reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
-      reads.GRanges <- reads.GRanges[(reads.GRanges$qual >= sequencingQualityThreshold) & reads.GRanges$mapq >= mappingQualityThreshold]
       if(removeFirstG == TRUE){
         CTSS <- .remove.added.G(reads.GRanges, genome, correctSystematicG = correctSystematicG, sample.label = sample.labels[i])
       }else{
@@ -309,6 +310,8 @@ loadFileIntoGRanges <- function( filepath
 #' 
 #' @param filepath The path to the BAM file.
 #' @param filetype bam or bamPairedEnd.
+#' @param sequencingQualityThreshold See getCTSS().
+#' @param mappingQualityThreshold See getCTSS().
 #' 
 #' @seealso loadFileIntoGRanges
 #' 
@@ -320,7 +323,10 @@ loadFileIntoGRanges <- function( filepath
 #' # TODO: add exmaple file
 #' # import.bam(system.file("extdata", "example.bam", package = "CAGEr"))
 
-import.bam <- function(filepath, filetype) {
+import.bam <- function( filepath
+                      , filetype
+                      , sequencingQualityThreshold = 10
+                      , mappingQualityThreshold = 20) {
   param <- ScanBamParam( what = c("rname", "strand", "pos", "seq", "qual", "mapq")
                        , flag = scanBamFlag(isUnmappedQuery = FALSE))
   if (filetype == "bamPairedEnd")
@@ -337,7 +343,8 @@ import.bam <- function(filepath, filetype) {
                , seq         = bam[[1]]$seq
                , read.length = width(bam[[1]]$seq))	
   gr$mapq[is.na(gr$mapq)] <- Inf
-  gr
+  gr[(gr$qual >= sequencingQualityThreshold) &
+      gr$mapq >= mappingQualityThreshold]
 }
 
 #' import.bedmolecule
