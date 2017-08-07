@@ -335,10 +335,29 @@ import.bam <- function( filepath
                                  , isFirstMateRead = TRUE)
   bam <- scanBam(filepath, param = param)
   message("\t-> Filtering out low quality reads...")
+  # We need to loop on qualities because there is a hard limit on the length.
+  # See <https://support.bioconductor.org/p/97993/>.
+  qual <- bam[[1]]$qual
+  start <- 1
+  chunksize <- 1e6
+  qual.avg <- vector(mode = "integer")
+  repeat {
+    if (start + chunksize <= length(qual)) {
+      end <- start + chunksize
+    } else {
+      end <- length(qual)
+    }
+    qual.avg <- c(qual.avg, as.integer(mean(as(qual[start:end], "IntegerList"))))
+    if (end == length(qual)) {
+      break
+    } else {
+      start <- end + 1
+    }
+  }
   gr <- GRanges( seqnames    = as.vector(bam[[1]]$rname)
                , ranges      = IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq))
                , strand      = bam[[1]]$strand
-               , qual        = as.integer(mean(as(bam[[1]]$qual, "IntegerList")))
+               , qual        = qual.avg
                , mapq        = bam[[1]]$mapq
                , seq         = bam[[1]]$seq
                , read.length = width(bam[[1]]$seq))	
