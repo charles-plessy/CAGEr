@@ -86,14 +86,14 @@ function (object){
 
 #' @name inputFilesType
 #'
-#' @title Extracting type of input files from CAGEr objects
+#' @title Input file formats for CAGEr objects
 #' 
-#' @description Extracts the information on the type of CAGE data input
+#' @description Get or set the information on the type of CAGE data input
 #' files from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 #' 
 #' @param object A CAGEset or CAGEexp object.
 #' 
-#' @return Returns the label of the file type of CAGE data input files,
+#' @return Returns the type of the file format of CAGE data input files,
 #' \emph{e.g.} \code{"bam"} or \code{"ctss"}.  In the case of \code{CAGEexp}
 #' objects, the return value is character vector with one member per sample.
 #' 
@@ -107,11 +107,11 @@ function (object){
 #'   {A paired-ended BAM file.}
 #' 
 #'   \item{\code{bed}:}
-#'   {A BED file where the score indicates a number of counts for a
-#'   given position}
-#' 
-#'   \item{\code{bedmolecule}:}
 #'   {A BED file where each line counts for one molecule.}
+#' 
+#'   \item{\code{bedScore}:}
+#'   {A BED file where the score indicates a number of counts for a
+#'   given alignment}
 #' 
 #'   \item{\code{CAGEscanMolecule}:}
 #'   {Experimental.  For the CAGEscan 3.0 pipeline.}
