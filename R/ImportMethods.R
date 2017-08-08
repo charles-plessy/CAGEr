@@ -507,8 +507,6 @@ setMethod( "getCTSS"
                     , correctSystematicG = TRUE ){
 
   objName <- deparse(substitute(object))
-  sample.labels <- sampleLabels(object)
-  inputFiles(object) <- inputFiles(object)
   
   # Step 0: Test existance of each file before spending time loading them.
   
