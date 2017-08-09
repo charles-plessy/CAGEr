@@ -7,9 +7,12 @@
 hanabi(x, n = 20, step = 0.75, from = NULL)
 }
 \arguments{
-\item{x}{An expression table where columns are samples and rows are features
-such as genes, TSS, etc, or a vector of counts (tag counts, molecule
-counts, ...).}
+\item{x}{An object contained expression counts on which richness scores can
+be calculated.  For example an expression table in \code{DataFrame}
+or \code{data.frame} format where columns are samples and rows are
+featuressuch as genes, TSS, etc, or a vector of counts (tag counts,
+molecule counts, ...), or \code{GRanges} or \code{GRangesList}
+objects, etc.}
 
 \item{n}{The maximum number of rarefactions per sample.}
 
@@ -33,7 +36,7 @@ separate.
 \details{
 This function does not take directly CAGEr objects as input,
 because hanabi plots can be made from CTSS, clustered or gene-level
-data, therefore is not possible to guess which one to use.
+data, therefore it is not possible to guess which one to use.
 }
 \examples{
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))

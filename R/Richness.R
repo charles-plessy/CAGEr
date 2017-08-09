@@ -12,7 +12,7 @@
 #' @importFrom S4Vectors List
 
 .hanabi <- setClass("hanabi", contains = "SimpleList", prototype = c())
-# (See <https://github.com/Bioconductor/Contributions/issues/261>.)
+# (See <https://github.com/Bioconductor/Contributions/issues/261#issuecomment-277479436>.)
 
 #' @name hanabi
 #' 
@@ -25,9 +25,12 @@
 #' The computation can be long, so the steps of rarefaction and plotting are kept
 #' separate.
 #' 
-#' @param x An expression table where columns are samples and rows are features
-#'        such as genes, TSS, etc, or a vector of counts (tag counts, molecule
-#'        counts, ...).
+#' @param x An object contained expression counts on which richness scores can
+#'        be calculated.  For example an expression table in \code{DataFrame}
+#'        or \code{data.frame} format where columns are samples and rows are
+#'        featuressuch as genes, TSS, etc, or a vector of counts (tag counts,
+#'        molecule counts, ...), or \code{GRanges} or \code{GRangesList}
+#'        objects, etc.
 #'        
 #' @param n The maximum number of rarefactions per sample.
 #' 
@@ -39,7 +42,7 @@
 #' 
 #' @details This function does not take directly CAGEr objects as input,
 #' because hanabi plots can be made from CTSS, clustered or gene-level
-#' data, therefore is not possible to guess which one to use.
+#' data, therefore it is not possible to guess which one to use.
 #'
 #' @return A list-based object of class "hanabi".
 #'
@@ -69,6 +72,12 @@ setMethod("hanabi", "Rle", function(x, n, step, from) {
   hanabi(as.vector(x), n = n, step = step, from = from)
 })
 
+setMethod("hanabi", "numeric", function(x, n, step, from) {
+  if (any(round(x) != x))
+    stop("All scores must be integers.")
+  hanabi(as.integer(x))
+})
+
 setMethod("hanabi", "integer", function(x, n, step, from) {
   ns <- step ^ (0:n)
   ns <- round(sum(x) * ns)
@@ -81,7 +90,13 @@ setMethod("hanabi", "integer", function(x, n, step, from) {
   .hanabi(h)
 })
 
-# Same method for DataFrame and data.frame.
+setMethod("hanabi", "GRanges", function(x, n, step, from) {
+  if (any(round(score(x)) != score(x)))
+    stop("All scores must be integers.")
+    hanabi(score(x))
+})
+
+# Same method for DataFrame, data.frame and GRangesList.
 # Uses `unlist(SimpleList())` to move the hanabi class from inside to
 # outside the list, taking advantage of the base class SimpleList.
 
@@ -90,6 +105,10 @@ setMethod("hanabi", "DataFrame", function(x, n, step, from) {
 })
 
 setMethod("hanabi", "data.frame", function(x, n, step, from) {
+  unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
+})
+
+setMethod("hanabi", "GRangesList", function(x, n, step, from) {
   unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
 })
 
