@@ -291,6 +291,7 @@ coerceInBSgenome <- function(gr, genome) {
 #' nucleotide.
 #' 
 #' @seealso import.CTSS
+#' @family loadFileIntoGRanges
 
 loadFileIntoGRanges <- function( filepath
                                , filetype = c( "bam"
@@ -317,6 +318,7 @@ loadFileIntoGRanges <- function( filepath
 #' @param mappingQualityThreshold See getCTSS().
 #' 
 #' @seealso loadFileIntoGRanges
+#' @family loadFileIntoGRanges
 #' 
 #' @importFrom Rsamtools ScanBamParam
 #' @importFrom Rsamtools scanBamFlag
@@ -377,6 +379,7 @@ import.bam <- function( filepath
 #' @param filepath The path to the BED file.
 #' 
 #' @seealso loadFileIntoGRanges
+#' @family loadFileIntoGRanges
 #' 
 #' @importFrom rtracklayer import.bed
 #' @importFrom S4Vectors Rle
@@ -403,6 +406,7 @@ import.bedmolecule <- function(filepath) {
 #' @return A GRanges object where each line represents one nucleotide.
 #' 
 #' @seealso loadFileIntoGRanges
+#' @family loadFileIntoGRanges
 #' 
 #' @importFrom rtracklayer import.bed
 #' @importFrom S4Vectors Rle
@@ -431,6 +435,7 @@ import.bedScore <- function(filepath) {
 #' @param filepath The path to the BED file.
 #' 
 #' @seealso loadFileIntoGRanges
+#' @family loadFileIntoGRanges
 #' 
 #' @importFrom rtracklayer import.bed
 #' 
@@ -459,6 +464,7 @@ import.bedCTSS <- function(filepath) {
 #' the same as the FANTOM5 "CTSS" files (which are plain BED).
 #' 
 #' @seealso loadFileIntoGRanges
+#' @family loadFileIntoGRanges
 #' 
 #' @examples
 #' import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))

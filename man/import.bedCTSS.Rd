@@ -22,4 +22,9 @@ counting the number of CAGE transcription start sites (CTSS).
 }
 \seealso{
 loadFileIntoGRanges
+
+Other loadFileIntoGRanges: \code{\link{import.CTSS}},
+  \code{\link{import.bam}}, \code{\link{import.bedScore}},
+  \code{\link{import.bedmolecule}},
+  \code{\link{loadFileIntoGRanges}}
 }

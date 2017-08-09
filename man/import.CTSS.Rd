@@ -20,4 +20,10 @@ import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))
 }
 \seealso{
 loadFileIntoGRanges
+
+Other loadFileIntoGRanges: \code{\link{import.bam}},
+  \code{\link{import.bedCTSS}},
+  \code{\link{import.bedScore}},
+  \code{\link{import.bedmolecule}},
+  \code{\link{loadFileIntoGRanges}}
 }
