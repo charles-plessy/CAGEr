@@ -293,12 +293,15 @@ coerceInBSgenome <- function(gr, genome) {
 #' @seealso import.CTSS
 
 loadFileIntoGRanges <- function( filepath
-                               , filetype = c("bam", "bed", "bedctss", "CAGEscanMolecule", "ctss")) {
+                               , filetype = c( "bam"
+                                             , "bed", "bedctss", "bedScore"
+                                             , "CAGEscanMolecule", "ctss")) {
   if (missing(filetype)) stop("Please specify the file type.")
   filetype <- match.arg(filetype)
   switch( filetype
         , bam              = stop("BAM format not supported yet.")
         , bed              = import.bedmolecule(filepath)
+        , bedScore         = import.bedScore(filepath)
         , bedctss          = import.bedCTSS(filepath)
         , CAGEscanMolecule = import.CAGEscanMolecule(filepath)
         , ctss             = import.CTSS(filepath))
@@ -387,6 +390,34 @@ import.bedmolecule <- function(filepath) {
   tb <- table(promoters(gr, 0, 1))
   gr <- as(names(tb), "GRanges")
   score(gr) <- Rle(as.integer(tb))
+  gr
+}
+
+#' import.bedScore
+#' 
+#' Imports a BED file where the score indicates a number of counts
+#' for a given alignment.
+#' 
+#' @param filepath The path to the BED file.
+#' 
+#' @return A GRanges object where each line represents one nucleotide.
+#' 
+#' @seealso loadFileIntoGRanges
+#' 
+#' @importFrom rtracklayer import.bed
+#' @importFrom S4Vectors Rle
+#' 
+#' @examples
+#' # TODO: add exmaple file
+#' # import.bedScore(system.file("extdata", "example.bed", package = "CAGEr"))
+
+import.bedScore <- function(filepath) {
+  gr <- rtracklayer::import.bed(filepath)
+  df <- data.frame( p = as.character(promoters(gr, 0, 1))
+                  , s = score(gr))
+  df <- rowsum(df$s, df$p)
+  gr <- as(rownames(df), "GRanges")
+  score(gr) <- Rle(as.integer(df[,1]))
   gr
 }
 

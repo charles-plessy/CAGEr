@@ -78,7 +78,7 @@ setClass("CAGEexp",
     if (is.null(object$inputFilesType))
       return("Missing input file type.")
     
-    supportedTypes <- c("bed", "bedmolecule", "bedctss", "CAGEscanMolecule", "ctss")
+    supportedTypes <- c("bed", "bedScore", "bedctss", "CAGEscanMolecule", "ctss")
     
     if (! all(inputFilesType(object) %in% supportedTypes))
       return( paste(sQuote("inputFilesType"), "must be one of supported input file types:"
