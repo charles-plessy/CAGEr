@@ -556,8 +556,8 @@ setMethod( "getCTSS"
   for (i in seq_along(inputFiles(object))) {
     message("\nReading in file: ", inputFiles(object)[i], "...")
     gr <- loadFileIntoGRanges(inputFiles(object)[i], inputFilesType(object)[i])
-  gr <- coerceInBSgenome(gr, genomeName(object))
-    l[[i]] <- gr
+    gr <- coerceInBSgenome(gr, genomeName(object))
+    l[[i]] <- sort(gr)
   }
   
   # Step 2: Create GRanges representing all the nucleotides with CAGE counts in the list.
