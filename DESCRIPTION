@@ -30,7 +30,10 @@ Depends:
     R (>= 2.15.0)
 Suggests:
     BSgenome.Drerio.UCSC.danRer7,
-    FANTOM3and4CAGE 
+    FANTOM3and4CAGE,
+    BiocStyle,
+    knitr,
+    rmarkdown
 Enhances: parallel
 Description: Preprocessing of CAGE sequencing data, identification and
  normalization of transcription start sites and downstream analysis of
@@ -65,4 +68,5 @@ Collate:
     'SetMethods.R'
     'ShiftingFunctions.R'
     'ShiftingMethods.R'
+VignetteBuilder: knitr
 RoxygenNote: 6.0.1
