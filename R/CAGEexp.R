@@ -78,7 +78,7 @@ setClass("CAGEexp",
     if (is.null(object$inputFilesType))
       return("Missing input file type.")
     
-    supportedTypes <- c("bed", "bedScore", "bedctss", "CAGEscanMolecule", "ctss")
+    supportedTypes <- c("bed", "bedScore", "bedctss", "CAGEscanMolecule", "ctss", "CTSStable")
     
     if (! all(inputFilesType(object) %in% supportedTypes))
       return( paste(sQuote("inputFilesType"), "must be one of supported input file types:"
@@ -99,3 +99,63 @@ setClass("CAGEexp",
       return("Duplicated sample labels are not allowed!")
   }
 )
+
+#' @name coerce-CAGEexp
+#' @noRd
+#' @exportMethod coerce-CAGEexp
+
+setAs("data.frame", "CAGEexp", function(from){
+  
+  if((ncol(from) < 4) | !(all(colnames(from)[1:3] == c("chr", "pos", "strand"))))
+    stop( "First three columns of the input data.frame must contain chromosome name, "
+        , "genomic position and strand of individual TSSs, and must be named 'chr', 'pos' "
+        , "and 'strand', respectively!")
+  
+  if(ncol(from) <4)
+    stop( "Input data.frame needs to contain at least one column with CAGE tag counts, "
+        , "in addition to first three columns specifying chromosome name, genomic position "
+        , "and strand of individual TSSs!")
+  
+  if( !(identical(colnames(from), make.names(colnames(from)))))
+    stop( "Names of the columns specifying CAGE tag counts in the input data.frame must "
+        , "be non-empty strings beginning with a letter, as they will be used as sample "
+        , "labels in the resulting CAGEset!")
+  
+  if(!(is.integer(from[,"pos"])))
+    stop( "The 'pos' column in the input data.frame can contain only non-zero integers "
+        , "as these are interpreted as 1-based genomic coordinates of TSSs! Make sure the "
+        , "'pos' column is of class 'integer'!")
+  
+  if(any(from[,"pos"] <= 0))
+    stop( "The 'pos' column in the input data.frame can contain only non-zero integers as "
+        , "these are interpreted as 1-based genomic coordinates of TSSs!")
+  
+  if(!(all(from[,"strand"] %in% c("+", "-"))))
+    stop( "The 'strand' column in the input data.frame can contain only '+' or '-'!")
+  
+  if(!(all(apply(from[,4:ncol(from),drop=FALSE], 2, is.integer))))
+    stop( "The columns specifying CAGE tag counts must be non-negative integers! Make sure "
+        , "these columns are of class 'integer'!")
+
+  if(any(apply(from[,4:ncol(from),drop=FALSE], 2, function(x) {any(x < 0)})))
+    stop("The columns specifying CAGE tag counts must be non-negative integers!")
+  
+  sample.labels <- colnames(from)[4:ncol(from)]
+  gr            <- GRanges(from$chr, IRanges(from$pos, width = 1), from$strand)
+  counts        <- DataFrame(lapply(from[,4:ncol(from),drop=FALSE], Rle))
+  
+  ce <- new( "CAGEexp"
+           , metadata = list(genomeName = NULL)
+           , colData = DataFrame( inputFiles     = "data.frame"
+                                , sampleLabels   = sample.labels
+                                , inputFilesType = "CTSStable"
+                                , row.names      = sample.labels))
+
+  ce$librarySizes <- as.integer(colSums(from[,4:ncol(from),drop=FALSE]))
+  
+  CTSStagCountSE(ce) <-
+    SummarizedExperiment( rowRanges = gr
+                        , assay = SimpleList(counts = counts))
+  
+  return(ce)
+})
