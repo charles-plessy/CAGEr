@@ -562,6 +562,31 @@ function (object){
   as.data.frame(lapply(assay(experiments(object)$normalizedTpmMatrix), as.integer))
 })
 
+#' CTSSnormalizedTpmDF
+#' 
+#' @noRd
+
+setGeneric(
+name="CTSSnormalizedTpmDF",
+def=function(object){
+	standardGeneric("CTSSnormalizedTpmDF")
+})
+
+setMethod("CTSSnormalizedTpmDF",
+signature(object = "CAGEset"),
+function (object){
+	DF <- object@normalizedTpmMatrix
+	DF <- lapply(DF, as.integer)
+	DF <- lapply(DF, Rle)
+	DataFrame(DF)
+})
+
+setMethod("CTSSnormalizedTpmDF",
+signature(object = "CAGEexp"),
+function (object){
+  assays(object[["tagCountMatrix"]])$normalizedTpmMatrix
+})
+
 #' @name CTSSclusteringMethod
 #' 
 #' @title Extracting CTSS clustering method from CAGEr objects.

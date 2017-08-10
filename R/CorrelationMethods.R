@@ -66,18 +66,17 @@ function (object, what, values, samples, method, tagCountThreshold, applyThresho
 	
 	if(what == "CTSS"){
 		if(values == "raw"){
-			tag.count <- CTSStagCountDf(object)
+			tag.count <- CTSStagCountDF(object)
 		}else if(values == "normalized"){
-			tag.count <- CTSSnormalizedTpmDf(object) %>% head
+			tag.count <- CTSSnormalizedTpmDF(object)
 		}else{
 			stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
 		}
 	}else if(what == "consensusClusters"){
-		tag.count <- consensusClustersTpmDf(object)
+		tag.count <- consensusClustersTpmDF(object)
 	}else{
 		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
 	}
-
 
 	if(all(samples %in% sampleLabels(object))){
 		tag.count <- tag.count[,samples]
