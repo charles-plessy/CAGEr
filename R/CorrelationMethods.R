@@ -64,8 +64,6 @@ setMethod("plotCorrelation",
 signature(object = "CAGEr"),
 function (object, what, values, samples, method, tagCountThreshold, applyThresholdBoth, plotSize){
 	
-	sample.labels <- sampleLabels(object)
-	
 	if(what == "CTSS"){
 		if(values == "raw"){
 			tag.count <- CTSStagCountDf(object)
@@ -81,11 +79,11 @@ function (object, what, values, samples, method, tagCountThreshold, applyThresho
 	}
 
 
-	if(all(samples %in% sample.labels)){
+	if(all(samples %in% sampleLabels(object))){
 		tag.count <- tag.count[,samples]
 		nr.samples <- length(samples)
 	}else if(samples == "all"){
-		samples <- sample.labels
+		samples <- sampleLabels(object)
 		nr.samples <- length(samples)
 	}else{
 		stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
