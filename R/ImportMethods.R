@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEexp.R
+#' @include AllClasses.R CAGEexp.R GetMethods.R SetMethods.R
 
 #' @name getCTSS
 #' 
@@ -929,44 +929,3 @@ function (source, dataset, group, sample){
 	
 }
 )
-
-
-#' setColors
-#' @noRd
-#' @export
-
-setGeneric(
-name="setColors",
-def=function(object, colors = NULL){
-	standardGeneric("setColors")
-}
-)
-
-setMethod("setColors",
-signature(object = "CAGEset"),
-function (object, colors = NULL){
-
-	objName <- deparse(substitute(object))
-	sample.labels <- sampleLabels(object)
-	
-	if(length(colors) == 0){
-		names(sample.labels) <- rainbow(n = length(sample.labels))
-	}else if(length(colors) != length(sample.labels)){
-		stop(paste("Number of provided colors must match the number of samples in the CAGEset object, i.e. must be ", length(sample.labels), "!", sep = ""))
-	}else if(all(colors %in% colors())){
-		rgb.col <- col2rgb(colors)
-		names(sample.labels) <- apply(rgb.col, 2, function(x) {rgb(red = x[1], green = x[2], blue = x[3], alpha = 255, maxColorValue = 255)})
-	}else if((unique(substr(colors, start = 1, stop = 1)) == "#") & all(unique(unlist(strsplit(substr(colors, start = 2, stop = sapply(colors, width)), split = ""))) %in% c(seq(0,9,1), "A", "B", "C", "D", "E", "F"))){
-		names(sample.labels) <- colors
-	}else{
-		stop("'colors' argument must be a vector of valid color names in R or a vector of hexadecimal specifications (e.g. #008F0AFF). See colors() for a complete list of valid color names.")
-	}
-	
-	object@sampleLabels <- sample.labels
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
-	
-}
-)
-
-
