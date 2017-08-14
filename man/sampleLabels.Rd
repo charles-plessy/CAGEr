@@ -49,7 +49,8 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{librarySizes}}
 
 Other CAGEr setter methods: \code{\link{genomeName}},
-  \code{\link{inputFilesType}}, \code{\link{inputFiles}}
+  \code{\link{inputFilesType}}, \code{\link{inputFiles}},
+  \code{\link{setColors}}
 }
 \author{
 Vanja Haberle

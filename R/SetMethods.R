@@ -170,13 +170,12 @@ setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-
-#' setColors
+#' @name setColors
 #' 
-#' Setting colors for samples
+#' @title Setting colors for samples
 #' 
-#' Assigns one color to each sample in the CAGEr object.  These colors are used in various
-#' plots and exported tracks to consistently represent corresponding samples.
+#' @description Assigns one color to each sample in the CAGEr object.  These colors are
+#' used in various plots and exported tracks to consistently represent corresponding samples.
 #' 
 #' @param object A \code{\link{CAGEr}} object.
 #' @param colors A character vector of valid color names.  For a complete list of valid color

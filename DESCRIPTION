@@ -57,6 +57,7 @@ Collate:
     'ExpressionProfilingMethods.R'
     'GetMethods.R'
     'ImportFunctions.R'
+    'SetMethods.R'
     'ImportMethods.R'
     'MergingMethods.R'
     'Multicore.R'
@@ -65,7 +66,6 @@ Collate:
     'QuantileWidthFunctions.R'
     'QuantileWidthMethods.R'
     'Richness.R'
-    'SetMethods.R'
     'ShiftingFunctions.R'
     'ShiftingMethods.R'
 VignetteBuilder: knitr

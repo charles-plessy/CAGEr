@@ -36,7 +36,8 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{sampleLabels}}
 
 Other CAGEr setter methods: \code{\link{genomeName}},
-  \code{\link{inputFilesType}}, \code{\link{sampleLabels}}
+  \code{\link{inputFilesType}}, \code{\link{sampleLabels}},
+  \code{\link{setColors}}
 }
 \author{
 Vanja Haberle
