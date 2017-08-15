@@ -3,16 +3,43 @@
 \docType{methods}
 \name{CTSStagCount}
 \alias{CTSStagCount}
-\title{Extracting CAGE tag count for TSSs from CAGEr objects}
+\alias{CTSStagCountDf}
+\alias{CTSStagCountDF}
+\alias{CTSStagCountDA}
+\alias{CTSStagCountSE}
+\title{Extract raw CAGE TSSs expression tables from CAGEr objects}
 \usage{
 CTSStagCount(object)
+
+CTSStagCountDf(object)
+
+CTSStagCountDF(object)
+
+CTSStagCountDA(object)
+
+CTSStagCountSE(object)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
 }
 \value{
-Returns a \code{data.frame} with number of CAGE tags supporting each TSS
-(rows) in every CAGE dataset (columns).
+Returns an object with number of CAGE tags supporting each TSS
+(rows) in every CAGE dataset (columns).  The class of the object depends on the
+function being called:
+
+\itemize{
+  \item{\code{CTSStagCount}:}
+    {A \code{\link{data.frame}}, containing coordinates and expression values.}
+  \item{\code{CTSStagCountDf}:}
+    {A \code{data.frame}, containing only expression values.}
+  \item{\code{CTSStagCountDF}:}
+    {A \code{\link{DataFrame}} of \code{\link{Rle}} integers.}
+  \item{\code{CTSStagCountDA}:}
+    {A \code{\link{DelayedArray}} wrapping a \code{DataFrame} of \code{Rle} integers.}
+  \item{\code{CTSStagCountSE}:}
+    {A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
+     \code{Rle} integers.}
+}
 }
 \description{
 Extracts the tag count for all detected TSSs in all CAGE datasets
@@ -20,8 +47,16 @@ Extracts the tag count for all detected TSSs in all CAGE datasets
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-tagCount <- CTSStagCount(exampleCAGEset)
-head(tagCount)
+head(CTSStagCount(exampleCAGEset))
+head(CTSStagCountDf(exampleCAGEset))
+CTSStagCountDF(exampleCAGEset)
+CTSStagCountDA(exampleCAGEset)
+
+exampleCAGEexp <- readRDS(system.file("extdata", "CAGEexp.rds", package="CAGEr"))
+head(CTSStagCount(exampleCAGEexp))
+head(CTSStagCountDf(exampleCAGEset))
+CTSStagCountDF(exampleCAGEset)
+CTSStagCountDA(exampleCAGEset)
 
 }
 \seealso{
@@ -37,4 +72,6 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }

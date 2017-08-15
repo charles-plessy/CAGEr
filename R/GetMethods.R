@@ -347,25 +347,51 @@ function (object){
 
 #' @name CTSStagCount
 #' 
-#' @title Extracting CAGE tag count for TSSs from CAGEr objects
+#' @title Extract raw CAGE TSSs expression tables from CAGEr objects
 #' 
 #' @description Extracts the tag count for all detected TSSs in all CAGE datasets
 #'              from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 #' 
 #' @param object A CAGEset or CAGEexp object.
 #'  
-#' @return Returns a \code{data.frame} with number of CAGE tags supporting each TSS
-#' (rows) in every CAGE dataset (columns).
+#' @return Returns an object with number of CAGE tags supporting each TSS
+#' (rows) in every CAGE dataset (columns).  The class of the object depends on the
+#' function being called:
+#' 
+#' \itemize{
+#'   \item{\code{CTSStagCount}:}
+#'     {A \code{\link{data.frame}}, containing coordinates and expression values.}
+#'   \item{\code{CTSStagCountDf}:}
+#'     {A \code{data.frame}, containing only expression values.}
+#'   \item{\code{CTSStagCountDF}:}
+#'     {A \code{\link{DataFrame}} of \code{\link{Rle}} integers.}
+#'   \item{\code{CTSStagCountDA}:}
+#'     {A \code{\link{DelayedArray}} wrapping a \code{DataFrame} of \code{Rle} integers.}
+#'   \item{\code{CTSStagCountSE}:}
+#'     {A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
+#'      \code{Rle} integers.}
+#' }
 #' 
 #' @seealso \code{\link{getCTSS}}
 #' 
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-#' tagCount <- CTSStagCount(exampleCAGEset)
-#' head(tagCount)
+#' head(CTSStagCount(exampleCAGEset))
+#' head(CTSStagCountDf(exampleCAGEset))
+#' CTSStagCountDF(exampleCAGEset)
+#' CTSStagCountDA(exampleCAGEset)
+#' 
+#' exampleCAGEexp <- readRDS(system.file("extdata", "CAGEexp.rds", package="CAGEr"))
+#' head(CTSStagCount(exampleCAGEexp))
+#' head(CTSStagCountDf(exampleCAGEset))
+#' CTSStagCountDF(exampleCAGEset)
+#' CTSStagCountDA(exampleCAGEset)
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
+#' 
 #' @family CAGEr accessor methods
+#' @family CAGEr CTSS methods
 #' @docType methods
 #' @export
 
@@ -388,9 +414,9 @@ function (object){
        , as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer)))
 })
 
-#' CTSStagCountDf
+#' @name CTSStagCountDf
+#' @rdname CTSStagCount
 #' 
-#' @noRd
 #' @export
 
 setGeneric(
@@ -411,11 +437,9 @@ function (object){
   as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer))
 })
 
-#' CTSStagCountDF
-#' 
-#' Same as CTSStagCountDf, but as DataFrame
-#' 
-#' @noRd
+#' @name CTSStagCountDF
+#' @rdname CTSStagCount
+#'  
 #' @export
 
 setGeneric(
@@ -481,11 +505,9 @@ signature(object = "CAGEexp"),
   function(object) CTSStagCountDF(object)
 )
 
-#' CTSStagCountSE
+#' @name CTSStagCountSE
+#' @rdname CTSStagCount
 #' 
-#' Same as CTSStagCount, but as SummarizedExperiment
-#' 
-#' @noRd
 #' @export
 
 setGeneric(
