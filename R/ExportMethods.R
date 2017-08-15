@@ -1,3 +1,4 @@
+
 #' @include CAGEr.R
 
 ###########################################################
@@ -187,50 +188,31 @@ def=function(object, values = "normalized", format = "BigWig", oneFile = TRUE){
 )
 
 setMethod("exportCTSStoBedGraph",
-signature(object = "CAGEset"),
+signature(object = "CAGEr"),
 function (object, values = "normalized", format = "BigWig", oneFile = TRUE){
-		
-	sample.labels <- sampleLabels(object)
-    
-    if(format == "BigWig"){
-        reference.genome <- genomeName(object)
-        if(reference.genome %in% rownames(installed.packages()) == FALSE){
-            stop("Reference genome is not installed! Please install required BSgenome package before exporting to BigWig files!")
-        }else if(!paste("package:", reference.genome, sep = "") %in% search()){
-            stop("Reference genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
-        }else{
-            genome <- get(ls(paste("package:", reference.genome, sep="")))
-        }
-    }
-    
-	if(values == "raw") {
-		data <- cbind(CTSScoordinates(object), object@tagCountMatrix)
-        if(format == "BigWig"){
-            .export.bw.all(data = data, sample.labels = sample.labels, v = values, genome = genome)
-        }else if(format == "bedGraph"){
-            .export.bedgraph.all(data = data, sample.labels = sample.labels, v = values, oneFile = oneFile)
-        }else{
-            stop("'format' parameter must be one of the (\"BigWig\", \"bedGraph\")")
-        }
-	}else if(values == "normalized"){
-        data <- cbind(CTSScoordinates(object), as.data.frame(object@normalizedTpmMatrix))
-        if(format == "BigWig"){
-            .export.bw.all(data = data, sample.labels = sample.labels, v = values, genome = genome)
-        }else if(format == "bedGraph"){
-            .export.bedgraph.all(data = data, sample.labels = sample.labels, v = values, oneFile = oneFile)
-        }else{
-            stop("'format' parameter must be one of the (\"BigWig\", \"bedGraph\")")
-        }
-	}else{
-		stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
-	}
+
+  if (values == "raw") {
+    data <- SummarizedExperiment( rowRanges = CTSScoordinatesGR(object)
+                                , assay     = SimpleList(CTSStagCountDF(object)))
+  } else if (values == "normalized"){
+    data <- SummarizedExperiment( rowRanges = CTSScoordinatesGR(object)
+                                , assay     = SimpleList(CTSSnormalizedTpmDF(object)))
+  } else {
+    stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
+  }
+
+  if (format == "BigWig"){
+    genome <- getRefGenome(genomeName(object))
+    .export.bw.all(data = data, sample.labels = sampleLabels(object), v = values, genome = genome)
+  } else if (format == "bedGraph"){
+    .export.bedgraph.all(data = data, sample.labels = sampleLabels(object), v = values, oneFile = oneFile)
+  } else {
+    stop("'format' parameter must be one of the (\"BigWig\", \"bedGraph\")")
+  }
 	
-    message("\n", format, " file(s) for CTSS ", values, " counts have been created in your working directory (", getwd(), ")")
-    
-	invisible(1)
-	
-}
-)
+  message("\n", format, " file(s) for CTSS ", values, " counts have been created in your working directory (", getwd(), ")")
+  invisible(1)
+})
 
 #' @name plotInterquantileWidth
 #' @noRd

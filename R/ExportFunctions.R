@@ -33,45 +33,61 @@
 
 .export.bedgraph <- function(data.rd, name, description, file_name, append = F) {
 	data.ucsc <- as(data.rd, "UCSCData")
-	data.ucsc@trackLine <- new("BasicTrackLine", name = name, description = description, visibility="full")	
+	data.ucsc@trackLine <- new("BasicTrackLine", name = name, description = description, visibility="full")
+	score(data.ucsc) <- as.numeric(score(data.ucsc)) # Does not support Rle
 	export(data.ucsc, con = file_name, format = "ucsc", subformat = "bedGraph", append = append)
 }
 
-#' .export.bw.all
+#' @name se2grPlusOrMinus
+#' 
+#' @details Private function used in the export functions below.
+#' 
+#' @param strand "+" or "-"
+#' @param data A RangedSummarisedExperiment with a single sample.
+#' 
+#' @return Returns a GRanges object of the required strand, where the score
+#' is the expression value of the first sample of the SummarizedExperiemnt,
+#' and is negative if on the negative strand.  Positions with a zero score
+#' are removed.
+#' 
+#' @author Vanja Haberle, Charles Plessy
+#' 
+#' @noRd
+
+se2grPlusOrMinus <- function(strand, data) {
+  gr <- rowRanges(data)
+  score(gr) <- assay(data[,1])[[1]]
+  gr <- gr[score(gr) > 0]
+  gr <- gr[strand(gr) == strand]
+  if(strand == "-")
+    score(gr) <- -1 * score(gr)
+  gr
+}
+
+#' @name .export.bw.all
+#' 
+#' @param data
+#' @param sample.labels
+#' @param v
+#' @param genome A BSgenome object
+#' 
 #' @noRd
 #' @importFrom rtracklayer export.bw
 
 .export.bw.all <- function(data, sample.labels, v, genome) {
-    data.plus <- subset(data, strand == "+")
-    data.minus <- subset(data, strand == "-")
-    
     rd.list <- lapply(as.list(sample.labels), function(x) {
-        lapply(as.list(c("plus", "minus")), function(y) {
-            d <- get(paste("data.", y, sep = ""))
-            d <- d[, c("chr", "pos", x)]
-            colnames(d) <- c("chr", "pos", "score")
-            if(nrow(d)>0){
-                d <- subset(d, score>0)
-                d.rd <- GRanges(seqnames = d$chr, ranges=IRanges(start = d$pos, end = d$pos), strand = "+", score = d$score, seqlengths=seqlengths(genome))
-            }else{
-                d.rd <- GRanges()
-                seqlengths(d.rd) <- seqlengths(genome)
-            }
-            if(y == "minus"){
-                d.rd$score <- -1 * d.rd$score
-            }
-            return(d.rd)
-							 }
-							 )
+        lapply(list("+", "-"), se2grPlusOrMinus, data[,x])
     }
     )
     names(rd.list) <- sample.labels
 
     a <- lapply(sample.labels, function(x){
             if(length(rd.list[[x]][[1]]) > 0){
+                score(rd.list[[x]][[1]]) <- as.numeric(score(rd.list[[x]][[1]])) # Does not support Rle
                 export.bw(rd.list[[x]][[1]], con = paste(x, ".CTSS.", v, ".plus.bw", sep = ""))
             }
             if(length(rd.list[[x]][[2]]) > 0){
+                score(rd.list[[x]][[2]]) <- as.numeric(score(rd.list[[x]][[2]])) # Does not support Rle
                 export.bw(rd.list[[x]][[2]], con = paste(x, ".CTSS.", v, ".minus.bw", sep = ""))
             }
         })
@@ -81,26 +97,8 @@
 }
 
 .export.bedgraph.all <- function(data, sample.labels, v, oneFile) {
-	data.plus <- subset(data, strand == "+")
-	data.minus <- subset(data, strand == "-")
-		
 	rd.list <- lapply(as.list(sample.labels), function(x) {
-					  lapply(as.list(c("plus", "minus")), function(y) {
-							 d <- get(paste("data.", y, sep = ""))
-							 d <- d[, c("chr", "pos", x)] 
-							 colnames(d) <- c("chr", "pos", "score")
-							 if(nrow(d)>0){
-							 d <- subset(d, score>0)
-							 d.rd <- GRanges(seqnames = d$chr, ranges=IRanges(start = d$pos, end = d$pos), strand = "+", score = d$score)
-							 }else{
-							 d.rd <- GRanges()
-							 }
-							 if(y == "minus"){
-							 d.rd$score <- -1 * d.rd$score
-							 }
-							 return(d.rd)
-							 }
-							 )
+					  lapply(as.list(c("+", "-")), se2grPlusOrMinus, data[,x])
 					  }
 					  )
 	names(rd.list) <- sample.labels
