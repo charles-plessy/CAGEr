@@ -106,7 +106,7 @@ def=function(object, threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE, 
 
 setMethod("clusterCTSS",
 signature(object = "CAGEset"),
-function (object, threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE, method = "distclu", maxDist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, minStability = 1, maxLength = 500, reduceToNonoverlapping = TRUE, customClusters = NULL, useMulticore = FALSE, nrCores = NULL){
+function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, removeSingletons, keepSingletonsAbove, minStability, maxLength, reduceToNonoverlapping, customClusters, useMulticore, nrCores){
   
   useMulticore <- CAGEr:::.checkMulticore(useMulticore)
 		
@@ -115,16 +115,16 @@ function (object, threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE, met
 	
 	message("\nFiltering CTSSs below threshold...")
 	if(thresholdIsTpm){
-	  if (identical(myCAGEset@normalizedTpmMatrix, data.frame()))
+	  if (identical(object@normalizedTpmMatrix, data.frame()))
 	    stop("Could not find normalized CAGE signal values, see ?normalizeTagCount.")
 		data <- object@normalizedTpmMatrix
 	}else{
-		if (identical(myCAGEset@tagCountMatrix, data.frame()))
+		if (identical(object@tagCountMatrix, data.frame()))
 	    stop("Could not find CTSS tag counts, see ?getCTSS.")
 	  data <- object@tagCountMatrix
 	}
 	
-	if (identical(myCAGEset@normalizedTpmMatrix, data.frame()))
+	if (identical(object@normalizedTpmMatrix, data.frame()))
 	    stop("Could not find normalized CAGE signal values, see ?normalizeTagCount.\n",
 	         "clusterCTSS() needs normalized values to create its output tables, that ",
 	         "include TPM expression columns.")
