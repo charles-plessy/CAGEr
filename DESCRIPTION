@@ -8,6 +8,7 @@ Imports:
     beanplot,
     BiocGenerics,
     data.table,
+    DelayedArray,
     GenomeInfoDb,
     GenomicRanges (>= 1.23.16),
     ggplot2 (>= 2.2.0),

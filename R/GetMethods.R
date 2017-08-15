@@ -463,6 +463,25 @@ function (object){
   assay(CTSStagCountSE(object))
 })
 
+
+#' @name CTSStagCountDA
+#' @rdname CTSStagCount
+#' 
+#' @import DelayedArray DelayedArray
+#' @export
+
+setGeneric(
+name="CTSStagCountDA",
+def=function(object){
+	standardGeneric("CTSStagCountDA")
+})
+
+setMethod("CTSStagCountDA",
+signature(object = "CAGEr"),
+function (object){
+  DelayedArray(CTSStagCountDF(object))
+})
+
 #' @name CTSStagCountTable
 #' 
 #' @title Extracting CAGE tag count for TSSs from CAGEr objects
