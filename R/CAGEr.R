@@ -29,3 +29,24 @@
 #' @exportClass CAGEr
 
 setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
+
+
+#' @name getRefGenome
+#' 
+#' @title Attempt to load a BSgenome
+#' 
+#' @details Internal function that loads a BSgenome or throws an error if not available.
+#' 
+#' @param reference.genome
+#' 
+#' @author Charles Plessy
+#' 
+#' @noRd
+
+getRefGenome <- function(reference.genome) {
+  if(reference.genome %in% rownames(installed.packages()) == FALSE)
+    stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
+  if(!paste("package:", reference.genome, sep = "") %in% search())
+    stop("Requested genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
+  get(ls(paste("package:", reference.genome, sep="")))
+}

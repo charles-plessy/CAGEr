@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEexp.R GetMethods.R SetMethods.R
+#' @include AllClasses.R CAGEr.R CAGEexp.R GetMethods.R SetMethods.R
 
 #' @name getCTSS
 #' 
@@ -115,14 +115,6 @@ def=function(object, sequencingQualityThreshold = 10, mappingQualityThreshold = 
 	standardGeneric("getCTSS")
 }
 )
-
-getRefGenome <- function(reference.genome) {
-  if(reference.genome %in% rownames(installed.packages()) == FALSE)
-    stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
-  if(!paste("package:", reference.genome, sep = "") %in% search())
-    stop("Requested genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
-  get(ls(paste("package:", reference.genome, sep="")))
-}
 
 checkFilesExist <- function(paths) {
   for (f in paths)
