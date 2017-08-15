@@ -100,9 +100,7 @@ setClass("CAGEexp",
   }
 )
 
-#' @name coerce-CAGEexp
 #' @noRd
-#' @exportMethod coerce-CAGEexp
 
 setAs("data.frame", "CAGEexp", function(from){
   

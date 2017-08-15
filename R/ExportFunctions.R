@@ -66,10 +66,10 @@ se2grPlusOrMinus <- function(strand, data) {
 
 #' @name .export.bw.all
 #' 
-#' @param data
-#' @param sample.labels
-#' @param v
-#' @param genome A BSgenome object
+#' @param data A RangedSummarizedExperiment object.
+#' @param sample.labels Sample labels.
+#' @param v "normalized" or "raw".
+#' @param genome A BSgenome object.
 #' 
 #' @noRd
 #' @importFrom rtracklayer export.bw

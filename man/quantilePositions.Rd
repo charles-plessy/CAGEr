@@ -61,8 +61,8 @@ quantilePositions( object = exampleCAGEset, clusters = "tagClusters"
 }
 \seealso{
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
-  \code{\link{annotateCTSS}}, \code{\link{getCTSS}},
-  \code{\link{normalizeTagCount}}
+  \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
+  \code{\link{getCTSS}}, \code{\link{normalizeTagCount}}
 }
 \author{
 Vanja Haberle
