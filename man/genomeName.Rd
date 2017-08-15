@@ -21,6 +21,11 @@ Returns a name of a BSgenome package used as a referent genome.
 Extracts the name of a referent genome from a
 \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
+\details{
+\code{\link{CAGEexp}} objects constructed with \code{NULL} in place
+of the genome name can not run some commands that need access to genomic data,
+such as BigWig export or G-correction.
+}
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 genomeName(exampleCAGEset)

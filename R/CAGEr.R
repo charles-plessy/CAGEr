@@ -35,7 +35,9 @@ setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
 #' 
 #' @title Attempt to load a BSgenome
 #' 
-#' @details Internal function that loads a BSgenome or throws an error if not available.
+#' @details Internal function that retreives a BSgenome object or throws an error if not available.
+#' 
+#' @return A BSgenome object
 #' 
 #' @param reference.genome
 #' 
@@ -44,9 +46,12 @@ setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
 #' @noRd
 
 getRefGenome <- function(reference.genome) {
+  if (is.null(genomeName(object)))
+    stop("Can not run this function with a NULL genome; see ", sQuote('help("genomeName")'), ".")
+  
   if(reference.genome %in% rownames(installed.packages()) == FALSE)
     stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
-  if(!paste("package:", reference.genome, sep = "") %in% search())
-    stop("Requested genome is not loaded! Load the genome by calling 'library(", reference.genome, ")'")
-  get(ls(paste("package:", reference.genome, sep="")))
+  
+  requireNamespace(genome)
+  genome <- getExportedValue(genome, genome)
 }
