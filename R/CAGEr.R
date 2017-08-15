@@ -46,12 +46,10 @@ setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
 #' @noRd
 
 getRefGenome <- function(reference.genome) {
-  if (is.null(genomeName(object)))
+  if (is.null(reference.genome))
     stop("Can not run this function with a NULL genome; see ", sQuote('help("genomeName")'), ".")
-  
   if(reference.genome %in% rownames(installed.packages()) == FALSE)
     stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
-  
-  requireNamespace(genome)
-  genome <- getExportedValue(genome, genome)
+  requireNamespace(reference.genome)
+  getExportedValue(reference.genome, reference.genome)
 }
