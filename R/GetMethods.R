@@ -919,3 +919,46 @@ signature(object = "CAGEexp"),
 function (object){
   experiments(object)$geneExpMatrix
 })
+
+#' @name GeneExpDESeq2
+#' 
+#' @title Export gene expression data for DESeq2 analysis
+#' 
+#' @description Creates a \code{DESeqDataSet} using the gene expression
+#' data in the experiment slot \code{geneExpMatrix} and the sample metadata
+#' of the \code{\link{CAGEexp}} object.  The first line of the expression
+#' matrix, representing all the counts not ovelaping a known gene annotation,
+#' is removed.  The formula must be built using factors already present in
+#' the sample metadata.
+#' 
+#' @param object A CAGEexp object.
+#' @param design A formula for the DESeq2 analysis.
+#' 
+#' @author Charles Plessy
+#' 
+#' @seealso \code{DESeqDataSet} in the \code{DESeq2} package.
+#' @family CAGEr gene expression analysis functions
+#' 
+#' @examples 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
+#' CTSStoGenes(ce)
+#' ce$group <- factor(c("a", "a", "b", "b", "a"))
+#' GeneExpDESeq2(ce, ~group)
+#' 
+#' @export
+
+setGeneric( "GeneExpDESeq2"
+          , function(object, design) standardGeneric("GeneExpDESeq2"))
+
+setMethod( "GeneExpDESeq2", "CAGEset"
+         , function (object, design) stop("Not implemented for the CAGEset class."))
+
+setMethod( "GeneExpDESeq2", "CAGEexp"
+         , function (object, design) {
+  if (! requireNamespace("DESeq2"))
+    stop("This function requires the ", dQuote("DESeq2"), " package; please install it.")
+  DESeq2::DESeqDataSetFromMatrix( countData = assay(GeneExpSE(object))[-1,]
+                                , colData   = colData(object)
+                                , rowData   = rowData(GeneExpSE(object))[-1,]
+                                , design    = design)

@@ -38,7 +38,8 @@ CTSScoordinatesGR(ce)$genes <- ranges2genes(CTSScoordinatesGR(ce), gff)
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
   \code{\link{plotAnnot}}, \code{\link{ranges2annot}}
 
-Other CAGEr gene expression analysis functions: \code{\link{CTSStoGenes}}
+Other CAGEr gene expression analysis functions: \code{\link{CTSStoGenes}},
+  \code{\link{GeneExpDESeq2}}
 }
 \author{
 Charles Plessy

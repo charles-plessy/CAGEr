@@ -42,7 +42,8 @@ Other CAGEr object modifiers: \code{\link{annotateCTSS}},
   \code{\link{normalizeTagCount}},
   \code{\link{quantilePositions}}
 
-Other CAGEr gene expression analysis functions: \code{\link{ranges2genes}}
+Other CAGEr gene expression analysis functions: \code{\link{GeneExpDESeq2}},
+  \code{\link{ranges2genes}}
 }
 \author{
 Charles Plessy
