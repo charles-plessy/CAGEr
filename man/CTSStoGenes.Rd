@@ -14,22 +14,24 @@ CTSStoGenes(object)
 The input object with the following modifications:
 
 \itemize{
-  \item A new \code{GeneExpSE} experiment containing gene expression levels as
+  \item A new \code{geneExpMatrix} experiment containing gene expression levels as
     a \code{SummarizedExperiemnt} object with one assay called \code{counts}, which
-    is a \code{DataFrame} of \code{Rle} integers.
+    is plain \code{matrix} of integers.  (This plays better than \code{Rle DataFrames}
+    when interfacing with downstream packages like DESeq2, and since the number of
+    genes is limited, a \code{matrix} will not cause problems of performance.)
   \item New \code{genes} column data added, indicating total number of gene symbols
     detected per library.
 }
 }
 \description{
-Add a gene expression table in the \code{GeneExpSE} experiment
-of an annotated \code{\link{CAGEexp}} object.
+Add a gene expression table in the \code{GeneExpSE} experiment slot
+of an annotated \code{\link{CAGEexp}} object.  \code{\link{CAGEset}} objects are
+not supported.
 }
 \examples{
-\dontrun{
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
 CTSStoGenes(ce)
-}
 
 }
 \seealso{
@@ -39,6 +41,8 @@ Other CAGEr object modifiers: \code{\link{annotateCTSS}},
   \code{\link{clusterCTSS}}, \code{\link{getCTSS}},
   \code{\link{normalizeTagCount}},
   \code{\link{quantilePositions}}
+
+Other CAGEr gene expression analysis functions: \code{\link{ranges2genes}}
 }
 \author{
 Charles Plessy

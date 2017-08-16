@@ -14,12 +14,17 @@ command.}
 \item{genes}{A \code{\link{GRanges}} object containing \code{gene_name} metadata.}
 }
 \value{
-A character vector of same length as the GRanges object, indicating
-        one gene symbol or a comma-separated list of gene symbols for each
-        range.
+A \code{\link{Rle}} character vector of same length as the GRanges object,
+indicating one gene symbol or a semicolon-separated list of gene symbols for each
+range.
 }
 \description{
 Assign gene symbol(s) to Genomic Ranges.
+}
+\details{
+This private (non-exported) function is used to assign gene symbols
+to genomic ranges.  It is run by \code{\link{annotateCTSS}}, which has to
+be run before \code{\link{CTSStoGenes}}.
 }
 \examples{
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
@@ -32,6 +37,8 @@ CTSScoordinatesGR(ce)$genes <- ranges2genes(CTSScoordinatesGR(ce), gff)
 
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
   \code{\link{plotAnnot}}, \code{\link{ranges2annot}}
+
+Other CAGEr gene expression analysis functions: \code{\link{CTSStoGenes}}
 }
 \author{
 Charles Plessy

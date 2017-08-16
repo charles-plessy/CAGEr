@@ -407,17 +407,22 @@ ranges2annot <- function(ranges, annot, showClasses=NULL) {
 #' 
 #' Assign gene symbol(s) to Genomic Ranges.
 #' 
+#' This private (non-exported) function is used to assign gene symbols
+#' to genomic ranges.  It is run by \code{\link{annotateCTSS}}, which has to
+#' be run before \code{\link{CTSStoGenes}}.
+#' 
 #' @param ranges Genomics Ranges object, for example extracted from a
 #'               RangedSummarizedExperiment object with the \code{rowRanges}
 #'               command.
 #' 
 #' @param genes A \code{\link{GRanges}} object containing \code{gene_name} metadata.
 #' 
-#' @return A character vector of same length as the GRanges object, indicating
-#'         one gene symbol or a comma-separated list of gene symbols for each
-#'         range.
+#' @return A \code{\link{Rle}} character vector of same length as the GRanges object,
+#' indicating one gene symbol or a semicolon-separated list of gene symbols for each
+#' range.
 #'         
 #' @family CAGEr annotation functions
+#' @family CAGEr gene expression analysis functions
 #' @seealso \code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
 #' 
 #' @author Charles Plessy
@@ -556,15 +561,13 @@ NULL
 #' 
 #' @seealso \code{\link{annotateCTSS}}.
 #' 
-#' @family CAGEr object modifiers functions
+#' @family CAGEr object modifiers
 #' @family CAGEr gene expression analysis functions
 #' 
 #' @examples 
-#' \dontrun{
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
 #' CTSStoGenes(ce)
-#' }
 #' 
 #' @docType methods
 #' @importFrom SummarizedExperiment SummarizedExperiment
