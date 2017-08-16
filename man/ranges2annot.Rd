@@ -22,6 +22,11 @@ A Run-length-encoded (Rle) factor of same length as the GRanges object,
 \description{
 hierarchical annotation of a Genomic Range as promoter, exon or intron.
 }
+\details{
+Only the biotypes that are likely to have a promoter will be filtered
+in.  This is currently hardcoded in the function; see its source code.  Example
+of biotypes without a promoter: VDJ segments, etc.
+}
 \examples{
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))

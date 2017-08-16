@@ -350,6 +350,10 @@ setMethod("annotateCTSS", "CAGEexp", function (object, ranges){
 #' 
 #' @return A Run-length-encoded (Rle) factor of same length as the GRanges object,
 #'         indicating if the interval is promoter, exon, intron or unknown.
+#' 
+#' @details Only the biotypes that are likely to have a promoter will be filtered
+#' in.  This is currently hardcoded in the function; see its source code.  Example
+#' of biotypes without a promoter: VDJ segments, etc.
 #'         
 #' @family CAGEr annotation functions
 #' @seealso \code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
