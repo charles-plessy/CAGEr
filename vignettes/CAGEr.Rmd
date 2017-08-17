@@ -1,0 +1,504 @@
+---
+title: "CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data analysis and promoterome mining"
+author:
+ - "Vanja Haberle"
+ - "Charles Plessy"
+package: CAGEr
+output: 
+  BiocStyle::html_document2:
+    toc: true
+bibliography: CAGEr.bib
+vignette: >
+  %\VignetteIndexEntry{CAGEr: an R package for CAGE data analysis and promoterome mining}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding[utf8]{inputenc}
+---
+
+```{r setup, echo = FALSE, results = "hide"}
+options(signif = 3, digits = 3)
+knitr::opts_chunk$set(tidy = FALSE, cache = TRUE, autodep = TRUE, fig.height = 5.5,
+                      message = FALSE, error = FALSE, warning = TRUE)
+set.seed(0xdada)
+```
+
+Introduction
+============
+
+This document briefly describes how to use the package `r Biocpkg("CAGEr")`. _CAGEr_ is a
+Bioconductor-compliant R package designed to manipulate, analyse and visualise Cap Analysis of Gene
+Expression (CAGE) sequencing data. CAGE [@Kodzius:2006] is a high-throughput method for transcriptome
+analysis that utilizes "cap-trapping" [@Carninci:1996], a technique based on the biotinylation
+of the 7-methylguanosine cap of Pol II transcripts, to pulldown the 5'-complete cDNAs reversely
+transcribed from the captured transcripts. A linker sequence is ligated to the 5' end of the cDNA and
+a specific restriction enzyme is used to cleave off a short fragment from the 5' end. Resulting
+fragments are then amplified and sequenced using massive parallel high-throughput sequencing
+technology, which results in a large number of short sequenced tags that can be mapped back to 
+the referent genome to infer the exact position of the transcription start sites (TSSs) used for
+transcription of captured RNAs (Figure \@ref(fig:CAGEprotocol)). Number of CAGE tags supporting each
+TSS gives the information on relative frequency of its usage and can be used as a measure of
+expression from that specific TSS. Thus, CAGE provides information on two aspects of capped
+transcriptome: genome-wide 1bp-resolution map of transcription start sites and transcript expression
+levels. This information can be used for various analyses, from 5' centered expression profiling
+[@Takahashi:2012] to studying promoter architecture [@Carninci:2006].
+
+```{r CAGEprotocol, echo=FALSE, fig.align="center", fig.cap="Overview of CAGE experiment"}
+knitr::include_graphics("images/CAGEprotocol.svg")
+```
+
+CAGE samples derived from various organisms (genomes) can be analysed by _CAGEr_ and the only
+limitation is the availability of the referent genome as a `r Biocpkg("BSgenome")` package in case
+when raw mapped CAGE tags are processed. _CAGEr_ provides a comprehensive workflow that starts from
+mapped CAGE tags and includes reconstruction of TSSs and promoters and their visualisation, as well
+as more specialized downstream analyses like promoter width, expression profiling and differential
+TSS usage. It can use both Binary Sequence Alignment Map (BAM) files of aligned CAGE tags or files
+with genomic locations of TSSs and number of supporting CAGE tags as input. If BAM files are provided
+_CAGEr_ constructs TSSs from aligned CAGE tags and counts the number of tags supporting each TSS,
+while allowing filtering out low-quality tags and removing technology-specific bias.  It further
+performs normalization of raw CAGE tag count, clustering of TSSs into tag clusters (TC) and their
+aggregation across multiple CAGE experiments into promoters to construct the promoterome. Various
+methods for normalization and clustering of TSSs are supported. Exporting data into different types
+of track files allows various visualisations of TSSs and clusters (promoters) in the UCSC Genome
+Browser, which facilitate generation of hypotheses. _CAGEr_ manipulates multiple CAGE experiments 
+at once and performs analyses across datasets, including expression profiling and detection of
+differential TSS usage (promoter shifting). Multicore option for parallel processing is supported on
+Unix-like platforms, which significantly reduces computing time.
+
+Here are some of the functionalities provided in this package:
+
+ * Reading in multiple CAGE datasets from various sources; user provided BAM or TSS input files,
+   public CAGE datasets from accompanying data package.
+ 
+ * Correcting systematic G nucleotide addition bias at the 5' end of CAGE tags.
+ 
+ * Plotting pairwise scatter plots, calculating correlation between datasets and merging datasets.
+ 
+ * Normalizing raw CAGE tag count: simple tag per million (tpm) or power-law based normalization
+   [@Balwierz:2009].
+ 
+ * Clustering individual TSSs into tag clusters (TCs) and aggregating clusters across multiple CAGE
+   datasets to create a set of consensus promoters.
+ 
+ * Making bedGraph or BED files of individual TSSs or clusters for visualisation in the genome
+   browser.
+ 
+ * Expression clustering of individual TSSs or consensus promoters into distinct expression
+   profiles using common clustering algorithms.
+ 
+ * Calculating promoter width based on the cumulative distribution of CAGE signal along the
+   promoter.
+ 
+ * Scoring and statistically testing differential TSS usage (promoter shifting) and detecting
+   promoters that shift between two samples.
+
+Several data packages are accompanying _CAGEr_ package. They contain majority of the up-to-date
+publicly available CAGE data produced by major consortia including FANTOM and ENCODE. These include
+`r Biocpkg("FANTOM3and4CAGE")` package available from Bioconductor, as well as
+`r Biocpkg("ENCODEprojectCAGE")` and `r Biocpkg("ZebrafishDevelopmentalCAGE")` packages
+available from <http://promshift.genereg.net/CAGEr/>. In addition, direct fetching of TSS data from
+FANTOM5 web resource (the largest collection of TSS data for human and mouse) from within _CAGEr_ is
+also available. These are all valuable resources of genome-wide TSSs in various tissue/cell types
+for various model organisms that can be used directly in R. Section 5 in this vignette describes how
+these public datasets can be included into a workflow provided by \Rpackage{CAGEr}. For further
+information on the content of the data packages and the list of available CAGE datasets please refer
+to the vignette of the corresponding data package.
+
+For further details on the implemented methods and for citing the _CAGEr_ package in your work
+please refer to [@Haberle:2015].
+
+
+Input data for _CAGEr_ {#input-formats}
+=======================================
+
+_CAGEr_ package supports three types of CAGE data input:
+
+ * _Sequenced CAGE tags mapped to the genome_: either BAM (Binary Sequence Alignment Map) files of
+   sequenced CAGE tags aligned to the referent genome (including the paired-end data such as
+   CAGEscan) or BED files of CAGE tags (fragments).
+ 
+ * _CAGE detected TSSs (CTSSs)_: tab separated files with genomic coordinates of TSSs and number of
+   tags supporting each TSS. The file should not contain a header and the data must be organized in
+   four columns:
+    - name of the chromosome: names must match the names of chromosomes in the corresponding
+      _BSgenome_ package.
+    - 1-based coordinate of the TSS on the chromosome
+    - genomic strand: should be either + or -
+    - number of CAGE tags supporting that TSS
+
+ * _Publicly available CAGE datasets from R data package_: Several data packages containing CAGE
+   data for various organisms produced by major consortia are accompanying this package. Selected
+   subset of these data can be used as input for \Rpackage{CAGEr}.
+
+The type and the format of the input files is specified at the beginning of the workflow, when the
+`CAGEset` object is created (section 4.2). This is done by setting the `inputFilesType` argument,
+which accepts the following self-explanatory options referring to formats mentioned above:
+`"bam", "bamPairedEnd", "bed", "ctss", "CTSStable"`.
+
+In addition, the package provides a method for coercing a `data.frame` object containing single
+base-pair TSS information into a `CAGEset` object (as described in section 4.2.1), which can be
+further used in the workflow described below. 
+
+Getting started
+===============
+
+To load the _CAGEr_ package into your R envirnoment type:
+
+```{r}
+library(CAGEr)
+```
+
+
+In this tutorial we will be using data from zebrafish _Danio rerio_ that was mapped to the
+danRer7 assembly of the genome. Therefore, the corresponding genome package 
+`r Biocpkg("BSgenome.Drerio.UCSC.danRer7")` has to be installed.  It will be automatically
+loaded by "CAGEr" commands when needed.
+
+TODO: explain why BSgenome, explain NULL
+
+In case the data is mapped to a genome that is not readily available through _BSgenome_ package
+(not in the list returned by `BSgenome::available.genomes()` function), a custom _BSgenome_ package
+has to be build and installed first. (See the vignette within the _BSgenome_ package for
+instructions on how to build a custom genome package). The `genomeName` argument can then be set to
+the name of the build genome package when creating a `CAGEexp` object (see the section
+_Creating `CAGEexp` object_ below).
+
+_CAGEr_ workflow
+================
+
+Specifying input files
+----------------------
+
+The subset of zebrafish (_Danio rerio_) developmental time-series CAGE data generated by
+[@Nepal:2013] will be used in the following demonstration of the _CAGEr_ workflow.
+
+Files with genomic coordinates of TSSs detected by CAGE in 4 zebrafish developmental stages are
+included in this package in the `extdata` subdirectory. The files contain TSSs from a part of
+chromosome 17 (26,000,000-46,000,000), and there are two files for one of the developmental stages
+(two independent replicas). The data in files is organized in four tab-separated columns as
+described above in section \@ref(input-formats).  First we have to define paths to the input
+files:
+
+```{r}
+pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
+                               , "ctss$"
+                               , full.names = TRUE)
+sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
+basename(pathsToInputFiles)
+sampleLabels
+```
+
+Creating a _CAGEexp_ object {#create-CAGEexp}
+---------------------------------------------
+
+We start the workflow by creating a _CAGEexp_ object, which is a container
+for storing CAGE datasets and all the results that will be generated by applying specific functions.
+The _CAGEexp_ objects are an extension of the `r Biocpkg("MultiAssayExperiment")` class, and
+therefore can use all their methods.  The expression data is stored in _CAGEexp_ using
+`r Biocpkg("SummarizedExperiment")` objects, and can also access their methods.
+
+_CAGEexp_ is created by providing name of the referent genome, paths to input files, type of 
+input files and labels of individual CAGE datasets (samples):
+
+```{r, echo = FALSE}
+library("MultiAssayExperiment")
+library("SummarizedExperiment")
+ce <- new( "CAGEexp"
+         , metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7")
+         , colData = DataFrame( inputFiles     = pathsToInputFiles
+                          , sampleLabels   = sampleLabels
+                          , inputFilesType = "ctss"
+                          , row.names      = sampleLabels))
+```
+
+To display the created object type:
+
+```{r}
+ce
+```
+
+The supplied information can be seen in the _Input data information_ section, whereas all other
+slots are still empty, since no data has been read yet and no analysis conducted.
+
+### Coercing a data frame into a `CAGEset` object
+
+A _CAGEexp_ object can also be created directly by coercing a data frame containing single base-pair
+TSS information.  To be able to do the coercion into a _CAGEexp_, the data frame must conform with
+the following:
+
+ * The data frame must have at least 4 columns;
+ 
+ * the first three columns must be named `chr`, `pos` and `strand`, and contain chromosome name,
+   1-based genomic coordinate of the TSS (positive integer) and TSS strand information (`+` or
+   `-`), respectively;
+ 
+ * these first three columns must be of the class `character`, `integer` and `character`,
+   respectively;
+ 
+ * all additional columns must be of the class `integer` and should contain raw CAGE tag counts
+   (non-negative integer) supporting each TSS in different samples (columns). At least one such
+   column with tag counts must be present;
+   
+ * the names of the columns containing tag counts must begin with a letter, and these column names
+   are used as sample labels in the resulting _CAGEset_ object.
+
+An example of such data frame is shown below:
+
+```{r}
+TSS.df <- read.table(system.file( "extdata/Zf.unfertilized.egg.chr17.ctss"
+                                , package = "CAGEr"))
+# make sure the column names are as required
+colnames(TSS.df) <- c("chr", "pos", "strand", "zf_unfertilized_egg")
+# make sure the column classes are as required
+TSS.df$chr <- as.character(TSS.df$chr)
+TSS.df$pos <- as.integer(TSS.df$pos)
+TSS.df$strand <- as.character(TSS.df$strand)
+TSS.df$zf_unfertilized_egg <- as.integer(TSS.df$zf_unfertilized_egg)
+head(TSS.df)
+```
+
+This data.frame can now be coerced to a _CAGEset_ object, which will fill the corresponding slots
+of the object with provided TSS information:
+
+```{r}
+ce.coerced <- as(TSS.df, "CAGEexp")
+ce.coerced
+```
+
+Reading in the data
+-------------------
+
+In case when the CAGE / TSS data is to be read from input files, an empty _CAGEexp_ object with
+information about the files is first created as described above in section \@ref(create-CAGEexp).
+To actually read in the data into the object we use `getCTSS()` function, that will add
+an experiment called `tagCountMatrix` to the _CAGEexp_ object.
+
+```{r}
+getCTSS(ce)
+ce
+```
+
+This function reads in the data from the provided files in the order they were specified in the
+`inputFiles` argument.  It creates a single set of all TSSs detected across all input datasets
+(union of TSSs) and a table with counts of CAGE tags supporting each TSS in every dataset.  (Note
+that in case when a _CAGEexp_ object is created by coercion from a data frame there is no need to
+call the above function to read in the data, as the data will be loaded into _CAGEexp_ during
+coercion).
+
+Genomic coordinates of all TSSs and numbers of supporting CAGE tags in every input
+sample can be retrieved using the `CTSStagCountSE()` function. `CTSScoordinatesGR()` accesses
+the CTSS coordinates and `CTSStagCountDF()` accesses the CTSS expression values.^[Data can also
+be accessed directly using the native methods of the `MultiAssayExperiment` and
+`SummarizedExperiment` classes, for example `ce[["tagCountMatrix"]]`,
+`rowRanges(ce[["tagCountMatrix"]])` and `assay(ce[["tagCountMatrix"]])`.]
+
+```{r}
+CTSStagCountSE(ce)
+CTSScoordinatesGR(ce)
+CTSStagCountDF(ce)
+```
+
+For compatiblity with earlier CAGEr works using _CAGEset_ objects, and to provide simpler data
+formats, the coordinates and expression values can also be accessed as simple `data.frames`.
+Note howerver that with large data sets it can cause extreme performance issues.
+
+```{r}
+head(CTSScoordinates(ce))
+head(CTSStagCountDf(ce))
+head(CTSStagCount(ce))
+```
+
+Note that the samples are ordered in the way they were supplied when creating the _CAGEexp_ object
+and will be presented in that order in all the results and plots. To check sample labels and their
+ordering type:
+
+```{r}
+sampleLabels(ce)
+```
+
+In addition, a colour is assigned to each sample, which is consistently used to depict that sample
+in all the plots.  By default a rainbow palette of colours is used and the hexadecimal format of
+the assigned colours can be seen as names attribute of sample labels shown above. The colours can
+be changed to taste at any point in the workflow using the `setColors()` function.
+
+Correlation between samples
+---------------------------
+
+After the data has been read we can start exploring the data by looking at the correlation between
+the samples.  The `plotCorrelation()` function will plot pairwise scatter plots of CAGE tag count
+per TSS and calculate correlation between all possible pairs of samples. A tag count threshold can
+be set, so that only TSSs with tag count above the threshold (either in one or both samples) are
+considered when calculating  correlation. Three different correlation measures are supported:
+Pearson's, Spearman's and Kendall's correlation coefficients.
+
+```{r CorrelationScatterPlots, fig.cap="Correlation of raw CAGE tag counts per TSS"}
+corr.m <- plotCorrelation(ce, samples = "all", method = "pearson")
+```
+
+Based on calculated correlation we might want to merge and/or rearrange some of the datasets. To
+rearrange the samples in the temporal order of the zebrafish development (unfertilized egg -> high
+-> 30 percent dome -> prim6) and to merge the two replicas for the prim6 developmental stage we use
+the `mergeSamples()` function:
+
+```{r}
+mergeSamples(ce, mergeIndex = c(3,2,4,4,1), 
+			mergedSampleLabels = c("zf_unfertilized_egg", "zf_high", "zf_30p_dome", "zf_prim6"))
+```
+
+The `mergeIndex` argument controls which samples will be merged and how the final dataset will be
+ordered. Samples labeled by the same number (in our case samples three and four) will be merged
+together by summing number of CAGE tags per TSS. The final set of samples will be ordered in the
+ascending order of values provided in `mergeIndex` and will be labeled by the labels provided in
+the `mergedSampleLabels` argument.  Note that `mergeSamples` function resets all slots with results
+of downstream analyses, so in case there were any results in the _CAGEexp_ object prior to merging,
+they will be removed.
+
+Normalization
+-------------
+
+Library sizes (number of total sequenced tags) of individual experiments differ, thus
+normalization is required to make them comparable. The `librarySizes` function returns the total
+number of CAGE tags in each sample:
+
+```{r}
+librarySizes(ce)
+```
+
+The _CAGEr_ package supports both simple tags per million normalization and power-law based
+normalization.  It has been shown that many CAGE datasets follow a power-law distribution
+[@Balwierz:2009].  Plotting the number of CAGE tags (X-axis) against the number of TSSs that are
+supported by <= of that number of tags (Y-axis) results in a distribution that can be approximated
+by a power-law.  On a log-log scale this reverse cumulative distribution will manifest as a
+monotonically decreasing linear function, which can be defined as
+
+$$y = -1 * \alpha * x + \beta$$
+
+and is fully determined by the slope $\alpha$ and total number of tags T (which together with 
+$\alpha$ determines the value of $\beta$).
+
+To check whether our CAGE datasets follow power-law distribution and in which range of values, we
+can use the `plotReverseCumulatives` function:
+
+```{r ReverseCumulatives, fig.cap="Reverse cumulative distribution of CAGE tags"}
+plotReverseCumulatives(ce, fitInRange = c(5, 1000), onePlot = TRUE)
+```
+
+In additiuon to the reverse cumulative plots (Figure \@ref(fig:ReverseCumulatives)), a power-law
+distribution will be fitted to each reverse cumulative using values in the specified range
+(denoted with dashed lines in Figure \@ref(fig:ReverseCumulatives)) and the value of $\alpha$
+will be reported for each sample (shown in the brackets in the Figure \@ref(fig:ReverseCumulatives)
+legend). The plots can help in choosing the optimal parameters for power-law based normalization.
+We can see that the reverse cumulative distributions look similar and follow the power-law in the
+central part of the CAGE tag counts values with a slope between -1.1 and -1.3. Thus, we choose a
+range from 5 to 1000 tags to fit a power-law, and we normalize all samples to a referent power-law
+distribution with a total of 50,000 tags and slope of -1.2 ($\alpha = 1.2$).^[Note that since this
+example dataset contains only data from one part of chromosome 17 and the total number of tags is
+very small, we normalize to a referent distribution with a similarly small number of tags. When
+analyzing full datasets it is reasonable to set total number of tags for referent distribution to
+one million to get normalized tags per million values.]
+
+To perform normalization we pass these parameters to the `normalizeTagCount` function.
+
+```{r}
+normalizeTagCount(ce, method = "powerLaw", fitInRange = c(5, 1000), alpha = 1.2, T = 5*10^4)
+ce[["tagCountMatrix"]]
+```
+
+The normalization is performed as described in [@Balwierz:2009]:
+
+ - Power-law is fitted to the reverse cumulative distribution in the specified range of CAGE tags
+   values to each sample separately.
+ - A referent power-law distribution is defined based on the provided `alpha` (slope in the
+   log-log representation) and `T` (total number of tags) parameters. Setting `T` to
+   1 million results in normalized tags per million (tpm) values.
+ - Every sample is normalized to the defined referent distribution, _i.e._ given the parameters
+   that approximate its own power-law distribution it is calculated how many tags would each TSS
+   have in the referent power-law distribution.
+
+In addition to the two provided normalization methods, a pass-through option `none` can be set as
+`method` parameter to keep using raw tag counts in all downstream steps.  Note that 
+`normalizeTagCount()` has to be applied to `CAGEr` object before moving to next steps.  Thus, in
+order to keep using raw tag counts run the function with `method="none"`. In that case, all
+results and parameters in the further steps that would normally refer to normalized CAGE signal
+(denoted as tpm), will actually be raw tag counts.
+
+Exporting CAGE signal to bedGraph
+---------------------------------
+
+CAGE data can be visualized in the genomic context by exporting raw or normalized CAGE tag counts
+to a bedGraph (or BigWig) file and uploading (or linking) the file to a genome browser. Positions
+of TSSs and tag counts supporting them are exported using `exportCTSStoBedGraph()`^[Note that
+the [ZENBU genome browser](http://fantom.gsc.riken.jp/zenbu) can display natively data from BAM
+or BED files as coverage tracks.]:
+
+```{r}
+exportCTSStoBedGraph(ce, values = "normalized", format = "bedGraph", oneFile = TRUE)
+```
+
+This will produce a single bedGraph file with multiple annotated tracks that can be directly
+visualized as custom tracks in the genome browser (Figure \@ref(fig:CTSSbedGraph)).
+
+There are two tracks per sample; one for TSSs on the plus strand and the other for the minus
+strand. Values for TSSs on minus strand are shown as negative and are pointing downwards in
+the browser.
+
+Alternatively, the tracks can be exported to a binary BigWig format:
+
+```{r}
+exportCTSStoBedGraph(ce, values = "normalized", format = "BigWig")
+```
+
+which will produce two BigWig files per sample (one for TSSs on the plus strand and the other
+for the minus strand) and an accompanying text file with track headers.
+
+
+```{r CTSSbedGraph, echo=FALSE, fig.cap="CAGE data bedGraph track visualized in the UCSC Genome Browser"}
+knitr::include_graphics("images/CTSSbedGraph.svg")
+```
+
+CTSS clustering
+---------------
+
+Transcription start sites are found in the promoter region of a gene and reflect the
+transcriptional activity of that promoter (Figure \@ref(fig:CTSSbedGraph)).  TSSs in the close
+proximity of each other give rise to a functionally equivalent set of transcripts and are
+likely regulated by the same promoter elements.  Thus, TSSs can be spatially clustered into
+larger transcriptional units, called tag clusters (TCs) that correspond to individual promoters.
+_CAGEr_ supports three methods for spatial clustering of TSSs along the genome, two _ab initio_
+methods driven by the data itself, as well as assigning TSSs to predefined genomic regions:
+
+ * Simple distance-based clustering in which two neighbouring TSSs are joined together if they
+   are closer than some specified distance (greedy algorithm);
+   
+ * Parametric clustering of data attached to sequences based on the density of the signal
+   [@Frith:2007], <http://www.cbrc.jp/paraclu/>;
+
+ * Counting TSSs and their signal in a set of user supplied genomic regions (_e.g._ annotation
+   derived promoter regions or other regions of interest).
+   
+These functionalities are provided in the function `clusterCTSS()`, which accepts additional
+arguments for controlling which CTSSs will be included in the clustering as well as for
+refining the final set of tag clusters.
+
+We will perform a simple distance-based clustering using 20 bp as a maximal allowed distance
+between two neighbouring TSSs. Prior to clustering we will filter out low-fidelity TSSs - the
+ones supported by less than 2 normalized tag counts in all of the samples.
+
+```{r}
+clusterCTSS( object = ce
+           , threshold = 1
+           , thresholdIsTpm = TRUE
+           , nrPassThreshold = 1
+           , method = "distclu"
+           , maxDist = 20
+           , removeSingletons = TRUE
+           , keepSingletonsAbove = 5)
+```
+
+Session info {.unnumbered}
+==========================
+
+```{r sessionInfo}
+sessionInfo()
+```
+
+References
+==========
