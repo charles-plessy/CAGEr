@@ -97,9 +97,9 @@ setMethod("librarySizes<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-# CTSScoordinatesGR
-# 
-# Not exported for the moment.
+#' @name CTSScoordinatesGR
+#' @noRd
+#' @export
 
 setGeneric("CTSScoordinatesGR<-", function(object, value) standardGeneric("CTSScoordinatesGR<-"))
 
@@ -113,9 +113,9 @@ setMethod("CTSScoordinatesGR<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-# CTSStagCountSE
-# 
-# Not exported for the moment.
+#' @name CTSStagCountSE
+#' @noRd
+#' @export
 
 setGeneric("CTSStagCountSE<-", function(object, value) standardGeneric("CTSStagCountSE<-"))
 
