@@ -483,14 +483,14 @@ between two neighbouring TSSs. Prior to clustering we will filter out low-fideli
 ones supported by less than 2 normalized tag counts in all of the samples.
 
 ```{r}
-clusterCTSS( object = ce
-           , threshold = 1
-           , thresholdIsTpm = TRUE
-           , nrPassThreshold = 1
-           , method = "distclu"
-           , maxDist = 20
-           , removeSingletons = TRUE
-           , keepSingletonsAbove = 5)
+# clusterCTSS( object = ce
+#            , threshold = 1
+#            , thresholdIsTpm = TRUE
+#            , nrPassThreshold = 1
+#            , method = "distclu"
+#            , maxDist = 20
+#            , removeSingletons = TRUE
+#            , keepSingletonsAbove = 5)
 ```
 
 Session info {.unnumbered}
