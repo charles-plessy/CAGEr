@@ -618,6 +618,7 @@ function (object){
 #' CTSSnormalizedTpmDF
 #' 
 #' @noRd
+#' @export
 
 setGeneric(
 name="CTSSnormalizedTpmDF",
