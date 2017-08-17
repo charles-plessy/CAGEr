@@ -1,0 +1,189 @@
+---
+title: "<Insert title>"
+output: 
+  html_document: 
+    keep_md: yes
+    number_sections: yes
+    toc: yes
+---
+
+```{r setup echo=FALSE}
+knitr::opts_chunk$set(cache  = TRUE)
+knitr::opts_knit$set(verbose = TRUE)
+# knitr::opts_chunk$set(dev=c('svg', 'png'))
+options(width = 100)
+ggplot2::theme_set(ggplot2::theme_bw())
+```
+
+<Insert title>
+==============
+
+Jump directly to the [Analysis](#analysis) section if you are not interested in
+the details of the data processing.
+
+Data load and QC in R
+=====================
+
+Metadata that varies from run to run:
+
+```{r library_information}
+LIBRARY       <- "<Insert library ID>"  # For example, the sequencing run ID.
+PATH_TO_FILES <- "" # 
+BS_GENOME     <- "<Insert name of a BSGenome>" # For example "BSgenome.Hsapiens.UCSC.hg38" or NULL
+```
+
+Load R libraries
+----------------
+
+```{r load_R_libraries, message=F}
+requireNamespace("AnnotationHub") # Make sure the package is available; but do not load it.
+requireNamespace("pheatmap")      # Make sure the package is available; but do not load it.
+library("CAGEr")
+library("ggplot2")
+library("magrittr")
+library("SummarizedExperiment")
+library("vegan")
+```
+
+Create CAGEexp object and load data
+-----------------------------------
+
+<!--
+For a sample CAGEexp object, see the example on the CAGEexp-class documentation page.
+
+The commands below assume an input in BED format; see the documentation page
+of "inputFilesType" for a list of other supported formats.
+
+Sample names are taken from the file names, but they can also be provided directly
+when creating the colData DataFrame.
+-->
+
+```{r load-ctss-from-bed-files}
+pathsToInputFiles <- list.files(PATH_TO_FILES, "*.bed", full.names = TRUE) %>%
+  Filter(f = function(file) file.size(file) > 0)
+samplenames <- basename(pathsToInputFiles) %>% sub(".bed", "", .)
+ce <-
+  new( "CAGEexp"
+     , colData = DataFrame( inputFiles     = pathsToInputFiles
+                          , sampleLabels   = sampleLabels
+                          , inputFilesType = "bed"
+                          , row.names      = sampleLabels)
+     , metadata = list(genomeName = "BS_GENOME"))
+getCTSS(ce)
+normalizeTagCount(ce, method = "simpleTpm")
+```
+
+Annotation with GENCODE
+-----------------------
+
+Here we use Bioconductor's annotation hub to retreive GENCODE, but any other
+annotation can be loaded directly from a file; see the `Zv9_annot` documentation
+page for an example of how an annotation file was created for zebrafish
+using Biomart.
+
+The `annotateCTSS` and `CTSStoGenes` modify the CAGEexp object; see their
+documentation for details.
+
+
+```{r expression-per-gene}
+ah <- AnnotationHub::AnnotationHub()
+# Search for the annotation you need.
+# AnnotationHub::query(ah, c("Gencode", "gff", "human"))
+ah["AH49556"]
+gff <- ah[["AH49556"]]
+gff
+
+annotateCTSS(ce, gff)
+CTSStoGenes(ce)
+```
+
+Annotation
+----------
+
+```{r annotation-barplots, dev=c('svg', 'png')}
+plotAnnot(ce, 'counts')
+```
+
+Richness
+--------
+
+```{r calculate-richness}
+ce$r100l1 <- rarefy(t(CTSStagCountDf(ce)),100)
+ce$r100l1[ce$counts < 100] <- NA
+ce$r100g <- rarefy(t(data.frame(assay(GeneExpSE(ce)))),100)
+ce$r100g[ce$counts < 100] <- NA
+```
+
+Correlation between runs
+------------------------
+
+<!--
+Assumes that colData(ce) has a "group" column; edit as needed.  `drop = F` is not needed
+if there are more than one annotations.
+-->
+
+
+```{r correlation-heatmap, dev=c('svg', 'png')}
+pheatmap::pheatmap( cor(data.frame(assay(GeneExpSE(ce))[-1, ]))
+                  , annotation_col = data.frame(colData(ce))[,c("group"), drop = F]
+                  )
+```
+
+
+Rarefaction (hanabi plot)
+-------------------------
+
+The purpose of these plots is to ease the comparison of the libraries given that they do not have exactly the same sequencing depth, and to evaluate if extra sequencing depth would be useful.
+
+The data is rarefied with enough sampling points to give a smooth appearance to
+the curves.  If it takes too much time, the output can be stored in an object
+saved on the hard drive.  This way, if the commands have been run through knitr,
+the long computations here can be skipped if needed again in an interactive
+session.
+
+For example:
+
+```
+rar1 <- hanabi(assay(l1), from = 0)
+saveRDS(rar1, "rar1.rds")
+# And later...
+rar1 <- readRDS("rar1.rds")
+```
+
+### Transcript discovery (with raw reads)
+
+Would we detect more transcripts if we sequenced more raw reads ?
+
+````{r hanabi-UMI, dev=c('svg', 'png')}
+hanabiPlot( tapply(bed$score, bed$library, hanabi, from = 0) %>% 
+              structure(class = "hanabi")
+          , ylab  = 'number of molecules detected'
+          , xlab  = 'number of properly mapped reads'
+          , main  = paste("Transcript discovery for", LIBRARY)
+          , GROUP = bed$library %>% levels %>% sub("_.*", "", .))
+```
+
+### Gene discovery
+
+Would we detect more genes if we detected more transcripts ?
+
+```{r hanabi-gene, dev=c('svg', 'png')}
+hanabiPlot( hanabi(assay(GeneExpSE(ce))
+          , group = ce$group
+          , ylab  = "number of genes detected"
+          , xlab  = "number of unique molecule counts"
+          , main  = "Gene discovery")
+```
+
+### TSS discovery
+
+Would we detect more TSS if we detected more transcripts ?
+
+```{r hanabi-TSS, dev=c('svg', 'png')}
+h <- hanabi(CTSStagCountDF(ce)) # Save results as computation may be slow.
+hanabiPlot( h
+          , group = ce$group
+          , ylab  = "number of TSS detected"
+          , xlab  = "number of unique molecule counts"
+          , main  = "TSS discovery")
+```

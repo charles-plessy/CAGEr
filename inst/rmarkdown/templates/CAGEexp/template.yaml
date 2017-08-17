@@ -1,0 +1,4 @@
+name: CAGEr workflow
+description: >
+  Load CAGE data in a CAGEr object, annotate transcription start sites, produce
+  simple quality reports and prepare for differential expression analysis.
