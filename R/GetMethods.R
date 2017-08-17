@@ -539,7 +539,15 @@ setMethod("CTSStagCountSE",
 signature(object = "CAGEset"),
 function (object){
 	  colData <- data.frame(row.names = sampleLabels(object), samplename = sampleLabels(object), samplecolor = names(sampleLabels(object)))
-    SummarizedExperiment(assays = list(counts=CTSStagCountDF(object)), rowData = CTSScoordinatesGR(object), colData = colData)
+	  if (identical(object@normalizedTpmMatrix, data.frame())) {
+	    return(SummarizedExperiment( assays  = list(counts=CTSStagCountDF(object))
+	                               , rowData = CTSScoordinatesGR(object)
+	                               , colData = colData))
+	  }
+	  SummarizedExperiment( assays = list( counts              = CTSStagCountDF(object)
+	                                     , normalizedTpmMatrix = CTSSnormalizedTpmDF(object))
+	                      , rowData = CTSScoordinatesGR(object)
+	                      , colData = colData)
 })
 
 setMethod("CTSStagCountSE",
