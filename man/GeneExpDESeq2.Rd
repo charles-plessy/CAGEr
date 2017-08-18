@@ -14,10 +14,8 @@ GeneExpDESeq2(object, design)
 \description{
 Creates a \code{DESeqDataSet} using the gene expression
 data in the experiment slot \code{geneExpMatrix} and the sample metadata
-of the \code{\link{CAGEexp}} object.  The first line of the expression
-matrix, representing all the counts not ovelaping a known gene annotation,
-is removed.  The formula must be built using factors already present in
-the sample metadata.
+of the \code{\link{CAGEexp}} object.  The formula must be built using factors
+already present in the sample metadata.
 }
 \examples{
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))

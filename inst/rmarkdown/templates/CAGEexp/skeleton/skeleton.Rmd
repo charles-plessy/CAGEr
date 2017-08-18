@@ -124,9 +124,8 @@ if there are more than one annotations.
 
 
 ```{r correlation-heatmap, dev=c('svg', 'png')}
-pheatmap::pheatmap( cor(data.frame(assay(GeneExpSE(ce))[-1, ]))
-                  , annotation_col = data.frame(colData(ce))[,c("group"), drop = F]
-                  )
+pheatmap::pheatmap( cor(data.frame(assay(GeneExpSE(ce))))
+                  , annotation_col = data.frame(colData(ce))[,c("group"), drop = F])
 ```
 
 

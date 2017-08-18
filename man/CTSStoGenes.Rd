@@ -21,6 +21,8 @@ The input object with the following modifications:
     genes is limited, a \code{matrix} will not cause problems of performance.)
   \item New \code{genes} column data added, indicating total number of gene symbols
     detected per library.
+  \item New \code{unannotated} column data added, indicating for each sample the
+    number of counts that did not overlap with a known gene.
 }
 }
 \description{
@@ -32,6 +34,7 @@ not supported.
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
 CTSStoGenes(ce)
+all(librarySizes(ce) - colSums(assay(GeneExpSE(ce))) == ce$unannotated)
 
 }
 \seealso{
