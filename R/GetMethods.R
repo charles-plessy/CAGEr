@@ -343,6 +343,8 @@ function (object){
   ctssCoord <- object@CTSScoordinates
   ctssCoord <- GRanges(ctssCoord$chr, IRanges(ctssCoord$pos, ctssCoord$pos), ctssCoord$strand)
   genome(ctssCoord) <- object@genomeName
+  if(!identical(object@filteredCTSSidx, logical()))
+    ctssCoord$filteredCTSSidx <- object@filteredCTSSidx
   ctssCoord
 })
 
