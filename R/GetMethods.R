@@ -630,7 +630,6 @@ setMethod("CTSSnormalizedTpmDF",
 signature(object = "CAGEset"),
 function (object){
 	DF <- object@normalizedTpmMatrix
-	DF <- lapply(DF, as.integer)
 	DF <- lapply(DF, Rle)
 	DataFrame(DF)
 })
