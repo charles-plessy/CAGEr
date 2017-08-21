@@ -723,9 +723,10 @@ setMethod( "getTagCluster", "CAGEexp", function (object, sample) {
            , chr     = as.character(seqnames(gr))
            , start   = start(gr)
            , end     = end(gr)
-           , strand  = strand(gr)
+           , strand  = decode(droplevels(strand(gr)))
            , nr_ctss = gr$nr_ctss
            , dominant_ctss     = gr$dominant_ctss
+           , tpm     = decode(score(gr))
            , tpm.dominant_ctss = gr$tpm.dominant_ctss)
 })
 
