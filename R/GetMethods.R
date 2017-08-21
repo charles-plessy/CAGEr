@@ -612,7 +612,7 @@ function (object){
 setMethod("CTSSnormalizedTpmDf",
 signature(object = "CAGEexp"),
 function (object){
-  as.data.frame(lapply(assay(experiments(object)$normalizedTpmMatrix), as.integer))
+  data.frame(lapply(assays(CTSStagCountSE(ce))[["normalizedTpmMatrix"]], decode))
 })
 
 #' CTSSnormalizedTpmDF
