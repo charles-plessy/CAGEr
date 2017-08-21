@@ -1,3 +1,5 @@
+#' @include CTSS.R
+
 #' @name clusterCTSS
 #' 
 #' @title Clustering CTSSs into tag clusters
@@ -59,7 +61,8 @@
 #' @details Two \emph{ab initio} methods for clustering TSSs along the genome are supported:
 #' \code{"distclu"} and \code{"paraclu"}.  \code{"distclu"} is an implementation of simple
 #' distance-based clustering of data attached to sequences, where two neighbouring TSSs are
-#' joined together if they are closer than some specified distance.  \code{"paraclu"} is an
+#' joined together if they are closer than some specified distance (see
+#' \code{\link{distclu-functions}} for implementation details.  \code{"paraclu"} is an
 #' implementation of Paraclu algorithm for parametric clustering of data attached to
 #' sequences developed by M. Frith (Frith \emph{et al.}, Genome Research, 2007,
 #' \href{http://www.cbrc.jp/paraclu/}{http://www.cbrc.jp/paraclu/}).  Since Paraclu finds
@@ -92,6 +95,12 @@
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' clusterCTSS( object = exampleCAGEset, threshold = 50, thresholdIsTpm = TRUE
+#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
+#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
+#' 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
 #'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 #' 
@@ -133,17 +142,17 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 		nr.pass.threshold <- apply(data, 1, function(x) {sum(x >= threshold)})
 		idx <- nr.pass.threshold >= min(nrPassThreshold, length(sample.labels))
 		gc()
-		data <- cbind(CTSScoordinates(object)[idx,], object@normalizedTpmMatrix[idx,,drop=F])
+		data <- CTSStagCountSE(object)[idx,]
 		gc()
 	}else{
-		data <- cbind(CTSScoordinates(object), object@normalizedTpmMatrix)
+		data <- CTSStagCountSE(object)
 		idx <- rep(TRUE, nrow(data))
 
 	}
 	
 	message("Clustering...")
 	if(method == "distclu"){
-		ctss.cluster.list <- .distclu(data = data, sample.labels = sample.labels, max.dist = maxDist, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, useMulticore = useMulticore, nrCores = nrCores)
+		ctss.cluster.list <- .distclu(se = data, max.dist = maxDist, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, useMulticore = useMulticore, nrCores = nrCores)
 	}else if (method == "paraclu"){
 		ctss.cluster.list <- .paraclu(data = data, sample.labels = sample.labels, minStability = minStability, maxLength = maxLength, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, reduceToNonoverlapping = reduceToNonoverlapping, useMulticore = useMulticore, nrCores = nrCores)
 	}else if(method == "custom"){
@@ -155,6 +164,18 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 		stop("'method' parameter must be one of the (\"distclu\", \"paraclu\", \"custom\")")
 	}
 	
+	cluster2df <- function (gr) {
+	  data.frame ( cluster = 1:length(gr)
+	             , chr     = as.character(seqnames(gr))
+	             , start   = start(gr)
+	             , end     = end(gr)
+	             , strand  = strand(gr)
+	             , nr_ctss = gr$nr_ctss
+	             , dominant_ctss     = gr$dominant_ctss
+	             , tpm.dominant_ctss = gr$tpm.dominant_ctss)
+	}
+	ctss.cluster.list <- lapply(ctss.cluster.list, cluster2df)
+	
 	object@filteredCTSSidx <- idx
 	object@clusteringMethod <- method
 	object@tagClusters <- ctss.cluster.list
@@ -164,3 +185,64 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 }
 )
 
+setMethod("clusterCTSS",
+signature(object = "CAGEexp"),
+function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, removeSingletons, keepSingletonsAbove, minStability, maxLength, reduceToNonoverlapping, customClusters, useMulticore, nrCores){
+  
+  useMulticore <- CAGEr:::.checkMulticore(useMulticore)
+  objName <- deparse(substitute(object))
+  assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
+
+  message("\nFiltering CTSSs below threshold...")
+
+  if (! "tagCountMatrix" %in% names(experiments(object)))
+    stop("Could not find CTSS tag counts, see ?getCTSS.")
+
+  if (! "normalizedTpmMatrix" %in% names(assays(CTSStagCountSE(ce))))
+    stop( "Could not find normalized CAGE signal values, see ?normalizeTagCount.\n"
+        , "clusterCTSS() needs normalized values to create its output tables, that "
+        , "include TPM expression columns.")
+
+  data <- CTSStagCountSE(object)
+
+	if (threshold > 0) {
+		nr.pass.threshold <- rowSums(DelayedArray(assays(data)[[assay]]) >= threshold)
+		rowRanges(data)$filteredCTSSidx <-
+		  Rle(nr.pass.threshold >= min(nrPassThreshold, length(sampleLabels(object))))
+	} else {
+	  rowRanges(data)$filteredCTSSidx <- Rle(TRUE)
+	}
+	
+	message("Clustering...")
+	
+  if (method == "distclu") {
+    ctss.cluster.list <- .distclu( se = data[rowRanges(data)$filteredCTSSidx,]
+                                 , max.dist = maxDist, removeSingletons = removeSingletons
+                                 , keepSingletonsAbove = keepSingletonsAbove
+                                 , useMulticore = useMulticore, nrCores = nrCores)
+  } else if (method == "paraclu") {
+    ctss.cluster.list <- .paraclu( data = data[rowRanges(data)$filteredCTSSidx,]
+                                 , sample.labels = sampleLabels(object)
+                                 , minStability = minStability, maxLength = maxLength
+                                 , removeSingletons = removeSingletons
+                                 , keepSingletonsAbove = keepSingletonsAbove
+                                 , reduceToNonoverlapping = reduceToNonoverlapping
+                                 , useMulticore = useMulticore, nrCores = nrCores)
+  } else if(method == "custom") {
+    if(is.null(customClusters))
+    	stop("'customClusters' must be given when method = \"custom\"")
+    ctss.cluster.list <- .predefined.clusters( data = data[rowRanges(data)$filteredCTSSidx,]
+                                             , sample.labels = sampleLabels(object)
+                                             , custom.clusters = customClusters
+                                             , useMulticore = useMulticore, nrCores = nrCores)
+  } else {
+    stop( sQuote("method"), " parameter must be "
+        , dQuote("distclu"), ", ", dQuote("paraclu"), ", or ", dQuote("custom"), ".")
+  }
+  
+	CTSStagCountSE(object) <- data
+  metadata(object)$clusteringMethod <- method
+  metadata(object)$tagClusters <- ctss.cluster.list
+  assign(objName, object, envir = parent.frame())
+  invisible(1)
+})

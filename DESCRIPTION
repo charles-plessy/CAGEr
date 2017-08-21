@@ -48,6 +48,7 @@ Collate:
     'AggregationMethods.R'
     'Annotations.R'
     'CAGEr.R'
+    'CTSS.R'
     'ClusteringFunctions.R'
     'ClusteringMethods.R'
     'CorrelationMethods.R'

@@ -1,127 +1,284 @@
+#' @include CTSS.R
+
 ####################################################################################
 # Implementation of simple distance-based clustering of data attached to sequences
 #
 
+#' @name distclu-functions
+#' 
+#' @title Private functions for distance clustering.
+#' 
+#' @description The flow of data is that a \code{GRanges} object of CTSSes is progressively
+#' deconstructed, and data to form the clusters is progressively integrated in a
+#' \code{\link{data.table}} object, which is finally converted to GRanges at the end.  Doing
+#' the whole clustering with GRanges is more elegant, but looping on a GRangesList was just
+#' too slow.  Maybe the operation on the \code{data.table} is more efficient because it is
+#' vectorised.
+NULL
 
-.cluster.ctss.strand <- function(ctss.df, max.dist) {
-	
-	ctss.df <- subset(ctss.df, tpm > 0)
-	v <- rep(0, max(ctss.df$pos) + max.dist)
-	v[ctss.df$pos + max.dist] <- ctss.df$tpm
-	v <- Rle(v)
-	c.starts <- cumsum(v@lengths)[which(v@lengths >= max.dist & v@values == 0)] - max.dist
-	c.ends <- c(cumsum(v@lengths)[(which(v@lengths >= max.dist & v@values == 0) - 1)[-1]], length(v)) - max.dist
-	clusters <- data.frame(cluster = c(1:length(c.starts)), start = c.starts, end = c.ends)
-	clusters.ir <- IRanges(start = clusters$start, end = clusters$end)
-	ctss.df <- ctss.df[order(ctss.df$pos),]
-	ctss.df.ir <- IRanges(start = ctss.df$pos - 1, end = ctss.df$pos)
-	o <- findOverlaps(clusters.ir, ctss.df.ir)
-	ctss.df <- cbind(ctss.df, clusters$cluster[queryHits(o)])
-	colnames(ctss.df)[ncol(ctss.df)] <- 'cluster'
-	return(ctss.df)
-	
-} 
+#' @name .cluster.ctss.strand
+#' @rdname distclu-functions
+#' 
+#' @description \code{.cluster.ctss.strand} does the strandless distance clustering of strandless
+#' CTSS positions from a single chromosome.  Input does not need to be sorted, but \emph{pay
+#' attention that the output is sorted}.
+#' 
+#' @param ctss.iranges.chr A IRanges object.
+#' @param max.dist See \code{\link{clusterCTSS}}.
+#' 
+#' @return \code{.cluster.ctss.strand} returns an \code{\link{data.table}} object containing
+#'  arbitrary cluster IDs (as integers) for each CTSS.
+#'  
+#' @importFrom data.table data.table
+#' 
+#' @examples
+#' 
+#' #.cluster.ctss.strand
+#' ctss.iranges.chr <- IRanges(c(1,3,4,12,14,25,28), w=1)
+#' .cluster.ctss.strand(ctss.iranges.chr, 5)
+#' 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' ctss.chr <- CTSScoordinatesGR(ce)
+#' ctss.chr <- ctss.chr[strand(ctss.chr) == "+"]
+#' ctss.iranges.chr <- ranges(ctss.chr)
+#' # Same result if not sorted
+#' identical(
+#'   .cluster.ctss.strand(ctss.iranges.chr, 20),
+#'   .cluster.ctss.strand(ctss.iranges.chr[sample(seq_along(ctss.iranges.chr))], 20)
+#' )
+#' # Returns an emtpy data.table object if given an empty IRanges object.
+#' identical(.cluster.ctss.strand(IRanges(), 20), data.table())
 
-.cluster.ctss.chr <- function(ctss.df, max.dist) {
-	
-	ctss.df.p <- subset(ctss.df, strand == "+")
-	if(nrow(ctss.df.p) > 0) {
-		ctss.df.plus <- .cluster.ctss.strand(ctss.df = ctss.df.p, max.dist = max.dist)
-	}else{
-		ctss.df.plus <- data.frame()
-	}
-	ctss.df.m <- subset(ctss.df, strand == "-")
-	if(nrow(ctss.df.m) > 0) {			
-		ctss.df.minus <- .cluster.ctss.strand(ctss.df = ctss.df.m, max.dist = max.dist)
-		ctss.df.minus$cluster <- max(0, suppressWarnings(max(ctss.df.plus$cluster))) + ctss.df.minus$cluster
-	}else{
-		ctss.df.minus <- data.frame()
-	}
-	
-	return(rbind(ctss.df.plus, ctss.df.minus))
-	
-}
+setGeneric(".cluster.ctss.strand", function(ctss.iranges.chr, max.dist) standardGeneric(".cluster.ctss.strand"))
 
-.ctss2clusters <- function(ctss.df, max.dist = 20, useMulticore = FALSE, nrCores = NULL) {
-	
-	if(useMulticore == TRUE){
-		library(parallel)
-		if(is.null(nrCores)){
-			nrCores <- detectCores()
-		}		
-		ctss.cluster.list <- mclapply(as.list(unique(ctss.df$chr)), function(x) {
-									
-									ctss.df.chr <- subset(ctss.df, chr == x)
-									ctss.cluster.chr.df <- .cluster.ctss.chr(ctss.df = ctss.df.chr, max.dist = max.dist)
-								
-									}, mc.cores = nrCores
-								)		
+setMethod(".cluster.ctss.strand", "IRanges", function(ctss.iranges.chr, max.dist) {
+  if (identical(ctss.iranges.chr, IRanges())) return(data.table())
+  v <- Rle(rep(TRUE, max(start(ctss.iranges.chr)) + max.dist))
+  v[start(ctss.iranges.chr) + max.dist] <- FALSE
+  longRuns <- which(runLength(v) >= max.dist & runValue(v))
+  c.starts <- cumsum(runLength(v))[longRuns] - max.dist
+  c.ends <- c(cumsum(runLength(v))[(longRuns - 1)[-1]], length(v)) - max.dist
+  clusters <- IRanges(start = c.starts, end = c.ends)
+  o <- findOverlaps(clusters, ctss.iranges.chr)
+  data.table(id = queryHits(o))
+})
+
+
+#' @name .cluster.ctss.chr
+#' @rdname distclu-functions
+#' 
+#' @description \code{.cluster.ctss.chr} does the stranded distance clustering of CTSS on a
+#' single chromosome, by dispatching both strands to \code{.cluster.ctss.strand} and merging
+#' the results, taking care keep the cluster IDs unique.  Be careful that this function does
+#' not look at the score.
+#' 
+#' @param ctss.chr A CTSS.chr object.
+#' @param max.dist See \code{\link{clusterCTSS}}.
+#' 
+#' @return \code{.cluster.ctss.chr} returns a \code{\link{data.table}} object representing the
+#' chromosome coordinates (\code{chr}, \code{pos}, \code{strand}) of each CTSS, with their
+#' cluster ID (\code{id}).
+#' 
+#' @importFrom data.table data.table
+#' @importFrom S4Vectors decode
+#' 
+#' @examples 
+#' 
+#' #.cluster.ctss.chr
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(ce))
+#' .cluster.ctss.chr(ctss.chr, 20)
+
+setGeneric(".cluster.ctss.chr", function(ctss.chr, max.dist) standardGeneric(".cluster.ctss.chr"))
+
+setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
+  clusters.p <- .cluster.ctss.strand(ranges(ctss.chr[strand(ctss.chr) == "+"]), max.dist)
+  clusters.m <- .cluster.ctss.strand(ranges(ctss.chr[strand(ctss.chr) == "-"]), max.dist)
+  clusters.m <- clusters.m + max(0, suppressWarnings(max(clusters.p)))
+  data.table( rbind(clusters.p, clusters.m)
+            , chr    = as.character(seqnames(ctss.chr))
+            , pos    = start(ctss.chr)
+            , strand = decode(strand(ctss.chr)))
+})
+
+
+#' @name .ctss2clusters
+#' @rdname distclu-functions
+#' 
+#' @description \code{.ctss2clusters} does the stranded distance clustering of CTSS.
+#' 
+#' @param ctss A CTSS object with a score column.
+#' @param max.dist See \code{\link{clusterCTSS}}.
+#' @param useMulticore,nrCores See clusterCTSS.
+#' 
+#' @return \code{.ctss2clusters} returns a \code{\link{data.table}} object representing the
+#' cluster ID (\code{id}), chromosome coordinates (\code{chr}, \code{pos}, \code{strand}) and
+#' the \code{score} of each CTSS.
+#' 
+#' @importFrom data.table data.table
+#' @importFrom S4Vectors decode
+#' 
+#' @examples 
+#' 
+#' # .ctss2clusters
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
+#' score(ctss) <- CTSSnormalizedTpmDF(ce)[[1]]
+#' seqnames(ctss)[rep(c(T,F), length(ctss) / 2)] <- "chr16"
+#' ctss
+#' .ctss2clusters(ctss, 20)
+
+setGeneric(".ctss2clusters", function(ctss, max.dist = 20, useMulticore = FALSE, nrCores = NULL) standardGeneric(".ctss2clusters"))
+
+setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCores) {
+  ctss <- sort(ctss)
+  ctss <- ctss[score(ctss) != 0]
+  ctss.list <- split(ctss, droplevels(seqnames(ctss)))
+  ctss.list <- lapply(ctss.list, CAGEr:::.CTSS.chr)
+  
+  if(useMulticore == TRUE){
+    requireNamespace("parallel")
+    if(is.null(nrCores)){
+      nrCores <- detectCores()
+    }
+		ctss.list <- mclapply(ctss.list, .cluster.ctss.chr, max.dist = max.dist, mc.cores = nrCores)		
 	}else{
-		ctss.cluster.list <- lapply(as.list(unique(ctss.df$chr)), function(x) {
-								
-									ctss.df.chr <- subset(ctss.df, chr == x)
-									ctss.cluster.chr.df <- .cluster.ctss.chr(ctss.df = ctss.df.chr, max.dist = max.dist)
-								
-									}
-								)
+		ctss.list <- lapply(ctss.list, .cluster.ctss.chr, max.dist = max.dist)
 	}
-	max.clust <- unlist(lapply(ctss.cluster.list, function(x) {max(x$cluster)}))
+	max.clust <- sapply(ctss.list, function(x) {max(x$id)})
 	max.clust <- cumsum(c(0, max.clust[-length(max.clust)]))
 	
-	ctss.cluster.list <- lapply(as.list(1:length(max.clust)), function(x) {
-								
-								a = ctss.cluster.list[[x]]
-								a$cluster = a$cluster + max.clust[x]
-								return(a)
-								
-								}
-							)
+  for (x in seq_along(max.clust))
+    ctss.list[[x]]$id <- ctss.list[[x]]$id + max.clust[x]
 	
-	ctss.cluster.df <- do.call(rbind, ctss.cluster.list)
-	return(ctss.cluster.df)
-	
-}	
+	dt <- do.call(rbind, ctss.list)
+	dt$tpm <- decode(score(ctss))
+	dt
+})
 
-.summarize.clusters <- function(ctss.cluster.df, removeSingletons = FALSE, keepSingletonsAbove = Inf) {
 
-	ctss.cluster <- data.table(ctss.cluster.df)
-	ctss.cluster <- ctss.cluster[, list(chr[1], min(pos)-1, max(pos), strand[1], length(pos), pos[which(tpm == max(tpm))[ceiling(length(which(tpm == max(tpm)))/2)]], sum(tpm), max(tpm)), by = cluster]
-	setnames(ctss.cluster, c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss"))
-		
-	ctss.cluster <- data.frame(ctss.cluster)
-	if(removeSingletons){
-		ctss.cluster <- subset(ctss.cluster, nr_ctss > 1 | tpm >= keepSingletonsAbove)
-		ctss.cluster$cluster <- c(1:nrow(ctss.cluster))
-		rownames(ctss.cluster) <- c(1:nrow(ctss.cluster))
-	}
-	return(ctss.cluster)
+#' @name .summarize.clusters
+#' @rdname distclu-functions
+#' @description \code{.summarize.clusters} calculates the number of CTSS, and
+#' the position and score of a main peak, for each cluster.
+#' 
+#' @param ctss.clustered A \code{\link{data.table}} object representing the cluster ID
+#'        (\code{id}), chromosome coordinates (\code{chr}, \code{pos}, \code{strand}) and
+#'        the \code{score} of each CTSS.
+#' @param removeSingletons Remove \dQuote{singleton} clusters that span only a single
+#'        nucleotide ? (default = FALSE).
+#' @param keepSingletonsAbove Even if \code{removeSingletons = TRUE}, keep singletons when
+#'        their score is aboove threshold (default = \code{Inf}).
+#' @return \code{.summarize.clusters} returns GRanges describing the clusters.
+#' 
+#' @importFrom data.table setnames
+#' 
+#' @examples 
+#' 
+#' # .summarize.clusters
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
+#' score(ctss) <- CTSSnormalizedTpmDF(ce)[[1]]
+#' seqnames(ctss)[rep(c(T,F), length(ctss) / 2)] <- "chr16"
+#' clusters <- .ctss2clusters(ctss, 20)
+#' .summarize.clusters(clusters)
+#' .summarize.clusters(clusters, removeSingletons = TRUE)
+#' .summarize.clusters(clusters, removeSingletons = TRUE, keepSingletonsAbove = 5)
+
+setGeneric(".summarize.clusters", function(ctss.clustered, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf) standardGeneric(".summarize.clusters"))
+
+setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist, removeSingletons, keepSingletonsAbove) {
+
+  find.dominant.idx <- function (x) {
+    w <- which(x == max(x))
+    w[ceiling(length(w)/2)]
+  }
 	
+  clusters <- ctss.clustered[ , list( chr[1]
+                                    , min(pos)
+                                    , max(pos)
+                                    , strand[1]
+                                    , length(pos)
+                                    , pos[find.dominant.idx(tpm)]
+                                    , sum(tpm)
+                                    , max(tpm))
+                              , by = id]
+  setnames(clusters, c( "cluster"
+                      , "chr", "start", "end", "strand"
+                      , "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss"))
+  
+	if(removeSingletons)
+		clusters <- subset(clusters, nr_ctss > 1 | tpm >= keepSingletonsAbove)
+  
+  GRanges( seqnames = Rle(factor(clusters$chr))
+         , ranges   = IRanges(clusters$start, clusters$end)
+         , strand   = clusters$strand
+         , score    = Rle(clusters$tpm)
+         , nr_ctss  = clusters$nr_ctss
+         , dominant_ctss = clusters$dominant_ctss
+         , tpm.dominant_ctss = Rle(clusters$tpm.dominant_ctss)
+  )
+})
+
+
+#' @name .distclu
+#' @rdname distclu-functions
+#' @description  \code{.distclu} receives the data from the main \code{clusterCTSS} and
+#' dispatches each for (possibly parallel) processing.
+#' 
+#' @param se A \code{\link{SummarizedExperiment}} object representing the CTSSes and
+#'        their expression in each sample.
+#' @param max.dist See \code{\link{clusterCTSS}}.
+#' @param removeSingletons Remove \dQuote{singleton} clusters that span only a single
+#'        nucleotide ? (default = FALSE).
+#' @param keepSingletonsAbove Even if \code{removeSingletons = TRUE}, keep singletons when
+#'        their score is aboove threshold (default = \code{Inf}).
+#' @param useMulticore,nrCores See clusterCTSS.
+#'        
+#' @return \code{.distclu} returns GRanges describing the clusters.
+#' 
+#' @importFrom SummarizedExperiment rowRanges
+#' 
+#' @examples 
+#' 
+#' # .distclu
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' .distclu(CTSStagCountSE(ce))
+#' \dontrun{
+#' .distclu(CTSStagCountSE(ce), useMulticore = TRUE)
+#' }
+#' 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' .distclu(CTSStagCountSE(exampleCAGEset))
+
+setGeneric(".distclu", function(se, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, useMulticore = FALSE, nrCores = NULL) standardGeneric(".distclu"))
+
+setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingletons, keepSingletonsAbove, useMulticore, nrCores) {
+	
+  ctss.cluster.list <- list()
+  for(s in colnames(se)) {
+    message("\t-> ", s)
+    d <- CAGEr:::.CTSS(rowRanges(se))
+    score(d) <- assays(se)[["normalizedTpmMatrix"]][[s]]
+    d <- subset(d, score(d) > 0)
+    clusters <- .ctss2clusters(ctss = d, max.dist = max.dist, useMulticore = useMulticore, nrCores = nrCores)
+    ctss.cluster.list[[s]] <- clusters
+  }
+
+  if (useMulticore == TRUE) {
+    requireNamespace("parallel")
+    if(is.null(nrCores)){
+      nrCores <- detectCores()
+    }
+    ctss.cluster.list <- mclapply(ctss.cluster.list, .summarize.clusters, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, mc.cores = nrCores)
+  } else {
+    ctss.cluster.list <- lapply(ctss.cluster.list, .summarize.clusters, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove)
 }
-
-
-.distclu <- function(data, sample.labels, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, useMulticore = FALSE, nrCores = NULL) {
-	
-	ctss.cluster.list <- list()
-	for(s in sample.labels) {
-		
-		message("\t-> ", s)
-		d <- data[,c("chr", "pos", "strand", s)]
-		colnames(d) <- c("chr", "pos", "strand", "tpm")
-		d <- subset(d, tpm > 0)
-		ctss.cluster.df <- .ctss2clusters(ctss.df = d, max.dist = max.dist, useMulticore = useMulticore, nrCores = nrCores)
-		ctss.cluster.list[[s]] <- ctss.cluster.df
-		invisible(gc())
-		
-	}
-	
-	if(useMulticore == TRUE){
-		ctss.cluster.list <- mclapply(ctss.cluster.list, function(x) {.summarize.clusters(ctss.cluster.df = x, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove)}, mc.cores = nrCores)
-	}else{
-		ctss.cluster.list <- lapply(ctss.cluster.list, function(x) {.summarize.clusters(ctss.cluster.df = x, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove)})
-	}
-	return(ctss.cluster.list)
-}
-
+  GRangesList(ctss.cluster.list)
+})
 
 
 #################################################################################################################

@@ -77,7 +77,8 @@ them to predefined genomic regions.
 Two \emph{ab initio} methods for clustering TSSs along the genome are supported:
 \code{"distclu"} and \code{"paraclu"}.  \code{"distclu"} is an implementation of simple
 distance-based clustering of data attached to sequences, where two neighbouring TSSs are
-joined together if they are closer than some specified distance.  \code{"paraclu"} is an
+joined together if they are closer than some specified distance (see
+\code{\link{distclu-functions}} for implementation details.  \code{"paraclu"} is an
 implementation of Paraclu algorithm for parametric clustering of data attached to
 sequences developed by M. Frith (Frith \emph{et al.}, Genome Research, 2007,
 \href{http://www.cbrc.jp/paraclu/}{http://www.cbrc.jp/paraclu/}).  Since Paraclu finds
@@ -93,6 +94,12 @@ clusters by calling \code{\link{aggregateTagClusters}} function.
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 clusterCTSS( object = exampleCAGEset, threshold = 50, thresholdIsTpm = TRUE
+           , nrPassThreshold = 1, method = "distclu", maxDist = 20
+           , removeSingletons = TRUE, keepSingletonsAbove = 100)
+
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+normalizeTagCount(ce)
+clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 
