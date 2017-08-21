@@ -6,7 +6,7 @@
 #' 
 #' @details TBD
 #' 
-#' @rdname CAGEexp-class
+#' @rdname hanabi-class
 #' 
 #' @import methods
 #' @importFrom S4Vectors List
