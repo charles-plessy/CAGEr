@@ -34,7 +34,8 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSSnormalizedTpm}},
   \code{\link{CTSStagCount}}, \code{\link{genomeName}},
   \code{\link{inputFilesType}}, \code{\link{inputFiles}},
-  \code{\link{librarySizes}}, \code{\link{sampleLabels}}
+  \code{\link{librarySizes}}, \code{\link{sampleLabels}},
+  \code{\link{tagClusters}}
 }
 \author{
 Vanja Haberle

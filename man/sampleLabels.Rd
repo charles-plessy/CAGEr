@@ -46,7 +46,7 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSStagCountTable}},
   \code{\link{CTSStagCount}}, \code{\link{genomeName}},
   \code{\link{inputFilesType}}, \code{\link{inputFiles}},
-  \code{\link{librarySizes}}
+  \code{\link{librarySizes}}, \code{\link{tagClusters}}
 
 Other CAGEr setter methods: \code{\link{genomeName}},
   \code{\link{inputFilesType}}, \code{\link{inputFiles}},

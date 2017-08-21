@@ -116,6 +116,9 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{annotateCTSS}}, \code{\link{getCTSS}},
   \code{\link{normalizeTagCount}},
   \code{\link{quantilePositions}}
+
+Other CAGEr clusters functions: \code{\link{cumulativeCTSSdistribution}},
+  \code{\link{tagClusters}}
 }
 \author{
 Vanja Haberle
