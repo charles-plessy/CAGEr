@@ -3,16 +3,26 @@
 \docType{methods}
 \name{CTSSnormalizedTpm}
 \alias{CTSSnormalizedTpm}
+\alias{CTSSnormalizedTpmDf}
+\alias{CTSSnormalizedTpmDF}
 \title{Extracting normalized CAGE signal for TSSs from CAGEr objects}
 \usage{
 CTSSnormalizedTpm(object)
+
+CTSSnormalizedTpmDf(object)
+
+CTSSnormalizedTpmDF(object)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
 }
 \value{
-Returns a \code{data.frame} with normalized CAGE signal supporting
-each TSS (rows) in every CAGE dataset (columns).
+\code{CTSSnormalizedTpm} returns a \code{data.frame} containing coordinates
+and normalized CAGE signal supporting each TSS (rows) in every CAGE dataset (columns).
+
+\code{CTSSnormalizedTpmDf} returns a \code{data.frame} of normalised expression values.
+
+\code{CTSSnormalizedTpmDF} returns a \code{DataFrame} of normalised expression values.
 }
 \description{
 Extracts the normalized CAGE signal for all detected TSSs
@@ -21,9 +31,18 @@ in all CAGE datasets from \code{\link{CAGEset}} and
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-CAGEsignal <- CTSSnormalizedTpm(exampleCAGEset)
-head(CAGEsignal)
+head(CTSSnormalizedTpm(exampleCAGEset))
 
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+normalizeTagCount(ce)
+head(CTSSnormalizedTpm(ce))
+
+load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+head(CTSSnormalizedTpmDf(exampleCAGEset))
+
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+normalizeTagCount(ce)
+head(CTSSnormalizedTpmDf(ce))
 }
 \seealso{
 \code{\link{normalizeTagCount}}

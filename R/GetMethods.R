@@ -566,15 +566,18 @@ function (object){
 #' 
 #' @param object A CAGEset or CAGEexp object.
 #' 
-#' @return Returns a \code{data.frame} with normalized CAGE signal supporting
-#' each TSS (rows) in every CAGE dataset (columns).
+#' @return \code{CTSSnormalizedTpm} returns a \code{data.frame} containing coordinates
+#' and normalized CAGE signal supporting each TSS (rows) in every CAGE dataset (columns).
 #' 
 #' @seealso \code{\link{normalizeTagCount}}
 #' 
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-#' CAGEsignal <- CTSSnormalizedTpm(exampleCAGEset)
-#' head(CAGEsignal)
+#' head(CTSSnormalizedTpm(exampleCAGEset))
+#' 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' head(CTSSnormalizedTpm(ce))
 #' 
 #' @author Vanja Haberle
 #' @family CAGEr accessor methods
@@ -593,9 +596,25 @@ function (object){
 	cbind(object@CTSScoordinates, object@normalizedTpmMatrix)
 })
 
-#' CTSSnormalizedTpmDf
+setMethod("CTSSnormalizedTpm",
+signature(object = "CAGEexp"),
+function (object){
+  cbind( CTSScoordinates(object)
+       , data.frame(lapply(assays(CTSStagCountSE(ce))[["normalizedTpmMatrix"]], decode)))
+})
+
+#' @name CTSSnormalizedTpmDf
+#' @rdname CTSSnormalizedTpm
 #' 
-#' @noRd
+#' @return \code{CTSSnormalizedTpmDf} returns a \code{data.frame} of normalised expression values.
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' head(CTSSnormalizedTpmDf(exampleCAGEset))
+#' 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' head(CTSSnormalizedTpmDf(ce))
 
 setGeneric(
 name="CTSSnormalizedTpmDf",
@@ -615,9 +634,11 @@ function (object){
   data.frame(lapply(assays(CTSStagCountSE(ce))[["normalizedTpmMatrix"]], decode))
 })
 
-#' CTSSnormalizedTpmDF
+#' @name CTSSnormalizedTpmDF
+#' @rdname CTSSnormalizedTpm
 #' 
-#' @noRd
+#' @return \code{CTSSnormalizedTpmDF} returns a \code{DataFrame} of normalised expression values.
+#' 
 #' @export
 
 setGeneric(
@@ -680,9 +701,89 @@ function (object){
 	metadata(object)$clusteringMethod
 })
 
-#' tagClusters
+
+#' @name getTagCluster
+#' 
+#' @details Private functions to help make tagClusters() work on all CAGEr objects.
 #' @noRd
+
+setGeneric("getTagCluster", function(object, sample) standardGeneric("getTagCluster"))
+
+setMethod( "getTagCluster", "CAGEset", function (object, sample) {
+  if(! sample %in% sampleLabels(object))
+    stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
+  object@tagClusters[[sample]]
+})
+
+setMethod( "getTagCluster", "CAGEexp", function (object, sample) {
+  if(! sample %in% sampleLabels(object))
+    stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
+  gr <- metadata(ce)$tagClusters[[sample]]
+  data.frame ( cluster = 1:length(gr)
+           , chr     = as.character(seqnames(gr))
+           , start   = start(gr)
+           , end     = end(gr)
+           , strand  = strand(gr)
+           , nr_ctss = gr$nr_ctss
+           , dominant_ctss     = gr$dominant_ctss
+           , tpm.dominant_ctss = gr$tpm.dominant_ctss)
+})
+
+setGeneric("getTagClusterGR", function(object, sample) standardGeneric("getTagClusterGR"))
+
+setMethod( "getTagClusterGR", "CAGEset", function (object, sample) {
+  if(! sample %in% sampleLabels(object))
+    stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
+  clusters <- object@tagClusters[[sample]]
+  GRanges( seqnames = Rle(factor(clusters$chr))
+         , ranges   = IRanges(clusters$start, clusters$end)
+         , strand   = clusters$strand
+         , score    = Rle(clusters$tpm)
+         , nr_ctss  = clusters$nr_ctss
+         , dominant_ctss = clusters$dominant_ctss
+         , tpm.dominant_ctss = Rle(clusters$tpm.dominant_ctss)
+  )
+})
+
+setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
+  if(! sample %in% sampleLabels(object))
+    stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
+  metadata(ce)$tagClusters[[sample]]
+})
+
+
+#' @name tagClusters
+#' 
+#' @title Extract tag clusters (TCs) for individual CAGE experiments
+#' 
+#' @description Extracts tag clusters (TCs) produced by \code{\link{clusterCTSS}} function for
+#' a specified CAGE experiment from a CAGEr object.
+#' 
+#' @param object A \code{\link{CAGEr}} object.
+#' 
+#' @param sample Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.
+#' 
+#' @param returnInterquantileWidth Should the interquantile width for each tag cluster be returned.
+#' 
+#' @param qLow,qUp Position of which quantile should be used as a left (lower) or right (upper)
+#' boundary (for \code{qLow} and \code{qUp} respectively) when calculating interquantile width. 
+#' Default value \code{NULL} results in using the start coordinate of the cluster.  Used only
+#' when \code{returnInterquantileWidth = TRUE}, otherwise ignored.
+#' 
+#' @return Returns a \code{data.frame} with genomic coordinates, position of dominant TSS, total
+#' CAGE signal and additional information for all TCs from specified CAGE dataset (sample).  If
+#' \code{returnInterquantileWidth = TRUE}, interquantile width for each TC is also calculated
+#' using specified quantile positions and returned in the data frame.
+#' 
+#' @author Vanja Haberle
+#' @family CAGEr accessor methods
+#' @family CAGEr clusters functions
 #' @export
+#' 
+#' @examples
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' TC <- tagClusters(object = exampleCAGEset, sample = "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
+#' head(TC)
 
 setGeneric(
 name="tagClusters",
@@ -692,7 +793,7 @@ def=function(object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp 
 
 setMethod("tagClusters",
 signature(object = "CAGEset"),
-function (object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
+function (object, sample, returnInterquantileWidth, qLow, qUp){
 	if(sample %in% object@sampleLabels){
 		tc <- object@tagClusters[[sample]]
         if(returnInterquantileWidth & (length(qLow) == 0 | length(qUp) == 0)){
@@ -714,6 +815,38 @@ function (object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = N
 		stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
 	}
 })
+
+setMethod("tagClusters", "CAGEexp", function (object, sample, returnInterquantileWidth, qLow, qUp){
+  if (returnInterquantileWidth) {
+    if (is.null(qLow) | is.null(qUp))
+      stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")
+    if (is.null(object@tagClustersQuantileLow) & is.null(object@tagClustersQuantileUp))
+      stop("Interquantile width cannot be returned because no quantile positions have been calculated yet! Run 'quantilePositions()' first to get the positions of the desired quantiles!")
+    if((!(paste("q_", qLow, sep = "") %in% colnames(object@tagClustersQuantileLow[[sample]]) & paste("q_", qUp, sep = "") %in% colnames(object@tagClustersQuantileUp[[sample]]))))
+      stop("Interquantile width cannot be returned because specified quantile positions have not been calculated! Run 'quantilePositions()' again to get the positions of the desired quantiles!")
+    tc <- getTagCluster(object, sample)
+  	tc.w <- merge(object@tagClustersQuantileLow[[sample]], object@tagClustersQuantileUp[[sample]])
+  	tc.w <- tc.w[,c(1, which(colnames(tc.w) == paste("q_", qLow, sep = "")), which(colnames(tc.w) == paste("q_", qUp, sep = "")))]
+  	tc.w$interquantile_width <- tc.w[,3] - tc.w[,2] + 1
+  	merge(tc, tc.w)
+  } else {
+  	getTagCluster(object, sample)
+  }
+})
+
+#' @name filteredCTSSidx
+#' @noRd
+
+setGeneric("filteredCTSSidx", function(object) standardGeneric("filteredCTSSidx"))
+
+setMethod("filteredCTSSidx", "CAGEset", function (object){
+	object@filteredCTSSidx
+})
+
+setMethod("filteredCTSSidx", "CAGEexp", function (object){
+  decode(rowData(CTSStagCountSE(ce))$filteredCTSSidx)
+})
+
 
 #' consensusClusters
 #' @noRd
@@ -907,6 +1040,8 @@ function (object, what){
 #' 
 #' Retreives the SummarizedExperiment containing gene expression levels.
 #' 
+#' @family CAGEr gene expression analysis functions
+#' 
 #' @noRd
 #' @export
 
@@ -968,3 +1103,34 @@ setMethod( "GeneExpDESeq2", "CAGEexp"
                                 , colData   = colData(object)
                                 , rowData   = rowData(GeneExpSE(object))
                                 , design    = design)
+})
+
+
+#' turn into tagClustersSE
+#' 
+#' 
+#' #' CTSStagCountSE
+#' #' 
+#' #' Same as CTSStagCount, but as SummarizedExperiment
+#' #' 
+#' #' @noRd
+#' #' @export
+#' 
+#' setGeneric(
+#' name="CTSStagCountSE",
+#' def=function(object){
+#' 	standardGeneric("CTSStagCountSE")
+#' })
+#' 
+#' setMethod("CTSStagCountSE",
+#' signature(object = "CAGEset"),
+#' function (object){
+#' 	  colData <- data.frame(row.names = sampleLabels(object), samplename = sampleLabels(object), samplecolor = names(sampleLabels(object)))
+#'     SummarizedExperiment(assays = list(counts=CTSStagCountDF(object)), rowData = CTSScoordinatesGR(object), colData = colData)
+#' })
+#' 
+#' setMethod("CTSStagCountSE",
+#' signature(object = "CAGEexp"),
+#' function (object){
+#'   experiments(object)$tagCountMatrix
+#' })
