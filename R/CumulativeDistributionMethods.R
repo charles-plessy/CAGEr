@@ -1,3 +1,5 @@
+#' @include GetMethods.R
+
 #' @name cumulativeCTSSdistribution
 #' 
 #' @title Calculating cumulative sum of CAGE signal along genomic region
@@ -30,6 +32,13 @@
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' cumulativeCTSSdistribution(object = exampleCAGEset, clusters = "tagClusters")
 #' 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
+#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
+#' cumulativeCTSSdistribution(ce, clusters = "tagClusters")
+#'            
 #' @export
 
 setGeneric(
@@ -39,19 +48,42 @@ def=function(object, clusters, useMulticore = FALSE, nrCores = NULL){
 }
 )
 
-setMethod("cumulativeCTSSdistribution",
-signature(object = "CAGEset"),
+setMethod("cumulativeCTSSdistribution", "CAGEset",
 function (object, clusters, useMulticore = FALSE, nrCores = NULL){
+  objName <- deparse(substitute(object))
+  samples.cumsum.list <- .cumulativeCTSSdistribution(object, clusters, useMulticore = useMulticore, nrCores = nrCores)
+  if (clusters == "tagClusters"){
+    object@CTSScumulativesTagClusters <-samples.cumsum.list
+  } else {
+    object@CTSScumulativesConsensusClusters <-samples.cumsum.list
+  }
+	assign(objName, object, envir = parent.frame())
+	invisible(1)
+})
+
+setMethod("cumulativeCTSSdistribution", "CAGEexp",
+function (object, clusters, useMulticore = FALSE, nrCores = NULL){
+  objName <- deparse(substitute(object))
+  samples.cumsum.list <- .cumulativeCTSSdistribution(object, clusters, useMulticore = useMulticore, nrCores = nrCores)
+  if (clusters == "tagClusters"){
+    metadata(object)$CTSScumulativesTagClusters <-samples.cumsum.list
+  } else {
+    metadata(object)$CTSScumulativesConsensusClusters <-samples.cumsum.list
+  }
+	assign(objName, object, envir = parent.frame())
+	invisible(1)
+})
+
+.cumulativeCTSSdistribution <- function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 
   useMulticore <- CAGEr:::.checkMulticore(useMulticore)
 	
-	objName <- deparse(substitute(object))
 	sample.labels = sampleLabels(object)
 
 	message("\nCalculating cumulative sum of CAGE signal along clusters...")
 	
-	idx <- object@filteredCTSSidx
-	ctss.df <- cbind(CTSScoordinates(object)[idx,], object@normalizedTpmMatrix[idx,,drop=F])
+	idx <- filteredCTSSidx(object)
+	ctss.df <- CTSSnormalizedTpm(object)[idx,]
 
 	samples.cumsum.list <- list()
 
@@ -70,10 +102,11 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 						
 		}
 		
-		object@CTSScumulativesTagClusters <- samples.cumsum.list
+		return(samples.cumsum.list)
 		
 	}else if (clusters == "consensusClusters"){
 
+	  stop("update this part of the code for CAGEexp")
 		ctss.clusters.orig <- merge(object@consensusClusters, object@consensusClustersTpmMatrix, by.x = 1, by.y = 0)
 
 		for(s in sample.labels) {
@@ -89,14 +122,9 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 			
 		}
 		
-		object@CTSScumulativesConsensusClusters <- samples.cumsum.list
+		return(samples.cumsum.list)
 		
 	}else{
 		stop("'clusters' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
 	}
-	
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
-	
 }
-)
