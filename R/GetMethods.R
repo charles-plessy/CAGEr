@@ -277,8 +277,8 @@ function (object){
 #' 
 #' @param object A CAGEset or CAGEexp object.
 #' 
-#' @return Returns a \code{data.frame} with genomic coordinates of all TSSs. \code{pos}
-#' column contains 1-based coordinate of the TSS.
+#' @return \code{CTSScoordinates} returns a \code{data.frame} with genomic coordinates of all
+#' TSSs. \code{pos} column contains 1-based coordinate of the TSS.
 #' 
 #' @seealso
 #' \code{\link{getCTSS}}
@@ -315,13 +315,20 @@ function (object){
             , stringsAsFactors = FALSE)
 })
 
-#' CTSScoordinatesGR
+#' @name CTSScoordinatesGR
+#' @rdname CTSScoordinates
 #' 
-#' Same as CTSScoordinates, but as GRanges
+#' @return \code{CTSScoordinatesGR} returns the coordinates as genomic ranges.  A
+#' \code{filteredCTSSidx} column metadata will be present if \code{\link{clusterCTSS}}
+#' was ran earlier.
 #' 
-#' Will be more documented if finally exported
+#' @seealso \code{\link{clusterCTSS}}
 #' 
-#' @noRd
+#' @author Charles Plessy
+#' 
+#' @examples
+#' CTSScoordinatesGR(exampleCAGEset)
+#' 
 #' @export
 
 setGeneric(
