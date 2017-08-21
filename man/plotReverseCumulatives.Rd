@@ -55,6 +55,11 @@ which all samples will be normalized. For details about normalization see
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 plotReverseCumulatives(exampleCAGEset, values = "raw",fitInRange = c(10,500), onePlot = TRUE)
+plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
+
+exampleCAGEexp <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+plotReverseCumulatives(exampleCAGEexp, values = "raw",fitInRange = c(5,100), onePlot = TRUE)
+plotReverseCumulatives(exampleCAGEexp, values = "normalized",fitInRange = c(5,100), onePlot = TRUE)
 
 }
 \references{
