@@ -138,6 +138,27 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
+
+#' @name `CTSScumulativesTagClusters<-`
+#' 
+#' @rdname CTSScumulativesTagClusters
+#' 
+#' @param object A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.
+#' @param value CTSScumulativesTagClusters data
+
+setGeneric( "CTSScumulativesTagClusters<-"
+          , function(object, value) standardGeneric("CTSScumulativesTagClusters<-"))
+
+setMethod("CTSScumulativesTagClusters<-", "CAGEset", function (object, value) {
+	object@CTSScumulativesTagClusters <- value
+	if (validObject(object)) object
+})
+
+setMethod("CTSScumulativesTagClusters<-", "CAGEexp", function (object, value) {
+  metadata(object)$CTSScumulativesTagClusters <- value
+  if (validObject(object)) object
+})
+
 # GeneExpSE
 # 
 # Since the SummarizedExperiment can hold normalized and non-normalized values,

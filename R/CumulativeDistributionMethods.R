@@ -25,7 +25,7 @@
 #' 
 #' @author Vanja Haberle
 #' 
-#' de@family CAGEr object modifiers
+#' @family CAGEr object modifiers
 #' @family CAGEr clusters functions
 #' 
 #' @examples
@@ -38,6 +38,7 @@
 #'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 #' cumulativeCTSSdistribution(ce, clusters = "tagClusters")
+#' cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
 #'            
 #' @export
 
@@ -48,35 +49,11 @@ def=function(object, clusters, useMulticore = FALSE, nrCores = NULL){
 }
 )
 
-setMethod("cumulativeCTSSdistribution", "CAGEset",
+setMethod("cumulativeCTSSdistribution", "CAGEr",
 function (object, clusters, useMulticore = FALSE, nrCores = NULL){
   objName <- deparse(substitute(object))
-  samples.cumsum.list <- .cumulativeCTSSdistribution(object, clusters, useMulticore = useMulticore, nrCores = nrCores)
-  if (clusters == "tagClusters"){
-    object@CTSScumulativesTagClusters <-samples.cumsum.list
-  } else {
-    object@CTSScumulativesConsensusClusters <-samples.cumsum.list
-  }
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
-})
-
-setMethod("cumulativeCTSSdistribution", "CAGEexp",
-function (object, clusters, useMulticore = FALSE, nrCores = NULL){
-  objName <- deparse(substitute(object))
-  samples.cumsum.list <- .cumulativeCTSSdistribution(object, clusters, useMulticore = useMulticore, nrCores = nrCores)
-  if (clusters == "tagClusters"){
-    metadata(object)$CTSScumulativesTagClusters <-samples.cumsum.list
-  } else {
-    metadata(object)$CTSScumulativesConsensusClusters <-samples.cumsum.list
-  }
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
-})
-
-.cumulativeCTSSdistribution <- function (object, clusters, useMulticore = FALSE, nrCores = NULL){
-
-  useMulticore <- CAGEr:::.checkMulticore(useMulticore)
+	
+	useMulticore <- CAGEr:::.checkMulticore(useMulticore)
 	
 	sample.labels = sampleLabels(object)
 
@@ -102,7 +79,7 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 						
 		}
 		
-		return(samples.cumsum.list)
+		CTSScumulativesTagClusters(object) <-samples.cumsum.list
 		
 	}else if (clusters == "consensusClusters"){
 
@@ -122,9 +99,11 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 			
 		}
 		
-		return(samples.cumsum.list)
+		CTSScumulativesConsensusClusters(object) <-samples.cumsum.list
 		
 	}else{
 		stop("'clusters' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
 	}
-}
+	assign(objName, object, envir = parent.frame())
+	invisible(1)
+})

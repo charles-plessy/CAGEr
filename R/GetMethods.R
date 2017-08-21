@@ -909,6 +909,24 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
 
 })
 
+#' @name CTSScumulativesTagClusters
+#' 
+#' @title Get/set CTSS cumulative TC data
+#' 
+#' @family CAGEr clusters functions
+#' 
+#' @export
+
+setGeneric("CTSScumulativesTagClusters", function(object) standardGeneric("CTSScumulativesTagClusters"))
+
+setMethod("CTSScumulativesTagClusters", "CAGEset", function (object){
+	object@CTSScumulativesTagClusters
+})
+
+setMethod("CTSScumulativesTagClusters", "CAGEexp", function (object){
+  metadata(ce)$CTSScumulativesTagClusters
+})
+
 #' @name consensusClustersTpm
 #' @aliases consensusClustersTpm consensusClustersTpmDf consensusClustersTpmDF
 #' 
