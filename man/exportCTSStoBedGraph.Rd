@@ -47,6 +47,8 @@ exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "bedGraph",
 }
 \seealso{
 \code{\link{normalizeTagCount}}
+
+Other CAGEr export functions: \code{\link{exportToBed}}
 }
 \author{
 Vanja Haberle
