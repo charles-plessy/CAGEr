@@ -35,6 +35,7 @@ consensus cluster in every CAGE dataset within CAGEset object.
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 cumulativeCTSSdistribution(object = exampleCAGEset, clusters = "tagClusters")
+CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
 
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 normalizeTagCount(ce)

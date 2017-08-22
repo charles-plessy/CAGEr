@@ -1,82 +1,131 @@
-.getCAGEsignalCoverage <- function(ctss, coors) {
-	
-	cov = rep(0, max(coors$end) + 1)
-	cov[ctss$pos+1] = ctss$tpm
-	cov = cumsum(cov)
-	return(cov)
-	
-}
+#' @name coverage-functions
+#' @title Private functions behind \code{cumulativeCTSSdistribution}
+#' @examples 
+#' ctss <- CAGEr:::.CTSS(GRanges(seqnames=Rle("chr1"), IRanges(c(1,3,4,12,14,25,28,30), w=1), strand = "+"))
+#' score(ctss) <- 1
+#' ctss.chr <- CAGEr:::.CTSS.chr(ctss)
+#' clusters <- GRanges(seqnames = Rle("chr1"), ranges = IRanges(c(1,12,25), c(4,14,28)), strand = "+")
+#' chrom <- "chr1"
+#' str <- "+"
+NULL
 
-.getCumsumChr <- function(cov.cumsum, coors) {
-	
-	cov.cumsum <- Rle(cov.cumsum)
-	if(nrow(coors)>1) {
-		cluster.cumsums <- Views(cov.cumsum, start = coors$start+1, end = coors$end+1)
-		cluster.cumsums <- viewApply(cluster.cumsums, FUN = function(x) {x - x[1]})
-	}else{
-		cluster.cumsums <- list(cov.cumsum[(coors$start+1):(coors$end+1)] - cov.cumsum[coors$start+1])
-	}
-	return(cluster.cumsums)
-	
-}
+#' @name .getCAGEsignalCoverage
+#' @rdname coverage-functions
+#' 
+#' @details \code{.getCAGEsignalCoverage} does...
+#' Note that strand is not taken into account.
+#' 
+#' @param ctss.chr A CTSS.chr object (guaranteed to have only one chromosome).
+#' @param clusters A GRanges object
+#' 
+#' @examples
+#' .getCAGEsignalCoverage(ctss.chr, clusters)
 
-.getCumsumChr2 <- function(ctss.clusters, ctss.df, chrom, str) {
-	
-	clusters.chr.strand.coor <- subset(ctss.clusters, chr == chrom & strand == str)
-	ctss.chr.strand <- subset(ctss.df, chr == chrom & strand == str)
-	if(nrow(clusters.chr.strand.coor)>0){
-		cov.strand <- .getCAGEsignalCoverage(ctss = ctss.chr.strand, coors = clusters.chr.strand.coor)
-		strand.cumsum <- .getCumsumChr(cov.cumsum = cov.strand, coors = clusters.chr.strand.coor)	
-		return(strand.cumsum)
-	}else{
-		return()
-	}
-	
-}
+setGeneric(".getCAGEsignalCoverage", function(ctss.chr, clusters) standardGeneric(".getCAGEsignalCoverage"))
+
+setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr, clusters) {
+  cov <- Rle(rep(0, max(max(end(clusters)), max(end(ctss.chr)))))
+	cov[start(ctss.chr)] <- score(ctss.chr)
+	#cov.cumsum = Rle(cumsum(cov))
+  cluster.cumsums <- Views(cov, start = start(clusters), end = end(clusters))
+	viewApply(cluster.cumsums, cumsum)
+})
+
+# setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr, clusters) {
+#   cov <- rep(0, max(end(clusters)))
+# 	cov[start(ctss.chr)] <- score(ctss.chr)
+# 	cov.cumsum = Rle(cumsum(cov))
+#   cluster.cumsums <- Views(cov.cumsum, start = start(clusters), end = end(clusters))
+# 	viewApply(cluster.cumsums, FUN = function(x) x - x[1])
+# })
+
+# setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr, clusters) {
+#   cov = rep(0, max(end(clusters)) + 1)
+# 	cov[start(ctss.chr) + 1] = score(ctss.chr)
+# 	cov.cumsum = Rle(cumsum(cov))
+#   cluster.cumsums <- Views(cov.cumsum, start = start(clusters) + 1, end = end(clusters) + 1)
+# 	viewApply(cluster.cumsums, FUN = function(x) x - x[1])
+# })
+
+#' @name .getCumsumChr2
+#' @rdname coverage-functions
+#' 
+#' @details \code{.getCumsumChr2}
+#' 
+#' @examples 
+#' .getCumsumChr2(clusters, ctss, chrom, str)
+
+setGeneric(".getCumsumChr2", function(clusters, ctss, chrom, str) standardGeneric(".getCumsumChr2"))
+
+setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom, str) {
+  clusters.chr <- clusters[seqnames(clusters) == chrom & strand(clusters) == str]
+  ctss.chr <- ctss[seqnames(ctss) == chrom & strand(ctss) == str]
+  if (length(clusters.chr) > 0 & length(ctss) > 0) {
+    .getCAGEsignalCoverage(ctss = CAGEr:::.CTSS.chr(ctss.chr), clusters = clusters.chr)
+  } else {
+    return()
+  }
+})
 
 
-#####
-# Function that calculates cumulative sums of tpm along the clusters
-# ARGUMENTS: ctss.df - data frame with one row per CTSS containing at least five columns, *cluster (cluster ID) *chr (chromosome) *pos (genomic position of CTSSs) *strand (genomic strand) *tpm (CAGE tag count or number per million)
-#            ctss.clusters - data frame with one row per cluster containing at least 6 columns, *cluster (cluster ID) *chr (chromosome) *start (start position of the cluster) *end (end position of the cluster) *strand (strand) *dominant_ctss (position of dominant peak)
-# RETURNS: list of Rle vectors (IRanges package) containing cumulative sum for each cluster (length of list is equal to number of clusters and names of the list components corespond to the name of the corresponding cluster) v
+#' @name .getCumsum
+#' @rdname coverage-functions
+#' 
+#' @description \code{.getCumsum} calculates cumulative sums of tpm along the clusters.
+#' 
+#' @param ctss GRanges as per \code{CTSScoordinatesGR}, with the score of one sample.
+#' @param clusters GRanges as per \code{getTagClusterGR}.
+#' 
+#' @return \code{.getCumsum} returns a list of Rle vectors (IRanges package) containing cumulative
+#' sum for each cluster (length of list is equal to number of clusters and names of the list
+#' components corespond to the name of the corresponding cluster) v.
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEset, "sample1"))
+#' ctss      <- ctss[ctss$filteredCTSSidx]
+#' clusters  <- CAGEr:::getTagClusterGR(exampleCAGEset, "sample1")
+#' clusters.cumsum <- .getCumsum(ctss, clusters)
+#' identical(lapply(exampleCAGEset@CTSScumulativesTagClusters[[1]],decode), lapply(clusters.cumsum, decode))
+#' # Not identical if not decoded because Rle method is attached to S4Vectors in one case
+#' # and to IRanges in the other case.
+#' decode(clusters.cumsum[[1]])
+#' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
+#' clusters[1]
+#' 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
+#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
+#' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(ce, "Zf.30p.dome"))
+#' ctss      <- ctss[ctss$filteredCTSSidx]
+#' clusters  <- CAGEr:::getTagClusterGR(ce, "Zf.30p.dome")
+#' clusters.cumsum <- .getCumsum(ctss, head(clusters))
+#' decode(clusters.cumsum[[1]])
+#' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
+#' clusters[1]
 
+setGeneric(".getCumsum", function(ctss, clusters, use.multicore = FALSE, nrCores = NULL) standardGeneric(".getCumsum"))
 
-.getCumsum <- function(ctss.df, ctss.clusters, id.column, use.multicore = FALSE, nrCores = NULL) {
-		
-	if(use.multicore == TRUE) {
-		library(parallel)
-		if(is.null(nrCores)){
-			nrCores <- detectCores()
-		}		
-		
-		clusters.cumsum <- mclapply(as.list(unique(ctss.clusters$chr)), function(x) {
-										
-										plus.cumsum <- .getCumsumChr2(ctss.clusters = ctss.clusters, ctss.df = ctss.df, chrom = x, str = "+")
-										minus.cumsum <- .getCumsumChr2(ctss.clusters = ctss.clusters, ctss.df = ctss.df, chrom = x, str = "-")
-										cumsum.chr <- append(plus.cumsum, minus.cumsum)
-										return(cumsum.chr)
-									 
-									 }, mc.cores = nrCores
-									)
-		clusters.cumsum <- unlist(clusters.cumsum)
-		
-	}else{
-		
+setMethod(".getCumsum", c("GRanges", "GRanges"), function(ctss, clusters, use.multicore , nrCores) {
+  getCumSumChrStrand <- function(chrom) {
+    plus.cumsum  <- .getCumsumChr2(clusters = clusters, ctss = ctss, chrom = chrom, str = "+")
+    minus.cumsum <- .getCumsumChr2(clusters = clusters, ctss = ctss, chrom = chrom, str = "-")
+    append(plus.cumsum, minus.cumsum)
+  }
+  if(use.multicore == TRUE) {
+    requireNamespace(parallel)
+    if(is.null(nrCores)){
+      nrCores <- detectCores()
+    }		
+    clusters.cumsum <- unlist(mclapply(as.list(unique(seqnames(clusters))), getCumSumChrStrand, mc.cores = nrCores))
+  } else {
 		clusters.cumsum <- list()
-	
-		for(chrom in unique(ctss.clusters$chr)) {
-				
-			plus.cumsum <- .getCumsumChr2(ctss.clusters = ctss.clusters, ctss.df = ctss.df, chrom = chrom, str = "+")
-			minus.cumsum <- .getCumsumChr2(ctss.clusters = ctss.clusters, ctss.df = ctss.df, chrom = chrom, str = "-")
-			clusters.cumsum <- append(clusters.cumsum, append(plus.cumsum, minus.cumsum))
-			
+		for(chrom in unique(seqnames(clusters))) {
+			clusters.cumsum <- append(clusters.cumsum, getCumSumChrStrand(chrom))
 		}
 	}
-	
-	n <- unlist(sapply(unique(ctss.clusters$chr), function(x) {a = c(subset(ctss.clusters, chr == x & strand == '+')[,id.column], subset(ctss.clusters, chr == x & strand == '-')[,id.column]); return(a)}))
-	names(clusters.cumsum) <- n
-	return(clusters.cumsum)
-	
-}
-
+	names(clusters.cumsum) <- names(clusters)
+	clusters.cumsum
+})

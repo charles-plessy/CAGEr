@@ -31,6 +31,7 @@
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' cumulativeCTSSdistribution(object = exampleCAGEset, clusters = "tagClusters")
+#' CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
 #' 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' normalizeTagCount(ce)
@@ -42,47 +43,27 @@
 #'            
 #' @export
 
-setGeneric(
-name="cumulativeCTSSdistribution",
-def=function(object, clusters, useMulticore = FALSE, nrCores = NULL){
-	standardGeneric("cumulativeCTSSdistribution")
-}
-)
+setGeneric( "cumulativeCTSSdistribution"
+          , function ( object, clusters
+                     , useMulticore = FALSE, nrCores = NULL) {
+              standardGeneric("cumulativeCTSSdistribution")})
 
 setMethod("cumulativeCTSSdistribution", "CAGEr",
 function (object, clusters, useMulticore = FALSE, nrCores = NULL){
   objName <- deparse(substitute(object))
-	
 	useMulticore <- CAGEr:::.checkMulticore(useMulticore)
-	
-	sample.labels = sampleLabels(object)
-
 	message("\nCalculating cumulative sum of CAGE signal along clusters...")
-	
-	idx <- filteredCTSSidx(object)
-	ctss.df <- CTSSnormalizedTpm(object)[idx,]
-
 	samples.cumsum.list <- list()
-
 	if(clusters == "tagClusters"){	
-		
-		for(s in sample.labels) {
-		
+		for(s in sampleLabels(object)) {
 			message("\t-> ", s)
-			d <- ctss.df[,c("chr", "pos", "strand", s)]
-			colnames(d) <- c("chr", "pos", "strand", "tpm")
-            #d <- subset(d, tpm>0)
-			ctss.clusters <- tagClusters(object, sample = s)
-			clusters.cumsum.list <- .getCumsum(ctss.df = d, ctss.clusters = ctss.clusters, id.column = "cluster", use.multicore = useMulticore, nrCores = nrCores)
-			samples.cumsum.list[[s]] <- clusters.cumsum.list
-			invisible(gc())
-						
+			samples.cumsum.list[[s]] <-
+			  .getCumsum( ctss      = CAGEr:::.CTSS(CTSSnormalizedTpmGR(object, s))
+			            , clusters  = getTagClusterGR(object, s)
+			            , use.multicore = useMulticore, nrCores = nrCores)
 		}
-		
 		CTSScumulativesTagClusters(object) <-samples.cumsum.list
-		
 	}else if (clusters == "consensusClusters"){
-
 	  stop("update this part of the code for CAGEexp")
 		ctss.clusters.orig <- merge(object@consensusClusters, object@consensusClustersTpmMatrix, by.x = 1, by.y = 0)
 
@@ -93,7 +74,7 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 			colnames(d) <- c("chr", "pos", "strand", "tpm")
 			d <- subset(d, tpm>0)
 			ctss.clusters <- ctss.clusters.orig[ctss.clusters.orig[,s]>0,]
-			clusters.cumsum.list <- .getCumsum(ctss.df = d, ctss.clusters = ctss.clusters, id.column = "consensus.cluster", use.multicore = useMulticore, nrCores = nrCores)
+			clusters.cumsum.list <- .getCumsum(ctss.df = d, ctss.clusters = ctss.clusters, use.multicore = useMulticore, nrCores = nrCores)
 			samples.cumsum.list[[s]] <- clusters.cumsum.list
 			invisible(gc())
 			
