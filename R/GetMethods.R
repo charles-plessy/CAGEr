@@ -783,14 +783,15 @@ setMethod( "getTagClusterGR", "CAGEset", function (object, sample) {
   if(! sample %in% sampleLabels(object))
     stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
   clusters <- object@tagClusters[[sample]]
-  GRanges( seqnames = Rle(factor(clusters$chr))
-         , ranges   = IRanges(clusters$start, clusters$end)
-         , strand   = clusters$strand
-         , score    = Rle(clusters$tpm)
-         , nr_ctss  = clusters$nr_ctss
-         , dominant_ctss = clusters$dominant_ctss
-         , tpm.dominant_ctss = Rle(clusters$tpm.dominant_ctss)
-  )
+  gr <- GRanges( seqnames = Rle(factor(clusters$chr))
+               , ranges   = IRanges(clusters$start, clusters$end)
+               , strand   = clusters$strand
+               , score    = Rle(clusters$tpm)
+                , nr_ctss  = clusters$nr_ctss
+               , dominant_ctss = clusters$dominant_ctss
+               , tpm.dominant_ctss = Rle(clusters$tpm.dominant_ctss))
+  names(gr) <- clusters$cluster
+  gr
 })
 
 setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {

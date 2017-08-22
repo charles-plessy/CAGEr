@@ -212,14 +212,16 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
 	if(removeSingletons)
 		clusters <- subset(clusters, nr_ctss > 1 | tpm >= keepSingletonsAbove)
   
-  GRanges( seqnames = Rle(factor(clusters$chr))
-         , ranges   = IRanges(clusters$start, clusters$end)
-         , strand   = clusters$strand
-         , score    = Rle(clusters$tpm)
-         , nr_ctss  = clusters$nr_ctss
-         , dominant_ctss = clusters$dominant_ctss
-         , tpm.dominant_ctss = Rle(clusters$tpm.dominant_ctss)
+  gr <- GRanges( seqnames = Rle(factor(clusters$chr))
+               , ranges   = IRanges(clusters$start, clusters$end)
+               , strand   = clusters$strand
+               , score    = Rle(clusters$tpm)
+               , nr_ctss  = clusters$nr_ctss
+               , dominant_ctss = clusters$dominant_ctss
+               , tpm.dominant_ctss = Rle(clusters$tpm.dominant_ctss)
   )
+  names(gr) <- seq_along(gr)
+  gr
 })
 
 
