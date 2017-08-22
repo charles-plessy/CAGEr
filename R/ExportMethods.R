@@ -271,7 +271,7 @@ def=function(object, clusters, tpmThreshold = 5, qLow = 0.1, qUp = 0.9, xlim = c
 )
 
 setMethod("plotInterquantileWidth",
-signature(object = "CAGEset"),
+signature(object = "CAGEr"),
 function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 	
 	sample.labels <- sampleLabels(object)
@@ -287,7 +287,7 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
 		}
 		
-		filename <- "TC"
+		#filename <- "TC"
 		q.low <- tagClustersQuantileLow(object)
 		q.up <- tagClustersQuantileUp(object)
 		idx.list <- lapply(as.list(sample.labels), function(x) {
@@ -310,7 +310,7 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
 		}
 		
-		filename <- "consensusClusters_interquantile_width_all_samples.pdf"
+		#filename <- "consensusClusters_interquantile_width_all_samples.pdf"
 		q.low <- consensusClustersQuantileLow(object)
 		q.up <- consensusClustersQuantileUp(object)
 		cl <- consensusClustersTpmMatrix(object)
@@ -322,7 +322,7 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 
 	names(idx.list) <- sample.labels
 	
-	pdf(file = paste(clusters, "_interquantile_width_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
+	#pdf(file = paste(clusters, "_interquantile_width_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
 	par(mar = c(5,5,5,1))
 	sapply(sample.labels, function(x) {
 		   
@@ -338,8 +338,8 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 		   
 		   }
 		   )
-	dev.off()
-	message("\nFile '", clusters, "_interquantile_width_all_samples.pdf' has been created in your working directory (", getwd(), ")")
+	#dev.off()
+	#message("\nFile '", clusters, "_interquantile_width_all_samples.pdf' has been created in your working directory (", getwd(), ")")
 	
 }
 )
