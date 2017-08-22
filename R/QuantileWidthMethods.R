@@ -74,14 +74,13 @@ def=function(object, clusters, qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCo
 )
 
 setMethod("quantilePositions",
-signature(object = "CAGEset"),
-function (object, clusters, qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCores = NULL){
+signature(object = "CAGEr"),
+function (object, clusters, qLow, qUp, useMulticore, nrCores){
 
   useMulticore <- CAGEr:::.checkMulticore(useMulticore)
 	
 	objName <- deparse(substitute(object))
-	sample.labels = sampleLabels(object)
-	
+
 	message("\nGetting positions of quantiles within clusters...")
 	
 	ctss.clusters.q.low.list <- list()
@@ -89,10 +88,9 @@ function (object, clusters, qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCores
 	
 	if(clusters == "tagClusters"){	
 		
-		samples.cumsum.list <- object@CTSScumulativesTagClusters
+		samples.cumsum.list <- CTSScumulativesTagClusters(object)
 		
-		for(s in sample.labels) {
-			
+		for(s in sampleLabels(object)) {
 			message("\t-> ", s)
 			
 			clusters.cumsum.list <- samples.cumsum.list[[s]]
@@ -105,16 +103,15 @@ function (object, clusters, qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCores
 		
 		}
 		
-		object@tagClustersQuantileLow <- ctss.clusters.q.low.list
-		object@tagClustersQuantileUp <- ctss.clusters.q.up.list
+		tagClustersQuantileLow(object) <- ctss.clusters.q.low.list
+		tagClustersQuantileUp(object)  <- ctss.clusters.q.up.list
 		
 	}else if (clusters == "consensusClusters"){
+		stop("update the code for consensus clusters")
+		samples.cumsum.list <- CTSScumulativesConsensusClusters(object)
+		ctss.clusters.orig <- merge(consensusClusters(object), consensusClustersTpmMatrix(object), by.x = 1, by.y = 0)
 		
-		samples.cumsum.list <- object@CTSScumulativesConsensusClusters
-		ctss.clusters.orig <- merge(object@consensusClusters, object@consensusClustersTpmMatrix, by.x = 1, by.y = 0)
-		
-		for(s in sample.labels) {
-			
+		for(s in sampleLabels(object)) {
 			message("\t-> ", s)
 			
 			clusters.cumsum.list <- samples.cumsum.list[[s]]
@@ -125,21 +122,12 @@ function (object, clusters, qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCores
 			
 			ctss.clusters.q.low.list[[s]] <- ctss.clusters.q.low[,c(which(colnames(ctss.clusters.q.low) == "cluster"), grep("q_", colnames(ctss.clusters.q.low), fixed = T))]
 			ctss.clusters.q.up.list[[s]] <- ctss.clusters.q.up[,c(which(colnames(ctss.clusters.q.up) == "cluster"), grep("q_", colnames(ctss.clusters.q.up), fixed = T))]
-			
 		}
-		
-		object@consensusClustersQuantileLow <- ctss.clusters.q.low.list
-		object@consensusClustersQuantileUp <- ctss.clusters.q.up.list
-		
-		
-		
+		consensusClustersQuantileLow(object) <- ctss.clusters.q.low.list
+		consensusClustersQuantileUp(object)  <- ctss.clusters.q.up.list
 	}else{
 		stop("'clusters' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
 	}
-	
 	assign(objName, object, envir = parent.frame())
 	invisible(1)
-	
-
-}
-)
+})
