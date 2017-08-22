@@ -55,8 +55,16 @@ total span of the region.
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+head(cbind(
+  CAGEr:::tagClustersQuantileLow(exampleCAGEset)[[1]],
+  CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
+))
 quantilePositions( object = exampleCAGEset, clusters = "tagClusters"
                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+head(cbind(
+  CAGEr:::tagClustersQuantileLow(exampleCAGEset)[[1]],
+  CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
+))
 
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 normalizeTagCount(ce)
@@ -73,6 +81,11 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}}
+
+Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{clusterCTSS}},
+  \code{\link{cumulativeCTSSdistribution}},
+  \code{\link{tagClusters}}
 }
 \author{
 Vanja Haberle

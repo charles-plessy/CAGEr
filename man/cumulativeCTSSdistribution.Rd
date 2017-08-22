@@ -53,7 +53,9 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{quantilePositions}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
-  \code{\link{clusterCTSS}}, \code{\link{tagClusters}}
+  \code{\link{clusterCTSS}},
+  \code{\link{quantilePositions}},
+  \code{\link{tagClusters}}
 }
 \author{
 Vanja Haberle

@@ -45,7 +45,8 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
   \code{\link{clusterCTSS}},
-  \code{\link{cumulativeCTSSdistribution}}
+  \code{\link{cumulativeCTSSdistribution}},
+  \code{\link{quantilePositions}}
 }
 \author{
 Vanja Haberle

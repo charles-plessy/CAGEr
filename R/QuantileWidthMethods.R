@@ -49,6 +49,7 @@
 #' @author Vanja Haberle
 #' 
 #' @family CAGEr object modifiers
+#' @family CAGEr clusters functions
 #' 
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
