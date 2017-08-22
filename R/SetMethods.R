@@ -163,14 +163,14 @@ setMethod("CTSScumulativesTagClusters<-", "CAGEexp", function (object, value) {
 #' @rdname tagClustersQuantile
 #' 
 
-setGeneric("tagClustersQuantileLow<-", function(object) standardGeneric("tagClustersQuantileLow<-"))
+setGeneric("tagClustersQuantileLow<-", function(object, value) standardGeneric("tagClustersQuantileLow<-"))
 
-setMethod("tagClustersQuantileLow<-", "CAGEset", function (object){
+setMethod("tagClustersQuantileLow<-", "CAGEset", function (object, value){
 	object@tagClustersQuantileLow <- value
 	if (validObject(object)) object
 })
 
-setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object){
+setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, value){
   metadata(object)$tagClustersQuantileLow <- value
   if (validObject(object)) object
 })
@@ -179,15 +179,15 @@ setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object){
 #' @rdname tagClustersQuantile
 #' 
 
-setGeneric("tagClustersQuantileUp<-", function(object) standardGeneric("tagClustersQuantileUp<-"))
+setGeneric("tagClustersQuantileUp<-", function(object, value) standardGeneric("tagClustersQuantileUp<-"))
 
-setMethod("tagClustersQuantileUp<-", "CAGEset", function (object){
+setMethod("tagClustersQuantileUp<-", "CAGEset", function (object, value){
 	object@tagClustersQuantileUp <- value
   if (validObject(object)) object
 })
 
-setMethod("tagClustersQuantileUp<-", "CAGEexp", function (object){
-  metadata(object)$tagClustersQuantileLow <- value
+setMethod("tagClustersQuantileUp<-", "CAGEexp", function (object, value){
+  metadata(object)$tagClustersQuantileUp <- value
   if (validObject(object)) object
 })
 
