@@ -362,6 +362,7 @@ function (object){
 #'              from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 #' 
 #' @param object A CAGEset or CAGEexp object.
+#' @param sample (For \code{CTSStagCountGR}.) Name or number of a sample.
 #'  
 #' @return Returns an object with number of CAGE tags supporting each TSS
 #' (rows) in every CAGE dataset (columns).  The class of the object depends on the
@@ -379,6 +380,9 @@ function (object){
 #'   \item{\code{CTSStagCountSE}:}
 #'     {A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
 #'      \code{Rle} integers.}
+#'   \item{\code{CTSStagCountGR}:}
+#'     {A \code{\link{GenomicRanges}} object containing a \code{score} column indicating
+#'     expression values for a given sample.
 #' }
 #' 
 #' @seealso \code{\link{getCTSS}}
@@ -489,6 +493,23 @@ setMethod("CTSStagCountDA",
 signature(object = "CAGEr"),
 function (object){
   DelayedArray(CTSStagCountDF(object))
+})
+
+#' @name CTSStagCountGR
+#' @rdname CTSStagCount
+#'  
+#' @export
+
+setGeneric("CTSStagCountGR", function(object, sample) standardGeneric("CTSStagCountGR"))
+
+setMethod( "CTSStagCountGR", "CAGEr", function (object, sample) {
+  if (! (sample %in% sampleLabels(object) |
+       sample %in% seq_along(sampleLabels(object))))
+  stop(sQuote("sample"), " must be the name or number of a sample label.")
+  gr <- CTSScoordinatesGR(object)
+  score(gr) <- CTSStagCountDF(object)[[sample]]
+  gr <- gr[score(gr) != 0]
+  gr
 })
 
 #' @name CTSStagCountTable
@@ -668,6 +689,23 @@ setMethod("CTSSnormalizedTpmDF",
 signature(object = "CAGEexp"),
 function (object){
   assays(object[["tagCountMatrix"]])$normalizedTpmMatrix
+})
+
+#' @name CTSSnormalizedTpmGR
+#' @rdname CTSSnormalizedTpm
+#'  
+#' @export
+
+setGeneric("CTSSnormalizedTpmGR", function(object, sample) standardGeneric("CTSSnormalizedTpmGR"))
+
+setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, sample) {
+  if (! (sample %in% sampleLabels(object) |
+       sample %in% seq_along(sampleLabels(object))))
+  stop(sQuote("sample"), " must be the name or number of a sample label.")
+  gr <- CTSScoordinatesGR(object)
+  score(gr) <- CTSSnormalizedTpmDF(object)[[sample]]
+  gr <- gr[score(gr) != 0]
+  gr
 })
 
 #' @name CTSSclusteringMethod
