@@ -33,6 +33,17 @@ a specified CAGE experiment from a CAGEr object.
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 TC <- tagClusters(object = exampleCAGEset, sample = "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
 head(TC)
+
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+normalizeTagCount(ce)
+clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+           , nrPassThreshold = 1, method = "distclu", maxDist = 20
+           , removeSingletons = TRUE, keepSingletonsAbove = 100)
+cumulativeCTSSdistribution(ce, clusters = "tagClusters")
+quantilePositions( ce, clusters = "tagClusters"
+                 , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+TC <- tagClusters(object = ce, sample = "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
+head(TC)
 }
 \seealso{
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
