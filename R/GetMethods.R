@@ -896,6 +896,42 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
   decode(rowData(CTSStagCountSE(ce))$filteredCTSSidx)
 })
 
+#' @name tagClustersQuantile
+#' @title Quantile metadata stored in CAGEr objects.
+#' 
+#' @param object A \code{\link{CAGEr}} object.
+#' @param value A list (one entry per sample) of data frames with multiple columns:
+#'        \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
+#'        indicates a quantile. 
+#' 
+NULL
+
+#' @name tagClustersQuantileLow
+#' @rdname tagClustersQuantile
+
+setGeneric("tagClustersQuantileLow", function(object) standardGeneric("tagClustersQuantileLow"))
+
+setMethod("tagClustersQuantileLow", "CAGEset", function (object){
+	object@tagClustersQuantileLow
+})
+
+setMethod("tagClustersQuantileLow", "CAGEexp", function (object){
+  metadata(object)$tagClustersQuantileLow
+})
+
+#' @name tagClustersQuantileUp
+#' @rdname tagClustersQuantile
+
+
+setGeneric("tagClustersQuantileUp", function(object) standardGeneric("tagClustersQuantileUp"))
+
+setMethod("tagClustersQuantileUp", "CAGEset", function (object){
+	object@tagClustersQuantileUp
+})
+
+setMethod("tagClustersQuantileUp", "CAGEexp", function (object){
+  metadata(object)$tagClustersQuantileLow
+})
 
 #' consensusClusters
 #' @noRd

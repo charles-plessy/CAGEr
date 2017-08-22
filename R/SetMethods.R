@@ -159,6 +159,39 @@ setMethod("CTSScumulativesTagClusters<-", "CAGEexp", function (object, value) {
   if (validObject(object)) object
 })
 
+#' @name `tagClustersQuantileLow<-`
+#' @rdname tagClustersQuantile
+#' 
+
+setGeneric("tagClustersQuantileLow<-", function(object) standardGeneric("tagClustersQuantileLow<-"))
+
+setMethod("tagClustersQuantileLow<-", "CAGEset", function (object){
+	object@tagClustersQuantileLow <- value
+	if (validObject(object)) object
+})
+
+setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object){
+  metadata(object)$tagClustersQuantileLow <- value
+  if (validObject(object)) object
+})
+
+#' @name tagClustersQuantileUp
+#' @rdname tagClustersQuantile
+#' 
+
+setGeneric("tagClustersQuantileUp<-", function(object) standardGeneric("tagClustersQuantileUp<-"))
+
+setMethod("tagClustersQuantileUp<-", "CAGEset", function (object){
+	object@tagClustersQuantileUp <- value
+  if (validObject(object)) object
+})
+
+setMethod("tagClustersQuantileUp<-", "CAGEexp", function (object){
+  metadata(object)$tagClustersQuantileLow <- value
+  if (validObject(object)) object
+})
+
+
 # GeneExpSE
 # 
 # Since the SummarizedExperiment can hold normalized and non-normalized values,
