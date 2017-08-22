@@ -55,6 +55,15 @@
 #' quantilePositions( object = exampleCAGEset, clusters = "tagClusters"
 #'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
 #' 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
+#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
+#' cumulativeCTSSdistribution(ce, clusters = "tagClusters")
+#' quantilePositions( ce, clusters = "tagClusters"
+#'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#' 
 #' @export
 
 setGeneric(
