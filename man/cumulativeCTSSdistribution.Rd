@@ -42,14 +42,18 @@ clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 cumulativeCTSSdistribution(ce, clusters = "tagClusters")
+cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
            
 }
 \seealso{
-Other CAGEr clusters functions: \code{\link{clusterCTSS}},
-  \code{\link{tagClusters}}
+Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
+  \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},
+  \code{\link{quantilePositions}}
+
+Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{clusterCTSS}}, \code{\link{tagClusters}}
 }
 \author{
 Vanja Haberle
-
-de@family CAGEr object modifiers
 }

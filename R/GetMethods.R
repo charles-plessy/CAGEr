@@ -382,7 +382,7 @@ function (object){
 #'      \code{Rle} integers.}
 #'   \item{\code{CTSStagCountGR}:}
 #'     {A \code{\link{GenomicRanges}} object containing a \code{score} column indicating
-#'     expression values for a given sample.
+#'     expression values for a given sample.}
 #' }
 #' 
 #' @seealso \code{\link{getCTSS}}

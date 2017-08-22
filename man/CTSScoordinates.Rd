@@ -3,16 +3,23 @@
 \docType{methods}
 \name{CTSScoordinates}
 \alias{CTSScoordinates}
+\alias{CTSScoordinatesGR}
 \title{Extracting genomic coordinates of TSSs from CAGEr object}
 \usage{
 CTSScoordinates(object)
+
+CTSScoordinatesGR(object)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
 }
 \value{
-Returns a \code{data.frame} with genomic coordinates of all TSSs. \code{pos}
-column contains 1-based coordinate of the TSS.
+\code{CTSScoordinates} returns a \code{data.frame} with genomic coordinates of all
+TSSs. \code{pos} column contains 1-based coordinate of the TSS.
+
+\code{CTSScoordinatesGR} returns the coordinates as genomic ranges.  A
+\code{filteredCTSSidx} column metadata will be present if \code{\link{clusterCTSS}}
+was ran earlier.
 }
 \description{
 Extracts the genomic coordinates of all detected TSSs
@@ -23,9 +30,13 @@ load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 CTSS <- CTSScoordinates(exampleCAGEset)
 head(CTSS)
 
+CTSScoordinatesGR(exampleCAGEset)
+
 }
 \seealso{
 \code{\link{getCTSS}}
+
+\code{\link{clusterCTSS}}
 
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSSnormalizedTpm}},
@@ -37,4 +48,6 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }

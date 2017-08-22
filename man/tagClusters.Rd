@@ -43,7 +43,8 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{inputFilesType}}, \code{\link{inputFiles}},
   \code{\link{librarySizes}}, \code{\link{sampleLabels}}
 
-Other CAGEr clusters functions: \code{\link{clusterCTSS}},
+Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}}
 }
 \author{

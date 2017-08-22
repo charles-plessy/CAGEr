@@ -5,6 +5,7 @@
 \alias{CTSSnormalizedTpm}
 \alias{CTSSnormalizedTpmDf}
 \alias{CTSSnormalizedTpmDF}
+\alias{CTSSnormalizedTpmGR}
 \title{Extracting normalized CAGE signal for TSSs from CAGEr objects}
 \usage{
 CTSSnormalizedTpm(object)
@@ -12,6 +13,8 @@ CTSSnormalizedTpm(object)
 CTSSnormalizedTpmDf(object)
 
 CTSSnormalizedTpmDF(object)
+
+CTSSnormalizedTpmGR(object, sample)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}

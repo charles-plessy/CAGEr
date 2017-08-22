@@ -6,6 +6,7 @@
 \alias{CTSStagCountDf}
 \alias{CTSStagCountDF}
 \alias{CTSStagCountDA}
+\alias{CTSStagCountGR}
 \alias{CTSStagCountSE}
 \title{Extract raw CAGE TSSs expression tables from CAGEr objects}
 \usage{
@@ -17,10 +18,14 @@ CTSStagCountDF(object)
 
 CTSStagCountDA(object)
 
+CTSStagCountGR(object, sample)
+
 CTSStagCountSE(object)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
+
+\item{sample}{(For \code{CTSStagCountGR}.) Name or number of a sample.}
 }
 \value{
 Returns an object with number of CAGE tags supporting each TSS
@@ -39,6 +44,9 @@ function being called:
   \item{\code{CTSStagCountSE}:}
     {A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
      \code{Rle} integers.}
+  \item{\code{CTSStagCountGR}:}
+    {A \code{\link{GenomicRanges}} object containing a \code{score} column indicating
+    expression values for a given sample.}
 }
 }
 \description{

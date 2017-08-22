@@ -74,6 +74,7 @@ constructing the human and mouse promoterome with deepCAGE data, \emph{Genome Bi
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
+  \code{\link{cumulativeCTSSdistribution}},
   \code{\link{getCTSS}}, \code{\link{quantilePositions}}
 }
 \author{
