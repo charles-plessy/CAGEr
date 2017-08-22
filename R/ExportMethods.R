@@ -220,7 +220,47 @@ function (object, values = "normalized", format = "BigWig", oneFile = TRUE){
 })
 
 #' @name plotInterquantileWidth
-#' @noRd
+#' 
+#' @title Plot distribution of interquantile width
+#' 
+#' @description Plots histograms showing distribution of interquantile width of tag clusters or
+#' consensus clusters in each CAGE dataset.
+#' 
+#' @param object A \code{\link{CAGEset}} object
+#' 
+#' @param clusters Which clusters should be used.  Can be either \code{"tagClusters"} to plot
+#'        distribution of interquantile width of tag clusters or \code{"consensusClusters"}
+#'        to plot distribution of interquantile width of consensus clusters.
+#' 
+#' @param tpmThreshold Only clusters with normalized signal \code{>= tpmThreshold} will be
+#'        included in the histogram.
+#' 
+#' @param qLow,qUp Position of which "lower" (resp. "upper") quantile should be used as 5'
+#'        (resp. 3') boundary.  See Details.
+#' 
+#' @param xlim The x axis limits of the plot.
+#' 
+#' @param ... Additional arguments passed to \code{plot()} function, such as \code{ylim},
+#'        \emph{etc.}.
+#' 
+#' @details Interquantile width is a width (in base-pairs) of the central part of the genomic
+#' region (bounded by the positions of specified \code{qLow} and \code{qUp} quantiles) that
+#' contains \code{>= (qUp - qLow) * 100\%} of the CAGE signal.  Positions of specified quantiles
+#' within each cluster have to be calculated beforehand by calling \code{\link{quantilePositions}}
+#' function.  Interquantile width is a more robust measure of the promoter width than the total
+#' span of the region, because it takes into account the magnitude of the expression in the
+#' region.
+#' 
+#' @author Vanja Haberle
+#' 
+#' @family CAGEr export functions
+#' @family CAGEr clusters functions
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' plotInterquantileWidth( object = exampleCAGEset, clusters = "tagClusters"
+#'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
+#' 
 #' @export
 
 setGeneric(

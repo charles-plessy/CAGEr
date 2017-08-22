@@ -17,6 +17,7 @@ CTSScumulativesTagClusters(object) <- value
 \seealso{
 Other CAGEr clusters functions: \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
+  \code{\link{plotInterquantileWidth}},
   \code{\link{quantilePositions}},
   \code{\link{tagClusters}}
 }
