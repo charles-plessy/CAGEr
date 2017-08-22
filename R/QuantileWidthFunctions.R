@@ -7,29 +7,19 @@
 # RETURNS: 
 
 
-.get.quant.pos <- function(cluster.cumsums, coors, q = NULL, q.orientation = "low", use.multicore = FALSE, nrCores = NULL) {
+.get.quant.pos <- function(cluster.cumsums, coors, q = NULL, use.multicore = FALSE, nrCores = NULL) {
 	
+  getQuantilepos <- function(quant, cumsum) length(Filter(isTRUE, cumsum/max(cumsum) < quant)) + 1
+  
 	if(length(q) > 0) {
 		if(use.multicore == TRUE){
 			library(parallel)
 			if(is.null(nrCores)){
 				nrCores <- detectCores()
 			}					
-			if(q.orientation == "low"){
-				cluster.q = mclapply(cluster.cumsums, function(x) {sapply(q, function(y) {head(which(x/max(x)>y), 1)})}, mc.cores = nrCores)
-			}else if(q.orientation == "up"){
-				cluster.q = mclapply(cluster.cumsums, function(x) {sapply(q, function(y) {tail(which(x/max(x)<y), 1) + 1})}, mc.cores = nrCores)			
-			}else{
-				stop("\nInternal error!\n")
-			}
+			cluster.q = mclapply(cluster.cumsums, function(x) {sapply(q, getQuantilepos, x)}, mc.cores = nrCores)
 		}else{
-			if(q.orientation == "low"){
-				cluster.q = lapply(cluster.cumsums, function(x) {sapply(q, function(y) {head(which(x/max(x)>y), 1)})})
-			}else if(q.orientation == "up"){
-				cluster.q = lapply(cluster.cumsums, function(x) {sapply(q, function(y) {tail(which(x/max(x)<y), 1) + 1})})			
-			}else{
-				stop("\nInternal error!\n")
-			}
+			cluster.q = lapply(cluster.cumsums, function(x) {sapply(q, getQuantilepos, x)})
 		}
 		cluster.q = do.call(rbind, cluster.q)
 		if(class(cluster.q[1,1]) == 'list') {

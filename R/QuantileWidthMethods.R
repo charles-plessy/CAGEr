@@ -52,8 +52,16 @@
 #' 
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' head(cbind(
+#'   CAGEr:::tagClustersQuantileLow(exampleCAGEset)[[1]],
+#'   CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
+#' ))
 #' quantilePositions( object = exampleCAGEset, clusters = "tagClusters"
 #'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#' head(cbind(
+#'   CAGEr:::tagClustersQuantileLow(exampleCAGEset)[[1]],
+#'   CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
+#' ))
 #' 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' normalizeTagCount(ce)
@@ -95,8 +103,8 @@ function (object, clusters, qLow, qUp, useMulticore, nrCores){
 			
 			clusters.cumsum.list <- samples.cumsum.list[[s]]
 			ctss.clusters <- tagClusters(object, sample = s)
-			ctss.clusters.q.low <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qLow, q.orientation = "low", use.multicore = useMulticore, nrCores = nrCores)
-			ctss.clusters.q.up <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qUp, q.orientation = "up", use.multicore = useMulticore, nrCores = nrCores)
+			ctss.clusters.q.low <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qLow, use.multicore = useMulticore, nrCores = nrCores)
+			ctss.clusters.q.up <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qUp, use.multicore = useMulticore, nrCores = nrCores)
 
 			ctss.clusters.q.low.list[[s]] <- ctss.clusters.q.low[,c(which(colnames(ctss.clusters.q.low) == "cluster"), grep("q_", colnames(ctss.clusters.q.low), fixed = T))]
 			ctss.clusters.q.up.list[[s]] <- ctss.clusters.q.up[,c(which(colnames(ctss.clusters.q.up) == "cluster"), grep("q_", colnames(ctss.clusters.q.up), fixed = T))]
@@ -117,8 +125,8 @@ function (object, clusters, qLow, qUp, useMulticore, nrCores){
 			clusters.cumsum.list <- samples.cumsum.list[[s]]
 			ctss.clusters <- ctss.clusters.orig[ctss.clusters.orig[,s]>0,]
 			colnames(ctss.clusters)[which(colnames(ctss.clusters) == "consensus.cluster")] = "cluster"
-			ctss.clusters.q.low <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qLow, q.orientation = "low", use.multicore = useMulticore, nrCores = nrCores)
-			ctss.clusters.q.up <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qUp, q.orientation = "up", use.multicore = useMulticore, nrCores = nrCores)
+			ctss.clusters.q.low <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qLow, use.multicore = useMulticore, nrCores = nrCores)
+			ctss.clusters.q.up <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qUp, use.multicore = useMulticore, nrCores = nrCores)
 			
 			ctss.clusters.q.low.list[[s]] <- ctss.clusters.q.low[,c(which(colnames(ctss.clusters.q.low) == "cluster"), grep("q_", colnames(ctss.clusters.q.low), fixed = T))]
 			ctss.clusters.q.up.list[[s]] <- ctss.clusters.q.up[,c(which(colnames(ctss.clusters.q.up) == "cluster"), grep("q_", colnames(ctss.clusters.q.up), fixed = T))]
