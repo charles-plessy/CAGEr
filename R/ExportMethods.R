@@ -239,8 +239,8 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 	
 	if(clusters == "tagClusters"){	
 		
-		if(length(object@tagClustersQuantileLow)>0 & length(object@tagClustersQuantileUp)>0) {
-			if(!(paste("q_", qLow, sep = "") %in% colnames(object@tagClustersQuantileLow[[1]]) & paste("q_", qUp, sep = "") %in% colnames(object@tagClustersQuantileUp[[1]]))){
+		if(length(tagClustersQuantileLow(object))>0 & length(tagClustersQuantileUp(object))>0) {
+			if(!(paste("q_", qLow, sep = "") %in% colnames(tagClustersQuantileLow(object)[[1]]) & paste("q_", qUp, sep = "") %in% colnames(tagClustersQuantileUp(object)[[1]]))){
 				stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
 			}
 		}else{
@@ -248,8 +248,8 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 		}
 		
 		filename <- "TC"
-		q.low <- object@tagClustersQuantileLow
-		q.up <- object@tagClustersQuantileUp
+		q.low <- tagClustersQuantileLow(object)
+		q.up <- tagClustersQuantileUp(object)
 		idx.list <- lapply(as.list(sample.labels), function(x) {
 			   
 								cl <- tagClusters(object, sample = x)
@@ -261,9 +261,9 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 	
 	}else if (clusters == "consensusClusters"){
 		
-		if(length(object@consensusClustersQuantileLow)>0 & length(object@consensusClustersQuantileUp)>0) {
+		if(length(consensusClustersQuantileLow(object))>0 & length(consensusClustersQuantileUp(object))>0) {
 			
-			if(!(paste("q_", qLow, sep = "") %in% colnames(object@consensusClustersQuantileLow[[1]]) & paste("q_", qUp, sep = "") %in% colnames(object@consensusClustersQuantileUp[[1]]))){
+			if(!(paste("q_", qLow, sep = "") %in% colnames(consensusClustersQuantileLow(object)[[1]]) & paste("q_", qUp, sep = "") %in% colnames(consensusClustersQuantileUp(object)[[1]]))){
 				stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
 			}
 		}else{
@@ -271,9 +271,9 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 		}
 		
 		filename <- "consensusClusters_interquantile_width_all_samples.pdf"
-		q.low <- object@consensusClustersQuantileLow
-		q.up <- object@consensusClustersQuantileUp
-		cl <- object@consensusClustersTpmMatrix
+		q.low <- consensusClustersQuantileLow(object)
+		q.up <- consensusClustersQuantileUp(object)
+		cl <- consensusClustersTpmMatrix(object)
 		idx.list <- lapply(as.list(sample.labels), function(x) {idx <- cl[,x][cl[,x] > 0] >= tpmThreshold})		
 		
 	}else{
@@ -321,22 +321,22 @@ function (object, what){
 	
 	if(what == "CTSS") {
 		
-		cl <- object@CTSSexpressionClasses
+		cl <- CTSSexpressionClasses(object)
 		if(length(cl)>0){
-			tpm.mx <- object@normalizedTpmMatrix
+			tpm.mx <- normalizedTpmMatrix(object)
 			tpm.mx <- tpm.mx[as.integer(names(cl)),]
-			cl.method <- object@CTSSexpressionClusteringMethod
+			cl.method <- CTSSexpressionClusteringMethod(object)
 		}else{
 			stop("No CTSS expression profiling has been done yet! Run getExpressionProfiles function first!")
 		}
 		
 	}else if(what == "consensusClusters"){
 		
-		cl <- object@consensusClustersExpressionClasses
+		cl <- consensusClustersExpressionClasses(object)
 		if(length(cl)>0){
-			tpm.mx <- object@consensusClustersTpmMatrix
+			tpm.mx <- consensusClustersTpmMatrix(object)
 			tpm.mx <- tpm.mx[as.integer(names(cl)),]
-			cl.method <- object@consensusClustersExpressionClusteringMethod
+			cl.method <- consensusClustersExpressionClusteringMethod(object)
 		}else{
 			stop("No consensusClusters expression profiling has been done yet! Run getExpressionProfiles function first!")
 		}
@@ -371,7 +371,7 @@ def=function(object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = F
 
 
 setMethod("exportToBed",
-signature(object = "CAGEset"),
+signature(object = "CAGEr"),
 function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALSE, oneFile = TRUE){
 	
 	sample.labels <- sampleLabels(object)
@@ -380,11 +380,11 @@ function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALS
 		
 		oneFile <- TRUE
 		use.blocks <- F
-		ctss <- object@CTSScoordinates
+		ctss <- CTSScoordinates(object)
 		#filtered_ctss <- object@filteredCTSSidx
 
 		if(colorByExpressionProfile == TRUE){
-			cl <- object@CTSSexpressionClasses
+			cl <- CTSSexpressionClasses(object)
 			n <- names(cl)
 			cl <- .extract.cluster.info(cl = cl)
 			cl <- data.frame(ctss = n, x.cor = cl[,1], y.cor = cl[,2])		
@@ -392,7 +392,7 @@ function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALS
 			ctss <- data.frame(ctss = ctss$ctss, chr = ctss$chr, start = ctss$pos-1, end = ctss$pos, strand = ctss$strand, x.cor = ctss$x.cor, y.cor = ctss$y.cor)
 			track.file <- "CTSS.colored.by.expression.profile.bed"
 			track.names <- list("CTSS (colored by expression profile)")
-			clustering.method <- object@CTSSexpressionClusteringMethod
+			clustering.method <- CTSSexpressionClusteringMethod(object)
 		}else{
 			ctss <- data.frame(chr = ctss$chr, start = ctss$pos-1, end = ctss$pos, strand = ctss$strand)
 			track.file <- "CTSS.pooled.samples.bed"
@@ -407,14 +407,14 @@ function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALS
 		
 		colorByExpressionProfile <- FALSE
 		
-		if(length(qLow) > 0 & (length(object@tagClustersQuantileLow)>0 & length(object@tagClustersQuantileLow)>0)) {
+		if(length(qLow) > 0 & (length(tagClustersQuantileLow(object))>0 & length(tagClustersQuantileLow(object))>0)) {
 		
-		if(paste("q_", qLow, sep = "") %in% colnames(object@tagClustersQuantileLow[[1]]) & paste("q_", qUp, sep = "") %in% colnames(object@tagClustersQuantileUp[[1]])){
+		if(paste("q_", qLow, sep = "") %in% colnames(tagClustersQuantileLow(object)[[1]]) & paste("q_", qUp, sep = "") %in% colnames(tagClustersQuantileUp(object)[[1]])){
 		
 		use.blocks <- T
-		q.low <- object@tagClustersQuantileLow
+		q.low <- tagClustersQuantileLow(object)
 		q.low <- lapply(q.low, function(x) {colnames(x)[2:ncol(x)] <- paste("qLow_", do.call(rbind, strsplit(colnames(x)[2:ncol(x)], split = "_", fixed = T))[,2], sep = ""); return(x)})
-		q.up <- object@tagClustersQuantileUp
+		q.up <- tagClustersQuantileUp(object)
 		q.up <- lapply(q.up, function(x) {colnames(x)[2:ncol(x)] <- paste("qUp_", do.call(rbind, strsplit(colnames(x)[2:ncol(x)], split = "_", fixed = T))[,2], sep = ""); return(x)})
 		q <- lapply(as.list(1:length(sample.labels)), function(x) {merge(q.low[[x]], q.up[[x]], by.x = "cluster", by.y = "cluster")})
 		names(q) <- sample.labels
@@ -450,32 +450,32 @@ function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALS
 		
 	}else if(what == "consensusClusters"){
 		
-		clusters <- object@consensusClusters
+		clusters <- consensusClusters(object)
 		colnames(clusters)[1] = "cluster"
 		if(!(colorByExpressionProfile)){
 			cols <- as.list(rep("0,0,0", length(sample.labels)))
 		}else{
-			clustering.method <- object@consensusClustersExpressionClusteringMethod		
-		cl <- object@consensusClustersExpressionClasses
+			clustering.method <- consensusClustersExpressionClusteringMethod(object)		
+		cl <- consensusClustersExpressionClasses(object)
 		n <- names(cl)
 		cl <- .extract.cluster.info(cl = cl)
 		cl <- data.frame(cluster = n, x.cor = cl[,1], y.cor = cl[,2])		
 		clusters <- merge(clusters, cl, by.x = "cluster", by.y = "cluster")
 		}
 		
-		if(length(qLow) > 0 & (length(object@consensusClustersQuantileLow)>0 & length(object@consensusClustersQuantileUp)>0)) {
+		if(length(qLow) > 0 & (length(consensusClustersQuantileLow(object))>0 & length(consensusClustersQuantileUp(object))>0)) {
 
-		if(paste("q_", qLow, sep = "") %in% colnames(object@consensusClustersQuantileLow[[1]]) & paste("q_", qUp, sep = "") %in% colnames(object@consensusClustersQuantileUp[[1]])){
+		if(paste("q_", qLow, sep = "") %in% colnames(consensusClustersQuantileLow(object)[[1]]) & paste("q_", qUp, sep = "") %in% colnames(consensusClustersQuantileUp(object)[[1]])){
 		
 		use.blocks <- T
-		q.low <- object@consensusClustersQuantileLow
+		q.low <- consensusClustersQuantileLow(object)
 		q.low <- lapply(q.low, function(x) {colnames(x)[2:ncol(x)] <- paste("qLow_", do.call(rbind, strsplit(colnames(x)[2:ncol(x)], split = "_", fixed = T))[,2], sep = ""); return(x)})
-		q.up <- object@consensusClustersQuantileUp
+		q.up <- consensusClustersQuantileUp(object)
 		q.up <- lapply(q.up, function(x) {colnames(x)[2:ncol(x)] <- paste("qUp_", do.call(rbind, strsplit(colnames(x)[2:ncol(x)], split = "_", fixed = T))[,2], sep = ""); return(x)})
 		q <- lapply(as.list(1:length(sample.labels)), function(x) {merge(q.low[[x]], q.up[[x]], by.x = "cluster", by.y = "cluster")})
 		names(q) <- sample.labels
 						
-		cumsums <- object@CTSScumulativesConsensusClusters
+		cumsums <- CTSScumulativesConsensusClusters(object)
 		dom.pos <- list()
 		for(i in 1:length(cumsums)){
 			a <- lapply(cumsums[[i]], function(y) {.get.dominant.ctss(as.numeric(y), isCumulative = T)})
