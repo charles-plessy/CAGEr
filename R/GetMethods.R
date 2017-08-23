@@ -1,4 +1,4 @@
-#' @include CAGEr.R
+#' @include AggregationFunctions.R CAGEr.R
 
 ################################################################
 # Functions for retrieving data from CAGEset and CAGEexp objects
@@ -943,8 +943,88 @@ setMethod("tagClustersQuantileUp", "CAGEexp", function (object){
   metadata(object)$tagClustersQuantileUp
 })
 
-#' consensusClusters
+#' @name getConsensusClusters
 #' @noRd
+
+setGeneric("getConsensusClusters", function(object) standardGeneric("getConsensusClusters"))
+
+setMethod("getConsensusClusters", "CAGEset", function (object){
+	object@consensusClusters
+})
+
+setMethod("getConsensusClusters", "CAGEexp", function (object){
+  gr <- rowRanges(consensusClustersSE)
+  data.frame()
+})
+
+#' @name consensusClustersGR
+#' @noRd
+#' @export
+
+setGeneric("consensusClustersGR", function(object) standardGeneric("consensusClustersGR"))
+
+setMethod("consensusClustersGR", "CAGEset", function (object)
+	CCdataframe2granges(object@consensusClusters))
+
+setMethod("consensusClustersGR", "CAGEexp", function (object)
+  rowRanges(consensusClustersSE(object)))
+
+#' @name consensusClustersSE
+#' @noRd
+#' @export
+
+setGeneric("consensusClustersSE", function(object) standardGeneric("consensusClustersSE"))
+
+setMethod("consensusClustersSE", "CAGEset", function (object)
+	stop("CAGEset objects not supported"))
+
+setMethod("consensusClustersSE", "CAGEexp", function (object)
+  experiments(object)$consensusClusters)
+
+#' @name consensusClusters
+#' 
+#' @title Get or set consensus clusters from CAGEr objects
+#' 
+#' Extracts or inserts the information on consensus clusters from a CAGEr object.
+#' 
+#' @param object A \code{\link{CAGEr}} object.
+#' 
+#' @param sample Optional. Label of the CAGE dataset (experiment, sample) for which to extract
+#' sample-specific information on consensus clusters.
+#' 
+#' @param returnInterquantileWidth Should the interquantile width of consensus clusters in
+#' specified sample be returned.  Used only when \code{sample} argument is specified, otherwise
+#' ignored.
+#' 
+#' @param qLow Position of which quantile should be used as a left (lower) boundary when
+#' calculating interquantile width.  Used only when \code{sample} argument is specified and
+#' \code{returnInterquantileWidth = TRUE}, otherwise ignored.
+#' 
+#' @param qUp Position of which quantile should be used as a right (upper) boundary when
+#' calculating interquantile width.  Used only when \code{sample} argument is specified and
+#' \code{returnInterquantileWidth = TRUE}, otherwise ignored.
+#' 
+#' @return Returns a \code{data.frame} with information on consensus clusters, including genomic
+#' coordinates.  When \code{sample} argument is NOT specified, total CAGE signal across all CAGE
+#' datasets (samples) is returned in the \code{tpm} column.  When \code{sample} argument is
+#' specified, the \code{tpm} column contains CAGE signal of consensus clusters in that specific
+#' sample.  When \code{returnInterquantileWidth = TRUE}, additional sample-specific information
+#' is returned, including position of the dominant TSS, and interquantile width of the consensus
+#' clusters in the specified sample.
+#' 
+#' @author Vanja Haberle
+#' 
+#' @family CAGEr accessor functions
+#' @family CAGEr clusters functions
+#' 
+#' @examples
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' clusters.general <- consensusClusters(exampleCAGEset)
+#' head(clusters.general)
+#' 
+#' clusters.sample <- consensusClusters(exampleCAGEset, sample = "sample2")
+#' head(clusters.sample)
+#' 
 #' @export
 
 setGeneric(
@@ -954,25 +1034,25 @@ def=function(object, sample=NULL, returnInterquantileWidth = FALSE, qLow = NULL,
 })
 
 setMethod("consensusClusters",
-signature(object = "CAGEset"),
+signature(object = "CAGEr"),
 function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
 	
-    if(length(sample) == 0){
-        return(object@consensusClusters)
-    }else if(sample %in% object@sampleLabels){
+    if(is.null(sample)){
+        return(getConsensusClusters(object))
+    }else if(sample %in% sampleLabels(object)){
         
         cc.s <- cbind(cluster = as.integer(rownames(consensusClustersTpm(object))), tpm = consensusClustersTpm(object)[,sample])
         
         if(returnInterquantileWidth & (length(qLow) == 0 | length(qUp) == 0)){
             stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")
-        }else if(returnInterquantileWidth & (length(object@consensusClustersQuantileLow)==0 & length(object@consensusClustersQuantileUp)==0)){
+        }else if(returnInterquantileWidth & (length(consensusClustersQuantileLow(object))==0 & length(consensusClustersQuantileUp(object))==0)){
             stop("Interquantile width cannot be returned because no quantile positions for consensus clusters have been calculated yet! Run 'quantilePositions()' first to get the positions of the desired quantiles!")
-        }else if(returnInterquantileWidth & (!(paste("q_", qLow, sep = "") %in% colnames(object@consensusClustersQuantileLow[[sample]]) & paste("q_", qUp, sep = "") %in% colnames(object@consensusClustersQuantileUp[[sample]])))){
+        }else if(returnInterquantileWidth & (!(paste("q_", qLow, sep = "") %in% colnames(consensusClustersQuantileLow(object)[[sample]]) & paste("q_", qUp, sep = "") %in% colnames(consensusClustersQuantileUp(object)[[sample]])))){
             stop("Interquantile width cannot be returned because specified quantile positions have not been calculated for consensus clusters! Run 'quantilePositions()' again to get the positions of the desired quantiles!")
         }else if(returnInterquantileWidth){
-            cc <- object@consensusClusters
+            cc <- getConsensusClusters(object)
 
-            cc.cumsum <- object@CTSScumulativesConsensusClusters[[sample]]
+            cc.cumsum <- CTSScumulativesConsensusClusters(object)[[sample]]
             a <- lapply(cc.cumsum, function(x) {.get.dominant.ctss(as.numeric(x), isCumulative = T)})
             b <- data.frame(consensus.cluster = as.integer(names(a)), dominant_ctss = unlist(a))
             #cc <- merge(b, cc.s, by.x = 1, by.y = 1, all.x = T, all.y = F)
@@ -987,12 +1067,12 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
             colnames(cc)[ncol(cc)] <- "tpm.dominant_ctss"
             cc <- cc[,c("consensus.cluster", "chr", "start", "end", "strand", "dominant_ctss", "tpm", "tpm.dominant_ctss")]
             
-            cc.w <- merge(object@consensusClustersQuantileLow[[sample]], object@consensusClustersQuantileUp[[sample]])
+            cc.w <- merge(consensusClustersQuantileLow(object)[[sample]], consensusClustersQuantileUp(object)[[sample]])
             cc.w <- cc.w[,c(1, which(colnames(cc.w) == paste("q_", qLow, sep = "")), which(colnames(cc.w) == paste("q_", qUp, sep = "")))]
             cc.w$interquantile_width <- cc.w[,3] - cc.w[,2] + 1
             cc <- merge(cc, cc.w, by.x = "consensus.cluster", by.y = "cluster", all.x = T)
         }else{
-            cc <- object@consensusClusters
+            cc <- getConsensusClusters(object)
             cc <- merge(cc[,-which(colnames(cc) == "tpm")], cc.s, by.x = 1, by.y = 1, all.x = T, all.y = F)
             cc <- subset(cc, tpm>0)
         }
@@ -1001,6 +1081,27 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
         stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
     }
 
+})
+
+#' @name TCsInConsensusClusters
+#' 
+#' @title Private accessor for tagClustersInConsensusClusters
+#' 
+#' @details Not using \code{tagClustersInConsensusClusters} as function name because it is
+#' too long, giving a \emph{overlong name} error.
+#' 
+#' @noRd
+#' 
+#' @param object A CAGEr object
+
+setGeneric("TCsInConsensusClusters", function(object) standardGeneric("TCsInConsensusClusters"))
+
+setMethod("TCsInConsensusClusters", "CAGEset", function (object){
+	object@tagClustersInConsensusClusters
+})
+
+setMethod("TCsInConsensusClusters", "CAGEexp", function (object){
+  metadata(ce)$tagClustersInConsensusClusters
 })
 
 #' @name CTSScumulativesTagClusters

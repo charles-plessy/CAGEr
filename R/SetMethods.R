@@ -138,6 +138,25 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
+#' @name `TCsInConsensusClusters<-`
+#' 
+#' @noRd
+#' 
+#' @param object A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.
+#' @param value TCsInConsensusClusters data
+
+setGeneric( "TCsInConsensusClusters<-"
+          , function(object, value) standardGeneric("TCsInConsensusClusters<-"))
+
+setMethod("TCsInConsensusClusters<-", "CAGEset", function (object, value) {
+	object@tagClustersInConsensusClusters <- value
+	if (validObject(object)) object
+})
+
+setMethod("TCsInConsensusClusters<-", "CAGEexp", function (object, value) {
+  metadata(object)$tagClustersInConsensusClusters <- value
+  if (validObject(object)) object
+})
 
 #' @name `CTSScumulativesTagClusters<-`
 #' 
@@ -191,6 +210,45 @@ setMethod("tagClustersQuantileUp<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
+#' @name `consensusClusters<-`
+#' @rdname consensusClusters
+#' 
+#' @param value A \code{data.frame} of consensus clusters
+
+setGeneric("consensusClusters<-", function(object, value) standardGeneric("consensusClusters<-"))
+
+setMethod("consensusClusters<-", "CAGEset", function (object, value){
+	object@consensusClusters <- value
+  if (validObject(object)) object
+})
+
+setMethod("consensusClusters<-", "CAGEexp", function (object, value){
+  stop("Not supported for CAGEexp.")
+})
+
+#' @name `consensusClustersSE<-`
+#' @noRd
+
+setGeneric("consensusClustersSE<-", function(object, value) standardGeneric("consensusClustersSE<-"))
+
+setMethod("consensusClustersSE<-", "CAGEset", function (object, value){
+	stop("Not implemented for the CAGEset class.")
+})
+
+setMethod( "consensusClustersSE<-"
+         , c("CAGEexp", "RangedSummarizedExperiment")
+         , function (object, value) {
+  if (! all(colnames(value) == sampleLabels(object)))
+    stop ("The expression data must match the CAGEexp object, with samples in the same order.")
+  sampleMapSE <-
+    listToMap(list(consensusClusters = data.frame( primary = sampleLabels(object)
+                                                 , colname = colnames(value))))
+  sampleMap(object) <-
+    rbind( sampleMap(object)[sampleMap(object)$assay != "consensusClusters",]
+         , sampleMapSE)
+  experiments(object)$consensusClusters <- value
+  if (validObject(object)) object
+})
 
 # GeneExpSE
 # 
