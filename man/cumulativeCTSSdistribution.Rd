@@ -48,11 +48,13 @@ cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
 }
 \seealso{
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{aggregateTagClusters}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},
   \code{\link{quantilePositions}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{plotInterquantileWidth}},
   \code{\link{quantilePositions}},

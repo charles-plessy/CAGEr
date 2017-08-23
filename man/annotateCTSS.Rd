@@ -38,6 +38,7 @@ colData(ce)
 The \code{\link{Zv9_annot}} example data.
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},

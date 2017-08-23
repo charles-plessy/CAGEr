@@ -78,11 +78,13 @@ quantilePositions( ce, clusters = "tagClusters"
 }
 \seealso{
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{aggregateTagClusters}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{plotInterquantileWidth}},
