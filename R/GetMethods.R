@@ -800,6 +800,26 @@ setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
   metadata(ce)$tagClusters[[sample]]
 })
 
+setGeneric("getAllTagClusters", function(object) standardGeneric("getAllTagClusters"))
+
+setMethod( "getAllTagClusters", "CAGEset", function (object) {
+  object@tagClusters
+})
+
+setMethod( "getAllTagClusters", "CAGEexp", function (object) {
+  lapply( metadata(ce)$tagClusters
+        , function(gr) {
+            data.frame ( cluster = 1:length(gr)
+                       , chr     = as.character(seqnames(gr))
+                       , start   = start(gr)
+                       , end     = end(gr)
+                       , strand  = decode(droplevels(strand(gr)))
+                       , nr_ctss = gr$nr_ctss
+                       , dominant_ctss     = gr$dominant_ctss
+                       , tpm     = decode(score(gr))
+                       , tpm.dominant_ctss = gr$tpm.dominant_ctss)
+  })
+})
 
 #' @name tagClusters
 #' 
@@ -811,6 +831,8 @@ setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
 #' @param object A \code{\link{CAGEr}} object.
 #' 
 #' @param sample Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.
+#' If \code{sample = NULL}, a list of all the clusters for each samples is returned, and other
+#' parameters are ignored.
 #' 
 #' @param returnInterquantileWidth Should the interquantile width for each tag cluster be returned.
 #' 
@@ -847,11 +869,13 @@ setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
 
 setGeneric(
 name="tagClusters",
-def=function(object, sample, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
+def=function(object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
 	standardGeneric("tagClusters")
 })
 
 setMethod("tagClusters", "CAGEr", function (object, sample, returnInterquantileWidth, qLow, qUp){
+  if (is.null(sample))
+    return(getAllTagClusters(object))
   if (returnInterquantileWidth) {
     if (is.null(qLow) | is.null(qUp))
       stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")

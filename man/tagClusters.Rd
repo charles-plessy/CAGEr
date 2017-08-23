@@ -4,13 +4,15 @@
 \alias{tagClusters}
 \title{Extract tag clusters (TCs) for individual CAGE experiments}
 \usage{
-tagClusters(object, sample, returnInterquantileWidth = FALSE, qLow = NULL,
-  qUp = NULL)
+tagClusters(object, sample = NULL, returnInterquantileWidth = FALSE,
+  qLow = NULL, qUp = NULL)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
 
-\item{sample}{Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.}
+\item{sample}{Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.
+If \code{sample = NULL}, a list of all the clusters for each samples is returned, and other
+parameters are ignored.}
 
 \item{returnInterquantileWidth}{Should the interquantile width for each tag cluster be returned.}
 
