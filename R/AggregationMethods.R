@@ -61,7 +61,7 @@
 #' aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
 #'   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 #' head(consensusClusters(exampleCAGEset))
-
+#' 
 #' @export
 
 setGeneric(
@@ -72,8 +72,8 @@ def=function(object, tpmThreshold = 5, excludeSignalBelowThreshold = TRUE, qLow 
 )
 
 setMethod("aggregateTagClusters",
-signature(object = "CAGEset"),
-function (object, tpmThreshold = 5, excludeSignalBelowThreshold = TRUE, qLow = NULL, qUp = NULL, maxDist = 100){
+signature(object = "CAGEr"),
+function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist){
 
 	objName <- deparse(substitute(object))
 	sample.labels = sampleLabels(object)	
@@ -81,8 +81,8 @@ function (object, tpmThreshold = 5, excludeSignalBelowThreshold = TRUE, qLow = N
 	TC.list <- lapply(sample.labels, function(x) {tagClusters(object, sample = x)})
 	names(TC.list) <- sample.labels
 	if(length(qLow) > 0 & length(qUp) > 0){
-		q.low.list <- object@tagClustersQuantileLow
-		q.up.list <- object@tagClustersQuantileUp
+		q.low.list <- tagClustersQuantileLow(object)
+		q.up.list <- tagClustersQuantileUp(object)
 		TC.list <- lapply(sample.labels, function(x) {
 						  
 							tc <- TC.list[[x]]
@@ -106,7 +106,7 @@ function (object, tpmThreshold = 5, excludeSignalBelowThreshold = TRUE, qLow = N
 		consensus.clusters <- .make.consensus.clusters(TC.list = TC.list, start.coor = "start", end.coor = "end", plus.minus = round(maxDist/2), tpm.th = tpmThreshold)		
 	}
 
-	object@tagClustersInConsensusClusters <- consensus.clusters[,c("consensus.cluster", "cluster", "sample")]
+	tagClustersInConsensusClusters(object) <- consensus.clusters[,c("consensus.cluster", "cluster", "sample")]
 	
 	if(excludeSignalBelowThreshold){
 
@@ -124,8 +124,8 @@ function (object, tpmThreshold = 5, excludeSignalBelowThreshold = TRUE, qLow = N
 		
 	if(!excludeSignalBelowThreshold){
 		
-		idx <- object@filteredCTSSidx
-		ctss <- cbind(CTSScoordinates(object)[idx,], object@normalizedTpmMatrix[idx,,drop=F])
+		idx <- filteredCTSSidx(object)
+		ctss <- cbind(CTSScoordinates(object)[idx,], normalizedTpmMatrix(object)[idx,,drop=F])
 
 		tpm.list <- lapply(sample.labels, function(x) {ctss.s <- ctss[,c("chr", "pos", "strand", x)]; colnames(ctss.s)[4] <- "tagcount"; .getTotalTagCount(ctss.df = ctss.s, ctss.clusters = consensus.clusters, id.column = "consensus.cluster")})
 		m <- matrix(unlist(tpm.list), nrow = nrow(consensus.clusters))
@@ -135,8 +135,8 @@ function (object, tpmThreshold = 5, excludeSignalBelowThreshold = TRUE, qLow = N
 		
 	}
 	
-	object@consensusClustersTpmMatrix <- m
-	object@consensusClusters <- consensus.clusters
+	consensusClustersTpmMatrix(object) <- m
+	consensusClusters(object) <- consensus.clusters
 	
 	assign(objName, object, envir = parent.frame())
 	invisible(1)
