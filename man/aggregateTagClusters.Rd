@@ -64,6 +64,7 @@ head(consensusClusters(exampleCAGEset))
 aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 head(consensusClusters(exampleCAGEset))
+
 }
 \seealso{
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
@@ -74,6 +75,7 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
   \code{\link{clusterCTSS}},
+  \code{\link{consensusClusters}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{plotInterquantileWidth}},
   \code{\link{quantilePositions}},
