@@ -119,6 +119,7 @@ function (object){
 setGeneric("validSamples", function(object, x) standardGeneric("validSamples"))
 
 setMethod("validSamples", "CAGEr", function (object, x){
+  objName <- deparse(substitute(object))
   if(is.null(x))
       return(TRUE)
   if(class(x) == "character")
@@ -127,5 +128,5 @@ setMethod("validSamples", "CAGEr", function (object, x){
   if(class(x) == "numeric")
     if (all(x %in% seq_along(sampleLabels(object))))
       return(TRUE)
-  stop("Sample(s) not found!")
+  stop("Sample(s) not found! Check ", sQuote(paste0("sampleLabels(", objName, ")")), ".")
 })
