@@ -5,11 +5,11 @@
 #
 
 
-.make.consensus.clusters <- function(TC.list, start.coor, end.coor, plus.minus = 0, tpm.th = 0) {
+.make.consensus.clusters <- function(TC.list, plus.minus = 0, tpm.th = 0) {
 	
 	TC.df <- do.call(rbind, TC.list)
 	TC.df <- subset(TC.df, tpm >= tpm.th)
-	TC.gr <- GRanges(seqnames = TC.df$chr, ranges = IRanges(start = pmax(1, TC.df[,start.coor] - plus.minus), end = TC.df[,end.coor] + plus.minus), strand = TC.df$strand)
+	TC.gr <- GRanges(seqnames = TC.df$chr, ranges = IRanges(start = pmax(1, TC.df$start - plus.minus), end = TC.df$end + plus.minus), strand = TC.df$strand)
 	consensus.clusters.gr <- reduce(TC.gr)
 	
 	consensus.clusters = data.frame()
@@ -19,7 +19,7 @@
 		col.n = colnames(clusters.q)
 		if(nrow(clusters.q) > 0) {
 			
-			clusters.q.gr = GRanges(seqnames = clusters.q$chr, ranges = IRanges(start = pmax(1, clusters.q[,start.coor] - plus.minus), end = clusters.q[,end.coor] + plus.minus), strand = clusters.q$strand, values = clusters.q)
+			clusters.q.gr = GRanges(seqnames = clusters.q$chr, ranges = IRanges(start = pmax(1, clusters.q$start - plus.minus), end = clusters.q$end + plus.minus), strand = clusters.q$strand, values = clusters.q)
 			o = findOverlaps(consensus.clusters.gr, clusters.q.gr)
 			consensus.clusters = rbind(consensus.clusters, data.frame(consensus.cluster = queryHits(o), as.data.frame(values(clusters.q.gr[as.vector(subjectHits(o))])), sample = names(TC.list)[i]))
 			

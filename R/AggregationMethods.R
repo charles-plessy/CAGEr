@@ -78,15 +78,16 @@ signature(object = "CAGEr"),
 function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist){
 	objName <- deparse(substitute(object))
 
-	if(length(qLow) > 0 & length(qUp) > 0){
-		TC.list <- tagClusters(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
-		TC.list <- lapply(TC.list, function(x) {colnames(x) <- sub(paste0("q_", qLow), paste0("q.low_", qLow), colnames(x)); x})
-		TC.list <- lapply(TC.list, function(x) {colnames(x) <- sub(paste0("q_", qUp), paste0("q.up_", qUp), colnames(x)); x})
-    consensus.clusters <- .make.consensus.clusters(TC.list = TC.list, start.coor = paste0("q.low_", qLow), end.coor = paste0("q.up_", qUp), plus.minus = round(maxDist/2), tpm.th = tpmThreshold)
-	}else{
-	  TC.list <- tagClusters(object)
-		consensus.clusters <- .make.consensus.clusters(TC.list = TC.list, start.coor = "start", end.coor = "end", plus.minus = round(maxDist/2), tpm.th = tpmThreshold)		
-	}
+  if (any(is.null(qLow), is.null(qUp))) {
+    TC.list <- tagClusters(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
+    TC.list <- lapply(TC.list, function(x) { x[["start"]] <- x[[paste0("q_", qLow)]]
+                                             x[["end"]]   <- x[[paste0("q_", qUp)]]
+                                             x})
+  } else {
+    TC.list <- tagClusters(object)
+  }
+	
+  consensus.clusters <- .make.consensus.clusters(TC.list = TC.list, plus.minus = round(maxDist/2), tpm.th = tpmThreshold)		
 
 	if(excludeSignalBelowThreshold){
 		m <- tapply(consensus.clusters$tpm, INDEX = list(consensus.cluster = consensus.clusters$consensus.cluster, sample = consensus.clusters$sample), FUN = sum)
