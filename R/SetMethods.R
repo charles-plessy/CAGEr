@@ -226,6 +226,22 @@ setMethod("consensusClusters<-", "CAGEexp", function (object, value){
   stop("Not supported for CAGEexp.")
 })
 
+#' @name `consensusClustersGR<-`
+#' @noRd
+#' @export
+
+setGeneric("consensusClustersGR<-", function(object, value) standardGeneric("consensusClustersGR<-"))
+
+setMethod("consensusClustersGR<-", "CAGEset", function (object, value){
+	stop("Not implemented for the CAGEset class.")
+})
+
+setMethod("consensusClustersGR<-", "CAGEexp", function (object, value){
+  if (! is(value, "GRanges")) stop("Value must be a GRanges object.")
+  rowRanges(object@ExperimentList$consensusClusters) <- value
+  if (validObject(object)) object
+})
+
 #' @name `consensusClustersSE<-`
 #' @noRd
 

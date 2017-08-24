@@ -279,9 +279,10 @@ mapStats <- function( libs
 
 #' @name annotateCTSS
 #' 
-#' @title Annotate and compute summary statistics.
+#' @title Annotate and compute summary statistics
 #' 
-#' @details Annotate the CTSS of a CAGEr object and compute annotation statistics.
+#' @details \code{annotateCTSS} annotates the \emph{CTSS} of a CAGEr object and computes
+#' annotation statistics.
 #' 
 #' @param object A \code{\link{CAGEexp}} object (\code{\link{CAGEset}}s are
 #'   not supported).
@@ -289,12 +290,13 @@ mapStats <- function( libs
 #' @param ranges A \code{\link{GRanges}} object containing \code{gene_name},
 #'   \code{type} and \code{transcript_type} metadata.
 #'   
-#' @return The input object with the following modifications:
+#' @return \code{annotateCTSS} returns the input object with the following modifications:
 #' 
 #' \itemize{
-#'   \item The Genomic Ranges of the \code{tagCountMatrix} experiment cains a
+#'   \item The Genomic Ranges of the \code{tagCountMatrix} experiment gains a
 #'     \code{annotation} metadata column, with levels such as \dQuote{promoter},
-#'     \dQuote{exon}, \dQuote{intron} and \dQuote{unknown"}.
+#'     \dQuote{exon}, \dQuote{intron} and \dQuote{unknown"}, and a \code{genes}
+#'     column, with gene symbols from the annotation.
 #'   \item New column data added, indicating total counts in each of the annotation
 #'     levels.
 #' }
@@ -318,7 +320,7 @@ setGeneric("annotateCTSS", function(object, ranges) standardGeneric("annotateCTS
 setMethod("annotateCTSS", "CAGEset", function (object, ranges){
   stop("CAGEset objects not supported.")})
 
-setMethod("annotateCTSS", "CAGEexp", function (object, ranges){
+setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
   objName <- deparse(substitute(object))
   if(is.null(experiments(object)$tagCountMatrix))
     stop(objName, " does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
@@ -335,6 +337,54 @@ setMethod("annotateCTSS", "CAGEexp", function (object, ranges){
     invisible(1)
   }
 })
+
+#' @name annotateConsensusClusters
+#' 
+#' @rdname annotateCTSS
+#' 
+#' @details \code{annotateConsensusClusters} annotates the \emph{consensus clusters}
+#' of a CAGEr object.
+#'   
+#' @return \code{annotateConsensusClusters} returns the input object with the following
+#' modification:
+#' 
+#' \itemize{
+#'   \item The Genomic Ranges of the \code{consensusClusters} experiment gains a
+#'     \code{annotation} metadata column, with levels such as \dQuote{promoter},
+#'     \dQuote{exon}, \dQuote{intron} and \dQuote{unknown"}, and a \code{genes}
+#'     column, with gene symbols from the annotation.
+#' }
+#' 
+#' @examples 
+#' normalizeTagCount(ce)
+#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
+#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
+#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' annotateConsensusClusters(ce, gff)
+#' consensusClustersGR(ce)
+#' 
+#' @export
+
+setGeneric("annotateConsensusClusters", function(object, ranges) standardGeneric("annotateConsensusClusters"))
+
+setMethod("annotateConsensusClusters", "CAGEset", function (object, ranges){
+  stop("CAGEset objects not supported.")})
+
+setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object, ranges){
+  objName <- deparse(substitute(object))
+  if(is.null(experiments(object)$tagCountMatrix))
+    stop(objName, " does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
+  
+  consensusClustersGR(object)$genes      <- ranges2genes(consensusClustersGR(object), ranges)
+  consensusClustersGR(object)$annotation <- ranges2annot(consensusClustersGR(object), ranges)
+
+  if (validObject(object)) {
+    assign(objName, object, envir = parent.frame())
+    invisible(1)
+  }
+})
+
 
 #' ranges2annot
 #' 
