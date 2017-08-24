@@ -561,8 +561,12 @@ NULL
 
 TCgranges2dataframe <- function(gr) {
   gr$score <- NULL
-  df <- data.frame(cluster = gr$cluster)
-  gr$cluster <- NULL
+  if (!is.null(gr$cluster)) {
+    df <- data.frame(cluster = gr$cluster)
+    gr$cluster <- NULL
+  } else {
+    df <- data.frame(cluster = names(gr))
+  }
   df <- cbind(df , data.frame( chr     = decode(seqnames(gr))
                              , start   = start(gr)
                              , end     = end(gr)
