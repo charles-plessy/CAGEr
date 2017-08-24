@@ -80,13 +80,11 @@ function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist)
 
 	TC.list <- getAllTagClusters(object)
 	if(length(qLow) > 0 & length(qUp) > 0){
-		q.low.list <- tagClustersQuantileLow(object)
-		q.up.list <- tagClustersQuantileUp(object)
 		TC.list <- lapply(sampleLabels(object), function(x) {
 							tc <- TC.list[[x]]
-							q.low <- q.low.list[[x]]
+							q.low <- tagClustersQuantileLow(object, x)
 							colnames(q.low) <- c("cluster", sub("q_", "q.low_", colnames(q.low)[-1], fixed = T))
-							q.up <- q.up.list[[x]]
+							q.up <- tagClustersQuantileUp(object, x)
 							colnames(q.up) <- c("cluster", sub("q_", "q.up_", colnames(q.up)[-1], fixed = T))
 							tc <- merge(tc, q.low, by.x = "cluster", by.y = "cluster")
 							tc <- merge(tc, q.up, by.x = "cluster", by.y = "cluster")
