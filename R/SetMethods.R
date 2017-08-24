@@ -138,25 +138,6 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-#' @name `TCsInConsensusClusters<-`
-#' 
-#' @noRd
-#' 
-#' @param object A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.
-#' @param value TCsInConsensusClusters data
-
-setGeneric( "TCsInConsensusClusters<-"
-          , function(object, value) standardGeneric("TCsInConsensusClusters<-"))
-
-setMethod("TCsInConsensusClusters<-", "CAGEset", function (object, value) {
-	object@tagClustersInConsensusClusters <- value
-	if (validObject(object)) object
-})
-
-setMethod("TCsInConsensusClusters<-", "CAGEexp", function (object, value) {
-  metadata(object)$tagClustersInConsensusClusters <- value
-  if (validObject(object)) object
-})
 
 #' @name `CTSScumulativesTagClusters<-`
 #' 

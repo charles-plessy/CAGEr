@@ -33,8 +33,8 @@ is used.  If \code{qUp = NULL} end position of the TC is used. \code{qUp} has to
 be part of the same consensus clusters.  See Details.}
 }
 \value{
-For \code{\link{CAGEexp}} objects, the slots \code{consensusClusters},
-\code{tagClustersInConsensusClusters} and \code{consensusClustersTpmMatrix} will be occupied
+For \code{\link{CAGEexp}} objects, the slots \code{consensusClusters}
+and \code{consensusClustersTpmMatrix} will be occupied
 by the genomic coordinates of consensus clusters, information on containing TCs and the total
 CAGE signal across all CAGE datasets, respectively.
 }

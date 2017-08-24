@@ -45,8 +45,8 @@
 #' promoters that can be further used for expression profiling or detecting "shifting"
 #' (differentially used) promoters between different CAGE samples.
 #' 
-#' @return For \code{\link{CAGEexp}} objects, the slots \code{consensusClusters},
-#' \code{tagClustersInConsensusClusters} and \code{consensusClustersTpmMatrix} will be occupied
+#' @return For \code{\link{CAGEexp}} objects, the slots \code{consensusClusters}
+#' and \code{consensusClustersTpmMatrix} will be occupied
 #' by the genomic coordinates of consensus clusters, information on containing TCs and the total
 #' CAGE signal across all CAGE datasets, respectively.
 #' 
@@ -88,8 +88,6 @@ function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist)
 		consensus.clusters <- .make.consensus.clusters(TC.list = TC.list, start.coor = "start", end.coor = "end", plus.minus = round(maxDist/2), tpm.th = tpmThreshold)		
 	}
 
-	TCsInConsensusClusters(object) <- consensus.clusters[,c("consensus.cluster", "cluster", "sample")]
-	
 	if(excludeSignalBelowThreshold){
 		m <- tapply(consensus.clusters$tpm, INDEX = list(consensus.cluster = consensus.clusters$consensus.cluster, sample = consensus.clusters$sample), FUN = sum)
 		m[is.na(m)] <- 0

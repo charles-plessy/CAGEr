@@ -35,7 +35,6 @@ Objects of the class contain information on the genomic coordinates of TSSs deri
     \item{\code{CTSScumulativesTagClusters}:}{Object of class \code{"list"}: the cumulative distribution of CAGE signal along TCs }
     \item{\code{tagClustersQuantileLow}:}{Object of class \code{"list"}: the positions of lower quantile(s) within TCs }
     \item{\code{tagClustersQuantileUp}:}{Object of class \code{"list"}: the positions of upper quantile(s) within TCs }
-    \item{\code{tagClustersInConsensusClusters}:}{Object of class \code{"data.frame"}: the information on which TCs from which experiments are contained within each consensus cluster }
     \item{\code{consensusClusters}:}{Object of class \code{"data.frame"}: the genomic coordinates of consensus clusters created by aggregating TCs across experiments }
     \item{\code{consensusClustersTpmMatrix}:}{Object of class \code{"matrix"} the normalized CAGE signal for every consensus cluster in each experiment }
     \item{\code{consensusClustersExpressionClusteringMethod}:}{Object of class \code{"character"} the method used for expression clustering of consensus clusters }

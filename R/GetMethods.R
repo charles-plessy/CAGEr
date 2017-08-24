@@ -1043,26 +1043,6 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
 
 })
 
-#' @name TCsInConsensusClusters
-#' 
-#' @title Private accessor for tagClustersInConsensusClusters
-#' 
-#' @details Not using \code{tagClustersInConsensusClusters} as function name because it is
-#' too long, giving a \emph{overlong name} error.
-#' 
-#' @noRd
-#' 
-#' @param object A CAGEr object
-
-setGeneric("TCsInConsensusClusters", function(object) standardGeneric("TCsInConsensusClusters"))
-
-setMethod("TCsInConsensusClusters", "CAGEset", function (object){
-	object@tagClustersInConsensusClusters
-})
-
-setMethod("TCsInConsensusClusters", "CAGEexp", function (object){
-  metadata(ce)$tagClustersInConsensusClusters
-})
 
 #' @name CTSScumulativesTagClusters
 #' 
