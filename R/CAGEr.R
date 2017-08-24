@@ -53,3 +53,79 @@ getRefGenome <- function(reference.genome) {
   requireNamespace(reference.genome)
   getExportedValue(reference.genome, reference.genome)
 }
+
+#' @name sampleLabels
+#' 
+#' @title Extracting CAGE datasets labels from CAGEr objects
+#' 
+#' @description Extracts the labels and colors of CAGE datasets
+#' from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' 
+#' @param object A CAGEr object.
+#' 
+#' @return Returns a named character vector of labels of all CAGE datasets
+#' present in the CAGEr object.  The values are the lables and the names
+#' are the colors.
+#' 
+#' @note If no colors are supplied, then default colors will be assigned
+#' usign the \code{rainbow} function.  Assigned colors are not guaranteed
+#' to be stable.
+#' 
+#' @details Renaming samples is possible only in \code{CAGEexp} objects, before
+#' data is loaded.
+#' 
+#' @author Vanja Haberle
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' sampleLabels(exampleCAGEset)
+#' 
+#' @family CAGEr accessor methods
+#' @seealso \code{\link{setColors}}
+#' @docType methods
+#' 
+#' @importFrom grDevices rainbow
+#' @export
+
+setGeneric(
+name="sampleLabels",
+def=function(object){
+	standardGeneric("sampleLabels")
+})
+
+setMethod("sampleLabels",
+signature(object = "CAGEset"),
+function (object){
+	object@sampleLabels
+})
+
+setMethod("sampleLabels",
+signature(object = "CAGEexp"),
+function (object){
+  sl <- object$sampleLabels
+  if (! is.null(object$Colors)) {
+    names(sl) <- object$Colors }
+  else {
+    names(sl) <- rainbow(length(sl))
+  }
+  sl
+})
+
+#' @name validSamples
+#' @noRd
+#' @title Private function
+#' @details Check if a vector of strings or numbers can be used to identify a sample.
+
+setGeneric("validSamples", function(object, x) standardGeneric("validSamples"))
+
+setMethod("validSamples", "CAGEr", function (object, x){
+  if(is.null(x))
+      return(TRUE)
+  if(class(x) == "character")
+    if (all(x %in% sampleLabels(object)))
+      return(TRUE)
+  if(class(x) == "numeric")
+    if (all(x %in% seq_along(sampleLabels(object))))
+      return(TRUE)
+  stop("Sample(s) not found!")
+})
