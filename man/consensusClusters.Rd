@@ -54,6 +54,7 @@ head(clusters.sample)
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
+  \code{\link{consensusClustersDESeq2}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{plotInterquantileWidth}},
   \code{\link{quantilePositions}},

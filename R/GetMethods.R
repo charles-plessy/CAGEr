@@ -981,6 +981,53 @@ setMethod("consensusClustersSE", "CAGEset", function (object)
 setMethod("consensusClustersSE", "CAGEexp", function (object)
   experiments(object)$consensusClusters)
 
+
+#' @name consensusClustersDESeq2
+#' 
+#' @title Export \emph{consensus cluster} expression data for DESeq2 analysis
+#' 
+#' @description Creates a \code{DESeqDataSet} using the consensus cluster expression
+#' data in the experiment slot \code{consensusClusters} and the sample metadata
+#' of the \code{\link{CAGEexp}} object.  The formula must be built using factors
+#' already present in the sample metadata.
+#' 
+#' @param object A CAGEexp object.
+#' @param design A formula for the DESeq2 analysis.
+#' 
+#' @author Charles Plessy
+#' 
+#' @seealso \code{DESeqDataSet} in the \code{DESeq2} package.
+#' @family CAGEr expression analysis functions
+#' @family CAGEr clusters functions
+#' 
+#' @examples 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
+#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
+#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' annotateConsensusClusters(ce, gff)
+#' consensusClustersDESeq2(ce, ~group)
+#' 
+#' @export
+
+setGeneric( "consensusClustersDESeq2"
+          , function(object, design) standardGeneric("consensusClustersDESeq2"))
+
+setMethod( "consensusClustersDESeq2", "CAGEset"
+         , function (object, design) stop("Not implemented for the CAGEset class."))
+
+setMethod( "consensusClustersDESeq2", "CAGEexp"
+         , function (object, design) {
+  if (! requireNamespace("DESeq2"))
+    stop("This function requires the ", dQuote("DESeq2"), " package; please install it.")
+  DESeq2::DESeqDataSetFromMatrix( countData = assay(consensusClustersSE(object))
+                                , colData   = colData(object)
+                                , rowData   = rowData(consensusClustersSE(object))
+                                , design    = design)
+})
+
 #' @name consensusClusters
 #' 
 #' @title Get or set consensus clusters from CAGEr objects
