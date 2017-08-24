@@ -28,3 +28,6 @@ gr
 # No round-trip because start and end were not integer in df.
 # identical(df, CCgranges2dataframe(gr))
 }
+\seealso{
+Other df2granges converters: \code{\link{tagClusterConvertors}}
+}

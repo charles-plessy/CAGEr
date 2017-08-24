@@ -532,3 +532,57 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	
 }
 
+#' @name tagClusterConvertors
+#' 
+#' @title Private functions to convert TC formats
+#' 
+#' @details Interconvert tag clusters (TC) formats used in classes CAGEset
+#' (\code{data.frame}) and CAGEexp (\code{GRanges}).
+#' 
+#' @family df2granges converters
+#' 
+#' @examples 
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' df <- CAGEr:::getAllTagClusters(object)[[1]]
+#' head(df)
+#' gr <- TCdataframe2granges(df)
+#' gr
+#' head(TCgranges2dataframe(gr))
+#' # No round-trip because start and end were not integer in df.
+#' if (! identical(df, TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
+#' if (! all(df == TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
+NULL
+
+#' @name CCgranges2dataframe
+#' 
+#' @rdname tagClusterConvertors
+#' 
+#' @param gr Consensus clusters in \code{GRanges} format.
+
+TCgranges2dataframe <- function(gr) {
+  gr$score <- NULL
+  df <- data.frame(cluster = gr$cluster)
+  gr$cluster <- NULL
+  df <- cbind(df , data.frame( chr     = decode(seqnames(gr))
+                             , start   = start(gr)
+                             , end     = end(gr)
+                             , strand  = decode(droplevels(strand(gr)))))
+  df <- cbind(df, mcols(gr))
+  as.data.frame(df)
+}
+
+#' @name CCdataframe2granges
+#' @rdname tagClusterConvertors
+#' 
+#' @param df Consensus clusters in \code{data.frame} format.
+
+TCdataframe2granges <- function(df) {
+	gr <- GRanges( seqnames           = df$chr
+	             , ranges             = IRanges(df$start, df$end)
+ 	             , score              = df$tpm
+               , strand             = df$strand)
+	mcols(gr) <- cbind( mcols(gr)
+	                  , df[,setdiff(colnames(df), c("chr", "start", "end", "strand")), drop = FALSE])
+	names(gr) <- rownames(df)
+	gr
+}
