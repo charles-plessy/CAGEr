@@ -856,36 +856,47 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
 #' @param object A \code{\link{CAGEr}} object.
 #' @param value A list (one entry per sample) of data frames with multiple columns:
 #'        \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
-#'        indicates a quantile. 
-#' 
+#'        indicates a quantile.
+#' @param samples Sample name(s), number(s) or \code{NULL} (default) for all samples.
 NULL
 
 #' @name tagClustersQuantileLow
 #' @rdname tagClustersQuantile
 
-setGeneric("tagClustersQuantileLow", function(object) standardGeneric("tagClustersQuantileLow"))
-
-setMethod("tagClustersQuantileLow", "CAGEset", function (object){
-	object@tagClustersQuantileLow
+setGeneric("tagClustersQuantileLow", function(object, samples = NULL) {
+  validSamples(object, samples)
+  standardGeneric("tagClustersQuantileLow")
 })
 
-setMethod("tagClustersQuantileLow", "CAGEexp", function (object){
-  metadata(object)$tagClustersQuantileLow
+setMethod("tagClustersQuantileLow", "CAGEset", function (object, samples) {
+	if (is.null(samples)) return(object@tagClustersQuantileLow)
+  object@tagClustersQuantileLow[[samples]]
 })
+
+setMethod("tagClustersQuantileLow", "CAGEexp", function (object, samples) {
+  if (is.null(samples)) return(metadata(object)$tagClustersQuantileLow)
+  metadata(object)$tagClustersQuantileLow[[samples]]
+})
+
 
 #' @name tagClustersQuantileUp
 #' @rdname tagClustersQuantile
 
-
-setGeneric("tagClustersQuantileUp", function(object) standardGeneric("tagClustersQuantileUp"))
-
-setMethod("tagClustersQuantileUp", "CAGEset", function (object){
-	object@tagClustersQuantileUp
+setGeneric("tagClustersQuantileUp", function(object, samples = NULL) {
+  validSamples(object, samples)
+  standardGeneric("tagClustersQuantileUp")
 })
 
-setMethod("tagClustersQuantileUp", "CAGEexp", function (object){
-  metadata(object)$tagClustersQuantileUp
+setMethod("tagClustersQuantileUp", "CAGEset", function (object, samples) {
+  if (is.null(samples)) return(object@tagClustersQuantileUp)
+  object@tagClustersQuantileUp[[samples]]
 })
+
+setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples) {
+  if (is.null(samples)) return(metadata(object)$tagClustersQuantileUp)
+  metadata(object)$tagClustersQuantileUp[[samples]]
+})
+
 
 #' @name getConsensusClusters
 #' @noRd

@@ -8,9 +8,9 @@
 \alias{tagClustersQuantileUp}
 \title{Quantile metadata stored in CAGEr objects.}
 \usage{
-tagClustersQuantileLow(object)
+tagClustersQuantileLow(object, samples = NULL)
 
-tagClustersQuantileUp(object)
+tagClustersQuantileUp(object, samples = NULL)
 
 tagClustersQuantileLow(object) <- value
 
@@ -18,6 +18,8 @@ tagClustersQuantileUp(object) <- value
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
+
+\item{samples}{Sample name(s), number(s) or \code{NULL} (default) for all samples.}
 
 \item{value}{A list (one entry per sample) of data frames with multiple columns:
 \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
