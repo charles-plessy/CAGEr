@@ -78,6 +78,8 @@ CCgranges2dataframe <- function(gr) {
 #' 
 #' @param df Consensus clusters in \code{data.frame} format.
 #' 
+#' @family df2granges converters
+#' 
 #' @export
 
 CCdataframe2granges <- function(df) {

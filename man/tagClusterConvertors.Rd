@@ -23,7 +23,7 @@ Interconvert tag clusters (TC) formats used in classes CAGEset
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-df <- CAGEr:::getTagCluster(object)[[1]]
+df <- tagClusters(object, 1)
 head(df)
 gr <- TCdataframe2granges(df)
 gr
