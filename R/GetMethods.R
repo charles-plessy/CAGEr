@@ -1,4 +1,4 @@
-#' @include AggregationFunctions.R CAGEr.R
+#' @include AggregationFunctions.R ClusteringFunctions.R CAGEr.R
 
 ################################################################
 # Functions for retrieving data from CAGEset and CAGEexp objects
@@ -698,72 +698,40 @@ function (object){
 #' @details Private functions to help make tagClusters() work on all CAGEr objects.
 #' @noRd
 
-setGeneric("getTagCluster", function(object, sample) standardGeneric("getTagCluster"))
+setGeneric("getTagCluster", function(object, sample = NULL) {
+  validSamples(object, sample)
+  standardGeneric("getTagCluster")
+})
 
 setMethod( "getTagCluster", "CAGEset", function (object, sample) {
-  if(! sample %in% sampleLabels(object))
-    stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
+  if (is.null(sample)) return(object@tagClusters)
   object@tagClusters[[sample]]
 })
 
 setMethod( "getTagCluster", "CAGEexp", function (object, sample) {
-  if(! sample %in% sampleLabels(object))
-    stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
-  gr <- metadata(ce)$tagClusters[[sample]]
-  data.frame ( cluster = 1:length(gr)
-           , chr     = as.character(seqnames(gr))
-           , start   = start(gr)
-           , end     = end(gr)
-           , strand  = decode(droplevels(strand(gr)))
-           , nr_ctss = gr$nr_ctss
-           , dominant_ctss     = gr$dominant_ctss
-           , tpm     = decode(score(gr))
-           , tpm.dominant_ctss = gr$tpm.dominant_ctss)
+  if (is.null(sample))
+    return(lapply(metadata(ce)$tagClusters, TCgranges2dataframe))
+  TCgranges2dataframe(metadata(ce)$tagClusters[[sample]])
 })
 
-setGeneric("getTagClusterGR", function(object, sample) standardGeneric("getTagClusterGR"))
+
+setGeneric("getTagClusterGR", function(object, sample = NULL) {
+  validSamples(object, sample)
+  standardGeneric("getTagClusterGR")
+})
 
 setMethod( "getTagClusterGR", "CAGEset", function (object, sample) {
-  if(! sample %in% sampleLabels(object))
-    stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
-  clusters <- object@tagClusters[[sample]]
-  gr <- GRanges( seqnames = Rle(factor(clusters$chr))
-               , ranges   = IRanges(clusters$start, clusters$end)
-               , strand   = clusters$strand
-               , score    = Rle(clusters$tpm)
-                , nr_ctss  = clusters$nr_ctss
-               , dominant_ctss = clusters$dominant_ctss
-               , tpm.dominant_ctss = Rle(clusters$tpm.dominant_ctss))
-  names(gr) <- clusters$cluster
-  gr
+  if(is.null(sample))
+    return(TCdataframe2granges(object@tagClusters))
+  TCdataframe2granges(object@tagClusters[[sample]])
 })
 
 setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
-  if(! sample %in% sampleLabels(object))
-    stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
+  if(is.null(sample))
+    return(metadata(ce)$tagClusters)
   metadata(ce)$tagClusters[[sample]]
 })
 
-setGeneric("getAllTagClusters", function(object) standardGeneric("getAllTagClusters"))
-
-setMethod( "getAllTagClusters", "CAGEset", function (object) {
-  object@tagClusters
-})
-
-setMethod( "getAllTagClusters", "CAGEexp", function (object) {
-  lapply( metadata(ce)$tagClusters
-        , function(gr) {
-            data.frame ( cluster = 1:length(gr)
-                       , chr     = as.character(seqnames(gr))
-                       , start   = start(gr)
-                       , end     = end(gr)
-                       , strand  = decode(droplevels(strand(gr)))
-                       , nr_ctss = gr$nr_ctss
-                       , dominant_ctss     = gr$dominant_ctss
-                       , tpm     = decode(score(gr))
-                       , tpm.dominant_ctss = gr$tpm.dominant_ctss)
-  })
-})
 
 #' @name tagClusters
 #' 
@@ -819,7 +787,7 @@ def=function(object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NUL
 
 setMethod("tagClusters", "CAGEr", function (object, sample, returnInterquantileWidth, qLow, qUp){
   if (is.null(sample))
-    return(getAllTagClusters(object))
+    return(getTagCluster(object))
   if (returnInterquantileWidth) {
     if (is.null(qLow) | is.null(qUp))
       stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")

@@ -78,7 +78,7 @@ signature(object = "CAGEr"),
 function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist){
 	objName <- deparse(substitute(object))
 
-	TC.list <- getAllTagClusters(object)
+	TC.list <- getTagCluster(object)
 	if(length(qLow) > 0 & length(qUp) > 0){
 		TC.list <- lapply(sampleLabels(object), function(x) {
 							tc <- TC.list[[x]]
