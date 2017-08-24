@@ -11,8 +11,7 @@ tagClusters(object, sample = NULL, returnInterquantileWidth = FALSE,
 \item{object}{A \code{\link{CAGEr}} object.}
 
 \item{sample}{Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.
-If \code{sample = NULL}, a list of all the clusters for each samples is returned, and other
-parameters are ignored.}
+If \code{sample = NULL}, a list of all the clusters for each samples is returned.}
 
 \item{returnInterquantileWidth}{Should the interquantile width for each tag cluster be returned.}
 
@@ -33,7 +32,7 @@ a specified CAGE experiment from a CAGEr object.
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-TC <- tagClusters(object = exampleCAGEset, sample = "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
+TC <- tagClusters(exampleCAGEset, "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
 head(TC)
 
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
@@ -44,7 +43,7 @@ clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
 cumulativeCTSSdistribution(ce, clusters = "tagClusters")
 quantilePositions( ce, clusters = "tagClusters"
                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
-TC <- tagClusters(object = ce, sample = "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
+TC <- tagClusters(ce, "sample2", TRUE, 0.1, 0.9)
 head(TC)
 }
 \seealso{

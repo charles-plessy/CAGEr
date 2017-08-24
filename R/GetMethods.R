@@ -693,28 +693,6 @@ function (object){
 })
 
 
-#' @name getTagCluster
-#' 
-#' @details Private functions to help make tagClusters() work on all CAGEr objects.
-#' @noRd
-
-setGeneric("getTagCluster", function(object, sample = NULL) {
-  validSamples(object, sample)
-  standardGeneric("getTagCluster")
-})
-
-setMethod( "getTagCluster", "CAGEset", function (object, sample) {
-  if (is.null(sample)) return(object@tagClusters)
-  object@tagClusters[[sample]]
-})
-
-setMethod( "getTagCluster", "CAGEexp", function (object, sample) {
-  if (is.null(sample))
-    return(lapply(metadata(ce)$tagClusters, TCgranges2dataframe))
-  TCgranges2dataframe(metadata(ce)$tagClusters[[sample]])
-})
-
-
 setGeneric("getTagClusterGR", function(object, sample = NULL) {
   validSamples(object, sample)
   standardGeneric("getTagClusterGR")
@@ -743,8 +721,7 @@ setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
 #' @param object A \code{\link{CAGEr}} object.
 #' 
 #' @param sample Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.
-#' If \code{sample = NULL}, a list of all the clusters for each samples is returned, and other
-#' parameters are ignored.
+#' If \code{sample = NULL}, a list of all the clusters for each samples is returned.
 #' 
 #' @param returnInterquantileWidth Should the interquantile width for each tag cluster be returned.
 #' 
@@ -765,7 +742,7 @@ setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
 #' 
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-#' TC <- tagClusters(object = exampleCAGEset, sample = "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
+#' TC <- tagClusters(exampleCAGEset, "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
 #' head(TC)
 #' 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
@@ -776,33 +753,46 @@ setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
 #' cumulativeCTSSdistribution(ce, clusters = "tagClusters")
 #' quantilePositions( ce, clusters = "tagClusters"
 #'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
-#' TC <- tagClusters(object = ce, sample = "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
+#' TC <- tagClusters(ce, "sample2", TRUE, 0.1, 0.9)
 #' head(TC)
 
-setGeneric(
-name="tagClusters",
-def=function(object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
-	standardGeneric("tagClusters")
+setGeneric( "tagClusters"
+          , function( object, sample = NULL
+                    , returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL) {
+  validSamples(object, sample)
+  standardGeneric("tagClusters")
 })
 
 setMethod("tagClusters", "CAGEr", function (object, sample, returnInterquantileWidth, qLow, qUp){
-  if (is.null(sample))
-    return(getTagCluster(object))
+  if (is.null(sample)) {
+    tc.list <- lapply(sampleLabels(object), tagClusters, object = object, returnInterquantileWidth = returnInterquantileWidth, qLow = qLow, qUp = qUp)
+    names(tc.list) <- sampleLabels(object)
+    return(tc.list)
+  }
+  
+  if (class(object) == "CAGEset") {
+    tc <- object@tagClusters[[sample]]
+  } else if (class(object) == "CAGEexp") {
+    tc <- TCgranges2dataframe(metadata(object)$tagClusters[[sample]])
+  } else {
+    stop("Unsupported CAGEr class.")
+  }
+  
   if (returnInterquantileWidth) {
     if (is.null(qLow) | is.null(qUp))
       stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")
     if (is.null(tagClustersQuantileLow(object)) & is.null(tagClustersQuantileUp(object)))
       stop("Interquantile width cannot be returned because no quantile positions have been calculated yet! Run 'quantilePositions()' first to get the positions of the desired quantiles!")
-    if((!(paste("q_", qLow, sep = "") %in% colnames(tagClustersQuantileLow(object)[[sample]]) & paste("q_", qUp, sep = "") %in% colnames(tagClustersQuantileUp(object)[[sample]]))))
+    if( (!(paste0("q_", qLow) %in% colnames(tagClustersQuantileLow(object)[[sample]]) &
+           paste0("q_", qUp)  %in% colnames(tagClustersQuantileUp(object)[[sample]]))))
       stop("Interquantile width cannot be returned because specified quantile positions have not been calculated! Run 'quantilePositions()' again to get the positions of the desired quantiles!")
-    tc <- getTagCluster(object, sample)
-  	tc.w <- merge(tagClustersQuantileLow(object)[[sample]], tagClustersQuantileUp(object)[[sample]])
-  	tc.w <- tc.w[,c(1, which(colnames(tc.w) == paste("q_", qLow, sep = "")), which(colnames(tc.w) == paste("q_", qUp, sep = "")))]
+  	tc.w <- merge( tagClustersQuantileLow(object)[[sample]]
+  	             , tagClustersQuantileUp(object)[[sample]])
+  	tc.w <- tc.w[,c("cluster", paste0("q_", qLow), paste0("q_", qUp))]
   	tc.w$interquantile_width <- tc.w[,3] - tc.w[,2] + 1
-  	merge(tc, tc.w)
-  } else {
-  	getTagCluster(object, sample)
+  	tc <- merge(tc, tc.w)
   }
+  tc
 })
 
 #' @name filteredCTSSidx

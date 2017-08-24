@@ -543,7 +543,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 #' 
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-#' df <- CAGEr:::getTagCluster(object)[[1]]
+#' df <- tagClusters(object, 1)
 #' head(df)
 #' gr <- TCdataframe2granges(df)
 #' gr
