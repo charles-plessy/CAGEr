@@ -78,25 +78,13 @@ signature(object = "CAGEr"),
 function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist){
 	objName <- deparse(substitute(object))
 
-	TC.list <- tagClusters(object)
 	if(length(qLow) > 0 & length(qUp) > 0){
-		TC.list <- lapply(sampleLabels(object), function(x) {
-							tc <- TC.list[[x]]
-							q.low <- tagClustersQuantileLow(object, x)
-							colnames(q.low) <- c("cluster", sub("q_", "q.low_", colnames(q.low)[-1], fixed = T))
-							q.up <- tagClustersQuantileUp(object, x)
-							colnames(q.up) <- c("cluster", sub("q_", "q.up_", colnames(q.up)[-1], fixed = T))
-							tc <- merge(tc, q.low, by.x = "cluster", by.y = "cluster")
-							tc <- merge(tc, q.up, by.x = "cluster", by.y = "cluster")
-							return(tc)
-						  })
-		names(TC.list) <- sampleLabels(object)
-		if(paste("q.low_", qLow, sep = "") %in% colnames(TC.list[[1]]) & paste("q.up_", qUp, sep = "") %in% colnames(TC.list[[1]])){
-			consensus.clusters <- .make.consensus.clusters(TC.list = TC.list, start.coor = paste("q.low_", qLow, sep = ""), end.coor = paste("q.up_", qUp, sep = ""), plus.minus = round(maxDist/2), tpm.th = tpmThreshold)
-		}else{
-			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first, or omit 'qLow' and 'qUp' parameters to use start and end coordinates for aggregation instead!")
-		}
+		TC.list <- tagClusters(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
+		TC.list <- lapply(TC.list, function(x) {colnames(x) <- sub(paste0("q_", qLow), paste0("q.low_", qLow), colnames(x)); x})
+		TC.list <- lapply(TC.list, function(x) {colnames(x) <- sub(paste0("q_", qUp), paste0("q.up_", qUp), colnames(x)); x})
+    consensus.clusters <- .make.consensus.clusters(TC.list = TC.list, start.coor = paste0("q.low_", qLow), end.coor = paste0("q.up_", qUp), plus.minus = round(maxDist/2), tpm.th = tpmThreshold)
 	}else{
+	  TC.list <- tagClusters(object)
 		consensus.clusters <- .make.consensus.clusters(TC.list = TC.list, start.coor = "start", end.coor = "end", plus.minus = round(maxDist/2), tpm.th = tpmThreshold)		
 	}
 
