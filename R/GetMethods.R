@@ -937,7 +937,7 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
     stop("This function requires the ", dQuote("DESeq2"), " package; please install it.")
   DESeq2::DESeqDataSetFromMatrix( countData = assay(consensusClustersSE(object))
                                 , colData   = colData(object)
-                                , rowData   = rowData(consensusClustersSE(object))
+                                , rowData   = consensusClustersGR(object)
                                 , design    = design)
 })
 

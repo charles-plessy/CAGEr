@@ -122,6 +122,7 @@ function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist)
 	if (class(object) == "CAGEexp") {
 	 # See ranges2genes for similar code.
 	 gr     <- CCdataframe2granges(consensus.clusters)
+	 names(gr) <- as.character(gr)
    cnames <- findOverlaps(CTSScoordinatesGR(object), gr)
    cnames <- as(cnames, "List")
    cnames <- extractList(names(gr), cnames)
@@ -132,6 +133,7 @@ function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist)
    object$outOfClusters <- unlist(counts[1,])
    counts <- counts[-1,]
    counts <- counts[names(gr),]
+   rownames(m)[gr$consensus.cluster] <- names(gr)
 	  consensusClustersSE(object) <-
 	    SummarizedExperiment( rowRanges = gr
 	                        , assay     = SimpleList( counts = as.matrix(counts)
