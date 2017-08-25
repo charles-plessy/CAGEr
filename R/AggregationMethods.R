@@ -45,10 +45,12 @@
 #' promoters that can be further used for expression profiling or detecting "shifting"
 #' (differentially used) promoters between different CAGE samples.
 #' 
-#' @return For \code{\link{CAGEexp}} objects, the slots \code{consensusClusters}
-#' and \code{consensusClustersTpmMatrix} will be occupied
-#' by the genomic coordinates of consensus clusters, information on containing TCs and the total
-#' CAGE signal across all CAGE datasets, respectively.
+#' @return For \code{\link{CAGEexp}} objects, the experiment \code{consensusClusters}
+#' will be occupied by a \code{\link{RangedSummarizedExperiment}} containing the cluster
+#' coodinates as row ranges, and their expression levels in the \code{counts} and \code{normalized}
+#' assays.  The CTSS ranges of the \code{tagCountMatrix} experiment will gain a
+#' \code{cluster} column indicating which cluster they belong to.  Lastly, the number of
+#' CTSS outside clusters will be documented in the \code{outOfClusters} column data.
 #' 
 #' @author Vanja Haberle
 #' 
@@ -118,12 +120,24 @@ function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist)
 	}
 	
 	if (class(object) == "CAGEexp") {
+	 # See ranges2genes for similar code.
+	 gr     <- CCdataframe2granges(consensus.clusters)
+   cnames <- findOverlaps(CTSScoordinatesGR(object), gr)
+   cnames <- as(cnames, "List")
+   cnames <- extractList(names(gr), cnames)
+   cnames <- unique(cnames)
+   cnames <- unstrsplit(cnames, ";")
+   CTSScoordinatesGR(object)$cluster <- Rle(cnames)
+	 counts <- rowsum(CTSStagCountDf(object), cnames)
+   object$outOfClusters <- counts[1,]
+   counts <- counts[-1,]
+   counts <- counts[names(gr),]
 	  consensusClustersSE(object) <-
-	    SummarizedExperiment( rowRanges = CCdataframe2granges(consensus.clusters)
-	                        , assay     = SimpleList(counts = m))
+	    SummarizedExperiment( rowRanges = gr
+	                        , assay     = SimpleList( counts = as.matrix(counts)
+	                                                , normalized = m))
 	}
 	
 	assign(objName, object, envir = parent.frame())
 	invisible(1)
-}
-)
+})

@@ -33,10 +33,12 @@ is used.  If \code{qUp = NULL} end position of the TC is used. \code{qUp} has to
 be part of the same consensus clusters.  See Details.}
 }
 \value{
-For \code{\link{CAGEexp}} objects, the slots \code{consensusClusters}
-and \code{consensusClustersTpmMatrix} will be occupied
-by the genomic coordinates of consensus clusters, information on containing TCs and the total
-CAGE signal across all CAGE datasets, respectively.
+For \code{\link{CAGEexp}} objects, the experiment \code{consensusClusters}
+will be occupied by a \code{\link{RangedSummarizedExperiment}} containing the cluster
+coodinates as row ranges, and their expression levels in the \code{counts} and \code{normalized}
+assays.  The CTSS ranges of the \code{tagCountMatrix} experiment will gain a
+\code{cluster} column indicating which cluster they belong to.  Lastly, the number of
+CTSS outside clusters will be documented in the \code{outOfClusters} column data.
 }
 \description{
 Aggregates tag clusters (TCs) across all CAGE datasets within the CAGEr object
