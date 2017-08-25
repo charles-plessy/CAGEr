@@ -94,7 +94,8 @@ function (object, what, values, samples, method, tagCountThreshold, applyThresho
 	
 	#filename <- paste(what, "_", values, "_values_pairwise_correlation.png", sep = "")
 	#png(filename = filename, width = (plotSize + 36) * nr.samples + 0.1*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3))), height = (plotSize + 36) * nr.samples + 0.05*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3))), family = "Helvetica", res = 360)
-	par(mfrow = c(nr.samples, nr.samples), mai = c(0.05,0.05,0.05,0.05), omi = c(0.05*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0.1*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0,0))
+	old.par <- par(mfrow = c(nr.samples, nr.samples), mai = c(0.05,0.05,0.05,0.05), omi = c(0.05*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0.1*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0,0))
+	on.exit(par(old.par))
 	
 	for(i in c(1:nr.samples)){
 		for(j in c(1:nr.samples)){
