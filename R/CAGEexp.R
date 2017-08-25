@@ -22,13 +22,11 @@
 #'                                , "ctss$"
 #'                                , full.names = TRUE)
 #' sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
-#' ce <-
-#'   new( "CAGEexp"
-#'      , colData = DataFrame( inputFiles     = pathsToInputFiles
-#'                           , sampleLabels   = sampleLabels
-#'                           , inputFilesType = "ctss"
-#'                           , row.names      = sampleLabels)
-#'      , metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7"))
+#' ce <- CAGEexp( metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7")
+#'              , colData  = DataFrame( inputFiles     = pathsToInputFiles
+#'                                    , sampleLabels   = sampleLabels
+#'                                    , inputFilesType = "ctss"
+#'                                    , row.names      = sampleLabels))
 #' 
 #' # Expression data is loaded by the getCTSS() function, that also calculates
 #' # library sizes and store them in the object's column data.
@@ -52,13 +50,14 @@
 #' @seealso CAGEset-class
 #' 
 #' @rdname CAGEexp-class
-#' @name CAGEexp-class
+#' @aliases CAGEexp-class
 #' @import MultiAssayExperiment
 #' @import SummarizedExperiment
 #' @importFrom BSgenome installed.genomes
-#' @export
+#' @export CAGEexp
+#' @exportClass CAGEexp
 
-setClass("CAGEexp",
+CAGEexp <- setClass("CAGEexp",
   contains = "MultiAssayExperiment",
   validity = function(object) {
     #		if(!(object@genomeName %in% suppressWarnings(suppressMessages(BSgenome::installed.genomes()()))))

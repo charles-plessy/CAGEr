@@ -3,6 +3,7 @@
 \docType{class}
 \name{CAGEexp-class}
 \alias{CAGEexp-class}
+\alias{CAGEexp}
 \title{CAGEr class to hold all data and metadata about one CAGE experiment.}
 \description{
 The \code{CAGEr} class is a \code{\link[MultiAssayExperiment]{MultiAssayExperiment}}
@@ -32,13 +33,11 @@ pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
                                , "ctss$"
                                , full.names = TRUE)
 sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
-ce <-
-  new( "CAGEexp"
-     , colData = DataFrame( inputFiles     = pathsToInputFiles
-                          , sampleLabels   = sampleLabels
-                          , inputFilesType = "ctss"
-                          , row.names      = sampleLabels)
-     , metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7"))
+ce <- CAGEexp( metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7")
+             , colData  = DataFrame( inputFiles     = pathsToInputFiles
+                                   , sampleLabels   = sampleLabels
+                                   , inputFilesType = "ctss"
+                                   , row.names      = sampleLabels))
 
 # Expression data is loaded by the getCTSS() function, that also calculates
 # library sizes and store them in the object's column data.
