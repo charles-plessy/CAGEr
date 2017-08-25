@@ -7,6 +7,7 @@ Maintainer: Vanja Haberle <vanja.haberle@gmail.com>, Charles Plessy <plessy@rike
 Imports:
     beanplot,
     BiocGenerics,
+    BSgenome,
     data.table,
     DelayedArray,
     GenomeInfoDb,
@@ -26,7 +27,6 @@ Imports:
     vegan,
     VGAM
 Depends:
-    BSgenome,
     methods,
     R (>= 2.15.0)
 Suggests:
