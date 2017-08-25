@@ -189,7 +189,7 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
   if (! "tagCountMatrix" %in% names(experiments(object)))
     stop("Could not find CTSS tag counts, see ?getCTSS.")
 
-  if (! "normalizedTpmMatrix" %in% names(assays(CTSStagCountSE(ce))))
+  if (! "normalizedTpmMatrix" %in% names(assays(CTSStagCountSE(object))))
     stop( "Could not find normalized CAGE signal values, see ?normalizeTagCount.\n"
         , "clusterCTSS() needs normalized values to create its output tables, that "
         , "include TPM expression columns.")

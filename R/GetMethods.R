@@ -574,7 +574,7 @@ setMethod("CTSSnormalizedTpm",
 signature(object = "CAGEexp"),
 function (object){
   cbind( CTSScoordinates(object)
-       , data.frame(lapply(assays(CTSStagCountSE(ce))[["normalizedTpmMatrix"]], decode)))
+       , data.frame(lapply(assays(CTSStagCountSE(object))[["normalizedTpmMatrix"]], decode)))
 })
 
 #' @name CTSSnormalizedTpmDf
@@ -605,7 +605,7 @@ function (object){
 setMethod("CTSSnormalizedTpmDf",
 signature(object = "CAGEexp"),
 function (object){
-  data.frame(lapply(assays(CTSStagCountSE(ce))[["normalizedTpmMatrix"]], decode))
+  data.frame(lapply(assays(CTSStagCountSE(object))[["normalizedTpmMatrix"]], decode))
 })
 
 #' @name CTSSnormalizedTpmDF
@@ -706,8 +706,8 @@ setMethod( "getTagClusterGR", "CAGEset", function (object, sample) {
 
 setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
   if(is.null(sample))
-    return(metadata(ce)$tagClusters)
-  metadata(ce)$tagClusters[[sample]]
+    return(metadata(object)$tagClusters)
+  metadata(object)$tagClusters[[sample]]
 })
 
 
@@ -805,7 +805,7 @@ setMethod("filteredCTSSidx", "CAGEset", function (object){
 })
 
 setMethod("filteredCTSSidx", "CAGEexp", function (object){
-  decode(rowData(CTSStagCountSE(ce))$filteredCTSSidx)
+  decode(rowData(CTSStagCountSE(object))$filteredCTSSidx)
 })
 
 #' @name tagClustersQuantile
@@ -1059,7 +1059,7 @@ setMethod("CTSScumulativesTagClusters", "CAGEset", function (object){
 })
 
 setMethod("CTSScumulativesTagClusters", "CAGEexp", function (object){
-  metadata(ce)$CTSScumulativesTagClusters
+  metadata(object)$CTSScumulativesTagClusters
 })
 
 #' @name consensusClustersTpm
