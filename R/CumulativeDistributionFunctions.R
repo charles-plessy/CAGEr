@@ -115,11 +115,10 @@ setMethod(".getCumsum", c("GRanges", "GRanges"), function(ctss, clusters, use.mu
     append(plus.cumsum, minus.cumsum)
   }
   if(use.multicore == TRUE) {
-    requireNamespace(parallel)
-    if(is.null(nrCores)){
+    if (is.null(nrCores)) {
       nrCores <- detectCores()
-    }		
-    clusters.cumsum <- unlist(mclapply(as.list(unique(seqnames(clusters))), getCumSumChrStrand, mc.cores = nrCores))
+    }
+    clusters.cumsum <- unlist(mclapply(as.list(levels(droplevels(seqnames(clusters)))), getCumSumChrStrand, mc.cores = nrCores))
   } else {
 		clusters.cumsum <- list()
 		for(chrom in unique(seqnames(clusters))) {
