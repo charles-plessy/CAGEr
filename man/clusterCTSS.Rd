@@ -93,6 +93,7 @@ clusters by calling \code{\link{aggregateTagClusters}} function.
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+head(tagClusters(exampleCAGEset, "sample1"))
 clusterCTSS( object = exampleCAGEset, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)

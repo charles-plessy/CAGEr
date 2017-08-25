@@ -94,6 +94,7 @@
 #' 
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' head(tagClusters(exampleCAGEset, "sample1"))
 #' clusterCTSS( object = exampleCAGEset, threshold = 50, thresholdIsTpm = TRUE
 #'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
@@ -166,21 +167,9 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 		stop("'method' parameter must be one of the (\"distclu\", \"paraclu\", \"custom\")")
 	}
 	
-	cluster2df <- function (gr) {
-	  data.frame ( cluster = 1:length(gr)
-	             , chr     = as.character(seqnames(gr))
-	             , start   = start(gr)
-	             , end     = end(gr)
-	             , strand  = strand(gr)
-	             , nr_ctss = gr$nr_ctss
-	             , dominant_ctss     = gr$dominant_ctss
-	             , tpm.dominant_ctss = gr$tpm.dominant_ctss)
-	}
-	ctss.cluster.list <- lapply(ctss.cluster.list, cluster2df)
-	
 	object@filteredCTSSidx <- idx
 	object@clusteringMethod <- method
-	object@tagClusters <- ctss.cluster.list
+	object@tagClusters <- lapply(ctss.cluster.list, TCgranges2dataframe)
 	assign(objName, object, envir = parent.frame())
 	invisible(1)
 	

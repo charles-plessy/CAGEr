@@ -2,9 +2,7 @@
 % Please edit documentation in R/ClusteringFunctions.R
 \name{tagClusterConvertors}
 \alias{tagClusterConvertors}
-\alias{CCgranges2dataframe}
 \alias{TCgranges2dataframe}
-\alias{CCdataframe2granges}
 \alias{TCdataframe2granges}
 \title{Private functions to convert TC formats}
 \usage{
@@ -23,7 +21,7 @@ Interconvert tag clusters (TC) formats used in classes CAGEset
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-df <- tagClusters(object, 1)
+df <- tagClusters(exampleCAGEset, 1)
 head(df)
 gr <- TCdataframe2granges(df)
 gr
@@ -31,6 +29,9 @@ head(TCgranges2dataframe(gr))
 # No round-trip because start and end were not integer in df.
 if (! identical(df, TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 if (! all(df == TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
+
+CAGEr:::getTagClusterGR(ce)
+head(TCgranges2dataframe(CAGEr:::getTagClusterGR(ce)[[1]]))
 }
 \seealso{
 Other df2granges converters: \code{\link{consensusClusterConvertors}}

@@ -543,7 +543,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 #' 
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-#' df <- tagClusters(object, 1)
+#' df <- tagClusters(exampleCAGEset, 1)
 #' head(df)
 #' gr <- TCdataframe2granges(df)
 #' gr
@@ -551,16 +551,18 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 #' # No round-trip because start and end were not integer in df.
 #' if (! identical(df, TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 #' if (! all(df == TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
+#' 
+#' CAGEr:::getTagClusterGR(ce)
+#' head(TCgranges2dataframe(CAGEr:::getTagClusterGR(ce)[[1]]))
 NULL
 
-#' @name CCgranges2dataframe
+#' @name TCgranges2dataframe
 #' 
 #' @rdname tagClusterConvertors
 #' 
 #' @param gr Consensus clusters in \code{GRanges} format.
 
 TCgranges2dataframe <- function(gr) {
-  gr$score <- NULL
   if (!is.null(gr$cluster)) {
     df <- data.frame(cluster = gr$cluster)
     gr$cluster <- NULL
@@ -571,11 +573,14 @@ TCgranges2dataframe <- function(gr) {
                              , start   = start(gr)
                              , end     = end(gr)
                              , strand  = decode(droplevels(strand(gr)))))
+  if(is.null(gr$tpm))
+    df$tpm <- score(gr)
+  score(gr) <- NULL
   df <- cbind(df, mcols(gr))
   as.data.frame(df)
 }
 
-#' @name CCdataframe2granges
+#' @name TCdataframe2granges
 #' @rdname tagClusterConvertors
 #' 
 #' @param df Consensus clusters in \code{data.frame} format.
@@ -585,6 +590,8 @@ TCdataframe2granges <- function(df) {
 	             , ranges             = IRanges(df$start, df$end)
  	             , score              = df$tpm
                , strand             = df$strand)
+	if(is.null(df[["cluster"]]))
+	  gr$cluster <- seq_along(gr)
 	mcols(gr) <- cbind( mcols(gr)
 	                  , df[,setdiff(colnames(df), c("chr", "start", "end", "strand")), drop = FALSE])
 	names(gr) <- rownames(df)
