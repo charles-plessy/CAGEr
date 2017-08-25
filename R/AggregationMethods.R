@@ -129,7 +129,7 @@ function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist)
    cnames <- unstrsplit(cnames, ";")
    CTSScoordinatesGR(object)$cluster <- Rle(cnames)
 	 counts <- rowsum(CTSStagCountDf(object), cnames)
-   object$outOfClusters <- counts[1,]
+   object$outOfClusters <- unlist(counts[1,])
    counts <- counts[-1,]
    counts <- counts[names(gr),]
 	  consensusClustersSE(object) <-
