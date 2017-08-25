@@ -705,6 +705,8 @@ setMethod( "getTagClusterGR", "CAGEset", function (object, sample) {
 })
 
 setMethod( "getTagClusterGR", "CAGEexp", function (object, sample) {
+  if(is.null(metadata(object)$tagClusters))
+    stop("No tag clusters found.  See ", sQuote("?clusterCTSS"), " on how to create them.")
   if(is.null(sample))
     return(metadata(object)$tagClusters)
   metadata(object)$tagClusters[[sample]]
