@@ -22,6 +22,7 @@
 			if("parallel" %in% rownames(installed.packages()) == FALSE){
 				stop("Cannot use multicore because package 'parallel' is not installed!")
 			}
+		  requireNamespace("parallel")
 		}else{
 			useMulticore = FALSE
 			warning("Multicore is not supported on non-Unix platforms! Setting `useMulticore`` to FALSE")

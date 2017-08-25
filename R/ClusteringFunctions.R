@@ -138,10 +138,7 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
   ctss.list <- lapply(ctss.list, CAGEr:::.CTSS.chr)
   
   if(useMulticore == TRUE){
-    requireNamespace("parallel")
-    if(is.null(nrCores)){
-      nrCores <- detectCores()
-    }
+    if(is.null(nrCores))  nrCores <- detectCores()
 		ctss.list <- mclapply(ctss.list, .cluster.ctss.chr, max.dist = max.dist, mc.cores = nrCores)		
 	}else{
 		ctss.list <- lapply(ctss.list, .cluster.ctss.chr, max.dist = max.dist)
@@ -271,10 +268,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
   }
 
   if (useMulticore == TRUE) {
-    requireNamespace("parallel")
-    if(is.null(nrCores)){
-      nrCores <- detectCores()
-    }
+    if(is.null(nrCores)) nrCores <- detectCores()
     ctss.cluster.list <- mclapply(ctss.cluster.list, .summarize.clusters, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, mc.cores = nrCores)
   } else {
     ctss.cluster.list <- lapply(ctss.cluster.list, .summarize.clusters, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove)
