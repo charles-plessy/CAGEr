@@ -4,11 +4,11 @@
 \alias{plot.hanabi}
 \title{plot.hanabi}
 \usage{
-plot.hanabi(h, alpha = 0.5, col = "black", xlab = "Total counts",
+plot.hanabi(x, alpha = 0.5, col = "black", xlab = "Total counts",
   ylab = "Unique features", main = "Hanabi plot", pch = 1, ...)
 }
 \arguments{
-\item{h}{The hanabi object to plot.}
+\item{x}{The hanabi object to plot.}
 
 \item{alpha}{The alpha transparency of the plot lines.}
 

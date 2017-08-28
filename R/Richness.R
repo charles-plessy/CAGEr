@@ -119,7 +119,7 @@ setMethod("hanabi", "GRangesList", function(x, n, step, from) {
 #' Will only add a point for the final, non-subsampled value of each
 #' sample of in a hanabi object.
 #' 
-#' @param h The hanabi object.
+#' @param x The hanabi object.
 #' @param ... Other parameters passed to the generic points function
 #' 
 #' @family CAGEr richness functions
@@ -128,14 +128,14 @@ setMethod("hanabi", "GRangesList", function(x, n, step, from) {
 #' @export points.hanabi
 #' @export lines.hanabi
 
-points.hanabi <- function(h, ...) {
-  xmax <- sapply(h, function(x) max(x$x))
-  ymax <- sapply(h, function(x) max(x$y))
+points.hanabi <- function(x, ...) {
+  xmax <- sapply(x, function(x) max(x$x))
+  ymax <- sapply(x, function(x) max(x$y))
   points(xmax, ymax, ...)
 }
 
-lines.hanabi  <- function(h, ...) {
-  invisible(Map(lines, h, ...))
+lines.hanabi  <- function(x, ...) {
+  invisible(Map(lines, x, ...))
 }
 
 #' @name .add.alpha
@@ -155,7 +155,7 @@ lines.hanabi  <- function(h, ...) {
 #' 
 #' Plotting Hanabi objects
 #' 
-#' @param h The hanabi object to plot.
+#' @param x The hanabi object to plot.
 #' @param alpha The alpha transparency of the plot lines.
 #' @param col A vector indicating a color per sample (or a vector that
 #'        can be recycled that way).
@@ -172,7 +172,7 @@ lines.hanabi  <- function(h, ...) {
 #' @export plot.hanabi
 
 plot.hanabi <-
-  function( h
+  function( x
           , alpha = 0.5
           , col   = "black"
           , xlab  = "Total counts"
@@ -180,10 +180,10 @@ plot.hanabi <-
           , main  = "Hanabi plot"
           , pch   = 1
           , ...) {
-  xmax <- sapply(h, function(x) max(x$x))
-  xmin <- sapply(h, function(x) min(x$x))
-  ymax <- sapply(h, function(x) max(x$y))
-  ymin <- sapply(h, function(x) min(x$y))
+  xmax <- sapply(x, function(x) max(x$x))
+  xmin <- sapply(x, function(x) min(x$x))
+  ymax <- sapply(x, function(x) max(x$y))
+  ymin <- sapply(x, function(x) min(x$y))
   plot( c(min(xmin), max(xmax))
       , c(min(ymin), max(ymax))
       , type="n"
@@ -191,9 +191,9 @@ plot.hanabi <-
       , ylab = ylab
       , main = main
       , ...)
-  lines( h
+  lines( x
        , col = .add.alpha(col, alpha))
-  points( h
+  points( x
         , col = col
         , pch = pch)
 }

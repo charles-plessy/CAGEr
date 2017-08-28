@@ -4,10 +4,10 @@
 \alias{points.hanabi}
 \title{points.hanabi}
 \usage{
-\method{points}{hanabi}(h, ...)
+\method{points}{hanabi}(x, ...)
 }
 \arguments{
-\item{h}{The hanabi object.}
+\item{x}{The hanabi object.}
 
 \item{...}{Other parameters passed to the generic points function}
 }
