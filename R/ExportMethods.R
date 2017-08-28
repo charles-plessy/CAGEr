@@ -182,6 +182,7 @@ function (object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE){
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "bedGraph", oneFile = TRUE)
+#' exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "BigWig", oneFile = TRUE)
 #' 
 #' @export
 

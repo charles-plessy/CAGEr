@@ -43,6 +43,7 @@ each TSS that can be visualised in the UCSC Genome Browser.
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "bedGraph", oneFile = TRUE)
+exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "BigWig", oneFile = TRUE)
 
 }
 \seealso{
