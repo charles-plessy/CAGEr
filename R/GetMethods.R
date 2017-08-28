@@ -270,6 +270,9 @@ function (object){
 #' 
 #' @author Charles Plessy
 #' 
+#' @importFrom GenomeInfoDb genome genome<-
+#' @importFrom IRanges IRanges
+#' 
 #' @examples
 #' CTSScoordinatesGR(exampleCAGEset)
 #' 

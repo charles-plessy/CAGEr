@@ -54,6 +54,7 @@
 #' @import MultiAssayExperiment
 #' @import SummarizedExperiment
 #' @importFrom BSgenome installed.genomes
+#' @importFrom S4Vectors SimpleList
 #' @export CAGEexp
 #' @exportClass CAGEexp
 
