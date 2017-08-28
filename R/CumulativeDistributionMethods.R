@@ -30,8 +30,10 @@
 #' 
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
 #' cumulativeCTSSdistribution(object = exampleCAGEset, clusters = "tagClusters")
 #' CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
+#' cumulativeCTSSdistribution(exampleCAGEset, clusters = "consensusClusters")
 #' 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' normalizeTagCount(ce)
@@ -64,23 +66,14 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 		}
 		CTSScumulativesTagClusters(object) <-samples.cumsum.list
 	}else if (clusters == "consensusClusters"){
-	  stop("update this part of the code for CAGEexp")
-		ctss.clusters.orig <- merge(object@consensusClusters, object@consensusClustersTpmMatrix, by.x = 1, by.y = 0)
-
-		for(s in sample.labels) {
-			
+		for(s in sampleLabels(object)) {
 			message("\t-> ", s)
-			d <- ctss.df[,c("chr", "pos", "strand", s)]
-			colnames(d) <- c("chr", "pos", "strand", "tpm")
-			d <- subset(d, tpm>0)
-			ctss.clusters <- ctss.clusters.orig[ctss.clusters.orig[,s]>0,]
-			clusters.cumsum.list <- .getCumsum(ctss.df = d, ctss.clusters = ctss.clusters, use.multicore = useMulticore, nrCores = nrCores)
-			samples.cumsum.list[[s]] <- clusters.cumsum.list
-			invisible(gc())
-			
+		  	samples.cumsum.list[[s]] <-
+			  .getCumsum( ctss      = CAGEr:::.CTSS(CTSSnormalizedTpmGR(object, s))
+			            , clusters  = consensusClustersGR(object)
+			            , use.multicore = useMulticore, nrCores = nrCores)
 		}
-		
-		CTSScumulativesConsensusClusters(object) <-samples.cumsum.list
+		CTSScumulativesCC(object) <-samples.cumsum.list
 		
 	}else{
 		stop("'clusters' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
