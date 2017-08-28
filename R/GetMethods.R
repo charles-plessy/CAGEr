@@ -1220,6 +1220,44 @@ function (object, what){
 	}
 })
 
+
+#' @name consensusClustersExpressionClasses
+#' @noRd 
+
+setGeneric("consensusClustersExpressionClasses", function(object, samples = NULL) {
+  validSamples(object, samples)
+  standardGeneric("consensusClustersExpressionClasses")
+})
+
+setMethod("consensusClustersExpressionClasses", "CAGEset", function (object, samples) {
+  if (is.null(samples)) return(object@consensusClustersExpressionClasses)
+  object@consensusClustersExpressionClasses[[samples]]
+})
+
+setMethod("consensusClustersExpressionClasses", "CAGEexp", function (object, samples) {
+  if (is.null(samples)) return(metadata(object)$consensusClustersExpressionClasses)
+  metadata(object)$consensusClustersExpressionClasses[[samples]]
+})
+
+#' @name consensusClustersExpressionClusteringMethod
+#' @noRd 
+
+setGeneric("consensusClustersExpressionClusteringMethod", function(object, samples = NULL) {
+  validSamples(object, samples)
+  standardGeneric("consensusClustersExpressionClusteringMethod")
+})
+
+setMethod("consensusClustersExpressionClusteringMethod", "CAGEset", function (object, samples) {
+  if (is.null(samples)) return(object@consensusClustersExpressionClusteringMethod)
+  object@consensusClustersExpressionClusteringMethod[[samples]]
+})
+
+setMethod("consensusClustersExpressionClusteringMethod", "CAGEexp", function (object, samples) {
+  if (is.null(samples)) return(metadata(object)$consensusClustersExpressionClusteringMethod)
+  metadata(object)$consensusClustersExpressionClusteringMethod[[samples]]
+})
+
+
 #' GeneExpSE
 #' 
 #' Retreives the SummarizedExperiment containing gene expression levels.

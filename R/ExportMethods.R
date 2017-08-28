@@ -317,7 +317,7 @@ function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
 		#filename <- "consensusClusters_interquantile_width_all_samples.pdf"
 		q.low <- consensusClustersQuantileLow(object)
 		q.up <- consensusClustersQuantileUp(object)
-		cl <- consensusClustersTpmMatrix(object)
+		cl <- consensusClustersTpm(object)
 		idx.list <- lapply(as.list(sample.labels), function(x) {idx <- cl[,x][cl[,x] > 0] >= tpmThreshold})		
 		
 	}else{
@@ -367,7 +367,7 @@ function (object, what){
 		
 		cl <- CTSSexpressionClasses(object)
 		if(length(cl)>0){
-			tpm.mx <- normalizedTpmMatrix(object)
+			tpm.mx <- normalizedTpm(object)
 			tpm.mx <- tpm.mx[as.integer(names(cl)),]
 			cl.method <- CTSSexpressionClusteringMethod(object)
 		}else{
@@ -378,7 +378,7 @@ function (object, what){
 		
 		cl <- consensusClustersExpressionClasses(object)
 		if(length(cl)>0){
-			tpm.mx <- consensusClustersTpmMatrix(object)
+			tpm.mx <- consensusClustersTpm(object)
 			tpm.mx <- tpm.mx[as.integer(names(cl)),]
 			cl.method <- consensusClustersExpressionClusteringMethod(object)
 		}else{
