@@ -195,19 +195,22 @@ def=function(object, values = "normalized", format = "BigWig", oneFile = TRUE){
 setMethod("exportCTSStoBedGraph",
 signature(object = "CAGEr"),
 function (object, values = "normalized", format = "BigWig", oneFile = TRUE){
+  
+  rr <- CTSScoordinatesGR(object)
+  genome <- getRefGenome(genomeName(object))
+  seqinfo(rr) <- seqinfo(genome)[seqlevels(rr)]
 
   if (values == "raw") {
-    data <- SummarizedExperiment( rowRanges = CTSScoordinatesGR(object)
+    data <- SummarizedExperiment( rowRanges = rr
                                 , assay     = SimpleList(CTSStagCountDF(object)))
   } else if (values == "normalized"){
-    data <- SummarizedExperiment( rowRanges = CTSScoordinatesGR(object)
+    data <- SummarizedExperiment( rowRanges = rr
                                 , assay     = SimpleList(CTSSnormalizedTpmDF(object)))
   } else {
     stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
   }
 
   if (format == "BigWig"){
-    genome <- getRefGenome(genomeName(object))
     .export.bw.all(data = data, sample.labels = sampleLabels(object), v = values, genome = genome)
   } else if (format == "bedGraph"){
     .export.bedgraph.all(data = data, sample.labels = sampleLabels(object), v = values, oneFile = oneFile)
