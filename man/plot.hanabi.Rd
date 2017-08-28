@@ -4,9 +4,8 @@
 \alias{plot.hanabi}
 \title{plot.hanabi}
 \usage{
-\method{plot}{hanabi}(h, alpha = 0.5, col = "black",
-  xlab = "Total counts", ylab = "Unique features", main = "Hanabi plot",
-  pch = 1, ...)
+plot.hanabi(h, alpha = 0.5, col = "black", xlab = "Total counts",
+  ylab = "Unique features", main = "Hanabi plot", pch = 1, ...)
 }
 \arguments{
 \item{h}{The hanabi object to plot.}
