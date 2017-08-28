@@ -18,6 +18,9 @@ NULL
 #' @param ctss.chr A CTSS.chr object (guaranteed to have only one chromosome).
 #' @param clusters A GRanges object
 #' 
+#' @importFrom IRanges Views
+#' @importFrom IRanges viewApply
+#' 
 #' @examples
 #' .getCAGEsignalCoverage(ctss.chr, clusters)
 

@@ -55,6 +55,8 @@ NULL
 #' 
 #' @param gr Consensus clusters in \code{GRanges} format.
 #' 
+#' @importFrom S4Vectors mcols
+#' 
 #' @export
 
 CCgranges2dataframe <- function(gr) {
