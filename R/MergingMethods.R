@@ -85,7 +85,7 @@ function (object, mergeIndex, mergedSampleLabels){
 	tag.count <- object@tagCountMatrix
 	lib.sizes <- object@librarySizes
 	
-	checkMergeOK(object, mergeIndex, mergedSampleLabels)
+	checkMergeOK(object, objName, mergeIndex, mergedSampleLabels)
 	
 	mergeIndex <- as.integer(mergeIndex)
 	tag.count.matrix.new <- sapply(sort(unique(mergeIndex)), function(x) {cols <- which(mergeIndex == x); a <- rowSums(tag.count[,cols,drop=F]); return(a)})
