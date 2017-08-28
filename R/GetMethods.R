@@ -1163,8 +1163,33 @@ function (object){
   assays(consensusClustersSE)[["normalized"]]
 })
 
-#' expressionClasses
-#' @noRd
+#' @name expressionClasses
+#' 
+#' @title Extract labels of expression classes
+#' 
+#' @description Retrieves labels of expression classes of either individual CTSSs or consensus
+#' clusters from a CAGEset object.
+#' 
+#' @param object A \code{\link{CAGEset}} object.
+#' 
+#' @param what Which level of expression clustering should be used. Can be either
+#'        \code{"CTSS"} to extract labels of expression classes of individual CTSSs or
+#'        \code{"consensusClusters"} to extract labels of expression classes of consensus
+#'        clusters.
+#' 
+#' @return Returns character vector of labels of expression classes.  The number of labels
+#' matches the number of expression clusters returned by \code{\link{getExpressionProfiles}}
+#' function.
+#' 
+#' @seealso \code{\link{getExpressionProfiles}} \code{\link{plotExpressionProfiles}}
+#'          \code{\link{extractExpressionClass}}
+#'          
+#' @examples
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' 
+#' exprClasses <- expressionClasses(exampleCAGEset, what = "CTSS")
+#' exprClasses
+#' 
 #' @export
 
 setGeneric(
