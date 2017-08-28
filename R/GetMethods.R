@@ -871,9 +871,9 @@ setMethod("getConsensusClusters", "CAGEset", function (object){
 })
 
 setMethod("getConsensusClusters", "CAGEexp", function (object){
-  gr <- rowRanges(consensusClustersSE)
-  data.frame()
+  CCgranges2dataframe(rowRanges(consensusClustersSE))
 })
+
 
 #' @name consensusClustersGR
 #' @noRd
@@ -882,10 +882,14 @@ setMethod("getConsensusClusters", "CAGEexp", function (object){
 setGeneric("consensusClustersGR", function(object) standardGeneric("consensusClustersGR"))
 
 setMethod("consensusClustersGR", "CAGEset", function (object)
-	CCdataframe2granges(object@consensusClusters))
+  CCdataframe2granges(object@consensusClusters))
 
-setMethod("consensusClustersGR", "CAGEexp", function (object)
-  rowRanges(consensusClustersSE(object)))
+setMethod("consensusClustersGR", "CAGEexp", function (object) {
+  if(is.null(experiments(ce)$consensusClusters))
+    stop("No consensus clusters found.  See ", sQuote("?aggregateTagClusters"), " on how to create them.")
+  rowRanges(consensusClustersSE(object))
+})
+
 
 #' @name consensusClustersSE
 #' @noRd
