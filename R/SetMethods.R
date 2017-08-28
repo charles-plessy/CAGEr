@@ -207,6 +207,21 @@ setMethod("consensusClusters<-", "CAGEexp", function (object, value){
   stop("Not supported for CAGEexp.")
 })
 
+#' @name `CTSScumulativesCC<-`
+#' @noRd
+
+setGeneric("CTSScumulativesCC<-", function(object, value) standardGeneric("CTSScumulativesCC<-"))
+
+setMethod("CTSScumulativesCC<-", "CAGEset", function (object, value){
+	object@CTSScumulativesConsensusClusters <- value
+  if (validObject(object)) object
+})
+
+setMethod("CTSScumulativesCC<-", "CAGEexp", function (object, value){
+	metadata(object)$CTSScumulativesConsensusClusters <- value
+  if (validObject(object)) object
+})
+
 #' @name `consensusClustersGR<-`
 #' @noRd
 #' @export

@@ -117,7 +117,7 @@ function (object, clusters, qLow, qUp, useMulticore, nrCores){
 		
 	}else if (clusters == "consensusClusters"){
 		stop("update the code for consensus clusters")
-		samples.cumsum.list <- CTSScumulativesConsensusClusters(object)
+		samples.cumsum.list <- CTSScumulativesCC(object)
 		ctss.clusters.orig <- merge(consensusClusters(object), consensusClustersTpm(object), by.x = 1, by.y = 0)
 		
 		for(s in sampleLabels(object)) {

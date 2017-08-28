@@ -696,6 +696,15 @@ function (object){
 })
 
 
+setGeneric("CTSScumulativesCC", function(object) standardGeneric("CTSScumulativesCC"))
+
+setMethod("CTSScumulativesCC", "CAGEset", function (object)
+	object@CTSScumulativesConsensusClusters)
+
+setMethod("CTSScumulativesCC", "CAGEexp", function (object)
+  metadata(object)$CTSScumulativesConsensusClusters)
+
+
 setGeneric("getTagClusterGR", function(object, sample = NULL) {
   validSamples(object, sample)
   standardGeneric("getTagClusterGR")
@@ -1021,7 +1030,7 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
         }else if(returnInterquantileWidth){
             cc <- getConsensusClusters(object)
 
-            cc.cumsum <- CTSScumulativesConsensusClusters(object)[[sample]]
+            cc.cumsum <- CTSScumulativesCC(object)[[sample]]
             a <- lapply(cc.cumsum, function(x) {.get.dominant.ctss(as.numeric(x), isCumulative = T)})
             b <- data.frame(consensus.cluster = as.integer(names(a)), dominant_ctss = unlist(a))
             #cc <- merge(b, cc.s, by.x = 1, by.y = 1, all.x = T, all.y = F)

@@ -602,7 +602,7 @@ function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALS
 		q <- lapply(as.list(1:length(sample.labels)), function(x) {merge(q.low[[x]], q.up[[x]], by.x = "cluster", by.y = "cluster")})
 		names(q) <- sample.labels
 						
-		cumsums <- CTSScumulativesConsensusClusters(object)
+		cumsums <- CTSScumulativesCC(object)
 		dom.pos <- list()
 		for(i in 1:length(cumsums)){
 			a <- lapply(cumsums[[i]], function(y) {.get.dominant.ctss(as.numeric(y), isCumulative = T)})
