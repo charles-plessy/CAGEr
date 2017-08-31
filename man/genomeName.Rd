@@ -3,8 +3,7 @@
 \docType{methods}
 \name{genomeName}
 \alias{genomeName}
-\alias{genomeName}
-\alias{genomeName<-}
+\alias{`genomeName<-`}
 \title{Extracting genome name from CAGEr objects}
 \usage{
 genomeName(object)
@@ -13,6 +12,8 @@ genomeName(object) <- value
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
+
+\item{value}{The name of a \code{BSgenome} package.}
 }
 \value{
 Returns a name of a BSgenome package used as a referent genome.
@@ -34,6 +35,7 @@ genomeName(exampleCAGEset)
 \seealso{
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSScoordinates}},
+  \code{\link{CTSScumulativesTagClusters}},
   \code{\link{CTSSnormalizedTpm}},
   \code{\link{CTSStagCountTable}},
   \code{\link{CTSStagCount}}, \code{\link{inputFilesType}},

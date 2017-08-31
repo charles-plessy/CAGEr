@@ -592,6 +592,8 @@ function (object){
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' normalizeTagCount(ce)
 #' head(CTSSnormalizedTpmDf(ce))
+#' 
+#' @export
 
 setGeneric(
 name="CTSSnormalizedTpmDf",
@@ -615,6 +617,8 @@ function (object){
 #' @rdname CTSSnormalizedTpm
 #' 
 #' @return \code{CTSSnormalizedTpmDF} returns a \code{DataFrame} of normalised expression values.
+#' 
+#' @importFrom SummarizedExperiment assays
 #' 
 #' @export
 
@@ -656,6 +660,7 @@ setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, sample) {
 })
 
 #' @name CTSSclusteringMethod
+#' @aliases CTSSclusteringMethod,CAGEset CTSSclusteringMethod,CAGEexp
 #' 
 #' @title Extracting CTSS clustering method from CAGEr objects.
 #' 
@@ -674,8 +679,7 @@ setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, sample) {
 #' 
 #' @author Vanja Haberle
 #' @family CAGEr accessor methods
-#' @docType methods
-#' @export
+#' @export CTSSclusteringMethod
 
 setGeneric(
 name="CTSSclusteringMethod",
@@ -1066,7 +1070,10 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
 #' 
 #' @title Get/set CTSS cumulative TC data
 #' 
+#' @param object A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.
+#' 
 #' @family CAGEr clusters functions
+#' @family CAGEr accessor methods
 #' 
 #' @export
 
@@ -1112,6 +1119,8 @@ setMethod("CTSScumulativesTagClusters", "CAGEexp", function (object){
 #' clusters.tpm <- consensusClustersTpm(exampleCAGEset)
 #' head(clusters.tpm)
 #' consensusClustersTpmDF(exampleCAGEset)
+#' 
+#' @importFrom SummarizedExperiment assays
 #' 
 #' @export consensusClustersTpm
 

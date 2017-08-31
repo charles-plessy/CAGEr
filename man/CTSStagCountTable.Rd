@@ -31,6 +31,7 @@ head(tagCount)
 
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSScoordinates}},
+  \code{\link{CTSScumulativesTagClusters}},
   \code{\link{CTSSnormalizedTpm}},
   \code{\link{CTSStagCount}}, \code{\link{genomeName}},
   \code{\link{inputFilesType}}, \code{\link{inputFiles}},

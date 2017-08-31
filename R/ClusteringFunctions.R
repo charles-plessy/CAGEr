@@ -30,6 +30,8 @@ NULL
 #'  arbitrary cluster IDs (as integers) for each CTSS.
 #'  
 #' @importFrom data.table data.table
+#' @importFrom S4Vectors queryHits
+#' @importFrom S4Vectors subjectHits
 #' 
 #' @examples
 #' 

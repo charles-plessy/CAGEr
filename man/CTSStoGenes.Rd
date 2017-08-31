@@ -34,7 +34,7 @@ not supported.
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
 CTSStoGenes(ce)
-all(librarySizes(ce) - colSums(assay(GeneExpSE(ce))) == ce$unannotated)
+all(librarySizes(ce) - colSums(SummarizedExperiment::assay(GeneExpSE(ce))) == ce$unannotated)
 
 }
 \seealso{

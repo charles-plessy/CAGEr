@@ -45,7 +45,7 @@ h
 plot(h)
 }
 \seealso{
-\code{\link{vegan::rarecurve}}.
+\code{vegan::rarecurve}.
 
 Other CAGEr richness functions: \code{\link{hanabiPlot}},
   \code{\link{plot.hanabi}}, \code{\link{points.hanabi}}

@@ -46,12 +46,14 @@ head(CTSSnormalizedTpmDf(exampleCAGEset))
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 normalizeTagCount(ce)
 head(CTSSnormalizedTpmDf(ce))
+
 }
 \seealso{
 \code{\link{normalizeTagCount}}
 
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSScoordinates}},
+  \code{\link{CTSScumulativesTagClusters}},
   \code{\link{CTSStagCountTable}},
   \code{\link{CTSStagCount}}, \code{\link{genomeName}},
   \code{\link{inputFilesType}}, \code{\link{inputFiles}},

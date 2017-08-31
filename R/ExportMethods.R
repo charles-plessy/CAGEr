@@ -203,10 +203,10 @@ function (object, values = "normalized", format = "BigWig", oneFile = TRUE){
 
   if (values == "raw") {
     data <- SummarizedExperiment( rowRanges = rr
-                                , assay     = SimpleList(CTSStagCountDF(object)))
+                                , assays    = SimpleList(CTSStagCountDF(object)))
   } else if (values == "normalized"){
     data <- SummarizedExperiment( rowRanges = rr
-                                , assay     = SimpleList(CTSSnormalizedTpmDF(object)))
+                                , assays    = SimpleList(CTSSnormalizedTpmDF(object)))
   } else {
     stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
   }

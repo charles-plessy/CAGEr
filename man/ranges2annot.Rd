@@ -32,7 +32,8 @@ ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 CTSScoordinatesGR(ce)$annotation <- ranges2annot(CTSScoordinatesGR(ce), gff)
 colData(ce)[levels(CTSScoordinatesGR(ce)$annotation)] <-
-  DataFrame(t(sapply(CTSStagCountDF(ce), function(X) tapply(X, CTSScoordinatesGR(ce)$annotation, sum))))
+  DataFrame(t(sapply( CTSStagCountDF(ce)
+                    , function(X) tapply(X, CTSScoordinatesGR(ce)$annotation, sum))))
 
 }
 \seealso{

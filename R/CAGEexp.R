@@ -153,7 +153,7 @@ setAs("data.frame", "CAGEexp", function(from){
   
   CTSStagCountSE(ce) <-
     SummarizedExperiment( rowRanges = gr
-                        , assay = SimpleList(counts = counts))
+                        , assays    = SimpleList(counts = counts))
   
   return(ce)
 })

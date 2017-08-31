@@ -23,4 +23,13 @@ Other CAGEr clusters functions: \code{\link{aggregateTagClusters}},
   \code{\link{plotInterquantileWidth}},
   \code{\link{quantilePositions}},
   \code{\link{tagClusters}}
+
+Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
+  \code{\link{CTSScoordinates}},
+  \code{\link{CTSSnormalizedTpm}},
+  \code{\link{CTSStagCountTable}},
+  \code{\link{CTSStagCount}}, \code{\link{genomeName}},
+  \code{\link{inputFilesType}}, \code{\link{inputFiles}},
+  \code{\link{librarySizes}}, \code{\link{sampleLabels}},
+  \code{\link{tagClusters}}
 }

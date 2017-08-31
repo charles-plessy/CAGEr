@@ -47,7 +47,7 @@
 #' @return A list-based object of class "hanabi".
 #'
 #' @family CAGEr richness functions
-#' @seealso \code{\link{vegan::rarecurve}}.
+#' @seealso \code{vegan::rarecurve}.
 #' 
 #' @author Charles Plessy
 #' 

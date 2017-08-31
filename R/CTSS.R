@@ -15,7 +15,7 @@
 #' 
 #' @examples 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEset))
+#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
 
 # (See <https://github.com/Bioconductor/Contributions/issues/261#issuecomment-277479436>.)
 
@@ -38,7 +38,8 @@
 #' @import methods
 #' 
 #' @examples 
-#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEset))
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(ce))
 
 .CTSS.chr <-
   setClass( "CTSS.chr"

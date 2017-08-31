@@ -7,7 +7,7 @@
 parseCAGEscanBlocksToGrangeTSS(blocks)
 }
 \arguments{
-\item{block}{A character string representing a block in a CAGEscan molecule.}
+\item{blocks}{A character string representing a block in a CAGEscan molecule.}
 }
 \value{
 A GRanges object representing a TSS.

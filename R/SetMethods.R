@@ -2,8 +2,9 @@
 # Functions for setting internal data in CAGEset and CAGEexp objects
 #
 
-#' @name genomeName
-#' @aliases genomeName<-
+#' @name `genomeName<-`
+#' @rdname  genomeName
+#' @param value The name of a \code{BSgenome} package.
 #' @family CAGEr setter methods
 #' @docType methods
 #' @author Charles Plessy
@@ -143,7 +144,6 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
 #' 
 #' @rdname CTSScumulativesTagClusters
 #' 
-#' @param object A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.
 #' @param value CTSScumulativesTagClusters data
 
 setGeneric( "CTSScumulativesTagClusters<-"

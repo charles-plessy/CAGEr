@@ -477,7 +477,7 @@ import.CTSS <- function(filepath) {
 #' Parse a string describing a block in a CAGEscan molecule, as output by
 #' the "CAGEscan 3.0" pipeline.
 #' 
-#' @param block A character string representing a block in a CAGEscan molecule.
+#' @param blocks A character string representing a block in a CAGEscan molecule.
 #' 
 #' @return A GRanges object representing a TSS.
 #' 
@@ -504,7 +504,7 @@ parseCAGEscanBlocksToGrangeTSS <- function (blocks) {
   snd    <- as.integer(unlist(lapply(blocks, `[[`, 3)))
   strand <- ifelse(fst < snd, "+", "-")
   start  <- pmin(fst, snd)
-  GRanges(chr, IRanges(start, w = 1), strand)
+  GRanges(chr, IRanges(start, width = 1), strand)
 }
 
 #' import.CAGEscanMolecule
@@ -575,7 +575,7 @@ setMethod( "getCTSS"
 
   CTSStagCountSE(object) <-
     SummarizedExperiment( rowRanges = rowRanges
-                        , assay = SimpleList(counts = assay))
+                        , assays    = SimpleList(counts = assay))
   
   # Step 5: update the sample metadata (colData).
   

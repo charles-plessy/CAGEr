@@ -29,6 +29,7 @@ inputFiles(exampleCAGEset)
 \seealso{
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSScoordinates}},
+  \code{\link{CTSScumulativesTagClusters}},
   \code{\link{CTSSnormalizedTpm}},
   \code{\link{CTSStagCountTable}},
   \code{\link{CTSStagCount}}, \code{\link{genomeName}},

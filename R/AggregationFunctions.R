@@ -4,6 +4,9 @@
 # Functions for aggregating tag clusters (TCs) across all samples
 #
 
+#' @name .make.consensus.clusters
+#' @noRd
+#' @importFrom IRanges reduce
 
 .make.consensus.clusters <- function(TC.list, plus.minus = 0, tpm.th = 0) {
 	

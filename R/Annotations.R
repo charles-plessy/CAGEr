@@ -415,7 +415,8 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 #' CTSScoordinatesGR(ce)$annotation <- ranges2annot(CTSScoordinatesGR(ce), gff)
 #' colData(ce)[levels(CTSScoordinatesGR(ce)$annotation)] <-
-#'   DataFrame(t(sapply(CTSStagCountDF(ce), function(X) tapply(X, CTSScoordinatesGR(ce)$annotation, sum))))
+#'   DataFrame(t(sapply( CTSStagCountDF(ce)
+#'                     , function(X) tapply(X, CTSScoordinatesGR(ce)$annotation, sum))))
 #' 
 #' @importFrom GenomicRanges findOverlaps promoters
 #' @importFrom S4Vectors Rle
@@ -620,9 +621,10 @@ NULL
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
 #' CTSStoGenes(ce)
-#' all(librarySizes(ce) - colSums(assay(GeneExpSE(ce))) == ce$unannotated)
+#' all(librarySizes(ce) - colSums(SummarizedExperiment::assay(GeneExpSE(ce))) == ce$unannotated)
 #' 
 #' @docType methods
+#' @importFrom SummarizedExperiment assay
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @export
 
@@ -643,7 +645,7 @@ setMethod( "CTSStoGenes"
   genes <- rowsum(CTSStagCountDf(object), as.factor(CTSScoordinatesGR(object)$genes))
   object$unannotated <- genes[1,]
   genes <- genes[-1,]
-  GeneExpSE(object) <- SummarizedExperiment( assay   = SimpleList(counts = as.matrix(genes))
+  GeneExpSE(object) <- SummarizedExperiment( assays  = SimpleList(counts = as.matrix(genes))
                                            , rowData = DataFrame(symbol = rownames(genes)))
   object$genes      <- colSums(assay(GeneExpSE(object)) > 0)
   # object$geneSymbols <- countSymbols(assay(GeneExpSE(object)) %>% as.data.frame)
