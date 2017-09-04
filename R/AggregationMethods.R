@@ -136,7 +136,7 @@ function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist)
    rownames(m)[gr$consensus.cluster] <- names(gr)
 	  consensusClustersSE(object) <-
 	    SummarizedExperiment( rowRanges = gr
-	                        , assay     = SimpleList( counts = as.matrix(counts)
+	                        , assays    = SimpleList( counts = as.matrix(counts)
 	                                                , normalized = m))
 	}
 	

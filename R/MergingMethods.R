@@ -134,7 +134,7 @@ function (object, mergeIndex, mergedSampleLabels){
 
   CTSStagCountSE(new.CAGE.exp) <-
     SummarizedExperiment( rowRanges = rowRanges(CTSStagCountSE(object))
-                        , assay = SimpleList(counts = tag.count.DF.new))
+                        , assays    = SimpleList(counts = tag.count.DF.new))
   
   assign(objName, new.CAGE.exp, envir = parent.frame())
   invisible(1)
