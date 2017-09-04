@@ -3,9 +3,9 @@
 # ARGUMENTS: cumsum.list - list of Rle vectors (IRanges package) with cumulative sums (first number in the vector needs to be a zero) (such as returned by 'get.cumsum' function)
 # RETURNS: list of Rle vectors containing reversed cumulative sums for all elements in the input cumsum list (Rle vectors are shorter by 1 than original vectors because first zero (i.e. here last number) is omitted) 
 
-.reverse.cumsum <- function(cumsum.list, use.multicore = F, nrCores = NULL) {
+.reverse.cumsum <- function(cumsum.list, useMulticore = F, nrCores = NULL) {
 	useMulticore <- .checkMulticore(useMulticore)
-	if(use.multicore){
+	if(useMulticore){
 		if(is.null(nrCores)){
 			nrCores <- detectCores()
 		}		
@@ -36,9 +36,9 @@
 }
 
 
-.score.promoter.shifting <- function(cum.sum.stages, use.multicore = F, nrCores = NULL) {	
+.score.promoter.shifting <- function(cum.sum.stages, useMulticore = F, nrCores = NULL) {	
 	useMulticore <- .checkMulticore(useMulticore)
-	if(use.multicore){
+	if(useMulticore){
 		if(is.null(nrCores)){
 			nrCores <- detectCores()
 		}				

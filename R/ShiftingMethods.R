@@ -40,7 +40,7 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 
 	cumsum.list.r <- list()
 	for(i in 1:length(cumsum.list)){
-		cumsum.list.r[[i]] <- .reverse.cumsum(cumsum.list[[i]], use.multicore = useMulticore, nrCores = nrCores)
+		cumsum.list.r[[i]] <- .reverse.cumsum(cumsum.list[[i]], useMulticore = useMulticore, nrCores = nrCores)
 	}
 	names(cumsum.list.r) <- names(cumsum.list)
 	
@@ -75,8 +75,8 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 	n <- names(cumsum.matrices.groups.f)
 	cumsum.matrices.groups.f <- lapply(cumsum.matrices.groups.f, function(x) {x[-1,,drop=F]})
 	
-	scores.f <- .score.promoter.shifting(cumsum.matrices.groups.f, use.multicore = useMulticore, nrCores = nrCores)
-	scores.r <- .score.promoter.shifting(cumsum.matrices.groups.r, use.multicore = useMulticore, nrCores = nrCores)
+	scores.f <- .score.promoter.shifting(cumsum.matrices.groups.f, useMulticore = useMulticore, nrCores = nrCores)
+	scores.r <- .score.promoter.shifting(cumsum.matrices.groups.r, useMulticore = useMulticore, nrCores = nrCores)
 	
 	scores <- pmax(scores.f, scores.r)
 	names(scores) <- n

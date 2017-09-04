@@ -11,7 +11,7 @@
 
 .getCumsumChr2(clusters, ctss, chrom, str)
 
-.getCumsum(ctss, clusters, use.multicore = FALSE, nrCores = NULL)
+.getCumsum(ctss, clusters, useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
 \item{ctss.chr}{A CTSS.chr object (guaranteed to have only one chromosome).}

@@ -62,7 +62,7 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 			samples.cumsum.list[[s]] <-
 			  .getCumsum( ctss      = .CTSS(CTSSnormalizedTpmGR(object, s))
 			            , clusters  = getTagClusterGR(object, s)
-			            , use.multicore = useMulticore, nrCores = nrCores)
+			            , useMulticore = useMulticore, nrCores = nrCores)
 		}
 		CTSScumulativesTagClusters(object) <-samples.cumsum.list
 	}else if (clusters == "consensusClusters"){
@@ -71,7 +71,7 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 		  	samples.cumsum.list[[s]] <-
 			  .getCumsum( ctss      = .CTSS(CTSSnormalizedTpmGR(object, s))
 			            , clusters  = consensusClustersGR(object)
-			            , use.multicore = useMulticore, nrCores = nrCores)
+			            , useMulticore = useMulticore, nrCores = nrCores)
 		}
 		CTSScumulativesCC(object) <-samples.cumsum.list
 		

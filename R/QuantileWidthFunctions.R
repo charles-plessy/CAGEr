@@ -7,13 +7,13 @@
 # RETURNS: 
 
 
-.get.quant.pos <- function(cluster.cumsums, coors, q = NULL, use.multicore = FALSE, nrCores = NULL) {
+.get.quant.pos <- function(cluster.cumsums, coors, q = NULL, useMulticore = FALSE, nrCores = NULL) {
 	
   getQuantilepos <- function(quant, cumsum) length(Filter(isTRUE, cumsum/max(cumsum) < quant)) + 1
   
 	if(length(q) > 0) {
 		useMulticore <- .checkMulticore(useMulticore)
-		if(use.multicore == TRUE){
+		if(useMulticore == TRUE){
 			if(is.null(nrCores)){
 				nrCores <- detectCores()
 			}					

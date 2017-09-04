@@ -115,15 +115,15 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
 #' clusters[1]
 
-setGeneric(".getCumsum", function(ctss, clusters, use.multicore = FALSE, nrCores = NULL) standardGeneric(".getCumsum"))
+setGeneric(".getCumsum", function(ctss, clusters, useMulticore = FALSE, nrCores = NULL) standardGeneric(".getCumsum"))
 
-setMethod(".getCumsum", c("GRanges", "GRanges"), function(ctss, clusters, use.multicore , nrCores) {
+setMethod(".getCumsum", c("GRanges", "GRanges"), function(ctss, clusters, useMulticore , nrCores) {
   getCumSumChrStrand <- function(chrom) {
     plus.cumsum  <- .getCumsumChr2(clusters = clusters, ctss = ctss, chrom = chrom, str = "+")
     minus.cumsum <- .getCumsumChr2(clusters = clusters, ctss = ctss, chrom = chrom, str = "-")
     append(plus.cumsum, minus.cumsum)
   }
-  if(use.multicore == TRUE) {
+  if(useMulticore == TRUE) {
     if (is.null(nrCores)) {
       nrCores <- detectCores()
     }
