@@ -4,9 +4,8 @@
 # RETURNS: list of Rle vectors containing reversed cumulative sums for all elements in the input cumsum list (Rle vectors are shorter by 1 than original vectors because first zero (i.e. here last number) is omitted) 
 
 .reverse.cumsum <- function(cumsum.list, use.multicore = F, nrCores = NULL) {
-	
+	useMulticore <- .checkMulticore(useMulticore)
 	if(use.multicore){
-		library(parallel)
 		if(is.null(nrCores)){
 			nrCores <- detectCores()
 		}		
@@ -38,9 +37,8 @@
 
 
 .score.promoter.shifting <- function(cum.sum.stages, use.multicore = F, nrCores = NULL) {	
-	
+	useMulticore <- .checkMulticore(useMulticore)
 	if(use.multicore){
-		library(parallel)
 		if(is.null(nrCores)){
 			nrCores <- detectCores()
 		}				

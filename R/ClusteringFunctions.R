@@ -330,8 +330,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 
 .paraclu3 <- function(ctss.df, minStability = 1, maxLength = 500, removeSingletons = FALSE, keepSingletonsAbove = Inf, reduceToNonoverlapping = TRUE, useMulticore = FALSE, nrCores = NULL){
 	
+	useMulticore <- .checkMulticore(useMulticore)
 	if(useMulticore == TRUE){
-		library(parallel)
 		if(is.null(nrCores)){
 			nrCores <- detectCores()
 		}		
@@ -444,8 +444,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 
 .ctss2clusters.predef <- function(ctss.df, custom.clusters, useMulticore = FALSE, nrCores = NULL) {
 	
+	useMulticore <- .checkMulticore(useMulticore)
 	if(useMulticore == TRUE){
-		library(parallel)
 		if(is.null(nrCores)){
 			nrCores <- detectCores()
 		}		

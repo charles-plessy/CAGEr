@@ -30,7 +30,6 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 	a <- a[names(a) %in% c(groupX, groupY)]
 	b <- object@consensusClusters
 	if(useMulticore){
-		library(parallel)
 		if(is.null(nrCores)){
 			nrCores <- detectCores()
 		}		

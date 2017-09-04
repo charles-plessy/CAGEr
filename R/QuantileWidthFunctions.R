@@ -12,8 +12,8 @@
   getQuantilepos <- function(quant, cumsum) length(Filter(isTRUE, cumsum/max(cumsum) < quant)) + 1
   
 	if(length(q) > 0) {
+		useMulticore <- .checkMulticore(useMulticore)
 		if(use.multicore == TRUE){
-			library(parallel)
 			if(is.null(nrCores)){
 				nrCores <- detectCores()
 			}					
