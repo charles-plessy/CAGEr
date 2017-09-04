@@ -63,6 +63,8 @@
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' head(consensusClusters(exampleCAGEset))
 #' aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
+#'   excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
 #'   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 #' head(consensusClusters(exampleCAGEset))
 #' 
@@ -80,7 +82,7 @@ signature(object = "CAGEr"),
 function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist){
 	objName <- deparse(substitute(object))
 
-  if (any(is.null(qLow), is.null(qUp))) {
+  if (all( !is.null(qLow), !is.null(qUp))) {
     TC.list <- tagClusters(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
     TC.list <- lapply(TC.list, function(x) { x[["start"]] <- x[[paste0("q_", qLow)]]
                                              x[["end"]]   <- x[[paste0("q_", qUp)]]

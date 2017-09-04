@@ -64,6 +64,8 @@ promoters that can be further used for expression profiling or detecting "shifti
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 head(consensusClusters(exampleCAGEset))
 aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
+  excludeSignalBelowThreshold = FALSE, maxDist = 100)
+aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 head(consensusClusters(exampleCAGEset))
 
