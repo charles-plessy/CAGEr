@@ -5,7 +5,7 @@
 \title{Plotting reverse cumulative number of CAGE tags per CTSS}
 \usage{
 plotReverseCumulatives(object, values = "raw", fitInRange = c(10, 1000),
-  onePlot = FALSE)
+  onePlot = FALSE, main = NULL)
 }
 \arguments{
 \item{object}{A CAGEr object}
@@ -21,6 +21,8 @@ See Details.}
 
 \item{onePlot}{Logical, should all CAGE datasets be plotted in the same
 plot (TRUE) or in separate plots (FALSE) within the same PDF file.}
+
+\item{main}{Main title for the plot.}
 }
 \value{
 Plots of reverse cumulative number of CAGE tags per CTSS for each CAGE
@@ -59,6 +61,8 @@ plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 
 exampleCAGEexp <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 plotReverseCumulatives(exampleCAGEexp, values = "raw",fitInRange = c(5,100), onePlot = TRUE)
+plotReverseCumulatives(exampleCAGEexp[,3:4], values = "raw",fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
+normalizeTagCount(exampleCAGEexp)
 plotReverseCumulatives(exampleCAGEexp, values = "normalized",fitInRange = c(5,100), onePlot = TRUE)
 
 }
