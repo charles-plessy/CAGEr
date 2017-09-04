@@ -86,7 +86,7 @@ setMethod("quantilePositions",
 signature(object = "CAGEr"),
 function (object, clusters, qLow, qUp, useMulticore, nrCores){
 
-  useMulticore <- checkMulticore(useMulticore)
+  useMulticore <- .checkMulticore(useMulticore)
 	
 	objName <- deparse(substitute(object))
 
