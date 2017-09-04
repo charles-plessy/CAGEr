@@ -119,6 +119,7 @@ setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
 #' 
 #' @importFrom data.table data.table
 #' @importFrom S4Vectors decode
+#' @importFrom parallel detectCores
 #' 
 #' @examples 
 #' 
@@ -241,6 +242,7 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
 #' @return \code{.distclu} returns GRanges describing the clusters.
 #' 
 #' @importFrom SummarizedExperiment rowRanges
+#' @importFrom parallel detectCores
 #' 
 #' @examples 
 #' 

@@ -1,6 +1,7 @@
 #' @include Multicore.R
 
 #' scoreShift
+#' @importFrom parallel detectCores
 #' @noRd
 #' @export
 

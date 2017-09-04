@@ -82,7 +82,9 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' @return \code{.getCumsum} returns a list of Rle vectors (IRanges package) containing cumulative
 #' sum for each cluster (length of list is equal to number of clusters and names of the list
 #' components corespond to the name of the corresponding cluster) v.
-#' 
+#'
+#' @importFrom parallel detectCores
+#'
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEset, "sample1"))
