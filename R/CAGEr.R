@@ -82,26 +82,20 @@ getRefGenome <- function(reference.genome) {
 #' 
 #' @family CAGEr accessor methods
 #' @seealso \code{\link{setColors}}
-#' @docType methods
 #' 
 #' @importFrom grDevices rainbow
 #' @export
 
-setGeneric(
-name="sampleLabels",
-def=function(object){
-	standardGeneric("sampleLabels")
-})
+setGeneric("sampleLabels", function(object) standardGeneric("sampleLabels"))
 
-setMethod("sampleLabels",
-signature(object = "CAGEset"),
-function (object){
-	object@sampleLabels
-})
+#' @rdname sampleLabels
 
-setMethod("sampleLabels",
-signature(object = "CAGEexp"),
-function (object){
+setMethod("sampleLabels", "CAGEset", function (object)
+  object@sampleLabels)
+
+#' @rdname sampleLabels
+
+setMethod("sampleLabels", "CAGEexp", function (object){
   sl <- object$sampleLabels
   if (! is.null(object$Colors)) {
     names(sl) <- object$Colors }

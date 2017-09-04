@@ -384,16 +384,11 @@ setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
 #' 
 #' @export
 
-setGeneric(
-name="setColors",
-def=function(object, colors = NULL){
-	standardGeneric("setColors")
-}
-)
+setGeneric("setColors", function(object, colors = NULL) standardGeneric("setColors"))
 
-setMethod("setColors",
-signature(object = "CAGEr"),
-function (object, colors = NULL){
+#' @rdname setColors
+
+setMethod("setColors", "CAGEr", function (object, colors){
 
   objName <- deparse(substitute(object))
   sample.labels <- sampleLabels(object)
