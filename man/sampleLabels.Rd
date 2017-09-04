@@ -3,16 +3,18 @@
 \docType{methods}
 \name{sampleLabels}
 \alias{sampleLabels}
-\alias{sampleLabels}
 \alias{sampleLabels<-}
-\alias{sampleLabels<-,CAGEset}
-\alias{sampleLabels<-,CAGEexp}
-\alias{sampleLabels<-,CAGEer-method}
+\alias{sampleLabels<-,CAGEset-method}
+\alias{sampleLabels<-,CAGEexp-method}
 \title{Extracting CAGE datasets labels from CAGEr objects}
 \usage{
 sampleLabels(object)
 
 sampleLabels(object) <- value
+
+\S4method{sampleLabels}{CAGEset}(object) <- value
+
+\S4method{sampleLabels}{CAGEexp}(object) <- value
 }
 \arguments{
 \item{object}{A CAGEr object.}

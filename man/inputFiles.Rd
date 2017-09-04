@@ -3,15 +3,18 @@
 \docType{methods}
 \name{inputFiles}
 \alias{inputFiles}
-\alias{inputFiles}
 \alias{inputFiles<-}
-\alias{inputFiles<-,CAGEset}
-\alias{inputFiles<-,CAGEexp}
+\alias{inputFiles<-,CAGEset-method}
+\alias{inputFiles<-,CAGEexp-method}
 \title{Extracting paths to input files from CAGEr objects}
 \usage{
 inputFiles(object)
 
 inputFiles(object) <- value
+
+\S4method{inputFiles}{CAGEset}(object) <- value
+
+\S4method{inputFiles}{CAGEexp}(object) <- value
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}

@@ -16,7 +16,7 @@
 \arguments{
 \item{ctss.chr}{A CTSS.chr object (guaranteed to have only one chromosome).}
 
-\item{clusters}{A GRanges object}
+\item{clusters}{GRanges as per \code{getTagClusterGR}.}
 
 \item{ctss}{GRanges as per \code{CTSScoordinatesGR}, with the score of one sample.}
 
@@ -25,8 +25,6 @@
 \item{str}{a strand name}
 
 \item{useMulticore, nrCores}{See clusterCTSS.}
-
-\item{clusters}{GRanges as per \code{getTagClusterGR}.}
 }
 \value{
 \code{.getCumsum} returns a list of Rle vectors (IRanges package) containing cumulative

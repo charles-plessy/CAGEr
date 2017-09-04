@@ -2,28 +2,32 @@
 # Functions for setting internal data in CAGEset and CAGEexp objects
 #
 
-#' @name genomeName
-#' @aliases genomeName<- genomeName<-,CAGEset genomeName<-,CAGEexp
+#' @name genomeName<-
+#' @rdname genomeName
 #' @param value The name of a \code{BSgenome} package.
 #' @family CAGEr setter methods
-#' @docType methods
 #' @author Charles Plessy
 #' @export
 
 setGeneric("genomeName<-", function(object, value) standardGeneric("genomeName<-"))
+
+#' @rdname genomeName
 
 setMethod("genomeName<-", "CAGEset", function (object, value){
 	object@genomeName <- value
 	if (validObject(object)) object
 })
 
+#' @rdname genomeName
+
 setMethod("genomeName<-", "CAGEexp", function (object, value){
   metadata(object)$genomeName <- value
 	if (validObject(object)) object
 })
 
-#' @name inputFiles
-#' @aliases inputFiles<- inputFiles<-,CAGEset inputFiles<-,CAGEexp
+
+#' @name inputFiles<-
+#' @rdname inputFiles
 #' @family CAGEr setter methods
 #' @param value A character vector with one file path per sample.
 #' @author Charles Plessy
@@ -31,18 +35,23 @@ setMethod("genomeName<-", "CAGEexp", function (object, value){
 
 setGeneric("inputFiles<-", function(object, value) standardGeneric("inputFiles<-"))
 
+#' @rdname inputFiles
+
 setMethod("inputFiles<-", "CAGEset", function (object, value){
 	object@inputFiles <- value
 	if (validObject(object)) object
 })
+
+#' @rdname inputFiles
 
 setMethod("inputFiles<-", "CAGEexp", function (object, value){
   object$inputFiles <- value
   if (validObject(object)) object
 })
 
-#' @name inputFilesType
-#' @aliases inputFilesType<- inputFilesType<-,CAGEset inputFilesType<-,CAGEr
+
+#' @name inputFilesType<-
+#' @rdname inputFilesType
 #' @family CAGEr setter methods
 #' @param value A character vector with one file type per sample.
 #' @author Charles Plessy
@@ -50,18 +59,23 @@ setMethod("inputFiles<-", "CAGEexp", function (object, value){
 
 setGeneric("inputFilesType<-", function(object, value) standardGeneric("inputFilesType<-"))
 
+#' @rdname inputFilesType
+
 setMethod("inputFilesType<-", "CAGEset", function (object, value){
 	object@inputFilesType <- value
 	if (validObject(object)) object
 })
+
+#' @rdname inputFilesType
 
 setMethod("inputFilesType<-", "CAGEexp", function (object, value){
   object$inputFilesType <- value
 	if (validObject(object)) object
 })
 
-#' @name sampleLabels
-#' @aliases sampleLabels<- sampleLabels<-,CAGEset sampleLabels<-,CAGEexp sampleLabels<-,CAGEer-method
+
+#' @name sampleLabels<-
+#' @rdname sampleLabels
 #' @family CAGEr setter methods
 #' @param value A character vector with a unique and valid name for each sample.
 #'        the \code{names} attributes indicate the colors.
@@ -70,10 +84,14 @@ setMethod("inputFilesType<-", "CAGEexp", function (object, value){
 
 setGeneric("sampleLabels<-", function(object, value) standardGeneric("sampleLabels<-"))
 
+#' @rdname sampleLabels
+
 setMethod("sampleLabels<-", "CAGEset", function (object, value){
 	object@sampleLabels <- value
 	if (validObject(object)) object
 })
+
+#' @rdname sampleLabels
 
 setMethod("sampleLabels<-", "CAGEexp", function (object, value){
   if (length(sampleLabels(object)) != length(value))
@@ -82,6 +100,7 @@ setMethod("sampleLabels<-", "CAGEexp", function (object, value){
   rownames(colData(object)) <- value
   if (validObject(object)) object
 })
+
 
 # librarySizes
 #
@@ -99,15 +118,20 @@ setMethod("librarySizes<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
+
 #' @name CTSScoordinatesGR
-#' @noRd
+#' @rdname CTSScoordinates
 #' @export
 
 setGeneric("CTSScoordinatesGR<-", function(object, value) standardGeneric("CTSScoordinatesGR<-"))
 
+#' @rdname CTSScoordinates
+
 setMethod("CTSScoordinatesGR<-", "CAGEset", function (object, value){
 	stop("Not implemented for the CAGEset class.")
 })
+
+#' @rdname CTSScoordinates
 
 setMethod("CTSScoordinatesGR<-", "CAGEexp", function (object, value){
   if (! is(value, "GRanges")) stop("Value must be a GRanges object.")
@@ -115,15 +139,20 @@ setMethod("CTSScoordinatesGR<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
+
 #' @name CTSStagCountSE
-#' @noRd
+#' @rdname CTSScoordinates
 #' @export
 
 setGeneric("CTSStagCountSE<-", function(object, value) standardGeneric("CTSStagCountSE<-"))
 
+#' @rdname CTSScoordinates
+
 setMethod("CTSStagCountSE<-", "CAGEset", function (object, value){
 	stop("Not implemented for the CAGEset class.")
 })
+
+#' @rdname CTSScoordinates
 
 setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
   if (! is(value, "RangedSummarizedExperiment"))
@@ -141,7 +170,7 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
 })
 
 
-#' @name `CTSScumulativesTagClusters<-`
+#' @name  CTSScumulativesTagClusters<-
 #' 
 #' @rdname CTSScumulativesTagClusters
 #' 
@@ -150,63 +179,81 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
 setGeneric( "CTSScumulativesTagClusters<-"
           , function(object, value) standardGeneric("CTSScumulativesTagClusters<-"))
 
+#' @rdname CTSScumulativesTagClusters
+
 setMethod("CTSScumulativesTagClusters<-", "CAGEset", function (object, value) {
 	object@CTSScumulativesTagClusters <- value
 	if (validObject(object)) object
 })
+
+#' @rdname CTSScumulativesTagClusters
 
 setMethod("CTSScumulativesTagClusters<-", "CAGEexp", function (object, value) {
   metadata(object)$CTSScumulativesTagClusters <- value
   if (validObject(object)) object
 })
 
-#' @name `tagClustersQuantileLow<-`
+
+#' @name tagClustersQuantileLow<-
 #' @rdname tagClustersQuantile
-#' 
 
 setGeneric("tagClustersQuantileLow<-", function(object, value) standardGeneric("tagClustersQuantileLow<-"))
+
+#' @rdname tagClustersQuantile
 
 setMethod("tagClustersQuantileLow<-", "CAGEset", function (object, value){
 	object@tagClustersQuantileLow <- value
 	if (validObject(object)) object
 })
 
+#' @rdname tagClustersQuantile
+
 setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, value){
   metadata(object)$tagClustersQuantileLow <- value
   if (validObject(object)) object
 })
 
-#' @name tagClustersQuantileUp
+
+#' @name tagClustersQuantileUp<-
 #' @rdname tagClustersQuantile
-#' 
 
 setGeneric("tagClustersQuantileUp<-", function(object, value) standardGeneric("tagClustersQuantileUp<-"))
+
+#' @rdname tagClustersQuantile
 
 setMethod("tagClustersQuantileUp<-", "CAGEset", function (object, value){
 	object@tagClustersQuantileUp <- value
   if (validObject(object)) object
 })
 
+#' @rdname tagClustersQuantile
+
 setMethod("tagClustersQuantileUp<-", "CAGEexp", function (object, value){
   metadata(object)$tagClustersQuantileUp <- value
   if (validObject(object)) object
 })
 
-#' @name `consensusClusters<-`
+
+#' @name consensusClusters<-
 #' @rdname consensusClusters
 #' 
 #' @param value A \code{data.frame} of consensus clusters
 
 setGeneric("consensusClusters<-", function(object, value) standardGeneric("consensusClusters<-"))
 
+#' @rdname consensusClusters
+
 setMethod("consensusClusters<-", "CAGEset", function (object, value){
 	object@consensusClusters <- value
   if (validObject(object)) object
 })
 
+#' @rdname consensusClusters
+
 setMethod("consensusClusters<-", "CAGEexp", function (object, value){
   stop("Not supported for CAGEexp.")
 })
+
 
 #' @name `CTSScumulativesCC<-`
 #' @noRd
@@ -223,15 +270,19 @@ setMethod("CTSScumulativesCC<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-#' @name `consensusClustersGR<-`
-#' @noRd
+#' @name consensusClustersGR<-
+#' @rdname consensusClusters
 #' @export
 
 setGeneric("consensusClustersGR<-", function(object, value) standardGeneric("consensusClustersGR<-"))
 
+#' @rdname consensusClusters
+
 setMethod("consensusClustersGR<-", "CAGEset", function (object, value){
 	stop("Not implemented for the CAGEset class.")
 })
+
+#' @rdname consensusClusters
 
 setMethod("consensusClustersGR<-", "CAGEexp", function (object, value){
   if (! is(value, "GRanges")) stop("Value must be a GRanges object.")
@@ -239,14 +290,19 @@ setMethod("consensusClustersGR<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-#' @name `consensusClustersSE<-`
-#' @noRd
+
+#' @name consensusClustersSE<-
+#' @rdname consensusClusters
 
 setGeneric("consensusClustersSE<-", function(object, value) standardGeneric("consensusClustersSE<-"))
+
+#' @rdname consensusClusters
 
 setMethod("consensusClustersSE<-", "CAGEset", function (object, value){
 	stop("Not implemented for the CAGEset class.")
 })
+
+#' @rdname consensusClusters
 
 setMethod( "consensusClustersSE<-"
          , c("CAGEexp", "RangedSummarizedExperiment")

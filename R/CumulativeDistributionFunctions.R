@@ -1,5 +1,6 @@
 #' @name coverage-functions
 #' @title Private functions behind \code{cumulativeCTSSdistribution}
+#' @param clusters GRanges as per \code{getTagClusterGR}.
 #' @param useMulticore,nrCores See clusterCTSS.
 #' @examples 
 #' ctss <- CAGEr:::.CTSS(GRanges(seqnames=Rle("chr1"), IRanges(c(1,3,4,12,14,25,28,30), w=1), strand = "+"))
@@ -17,7 +18,6 @@ NULL
 #' Note that strand is not taken into account.
 #' 
 #' @param ctss.chr A CTSS.chr object (guaranteed to have only one chromosome).
-#' @param clusters A GRanges object
 #' 
 #' @importFrom IRanges Views
 #' @importFrom IRanges viewApply
@@ -81,7 +81,6 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' @description \code{.getCumsum} calculates cumulative sums of tpm along the clusters.
 #' 
 #' @param ctss GRanges as per \code{CTSScoordinatesGR}, with the score of one sample.
-#' @param clusters GRanges as per \code{getTagClusterGR}.
 #' 
 #' @return \code{.getCumsum} returns a list of Rle vectors (IRanges package) containing cumulative
 #' sum for each cluster (length of list is equal to number of clusters and names of the list
