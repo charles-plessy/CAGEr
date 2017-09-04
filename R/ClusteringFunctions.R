@@ -34,6 +34,7 @@ NULL
 #' @importFrom data.table data.table
 #' @importFrom S4Vectors queryHits
 #' @importFrom S4Vectors runLength
+#' @importFrom S4Vectors runValue
 #' @importFrom S4Vectors subjectHits
 #' 
 #' @examples
