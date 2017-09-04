@@ -1156,6 +1156,62 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
 
 })
 
+#' @name consensusClustersQuantile
+#' @title Quantile metadata stored in CAGEr objects.
+#' 
+#' @param object A \code{\link{CAGEr}} object.
+#' @param value A list (one entry per sample) of data frames with multiple columns:
+#'        \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
+#'        indicates a quantile.
+#' @param samples Sample name(s), number(s) or \code{NULL} (default) for all samples.
+NULL
+
+#' @name consensusClustersQuantileLow
+#' @rdname consensusClustersQuantile
+
+setGeneric("consensusClustersQuantileLow", function(object, samples = NULL) {
+  validSamples(object, samples)
+  standardGeneric("consensusClustersQuantileLow")
+})
+
+#' @rdname consensusClustersQuantile
+
+setMethod("consensusClustersQuantileLow", "CAGEset", function (object, samples) {
+	if (is.null(samples)) return(object@consensusClustersQuantileLow)
+  object@consensusClustersQuantileLow[[samples]]
+})
+
+#' @rdname consensusClustersQuantile
+
+setMethod("consensusClustersQuantileLow", "CAGEexp", function (object, samples) {
+  if (is.null(samples)) return(metadata(object)$consensusClustersQuantileLow)
+  metadata(object)$consensusClustersQuantileLow[[samples]]
+})
+
+
+#' @name consensusClustersQuantileUp
+#' @rdname consensusClustersQuantile
+
+setGeneric("consensusClustersQuantileUp", function(object, samples = NULL) {
+  validSamples(object, samples)
+  standardGeneric("consensusClustersQuantileUp")
+})
+
+#' @rdname consensusClustersQuantile
+
+setMethod("consensusClustersQuantileUp", "CAGEset", function (object, samples) {
+  if (is.null(samples)) return(object@consensusClustersQuantileUp)
+  object@consensusClustersQuantileUp[[samples]]
+})
+
+#' @rdname consensusClustersQuantile
+
+setMethod("consensusClustersQuantileUp", "CAGEexp", function (object, samples) {
+  if (is.null(samples)) return(metadata(object)$consensusClustersQuantileUp)
+  metadata(object)$consensusClustersQuantileUp[[samples]]
+})
+
+
 
 #' @name CTSScumulativesTagClusters
 #' 
