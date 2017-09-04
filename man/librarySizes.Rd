@@ -3,9 +3,15 @@
 \docType{methods}
 \name{librarySizes}
 \alias{librarySizes}
+\alias{librarySizes,CAGEset-method}
+\alias{librarySizes,CAGEexp-method}
 \title{Extracting library sizes from CAGEr objects}
 \usage{
 librarySizes(object)
+
+\S4method{librarySizes}{CAGEset}(object)
+
+\S4method{librarySizes}{CAGEexp}(object)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}

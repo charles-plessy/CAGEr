@@ -3,6 +3,7 @@
 \docType{methods}
 \name{consensusClusters}
 \alias{consensusClusters}
+\alias{consensusClusters,CAGEr-method}
 \alias{consensusClusters<-}
 \alias{consensusClusters<-,CAGEset-method}
 \alias{consensusClusters<-,CAGEexp-method}
@@ -18,6 +19,9 @@ Extracts or inserts the information on consensus clusters from a CAGEr object.}
 \usage{
 consensusClusters(object, sample = NULL, returnInterquantileWidth = FALSE,
   qLow = NULL, qUp = NULL)
+
+\S4method{consensusClusters}{CAGEr}(object, sample = NULL,
+  returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
 
 consensusClusters(object) <- value
 

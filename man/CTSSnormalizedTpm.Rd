@@ -3,18 +3,39 @@
 \docType{methods}
 \name{CTSSnormalizedTpm}
 \alias{CTSSnormalizedTpm}
+\alias{CTSSnormalizedTpm,CAGEset-method}
+\alias{CTSSnormalizedTpm,CAGEexp-method}
 \alias{CTSSnormalizedTpmDf}
+\alias{CTSSnormalizedTpmDf,CAGEset-method}
+\alias{CTSSnormalizedTpmDf,CAGEexp-method}
 \alias{CTSSnormalizedTpmDF}
+\alias{CTSSnormalizedTpmDF,CAGEset-method}
+\alias{CTSSnormalizedTpmDF,CAGEexp-method}
 \alias{CTSSnormalizedTpmGR}
+\alias{CTSSnormalizedTpmGR,CAGEr-method}
 \title{Extracting normalized CAGE signal for TSSs from CAGEr objects}
 \usage{
 CTSSnormalizedTpm(object)
 
+\S4method{CTSSnormalizedTpm}{CAGEset}(object)
+
+\S4method{CTSSnormalizedTpm}{CAGEexp}(object)
+
 CTSSnormalizedTpmDf(object)
+
+\S4method{CTSSnormalizedTpmDf}{CAGEset}(object)
+
+\S4method{CTSSnormalizedTpmDf}{CAGEexp}(object)
 
 CTSSnormalizedTpmDF(object)
 
+\S4method{CTSSnormalizedTpmDF}{CAGEset}(object)
+
+\S4method{CTSSnormalizedTpmDF}{CAGEexp}(object)
+
 CTSSnormalizedTpmGR(object, sample)
+
+\S4method{CTSSnormalizedTpmGR}{CAGEr}(object, sample)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}

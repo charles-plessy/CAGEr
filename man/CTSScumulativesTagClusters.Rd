@@ -3,12 +3,18 @@
 \docType{methods}
 \name{CTSScumulativesTagClusters}
 \alias{CTSScumulativesTagClusters}
+\alias{CTSScumulativesTagClusters,CAGEset-method}
+\alias{CTSScumulativesTagClusters,CAGEexp-method}
 \alias{CTSScumulativesTagClusters<-}
 \alias{CTSScumulativesTagClusters<-,CAGEset-method}
 \alias{CTSScumulativesTagClusters<-,CAGEexp-method}
 \title{Get/set CTSS cumulative TC data}
 \usage{
 CTSScumulativesTagClusters(object)
+
+\S4method{CTSScumulativesTagClusters}{CAGEset}(object)
+
+\S4method{CTSScumulativesTagClusters}{CAGEexp}(object)
 
 CTSScumulativesTagClusters(object) <- value
 

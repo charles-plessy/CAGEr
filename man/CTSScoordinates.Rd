@@ -3,7 +3,11 @@
 \docType{methods}
 \name{CTSScoordinates}
 \alias{CTSScoordinates}
+\alias{CTSScoordinates,CAGEset-method}
+\alias{CTSScoordinates,CAGEexp-method}
 \alias{CTSScoordinatesGR}
+\alias{CTSScoordinatesGR,CAGEset-method}
+\alias{CTSScoordinatesGR,CAGEexp-method}
 \alias{CTSScoordinatesGR}
 \alias{CTSScoordinatesGR<-,CAGEset-method}
 \alias{CTSScoordinatesGR<-,CAGEexp-method}
@@ -14,7 +18,15 @@
 \usage{
 CTSScoordinates(object)
 
+\S4method{CTSScoordinates}{CAGEset}(object)
+
+\S4method{CTSScoordinates}{CAGEexp}(object)
+
 CTSScoordinatesGR(object)
+
+\S4method{CTSScoordinatesGR}{CAGEset}(object)
+
+\S4method{CTSScoordinatesGR}{CAGEexp}(object)
 
 CTSScoordinatesGR(object) <- value
 

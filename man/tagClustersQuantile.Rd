@@ -4,7 +4,11 @@
 \name{tagClustersQuantile}
 \alias{tagClustersQuantile}
 \alias{tagClustersQuantileLow}
+\alias{tagClustersQuantileLow,CAGEset-method}
+\alias{tagClustersQuantileLow,CAGEexp-method}
 \alias{tagClustersQuantileUp}
+\alias{tagClustersQuantileUp,CAGEset-method}
+\alias{tagClustersQuantileUp,CAGEexp-method}
 \alias{tagClustersQuantileLow<-}
 \alias{tagClustersQuantileLow<-,CAGEset-method}
 \alias{tagClustersQuantileLow<-,CAGEexp-method}
@@ -15,7 +19,15 @@
 \usage{
 tagClustersQuantileLow(object, samples = NULL)
 
+\S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL)
+
+\S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL)
+
 tagClustersQuantileUp(object, samples = NULL)
+
+\S4method{tagClustersQuantileUp}{CAGEset}(object, samples = NULL)
+
+\S4method{tagClustersQuantileUp}{CAGEexp}(object, samples = NULL)
 
 tagClustersQuantileLow(object) <- value
 

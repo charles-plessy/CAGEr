@@ -3,9 +3,21 @@
 \docType{methods}
 \name{CTSStagCountTable}
 \alias{CTSStagCountTable}
+\alias{CTSStagCountTable,CAGEset-method}
+\alias{CTSStagCountTable,CAGEexp-method}
+\alias{CTSStagCountSE,CAGEset-method}
+\alias{CTSStagCountSE,CAGEexp-method}
 \title{Extracting CAGE tag count for TSSs from CAGEr objects}
 \usage{
 CTSStagCountTable(object)
+
+\S4method{CTSStagCountTable}{CAGEset}(object)
+
+\S4method{CTSStagCountTable}{CAGEexp}(object)
+
+\S4method{CTSStagCountSE}{CAGEset}(object)
+
+\S4method{CTSStagCountSE}{CAGEexp}(object)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}

@@ -26,8 +26,6 @@
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' genomeName(exampleCAGEset)
 #' 
-#' @docType methods
-#' @rdname genomeName
 #' @export
 
 setGeneric(
@@ -36,17 +34,22 @@ def=function(object){
 	standardGeneric("genomeName")
 })
 
+#' @rdname genomeName
+
 setMethod("genomeName",
 signature(object = "CAGEset"),
 function (object){
 	object@genomeName
 })
 
+#' @rdname genomeName
+
 setMethod("genomeName",
 signature(object = "CAGEexp"),
 function (object){
  metadata(object)$genomeName
 })
+
 
 #' @name inputFiles
 #' 
@@ -67,7 +70,6 @@ function (object){
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' inputFiles(exampleCAGEset)
 #' 
-#' @docType methods
 #' @export
 
 setGeneric(
@@ -76,17 +78,22 @@ def=function(object){
 	standardGeneric("inputFiles")
 })
 
+#' @rdname inputFiles
+
 setMethod("inputFiles",
 signature(object = "CAGEset"),
 function (object){
 	object@inputFiles
 })
 
+#' @rdname inputFiles
+
 setMethod("inputFiles",
 signature(object = "CAGEexp"),
 function (object){
   object$inputFiles
 })
+
 
 #' @name inputFilesType
 #'
@@ -145,7 +152,6 @@ function (object){
 #' inputFilesType(exampleCAGEset)
 #' 
 #' @family CAGEr accessor methods
-#' @docType methods
 #' @export
 
 setGeneric(
@@ -154,11 +160,15 @@ def=function(object){
 	standardGeneric("inputFilesType")
 })
 
+#' @rdname inputFilesType
+
 setMethod("inputFilesType",
 signature(object = "CAGEset"),
 function (object){
 	object@inputFilesType
 })
+
+#' @rdname inputFilesType
 
 setMethod("inputFilesType",
 signature(object = "CAGEexp"),
@@ -191,7 +201,6 @@ function (object){
 #'
 #' @author Vanja Haberle
 #' @family CAGEr accessor methods
-#' @docType methods
 #' @export
 
 setGeneric(
@@ -200,17 +209,22 @@ def=function(object){
 	standardGeneric("librarySizes")
 })
 
+#' @rdname  librarySizes
+
 setMethod("librarySizes",
 signature(object = "CAGEset"),
 function (object){
 	object@librarySizes
 })
 
+#' @rdname  librarySizes
+
 setMethod("librarySizes",
 signature(object = "CAGEexp"),
 function (object){
   as.integer(object$librarySizes)
 })
+
 
 #' @name CTSScoordinates
 #' 
@@ -234,7 +248,6 @@ function (object){
 #'
 #' @author Vanja Haberle
 #' @family CAGEr accessor methods
-#' @docType methods
 #' @export
 
 setGeneric(
@@ -243,11 +256,15 @@ def=function(object){
 	standardGeneric("CTSScoordinates")
 })
 
+#' @rdname CTSScoordinates
+
 setMethod("CTSScoordinates",
 signature(object = "CAGEset"),
 function (object){
 	object@CTSScoordinates
 })
+
+#' @rdname CTSScoordinates
 
 setMethod("CTSScoordinates",
 signature(object = "CAGEexp"),
@@ -258,6 +275,7 @@ function (object){
             , strand = as.character(strand(gr))
             , stringsAsFactors = FALSE)
 })
+
 
 #' @name CTSScoordinatesGR
 #' @rdname CTSScoordinates
@@ -284,6 +302,8 @@ def=function(object){
 	standardGeneric("CTSScoordinatesGR")
 })
 
+#' @rdname CTSScoordinates
+
 setMethod("CTSScoordinatesGR",
 signature(object = "CAGEset"),
 function (object){
@@ -295,11 +315,14 @@ function (object){
   ctssCoord
 })
 
+#' @rdname CTSScoordinates
+
 setMethod("CTSScoordinatesGR",
 signature(object = "CAGEexp"),
 function (object){
   rowRanges(CTSStagCountSE(object))
 })
+
 
 #' @name CTSStagCount
 #' 
@@ -352,7 +375,6 @@ function (object){
 #' 
 #' @family CAGEr accessor methods
 #' @family CAGEr CTSS methods
-#' @docType methods
 #' @export
 
 setGeneric(
@@ -361,11 +383,15 @@ def=function(object){
 	standardGeneric("CTSStagCount")
 })
 
+#' @rdname CTSStagCount
+
 setMethod("CTSStagCount",
 signature(object = "CAGEset"),
 function (object){
 	cbind(object@CTSScoordinates, object@tagCountMatrix)
 })
+
+#' @rdname CTSStagCount
 
 setMethod("CTSStagCount",
 signature(object = "CAGEexp"),
@@ -373,6 +399,7 @@ function (object){
   cbind( CTSScoordinates(object)
        , as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer)))
 })
+
 
 #' @name CTSStagCountDf
 #' @rdname CTSStagCount
@@ -385,17 +412,22 @@ def=function(object){
 	standardGeneric("CTSStagCountDf")
 })
 
+#' @rdname CTSStagCount
+
 setMethod("CTSStagCountDf",
 signature(object = "CAGEset"),
 function (object){
 	object@tagCountMatrix
 })
 
+#' @rdname CTSStagCount
+
 setMethod("CTSStagCountDf",
 signature(object = "CAGEexp"),
 function (object){
   as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer))
 })
+
 
 #' @name CTSStagCountDF
 #' @rdname CTSStagCount
@@ -408,6 +440,8 @@ def=function(object){
 	standardGeneric("CTSStagCountDF")
 })
 
+#' @rdname CTSStagCount
+
 setMethod("CTSStagCountDF",
 signature(object = "CAGEset"),
 function (object){
@@ -416,6 +450,8 @@ function (object){
 	DF <- lapply(DF, Rle)
 	DataFrame(DF)
 })
+
+#' @rdname CTSStagCount
 
 setMethod("CTSStagCountDF",
 signature(object = "CAGEexp"),
@@ -436,11 +472,16 @@ def=function(object){
 	standardGeneric("CTSStagCountDA")
 })
 
+#' @rdname CTSStagCount
+
 setMethod("CTSStagCountDA",
 signature(object = "CAGEr"),
 function (object){
   DelayedArray(CTSStagCountDF(object))
 })
+
+#' @rdname CTSStagCount
+
 
 #' @name CTSStagCountGR
 #' @rdname CTSStagCount
@@ -448,6 +489,8 @@ function (object){
 #' @export
 
 setGeneric("CTSStagCountGR", function(object, sample) standardGeneric("CTSStagCountGR"))
+
+#' @rdname CTSStagCount
 
 setMethod( "CTSStagCountGR", "CAGEr", function (object, sample) {
   if (! (sample %in% sampleLabels(object) |
@@ -458,6 +501,7 @@ setMethod( "CTSStagCountGR", "CAGEr", function (object, sample) {
   gr <- gr[score(gr) != 0]
   gr
 })
+
 
 #' @name CTSStagCountTable
 #' 
@@ -482,7 +526,6 @@ setMethod( "CTSStagCountGR", "CAGEr", function (object, sample) {
 #' 
 #' @author Vanja Haberle
 #' @family CAGEr accessor methods
-#' @docType methods
 #' @export
 
 setGeneric(
@@ -491,15 +534,20 @@ def=function(object){
 	standardGeneric("CTSStagCountTable")
 })
 
+#' @rdname CTSStagCountTable
+
 setMethod("CTSStagCountTable",
 signature(object = "CAGEset"),
   function(object) CTSStagCountDf(object)
 )
 
+#' @rdname CTSStagCountTable
+
 setMethod("CTSStagCountTable",
 signature(object = "CAGEexp"),
   function(object) CTSStagCountDF(object)
 )
+
 
 #' @name CTSStagCountSE
 #' @rdname CTSStagCount
@@ -511,6 +559,8 @@ name="CTSStagCountSE",
 def=function(object){
 	standardGeneric("CTSStagCountSE")
 })
+
+#' @rdname CTSStagCountTable
 
 setMethod("CTSStagCountSE",
 signature(object = "CAGEset"),
@@ -527,11 +577,14 @@ function (object){
 	                      , colData = colData)
 })
 
+#' @rdname CTSStagCountTable
+
 setMethod("CTSStagCountSE",
 signature(object = "CAGEexp"),
 function (object){
   experiments(object)$tagCountMatrix
 })
+
 
 #' @name CTSSnormalizedTpm
 #' 
@@ -558,7 +611,6 @@ function (object){
 #' 
 #' @author Vanja Haberle
 #' @family CAGEr accessor methods
-#' @docType methods
 #' @export
 
 setGeneric(
@@ -567,11 +619,15 @@ def=function(object){
 	standardGeneric("CTSSnormalizedTpm")
 })
 
+#' @rdname CTSSnormalizedTpm
+
 setMethod("CTSSnormalizedTpm",
 signature(object = "CAGEset"),
 function (object){
 	cbind(object@CTSScoordinates, object@normalizedTpmMatrix)
 })
+
+#' @rdname CTSSnormalizedTpm
 
 setMethod("CTSSnormalizedTpm",
 signature(object = "CAGEexp"),
@@ -579,6 +635,7 @@ function (object){
   cbind( CTSScoordinates(object)
        , data.frame(lapply(assays(CTSStagCountSE(object))[["normalizedTpmMatrix"]], decode)))
 })
+
 
 #' @name CTSSnormalizedTpmDf
 #' @rdname CTSSnormalizedTpm
@@ -601,17 +658,22 @@ def=function(object){
 	standardGeneric("CTSSnormalizedTpmDf")
 })
 
+#' @rdname CTSSnormalizedTpm
+
 setMethod("CTSSnormalizedTpmDf",
 signature(object = "CAGEset"),
 function (object){
 	object@normalizedTpmMatrix
 })
 
+#' @rdname CTSSnormalizedTpm
+
 setMethod("CTSSnormalizedTpmDf",
 signature(object = "CAGEexp"),
 function (object){
   data.frame(lapply(assays(CTSStagCountSE(object))[["normalizedTpmMatrix"]], decode))
 })
+
 
 #' @name CTSSnormalizedTpmDF
 #' @rdname CTSSnormalizedTpm
@@ -628,6 +690,8 @@ def=function(object){
 	standardGeneric("CTSSnormalizedTpmDF")
 })
 
+#' @rdname CTSSnormalizedTpm
+
 setMethod("CTSSnormalizedTpmDF",
 signature(object = "CAGEset"),
 function (object){
@@ -635,6 +699,8 @@ function (object){
 	DF <- lapply(DF, Rle)
 	DataFrame(DF)
 })
+
+#' @rdname CTSSnormalizedTpm
 
 setMethod("CTSSnormalizedTpmDF",
 signature(object = "CAGEexp"),
@@ -651,6 +717,8 @@ function (object){
 #' @export
 
 setGeneric("CTSSnormalizedTpmGR", function(object, sample) standardGeneric("CTSSnormalizedTpmGR"))
+
+#' @rdname CTSSnormalizedTpm
 
 setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, sample) {
   if (! (sample %in% sampleLabels(object) |
@@ -690,11 +758,15 @@ def=function(object){
 	standardGeneric("CTSSclusteringMethod")
 })
 
+#' @rdname CTSSclusteringMethod
+
 setMethod("CTSSclusteringMethod",
 signature(object = "CAGEset"),
 function (object){
 	object@clusteringMethod
 })
+
+#' @rdname CTSSclusteringMethod
 
 setMethod("CTSSclusteringMethod",
 signature(object = "CAGEexp"),
@@ -784,6 +856,8 @@ setGeneric( "tagClusters"
   standardGeneric("tagClusters")
 })
 
+#' @rdname tagClusters
+
 setMethod("tagClusters", "CAGEr", function (object, sample, returnInterquantileWidth, qLow, qUp){
   if (is.null(sample)) {
     tc.list <- lapply(sampleLabels(object), tagClusters, object = object, returnInterquantileWidth = returnInterquantileWidth, qLow = qLow, qUp = qUp)
@@ -847,10 +921,14 @@ setGeneric("tagClustersQuantileLow", function(object, samples = NULL) {
   standardGeneric("tagClustersQuantileLow")
 })
 
+#' @rdname tagClustersQuantile
+
 setMethod("tagClustersQuantileLow", "CAGEset", function (object, samples) {
 	if (is.null(samples)) return(object@tagClustersQuantileLow)
   object@tagClustersQuantileLow[[samples]]
 })
+
+#' @rdname tagClustersQuantile
 
 setMethod("tagClustersQuantileLow", "CAGEexp", function (object, samples) {
   if (is.null(samples)) return(metadata(object)$tagClustersQuantileLow)
@@ -866,10 +944,14 @@ setGeneric("tagClustersQuantileUp", function(object, samples = NULL) {
   standardGeneric("tagClustersQuantileUp")
 })
 
+#' @rdname tagClustersQuantile
+
 setMethod("tagClustersQuantileUp", "CAGEset", function (object, samples) {
   if (is.null(samples)) return(object@tagClustersQuantileUp)
   object@tagClustersQuantileUp[[samples]]
 })
+
+#' @rdname tagClustersQuantile
 
 setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples) {
   if (is.null(samples)) return(metadata(object)$tagClustersQuantileUp)
@@ -953,8 +1035,12 @@ setMethod("consensusClustersSE", "CAGEexp", function (object)
 setGeneric( "consensusClustersDESeq2"
           , function(object, design) standardGeneric("consensusClustersDESeq2"))
 
+#' @rdname consensusClustersDESeq2
+
 setMethod( "consensusClustersDESeq2", "CAGEset"
          , function (object, design) stop("Not implemented for the CAGEset class."))
+
+#' @rdname consensusClustersDESeq2
 
 setMethod( "consensusClustersDESeq2", "CAGEexp"
          , function (object, design) {
@@ -1017,6 +1103,8 @@ name="consensusClusters",
 def=function(object, sample=NULL, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
     standardGeneric("consensusClusters")
 })
+
+#' @rdname consensusClusters
 
 setMethod("consensusClusters",
 signature(object = "CAGEr"),
@@ -1082,16 +1170,19 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
 
 setGeneric("CTSScumulativesTagClusters", function(object) standardGeneric("CTSScumulativesTagClusters"))
 
+#' @rdname CTSScumulativesTagClusters
+
 setMethod("CTSScumulativesTagClusters", "CAGEset", function (object){
 	object@CTSScumulativesTagClusters
 })
+
+#' @rdname CTSScumulativesTagClusters
 
 setMethod("CTSScumulativesTagClusters", "CAGEexp", function (object){
   metadata(object)$CTSScumulativesTagClusters
 })
 
 #' @name consensusClustersTpm
-#' @aliases consensusClustersTpm consensusClustersTpmDf consensusClustersTpmDF
 #' 
 #' @title Extracting consensus clusters tpm matrix from CAGEset object
 #' 
@@ -1127,17 +1218,17 @@ setMethod("CTSScumulativesTagClusters", "CAGEexp", function (object){
 #' 
 #' @export consensusClustersTpm
 
-setGeneric(
-name="consensusClustersTpm",
-def=function(object){
-	standardGeneric("consensusClustersTpm")
-})
+setGeneric("consensusClustersTpm", function(object) standardGeneric("consensusClustersTpm"))
+
+#' @rdname consensusClustersTpm
 
 setMethod("consensusClustersTpm",
 signature(object = "CAGEset"),
 function (object){
 	object@consensusClustersTpmMatrix
 })
+
+#' @rdname consensusClustersTpm
 
 setMethod("consensusClustersTpm",
 signature(object = "CAGEexp"),
@@ -1146,47 +1237,40 @@ function (object){
   as.matrix(assays(consensusClustersSE)[["normalized"]])
 })
 
-#' @export consensusClustersTpmDf
 
-setGeneric(
-name="consensusClustersTpmDf",
-def=function(object){
-	standardGeneric("consensusClustersTpmDf")
-})
+#' @name consensusClustersTpmDf
+#' @rdname consensusClustersTpm
+#' @export
 
-setMethod("consensusClustersTpmDf",
-signature(object = "CAGEset"),
-function (object){
-	as.data.frame(object@consensusClustersTpmMatrix)
-})
+setGeneric("consensusClustersTpmDf", function(object) standardGeneric("consensusClustersTpmDf"))
 
-setMethod("consensusClustersTpmDf",
-signature(object = "CAGEexp"),
-function (object){
+#' @rdname consensusClustersTpm
+
+setMethod("consensusClustersTpmDf", "CAGEset", function (object)
+	as.data.frame(object@consensusClustersTpmMatrix))
+
+#' @rdname consensusClustersTpm
+
+setMethod("consensusClustersTpmDf", "CAGEexp", function (object) {
   consensusClustersSE <- object[["consensusClusters"]]
   as.data.frame(assays(consensusClustersSE)[["normalized"]])
 })
 
-#' @export consensusClustersTpmDF
 
-setGeneric(
-name="consensusClustersTpmDF",
-def=function(object){
-	standardGeneric("consensusClustersTpmDF")
-})
+#' @name consensusClustersTpmDF
+#' @rdname consensusClustersTpm
+#' @export
 
-setMethod("consensusClustersTpmDF",
-signature(object = "CAGEset"),
-function (object){
-	DataFrame(object@consensusClustersTpmMatrix)
-})
+setGeneric("consensusClustersTpmDF", function(object) standardGeneric("consensusClustersTpmDF"))
 
-setMethod("consensusClustersTpmDF",
-signature(object = "CAGEexp"),
-function (object){
+setMethod("consensusClustersTpmDF", "CAGEset", function (object)
+	DataFrame(object@consensusClustersTpmMatrix))
+
+setMethod("consensusClustersTpmDF", "CAGEexp", function (object) {
   consensusClustersSE <- object[["consensusClusters"]]
   assays(consensusClustersSE)[["normalized"]]
 })
+
 
 #' @name expressionClasses
 #' 
@@ -1217,11 +1301,9 @@ function (object){
 #' 
 #' @export
 
-setGeneric(
-name="expressionClasses",
-def=function(object, what){
-	standardGeneric("expressionClasses")
-})
+setGeneric("expressionClasses", function(object, what) standardGeneric("expressionClasses"))
+
+#' @rdname expressionClasses
 
 setMethod("expressionClasses",
 signature(object = "CAGEset"),
@@ -1292,23 +1374,14 @@ setMethod("consensusClustersExpressionClusteringMethod", "CAGEexp", function (ob
 #' @noRd
 #' @export
 
-setGeneric(
-name="GeneExpSE",
-def=function(object){
-	standardGeneric("GeneExpSE")
-})
+setGeneric("GeneExpSE", function(object) standardGeneric("GeneExpSE"))
 
-setMethod("GeneExpSE",
-signature(object = "CAGEset"),
-function (object){
-	stop("Not implemented for the CAGEset class.")
-})
+setMethod("GeneExpSE", "CAGEset", function (object)
+	stop("Not implemented for the CAGEset class."))
 
-setMethod("GeneExpSE",
-signature(object = "CAGEexp"),
-function (object){
-  experiments(object)$geneExpMatrix
-})
+setMethod("GeneExpSE", "CAGEexp", function (object)
+  experiments(object)$geneExpMatrix)
+
 
 #' @name GeneExpDESeq2
 #' 
@@ -1339,8 +1412,12 @@ function (object){
 setGeneric( "GeneExpDESeq2"
           , function(object, design) standardGeneric("GeneExpDESeq2"))
 
+#' @rdname GeneExpDESeq2
+
 setMethod( "GeneExpDESeq2", "CAGEset"
          , function (object, design) stop("Not implemented for the CAGEset class."))
+
+#' @rdname GeneExpDESeq2
 
 setMethod( "GeneExpDESeq2", "CAGEexp"
          , function (object, design) {
@@ -1351,33 +1428,3 @@ setMethod( "GeneExpDESeq2", "CAGEexp"
                                 , rowData   = rowData(GeneExpSE(object))
                                 , design    = design)
 })
-
-
-#' turn into tagClustersSE
-#' 
-#' 
-#' #' CTSStagCountSE
-#' #' 
-#' #' Same as CTSStagCount, but as SummarizedExperiment
-#' #' 
-#' #' @noRd
-#' #' @export
-#' 
-#' setGeneric(
-#' name="CTSStagCountSE",
-#' def=function(object){
-#' 	standardGeneric("CTSStagCountSE")
-#' })
-#' 
-#' setMethod("CTSStagCountSE",
-#' signature(object = "CAGEset"),
-#' function (object){
-#' 	  colData <- data.frame(row.names = sampleLabels(object), samplename = sampleLabels(object), samplecolor = names(sampleLabels(object)))
-#'     SummarizedExperiment(assays = list(counts=CTSStagCountDF(object)), rowData = CTSScoordinatesGR(object), colData = colData)
-#' })
-#' 
-#' setMethod("CTSStagCountSE",
-#' signature(object = "CAGEexp"),
-#' function (object){
-#'   experiments(object)$tagCountMatrix
-#' })

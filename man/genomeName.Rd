@@ -3,12 +3,18 @@
 \docType{methods}
 \name{genomeName}
 \alias{genomeName}
+\alias{genomeName,CAGEset-method}
+\alias{genomeName,CAGEexp-method}
 \alias{genomeName<-}
 \alias{genomeName<-,CAGEset-method}
 \alias{genomeName<-,CAGEexp-method}
 \title{Extracting genome name from CAGEr objects}
 \usage{
 genomeName(object)
+
+\S4method{genomeName}{CAGEset}(object)
+
+\S4method{genomeName}{CAGEexp}(object)
 
 genomeName(object) <- value
 

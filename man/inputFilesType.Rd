@@ -3,12 +3,18 @@
 \docType{methods}
 \name{inputFilesType}
 \alias{inputFilesType}
+\alias{inputFilesType,CAGEset-method}
+\alias{inputFilesType,CAGEexp-method}
 \alias{inputFilesType<-}
 \alias{inputFilesType<-,CAGEset-method}
 \alias{inputFilesType<-,CAGEexp-method}
 \title{Input file formats for CAGEr objects}
 \usage{
 inputFilesType(object)
+
+\S4method{inputFilesType}{CAGEset}(object)
+
+\S4method{inputFilesType}{CAGEexp}(object)
 
 inputFilesType(object) <- value
 

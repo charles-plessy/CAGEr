@@ -3,22 +3,46 @@
 \docType{methods}
 \name{CTSStagCount}
 \alias{CTSStagCount}
+\alias{CTSStagCount,CAGEset-method}
+\alias{CTSStagCount,CAGEexp-method}
 \alias{CTSStagCountDf}
+\alias{CTSStagCountDf,CAGEset-method}
+\alias{CTSStagCountDf,CAGEexp-method}
 \alias{CTSStagCountDF}
+\alias{CTSStagCountDF,CAGEset-method}
+\alias{CTSStagCountDF,CAGEexp-method}
 \alias{CTSStagCountDA}
+\alias{CTSStagCountDA,CAGEr-method}
 \alias{CTSStagCountGR}
+\alias{CTSStagCountGR,CAGEr-method}
 \alias{CTSStagCountSE}
 \title{Extract raw CAGE TSSs expression tables from CAGEr objects}
 \usage{
 CTSStagCount(object)
 
+\S4method{CTSStagCount}{CAGEset}(object)
+
+\S4method{CTSStagCount}{CAGEexp}(object)
+
 CTSStagCountDf(object)
+
+\S4method{CTSStagCountDf}{CAGEset}(object)
+
+\S4method{CTSStagCountDf}{CAGEexp}(object)
 
 CTSStagCountDF(object)
 
+\S4method{CTSStagCountDF}{CAGEset}(object)
+
+\S4method{CTSStagCountDF}{CAGEexp}(object)
+
 CTSStagCountDA(object)
 
+\S4method{CTSStagCountDA}{CAGEr}(object)
+
 CTSStagCountGR(object, sample)
+
+\S4method{CTSStagCountGR}{CAGEr}(object, sample)
 
 CTSStagCountSE(object)
 }
