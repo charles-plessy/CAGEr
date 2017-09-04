@@ -75,12 +75,11 @@
 #' 
 #' @export
 
-setGeneric(
-name="quantilePositions",
-def=function(object, clusters, qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCores = NULL){
-	standardGeneric("quantilePositions")
-}
-)
+setGeneric( "quantilePositions"
+          , function(object, clusters, qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCores = NULL)
+	standardGeneric("quantilePositions"))
+
+#' @rdname quantilePositions
 
 setMethod("quantilePositions",
 signature(object = "CAGEr"),
