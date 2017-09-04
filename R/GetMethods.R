@@ -1365,19 +1365,36 @@ setMethod("consensusClustersExpressionClusteringMethod", "CAGEexp", function (ob
 })
 
 
-#' GeneExpSE
+#' @name GeneExpSE
 #' 
-#' Retreives the SummarizedExperiment containing gene expression levels.
+#' @title Retreives the SummarizedExperiment containing gene expression levels.
 #' 
-#' @family CAGEr gene expression analysis functions
+#' @description Get or set a \code{SummarizedExperiment} using the gene expression
+#' data in the experiment slot \code{geneExpMatrix} and the sample metadata
+#' of the \code{\link{CAGEexp}} object.
 #' 
-#' @noRd
+#' @param object A \code{\link{CAGEexp}} object.
+#' 
+#' @family CAGEr accessor methods
+#' 
+#' @author Charles Plessy
+#' 
+#' @examples 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
+#' CTSStoGenes(ce)
+#' GeneExpSE(ce)
+#' 
 #' @export
 
 setGeneric("GeneExpSE", function(object) standardGeneric("GeneExpSE"))
 
+#' @rdname GeneExpSE
+
 setMethod("GeneExpSE", "CAGEset", function (object)
 	stop("Not implemented for the CAGEset class."))
+
+#' @rdname GeneExpSE
 
 setMethod("GeneExpSE", "CAGEexp", function (object)
   experiments(object)$geneExpMatrix)
@@ -1392,13 +1409,15 @@ setMethod("GeneExpSE", "CAGEexp", function (object)
 #' of the \code{\link{CAGEexp}} object.  The formula must be built using factors
 #' already present in the sample metadata.
 #' 
-#' @param object A CAGEexp object.
+#' @param object A \code{\link{CAGEexp}} object.
 #' @param design A formula for the DESeq2 analysis.
 #' 
 #' @author Charles Plessy
 #' 
 #' @seealso \code{DESeqDataSet} in the \code{DESeq2} package.
+#' 
 #' @family CAGEr gene expression analysis functions
+#' @family CAGEr accessor methods
 #' 
 #' @examples 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
