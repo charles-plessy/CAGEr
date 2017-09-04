@@ -983,7 +983,7 @@ setMethod("consensusClustersGR", "CAGEset", function (object)
   CCdataframe2granges(object@consensusClusters))
 
 setMethod("consensusClustersGR", "CAGEexp", function (object) {
-  if(is.null(experiments(ce)$consensusClusters))
+  if(is.null(experiments(object)$consensusClusters))
     stop("No consensus clusters found.  See ", sQuote("?aggregateTagClusters"), " on how to create them.")
   rowRanges(consensusClustersSE(object))
 })
