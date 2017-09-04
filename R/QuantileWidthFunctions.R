@@ -12,7 +12,7 @@
   getQuantilepos <- function(quant, cumsum) length(Filter(isTRUE, cumsum/max(cumsum) < quant)) + 1
   useMulticore <- .checkMulticore(useMulticore)
 
-	if(length(q) > 0) {
+	if(!is.null(q)) {
 		if(useMulticore == TRUE){
 			cluster.q = mclapply(cluster.cumsums, function(x) {sapply(q, getQuantilepos, x)}, mc.cores = .getNrCores(nrCores))
 		}else{
