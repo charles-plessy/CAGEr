@@ -44,20 +44,6 @@ their score is aboove threshold (default = \code{Inf}).}
 
 \item{se}{A \code{\link{SummarizedExperiment}} object representing the CTSSes and
 their expression in each sample.}
-
-\item{max.dist}{See \code{\link{clusterCTSS}}.}
-
-\item{max.dist}{See \code{\link{clusterCTSS}}.}
-
-\item{max.dist}{See \code{\link{clusterCTSS}}.}
-
-\item{removeSingletons}{Remove \dQuote{singleton} clusters that span only a single
-nucleotide ? (default = FALSE).}
-
-\item{keepSingletonsAbove}{Even if \code{removeSingletons = TRUE}, keep singletons when
-their score is aboove threshold (default = \code{Inf}).}
-
-\item{useMulticore, nrCores}{See clusterCTSS.}
 }
 \value{
 \code{.cluster.ctss.strand} returns an \code{\link{data.table}} object containing

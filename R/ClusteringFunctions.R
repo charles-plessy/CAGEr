@@ -8,6 +8,9 @@
 #' 
 #' @title Private functions for distance clustering.
 #' 
+#' @param max.dist See \code{\link{clusterCTSS}}.
+#' @param useMulticore,nrCores See clusterCTSS.
+#' 
 #' @description The flow of data is that a \code{GRanges} object of CTSSes is progressively
 #' deconstructed, and data to form the clusters is progressively integrated in a
 #' \code{\link{data.table}} object, which is finally converted to GRanges at the end.  Doing
@@ -24,13 +27,13 @@ NULL
 #' attention that the output is sorted}.
 #' 
 #' @param ctss.iranges.chr A IRanges object.
-#' @param max.dist See \code{\link{clusterCTSS}}.
 #' 
 #' @return \code{.cluster.ctss.strand} returns an \code{\link{data.table}} object containing
 #'  arbitrary cluster IDs (as integers) for each CTSS.
 #'  
 #' @importFrom data.table data.table
 #' @importFrom S4Vectors queryHits
+#' @importFrom S4Vectors runLength
 #' @importFrom S4Vectors subjectHits
 #' 
 #' @examples
@@ -75,7 +78,6 @@ setMethod(".cluster.ctss.strand", "IRanges", function(ctss.iranges.chr, max.dist
 #' not look at the score.
 #' 
 #' @param ctss.chr A CTSS.chr object.
-#' @param max.dist See \code{\link{clusterCTSS}}.
 #' 
 #' @return \code{.cluster.ctss.chr} returns a \code{\link{data.table}} object representing the
 #' chromosome coordinates (\code{chr}, \code{pos}, \code{strand}) of each CTSS, with their
@@ -110,8 +112,6 @@ setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
 #' @description \code{.ctss2clusters} does the stranded distance clustering of CTSS.
 #' 
 #' @param ctss A CTSS object with a score column.
-#' @param max.dist See \code{\link{clusterCTSS}}.
-#' @param useMulticore,nrCores See clusterCTSS.
 #' 
 #' @return \code{.ctss2clusters} returns a \code{\link{data.table}} object representing the
 #' cluster ID (\code{id}), chromosome coordinates (\code{chr}, \code{pos}, \code{strand}) and
@@ -170,6 +170,7 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
 #'        nucleotide ? (default = FALSE).
 #' @param keepSingletonsAbove Even if \code{removeSingletons = TRUE}, keep singletons when
 #'        their score is aboove threshold (default = \code{Inf}).
+#' 
 #' @return \code{.summarize.clusters} returns GRanges describing the clusters.
 #' 
 #' @importFrom data.table setnames
@@ -232,13 +233,7 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
 #' 
 #' @param se A \code{\link{SummarizedExperiment}} object representing the CTSSes and
 #'        their expression in each sample.
-#' @param max.dist See \code{\link{clusterCTSS}}.
-#' @param removeSingletons Remove \dQuote{singleton} clusters that span only a single
-#'        nucleotide ? (default = FALSE).
-#' @param keepSingletonsAbove Even if \code{removeSingletons = TRUE}, keep singletons when
-#'        their score is aboove threshold (default = \code{Inf}).
-#' @param useMulticore,nrCores See clusterCTSS.
-#'        
+#'         
 #' @return \code{.distclu} returns GRanges describing the clusters.
 #' 
 #' @importFrom SummarizedExperiment rowRanges
