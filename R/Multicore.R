@@ -32,3 +32,6 @@
 	}
 	useMulticore
 }
+
+.getNrCores <- function(nrCores)
+  ifelse(is.null(nrCores), detectCores(), nrCores)

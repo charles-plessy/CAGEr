@@ -10,14 +10,11 @@
 .get.quant.pos <- function(cluster.cumsums, coors, q = NULL, useMulticore = FALSE, nrCores = NULL) {
 	
   getQuantilepos <- function(quant, cumsum) length(Filter(isTRUE, cumsum/max(cumsum) < quant)) + 1
-  
+  useMulticore <- .checkMulticore(useMulticore)
+
 	if(length(q) > 0) {
-		useMulticore <- .checkMulticore(useMulticore)
 		if(useMulticore == TRUE){
-			if(is.null(nrCores)){
-				nrCores <- detectCores()
-			}					
-			cluster.q = mclapply(cluster.cumsums, function(x) {sapply(q, getQuantilepos, x)}, mc.cores = nrCores)
+			cluster.q = mclapply(cluster.cumsums, function(x) {sapply(q, getQuantilepos, x)}, mc.cores = .getNrCores(nrCores))
 		}else{
 			cluster.q = lapply(cluster.cumsums, function(x) {sapply(q, getQuantilepos, x)})
 		}
