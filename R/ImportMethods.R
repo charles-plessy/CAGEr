@@ -515,6 +515,8 @@ parseCAGEscanBlocksToGrangeTSS <- function (blocks) {
 #' 
 #' @seealso parseCAGEscanBlocksToGrangeTSS
 #' 
+#' @importFrom GenomicRanges GRangesList
+#' 
 #' @examples
 #' # TODO import.CAGEscanMolecule(system.file("extdata", "example.molecule.txt", package = "CAGEr"))
 #' 

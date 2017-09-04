@@ -237,6 +237,7 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
 #'         
 #' @return \code{.distclu} returns GRanges describing the clusters.
 #' 
+#' @importFrom GenomicRanges GRangesList
 #' @importFrom SummarizedExperiment rowRanges
 #' @importFrom parallel detectCores
 #' 
