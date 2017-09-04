@@ -255,6 +255,47 @@ setMethod("consensusClusters<-", "CAGEexp", function (object, value){
 })
 
 
+#' @name consensusClustersQuantileLow<-
+#' @rdname consensusClustersQuantile
+
+setGeneric("consensusClustersQuantileLow<-", function(object, value) standardGeneric("consensusClustersQuantileLow<-"))
+
+#' @rdname consensusClustersQuantile
+
+setMethod("consensusClustersQuantileLow<-", "CAGEset", function (object, value){
+	object@consensusClustersQuantileLow <- value
+	if (validObject(object)) object
+})
+
+#' @rdname consensusClustersQuantile
+
+setMethod("consensusClustersQuantileLow<-", "CAGEexp", function (object, value){
+  metadata(object)$consensusClustersQuantileLow <- value
+  if (validObject(object)) object
+})
+
+
+#' @name consensusClustersQuantileUp<-
+#' @rdname consensusClustersQuantile
+
+setGeneric("consensusClustersQuantileUp<-", function(object, value) standardGeneric("consensusClustersQuantileUp<-"))
+
+#' @rdname consensusClustersQuantile
+
+setMethod("consensusClustersQuantileUp<-", "CAGEset", function (object, value){
+	object@consensusClustersQuantileUp <- value
+  if (validObject(object)) object
+})
+
+#' @rdname consensusClustersQuantile
+
+setMethod("consensusClustersQuantileUp<-", "CAGEexp", function (object, value){
+  metadata(object)$consensusClustersQuantileUp <- value
+  if (validObject(object)) object
+})
+
+
+
 #' @name `CTSScumulativesCC<-`
 #' @noRd
 
