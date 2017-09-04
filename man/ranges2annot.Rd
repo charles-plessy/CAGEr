@@ -28,6 +28,7 @@ in.  This is currently hardcoded in the function; see its source code.  Example
 of biotypes without a promoter: VDJ segments, etc.
 }
 \examples{
+library(SummarizedExperiment)
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 CTSScoordinatesGR(ce)$annotation <- ranges2annot(CTSScoordinatesGR(ce), gff)

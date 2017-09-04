@@ -46,6 +46,7 @@ annotation statistics.
 of a CAGEr object.
 }
 \examples{
+library(SummarizedExperiment)
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 annotateCTSS(ce, gff)

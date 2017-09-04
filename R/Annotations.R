@@ -137,6 +137,7 @@ setMethod("plotAnnot", "CAGEexp",
 #' @seealso plotAnnot
 #' 
 #' @examples
+#' library(SummarizedExperiment)
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 #' annotateCTSS(ce, gff)
@@ -308,6 +309,7 @@ mapStats <- function( libs
 #' @author Charles Plessy
 #' 
 #' @examples 
+#' library(SummarizedExperiment)
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 #' annotateCTSS(ce, gff)
@@ -411,6 +413,7 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' @author Charles Plessy
 #' 
 #' @examples
+#' library(SummarizedExperiment)
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 #' CTSScoordinatesGR(ce)$annotation <- ranges2annot(CTSScoordinatesGR(ce), gff)

@@ -47,6 +47,7 @@ The \dQuote{mapped} and \dQuote{counts} scopes assume that transcript counts are
 See the plotAnnot vignette for details on what the scopes are.
 }
 \examples{
+library(SummarizedExperiment)
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
 annotateCTSS(ce, gff)
