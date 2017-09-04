@@ -55,7 +55,7 @@ and \code{tagCountMatrix} will be occupied by the information on CTSSs created f
 files.  For \code{\link{CAGEexp}} objects, the \code{tagCountMatrix} experiment will be
 occupied by a \code{SummarizedExperiment} containing the expression data as a \code{DataFrame}
 of \code{Rle} integers, and the CTSS coordinates as a \code{GRanges} object.  In both cases
-the expression data can be retreived with \code{\link{CTSStagCount*}} functions.  In addition,
+the expression data can be retreived with \code{\link{CTSStagCount}} functions.  In addition,
 the library sizes are calculated and stored in the object.
 }
 \description{
