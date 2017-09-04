@@ -12,6 +12,8 @@
 #' 
 #' @noRd
 #' 
+#' @importFrom parallel mclapply
+#' 
 #' @examples 
 #' useMulticore <- CAGEr:::.checkMulticore(useMulticore)
 
