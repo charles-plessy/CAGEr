@@ -5,6 +5,8 @@
 \alias{inputFiles}
 \alias{inputFiles}
 \alias{inputFiles<-}
+\alias{inputFiles<-,CAGEset}
+\alias{inputFiles<-,CAGEexp}
 \title{Extracting paths to input files from CAGEr objects}
 \usage{
 inputFiles(object)
@@ -13,6 +15,8 @@ inputFiles(object) <- value
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
+
+\item{value}{A character vector with one file path per sample.}
 }
 \value{
 Returns a character vector of paths to CAGE data input files.

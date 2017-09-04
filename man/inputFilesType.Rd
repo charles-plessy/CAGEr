@@ -5,6 +5,8 @@
 \alias{inputFilesType}
 \alias{inputFilesType}
 \alias{inputFilesType<-}
+\alias{inputFilesType<-,CAGEset}
+\alias{inputFilesType<-,CAGEr}
 \title{Input file formats for CAGEr objects}
 \usage{
 inputFilesType(object)
@@ -13,6 +15,8 @@ inputFilesType(object) <- value
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
+
+\item{value}{A character vector with one file type per sample.}
 }
 \value{
 Returns the type of the file format of CAGE data input files,

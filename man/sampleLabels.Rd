@@ -5,6 +5,9 @@
 \alias{sampleLabels}
 \alias{sampleLabels}
 \alias{sampleLabels<-}
+\alias{sampleLabels<-,CAGEset}
+\alias{sampleLabels<-,CAGEexp}
+\alias{sampleLabels<-,CAGEer-method}
 \title{Extracting CAGE datasets labels from CAGEr objects}
 \usage{
 sampleLabels(object)
@@ -13,6 +16,9 @@ sampleLabels(object) <- value
 }
 \arguments{
 \item{object}{A CAGEr object.}
+
+\item{value}{A character vector with a unique and valid name for each sample.
+the \code{names} attributes indicate the colors.}
 }
 \value{
 Returns a named character vector of labels of all CAGE datasets

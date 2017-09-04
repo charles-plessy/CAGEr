@@ -4,7 +4,7 @@
 \alias{ranges2annot}
 \title{ranges2annot}
 \usage{
-ranges2annot(ranges, annot, showClasses = NULL)
+ranges2annot(ranges, annot)
 }
 \arguments{
 \item{ranges}{The Genomics Ranges object, for example extracted from a

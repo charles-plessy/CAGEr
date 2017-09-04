@@ -264,7 +264,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
   ctss.cluster.list <- list()
   for(s in colnames(se)) {
     message("\t-> ", s)
-    d <- CAGEr:::.CTSS(rowRanges(se))
+    d <- .CTSS(rowRanges(se))
     score(d) <- assays(se)[["normalizedTpmMatrix"]][[s]]
     d <- subset(d, score(d) > 0)
     clusters <- .ctss2clusters(ctss = d, max.dist = max.dist, useMulticore = useMulticore, nrCores = nrCores)

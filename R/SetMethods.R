@@ -2,8 +2,8 @@
 # Functions for setting internal data in CAGEset and CAGEexp objects
 #
 
-#' @name `genomeName<-`
-#' @rdname  genomeName
+#' @name genomeName
+#' @aliases genomeName<- genomeName<-,CAGEset genomeName<-,CAGEexp
 #' @param value The name of a \code{BSgenome} package.
 #' @family CAGEr setter methods
 #' @docType methods
@@ -23,9 +23,9 @@ setMethod("genomeName<-", "CAGEexp", function (object, value){
 })
 
 #' @name inputFiles
-#' @aliases inputFiles<-
+#' @aliases inputFiles<- inputFiles<-,CAGEset inputFiles<-,CAGEexp
 #' @family CAGEr setter methods
-#' @docType methods
+#' @param value A character vector with one file path per sample.
 #' @author Charles Plessy
 #' @export
 
@@ -42,9 +42,9 @@ setMethod("inputFiles<-", "CAGEexp", function (object, value){
 })
 
 #' @name inputFilesType
-#' @aliases inputFilesType<-
+#' @aliases inputFilesType<- inputFilesType<-,CAGEset inputFilesType<-,CAGEr
 #' @family CAGEr setter methods
-#' @docType methods
+#' @param value A character vector with one file type per sample.
 #' @author Charles Plessy
 #' @export
 
@@ -61,9 +61,10 @@ setMethod("inputFilesType<-", "CAGEexp", function (object, value){
 })
 
 #' @name sampleLabels
-#' @aliases sampleLabels<-
+#' @aliases sampleLabels<- sampleLabels<-,CAGEset sampleLabels<-,CAGEexp sampleLabels<-,CAGEer-method
 #' @family CAGEr setter methods
-#' @docType methods
+#' @param value A character vector with a unique and valid name for each sample.
+#'        the \code{names} attributes indicate the colors.
 #' @author Charles Plessy
 #' @export
 

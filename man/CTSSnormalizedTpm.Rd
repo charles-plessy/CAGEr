@@ -18,6 +18,9 @@ CTSSnormalizedTpmGR(object, sample)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
+
+\item{sample}{The name of a sample as reported by \code{sampleLabels(object)},
+or the number of that sample.}
 }
 \value{
 \code{CTSSnormalizedTpm} returns a \code{data.frame} containing coordinates

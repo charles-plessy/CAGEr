@@ -60,7 +60,7 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 		for(s in sampleLabels(object)) {
 			message("\t-> ", s)
 			samples.cumsum.list[[s]] <-
-			  .getCumsum( ctss      = CAGEr:::.CTSS(CTSSnormalizedTpmGR(object, s))
+			  .getCumsum( ctss      = .CTSS(CTSSnormalizedTpmGR(object, s))
 			            , clusters  = getTagClusterGR(object, s)
 			            , use.multicore = useMulticore, nrCores = nrCores)
 		}
@@ -69,7 +69,7 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 		for(s in sampleLabels(object)) {
 			message("\t-> ", s)
 		  	samples.cumsum.list[[s]] <-
-			  .getCumsum( ctss      = CAGEr:::.CTSS(CTSSnormalizedTpmGR(object, s))
+			  .getCumsum( ctss      = .CTSS(CTSSnormalizedTpmGR(object, s))
 			            , clusters  = consensusClustersGR(object)
 			            , use.multicore = useMulticore, nrCores = nrCores)
 		}

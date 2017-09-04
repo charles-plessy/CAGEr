@@ -3,7 +3,10 @@
 \docType{methods}
 \name{genomeName}
 \alias{genomeName}
-\alias{`genomeName<-`}
+\alias{genomeName}
+\alias{genomeName<-}
+\alias{genomeName<-,CAGEset}
+\alias{genomeName<-,CAGEexp}
 \title{Extracting genome name from CAGEr objects}
 \usage{
 genomeName(object)
