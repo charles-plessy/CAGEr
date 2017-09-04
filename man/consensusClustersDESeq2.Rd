@@ -31,7 +31,7 @@ clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
-annotateConsensusClusters(ce, gff)
+annotateConsensusClusters(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
 consensusClustersDESeq2(ce, ~group)
 
 }
