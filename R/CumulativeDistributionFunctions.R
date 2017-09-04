@@ -1,5 +1,6 @@
 #' @name coverage-functions
 #' @title Private functions behind \code{cumulativeCTSSdistribution}
+#' @param useMulticore,nrCores See clusterCTSS.
 #' @examples 
 #' ctss <- CAGEr:::.CTSS(GRanges(seqnames=Rle("chr1"), IRanges(c(1,3,4,12,14,25,28,30), w=1), strand = "+"))
 #' score(ctss) <- 1
@@ -54,6 +55,9 @@ setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr,
 #' @rdname coverage-functions
 #' 
 #' @details \code{.getCumsumChr2}
+#' 
+#' @param chrom a chromosome name
+#' @param str a strand name
 #' 
 #' @examples 
 #' .getCumsumChr2(clusters, ctss, chrom, str)

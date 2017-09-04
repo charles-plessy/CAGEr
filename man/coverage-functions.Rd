@@ -20,6 +20,12 @@
 
 \item{ctss}{GRanges as per \code{CTSScoordinatesGR}, with the score of one sample.}
 
+\item{chrom}{a chromosome name}
+
+\item{str}{a strand name}
+
+\item{useMulticore, nrCores}{See clusterCTSS.}
+
 \item{clusters}{GRanges as per \code{getTagClusterGR}.}
 }
 \value{
