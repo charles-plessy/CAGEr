@@ -137,7 +137,7 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
   ctss <- sort(ctss)
   ctss <- ctss[score(ctss) != 0]
   ctss.list <- split(ctss, droplevels(seqnames(ctss)))
-  ctss.list <- lapply(ctss.list, CAGEr:::.CTSS.chr)
+  ctss.list <- lapply(ctss.list, .CTSS.chr)
   
   if(useMulticore == TRUE){
     if(is.null(nrCores))  nrCores <- detectCores()

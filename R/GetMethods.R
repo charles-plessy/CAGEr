@@ -644,6 +644,9 @@ function (object){
 
 #' @name CTSSnormalizedTpmGR
 #' @rdname CTSSnormalizedTpm
+#' 
+#' @param sample The name of a sample as reported by \code{sampleLabels(object)},
+#'        or the number of that sample.
 #'  
 #' @export
 

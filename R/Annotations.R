@@ -421,15 +421,13 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' @importFrom GenomicRanges findOverlaps promoters
 #' @importFrom S4Vectors Rle
 
-ranges2annot <- function(ranges, annot, showClasses=NULL) {
+ranges2annot <- function(ranges, annot) {
   if (is.null(annot$type) | is.null(annot$transcript_type))
     stop("Annotation must contain ", dQuote("type"), " and ", dQuote("transcript_type"), " metdata.")
   classes <- c("promoter", "exon", "intron", "unknown")
   typesWithPromoter <- c( "protein_coding", "processed_transcript", "lincRNA"
                           , "antisense", "processed_pseudogene"
                           , "unprocessed_pseudogene")
-  
-  if (! missing(showClasses) ) return(classes)
   
   findOverlapsBool <- function(A, B) {
     overlap <- findOverlaps(A, B)

@@ -99,8 +99,8 @@ def=function(object, method = "powerLaw", fitInRange = c(10, 1000), alpha = 1.25
 .normalizeTagCount_switcher <- function(method, object, fitInRange, alpha, T) {
   message("\nNormalizing tag count...")
   switch( method
-        , powerLaw  = CAGEr:::.powerLaw(CTSStagCountTable(object), fitInRange, alpha, T)
-        , simpleTpm = CAGEr:::.simpleTpm(CTSStagCountTable(object))
+        , powerLaw  = .powerLaw(CTSStagCountTable(object), fitInRange, alpha, T)
+        , simpleTpm = .simpleTpm(CTSStagCountTable(object))
         , none      = CTSStagCountTable(object)
         , stop('"method" must be one of ("powerLaw", "simpleTpm", "none")'))
 }

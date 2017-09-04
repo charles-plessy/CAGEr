@@ -1,4 +1,4 @@
-#' @include CTSS.R
+#' @include CTSS.R Multicore.R
 
 #' @name clusterCTSS
 #' 
@@ -120,7 +120,7 @@ setMethod("clusterCTSS",
 signature(object = "CAGEset"),
 function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, removeSingletons, keepSingletonsAbove, minStability, maxLength, reduceToNonoverlapping, customClusters, useMulticore, nrCores){
   
-  useMulticore <- CAGEr:::.checkMulticore(useMulticore)
+  useMulticore <- .checkMulticore(useMulticore)
 		
 	objName <- deparse(substitute(object))
 	sample.labels <- sampleLabels(object)
@@ -180,7 +180,7 @@ setMethod("clusterCTSS",
 signature(object = "CAGEexp"),
 function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, removeSingletons, keepSingletonsAbove, minStability, maxLength, reduceToNonoverlapping, customClusters, useMulticore, nrCores){
   
-  useMulticore <- CAGEr:::.checkMulticore(useMulticore)
+  useMulticore <- .checkMulticore(useMulticore)
   objName <- deparse(substitute(object))
   assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
 

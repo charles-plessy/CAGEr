@@ -64,7 +64,7 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
   clusters.chr <- clusters[seqnames(clusters) == chrom & strand(clusters) == str]
   ctss.chr <- ctss[seqnames(ctss) == chrom & strand(ctss) == str]
   if (length(clusters.chr) > 0 & length(ctss) > 0) {
-    .getCAGEsignalCoverage(ctss.chr = CAGEr:::.CTSS.chr(ctss.chr), clusters = clusters.chr)
+    .getCAGEsignalCoverage(ctss.chr = .CTSS.chr(ctss.chr), clusters = clusters.chr)
   } else {
     return()
   }

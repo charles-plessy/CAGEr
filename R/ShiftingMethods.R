@@ -1,3 +1,5 @@
+#' @include Multicore.R
+
 #' scoreShift
 #' @noRd
 #' @export
@@ -13,7 +15,7 @@ setMethod("scoreShift",
 signature(object = "CAGEset", groupX = "character", groupY = "character"),
 function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore = F, nrCores = NULL){
 	
-  useMulticore <- CAGEr:::.checkMulticore(useMulticore)
+  useMulticore <- .checkMulticore(useMulticore)
 	
 	objName <- deparse(substitute(object))
 	sample.labels <- sampleLabels(object)
