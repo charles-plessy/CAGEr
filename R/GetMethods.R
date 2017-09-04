@@ -1028,6 +1028,7 @@ setMethod("consensusClustersSE", "CAGEexp", function (object)
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 #' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
 #' annotateConsensusClusters(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
+#' ce$group <- c("a", "a", "b", "b", "a")
 #' consensusClustersDESeq2(ce, ~group)
 #' 
 #' @export
