@@ -3,6 +3,8 @@
 #' @param clusters GRanges as per \code{getTagClusterGR}.
 #' @param useMulticore,nrCores See clusterCTSS.
 #' @examples 
+#' library(GenomicRanges)
+#' library(IRanges)
 #' ctss <- CAGEr:::.CTSS(GRanges(seqnames=Rle("chr1"), IRanges(c(1,3,4,12,14,25,28,30), w=1), strand = "+"))
 #' score(ctss) <- 1
 #' ctss.chr <- CAGEr:::.CTSS.chr(ctss)
@@ -23,7 +25,7 @@ NULL
 #' @importFrom IRanges viewApply
 #' 
 #' @examples
-#' .getCAGEsignalCoverage(ctss.chr, clusters)
+#' CAGEr:::.getCAGEsignalCoverage(ctss.chr, clusters)
 
 setGeneric(".getCAGEsignalCoverage", function(ctss.chr, clusters) standardGeneric(".getCAGEsignalCoverage"))
 
@@ -60,7 +62,7 @@ setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr,
 #' @param str a strand name
 #' 
 #' @examples 
-#' .getCumsumChr2(clusters, ctss, chrom, str)
+#' CAGEr:::.getCumsumChr2(clusters, ctss, chrom, str)
 
 setGeneric(".getCumsumChr2", function(clusters, ctss, chrom, str) standardGeneric(".getCumsumChr2"))
 
@@ -93,7 +95,7 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEset, "sample1"))
 #' ctss      <- ctss[ctss$filteredCTSSidx]
 #' clusters  <- CAGEr:::getTagClusterGR(exampleCAGEset, "sample1")
-#' clusters.cumsum <- .getCumsum(ctss, clusters)
+#' clusters.cumsum <- CAGEr:::.getCumsum(ctss, clusters)
 #' identical(lapply(exampleCAGEset@CTSScumulativesTagClusters[[1]],decode), lapply(clusters.cumsum, decode))
 #' # Not identical if not decoded because Rle method is attached to S4Vectors in one case
 #' # and to IRanges in the other case.
@@ -109,7 +111,7 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(ce, "Zf.30p.dome"))
 #' ctss      <- ctss[ctss$filteredCTSSidx]
 #' clusters  <- CAGEr:::getTagClusterGR(ce, "Zf.30p.dome")
-#' clusters.cumsum <- .getCumsum(ctss, head(clusters))
+#' clusters.cumsum <- CAGEr:::.getCumsum(ctss, head(clusters))
 #' decode(clusters.cumsum[[1]])
 #' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
 #' clusters[1]

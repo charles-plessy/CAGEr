@@ -4,10 +4,11 @@
 \name{Zv9_annot}
 \alias{Zv9_annot}
 \title{Example zebrafish annotation data}
-\details{
+\description{
 Annotation data for zebrafish's chromosome 17's interval  26000000-54000000
 (Zv9/danRer7 genome), to be used in documentation examples.
-
+}
+\details{
 Data was retreived from ENSEMBL's Biomart server using a query to extract
 gene, transcripts and exon coordinates.  For the record, here it is as URL
 (long, possibly overflowing).

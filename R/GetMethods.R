@@ -1057,8 +1057,6 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
 #' 
 #' @title Get or set consensus clusters from CAGEr objects
 #' 
-#' Extracts or inserts the information on consensus clusters from a CAGEr object.
-#' 
 #' @param object A \code{\link{CAGEr}} object.
 #' 
 #' @param sample Optional. Label of the CAGE dataset (experiment, sample) for which to extract

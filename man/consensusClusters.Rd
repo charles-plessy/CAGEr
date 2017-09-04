@@ -13,9 +13,7 @@
 \alias{consensusClustersSE<-}
 \alias{consensusClustersSE<-,CAGEset,ANY-method}
 \alias{consensusClustersSE<-,CAGEexp,RangedSummarizedExperiment-method}
-\title{Get or set consensus clusters from CAGEr objects
-
-Extracts or inserts the information on consensus clusters from a CAGEr object.}
+\title{Get or set consensus clusters from CAGEr objects}
 \usage{
 consensusClusters(object, sample = NULL, returnInterquantileWidth = FALSE,
   qLow = NULL, qUp = NULL)

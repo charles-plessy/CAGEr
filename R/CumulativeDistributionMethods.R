@@ -41,6 +41,7 @@
 #'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 #' cumulativeCTSSdistribution(ce, clusters = "tagClusters")
+#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
 #' cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
 #'            
 #' @export
@@ -49,6 +50,8 @@ setGeneric( "cumulativeCTSSdistribution"
           , function ( object, clusters
                      , useMulticore = FALSE, nrCores = NULL) {
               standardGeneric("cumulativeCTSSdistribution")})
+
+#' @rdname cumulativeCTSSdistribution
 
 setMethod("cumulativeCTSSdistribution", "CAGEr",
 function (object, clusters, useMulticore = FALSE, nrCores = NULL){

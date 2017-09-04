@@ -64,9 +64,17 @@
 #' head(consensusClusters(exampleCAGEset))
 #' aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
 #'   excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' head(consensusClusters(exampleCAGEset))
 #' aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
 #'   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 #' head(consensusClusters(exampleCAGEset))
+#' 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
+#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
+#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
+#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
 #' 
 #' @export
 

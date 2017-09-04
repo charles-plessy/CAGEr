@@ -12,6 +12,7 @@
 #' 
 #' @noRd
 #' 
+#' @importFrom utils installed.packages
 #' @importFrom parallel mclapply
 #' 
 #' @examples 

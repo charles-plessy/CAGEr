@@ -3,6 +3,7 @@
 #
 
 #' @name getExpressionProfiles
+#' @importFrom stats kmeans
 #' @noRd
 #' @export
 

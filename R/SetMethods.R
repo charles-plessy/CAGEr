@@ -416,6 +416,8 @@ setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
 #' @seealso \code{\link{sampleLabels}}
 #' @family CAGEr setter methods
 #' 
+#' @importFrom grDevices rgb
+#' 
 #' @examples
 #' 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))

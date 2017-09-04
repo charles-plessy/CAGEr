@@ -38,10 +38,11 @@ modification:
     column, with gene symbols from the annotation.
 }
 }
-\details{
+\description{
 \code{annotateCTSS} annotates the \emph{CTSS} of a CAGEr object and computes
 annotation statistics.
-
+}
+\details{
 \code{annotateConsensusClusters} annotates the \emph{consensus clusters}
 of a CAGEr object.
 }

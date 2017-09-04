@@ -64,6 +64,7 @@
 #'   CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
 #' ))
 #' 
+#' aggregateTagClusters(exampleCAGEset, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
 #' quantilePositions( object = exampleCAGEset, clusters = "consensusClusters"
 #'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
 #'                  
@@ -79,6 +80,10 @@
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 #' cumulativeCTSSdistribution(ce, clusters = "tagClusters")
 #' quantilePositions( ce, clusters = "tagClusters"
+#'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
+#' quantilePositions( ce, clusters = "consensusClusters"
 #'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
 #' 
 #' @export

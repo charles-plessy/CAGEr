@@ -282,7 +282,7 @@ mapStats <- function( libs
 #' 
 #' @title Annotate and compute summary statistics
 #' 
-#' @details \code{annotateCTSS} annotates the \emph{CTSS} of a CAGEr object and computes
+#' @description \code{annotateCTSS} annotates the \emph{CTSS} of a CAGEr object and computes
 #' annotation statistics.
 #' 
 #' @param object A \code{\link{CAGEexp}} object (\code{\link{CAGEset}}s are
@@ -503,7 +503,7 @@ ranges2genes <- function(ranges, genes) {
 #' 
 #' @title Example zebrafish annotation data
 #' 
-#' @details Annotation data for zebrafish's chromosome 17's interval  26000000-54000000
+#' @description  Annotation data for zebrafish's chromosome 17's interval  26000000-54000000
 #' (Zv9/danRer7 genome), to be used in documentation examples.
 #'
 #' @docType data
