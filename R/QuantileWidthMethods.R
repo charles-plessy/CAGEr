@@ -64,6 +64,14 @@
 #'   CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
 #' ))
 #' 
+#' quantilePositions( object = exampleCAGEset, clusters = "consensusClusters"
+#'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#'                  
+#' head(cbind(
+#'   CAGEr:::consensusClustersQuantileLow(exampleCAGEset)[[1]],
+#'   CAGEr:::consensusClustersQuantileUp(exampleCAGEset)[[1]]
+#' ))
+#' 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' normalizeTagCount(ce)
 #' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
@@ -115,7 +123,6 @@ function (object, clusters, qLow, qUp, useMulticore, nrCores){
 		tagClustersQuantileUp(object)  <- ctss.clusters.q.up.list
 		
 	}else if (clusters == "consensusClusters"){
-		stop("update the code for consensus clusters")
 		samples.cumsum.list <- CTSScumulativesCC(object)
 		ctss.clusters.orig <- merge(consensusClusters(object), consensusClustersTpm(object), by.x = 1, by.y = 0)
 		
