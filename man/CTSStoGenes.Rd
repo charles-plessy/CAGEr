@@ -3,9 +3,15 @@
 \docType{methods}
 \name{CTSStoGenes}
 \alias{CTSStoGenes}
+\alias{CTSStoGenes,CAGEset-method}
+\alias{CTSStoGenes,CAGEexp-method}
 \title{Make a gene expression table.}
 \usage{
 CTSStoGenes(object)
+
+\S4method{CTSStoGenes}{CAGEset}(object)
+
+\S4method{CTSStoGenes}{CAGEexp}(object)
 }
 \arguments{
 \item{object}{A CAGEexp object that was annotated with the \code{annotateCTSS} function.}

@@ -54,6 +54,8 @@ setGeneric("plotAnnot", function( x, scope, title, group = "default"
                                  , customScope = NULL, normalise = TRUE)
   standardGeneric("plotAnnot"))
 
+#' @rdname plotAnnot
+
 setMethod("plotAnnot", "data.frame",
   function( x
           , scope
@@ -77,11 +79,15 @@ setMethod("plotAnnot", "data.frame",
     ggtitle(title)
 })
 
+#' @rdname plotAnnot
+
 setMethod("plotAnnot", "DataFrame",
   function( x, scope, title, group, customScope, normalise) {
   plotAnnot( data.frame(x, check.names = FALSE)
            , scope=scope, title=title, group=group, customScope=customScope, normalise=normalise)
 })
+
+#' @rdname plotAnnot
 
 setMethod("plotAnnot", "CAGEexp",
   function( x, scope, title, group, customScope, normalise) {
@@ -319,8 +325,12 @@ mapStats <- function( libs
 
 setGeneric("annotateCTSS", function(object, ranges) standardGeneric("annotateCTSS"))
 
+#' @rdname annotateCTSS
+
 setMethod("annotateCTSS", "CAGEset", function (object, ranges){
   stop("CAGEset objects not supported.")})
+
+#' @rdname annotateCTSS
 
 setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
   objName <- deparse(substitute(object))
@@ -370,8 +380,12 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
 
 setGeneric("annotateConsensusClusters", function(object, ranges) standardGeneric("annotateConsensusClusters"))
 
+#' @rdname annotateCTSS
+
 setMethod("annotateConsensusClusters", "CAGEset", function (object, ranges){
   stop("CAGEset objects not supported.")})
+
+#' @rdname annotateCTSS
 
 setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object, ranges){
   objName <- deparse(substitute(object))
@@ -631,15 +645,14 @@ NULL
 
 setGeneric("CTSStoGenes", function(object) standardGeneric("CTSStoGenes"))
 
-setMethod( "CTSStoGenes"
-         , signature(object = "CAGEset")
-         , function (object)
-  stop("Not supported for ", dQuote("CAGEset"), " objects.")
-)
+#' @rdname CTSStoGenes
 
-setMethod( "CTSStoGenes"
-         , signature(object = "CAGEexp")
-         , function (object){
+setMethod("CTSStoGenes", "CAGEset", function (object)
+  stop("Not supported for ", dQuote("CAGEset"), " objects."))
+
+#' @rdname CTSStoGenes
+
+setMethod("CTSStoGenes", signature(object = "CAGEexp"), function (object) {
   objName <- deparse(substitute(object))
   if (is.null(CTSScoordinatesGR(object)$genes))
     stop(objName, " is not annotated, see ", dQuote("annotateCTSS()"), ".")

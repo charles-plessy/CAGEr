@@ -3,10 +3,22 @@
 \docType{methods}
 \name{plotAnnot}
 \alias{plotAnnot}
+\alias{plotAnnot,data.frame-method}
+\alias{plotAnnot,DataFrame-method}
+\alias{plotAnnot,CAGEexp-method}
 \title{Plot annotation statistics}
 \usage{
 plotAnnot(x, scope, title, group = "default", customScope = NULL,
   normalise = TRUE)
+
+\S4method{plotAnnot}{data.frame}(x, scope, title, group = "default",
+  customScope = NULL, normalise = TRUE)
+
+\S4method{plotAnnot}{DataFrame}(x, scope, title, group = "default",
+  customScope = NULL, normalise = TRUE)
+
+\S4method{plotAnnot}{CAGEexp}(x, scope, title, group = "default",
+  customScope = NULL, normalise = TRUE)
 }
 \arguments{
 \item{x}{An object from which can be extracted a table with columns named
