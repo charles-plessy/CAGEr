@@ -1,6 +1,6 @@
 #' @name coverage-functions
 #' @title Private functions behind \code{cumulativeCTSSdistribution}
-#' @param clusters GRanges as per \code{getTagClusterGR}.
+#' @param clusters GRanges as per \code{tagClustersGR}.
 #' @param useMulticore,nrCores See clusterCTSS.
 #' @examples 
 #' library(GenomicRanges)
@@ -94,7 +94,7 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEset, "sample1"))
 #' ctss      <- ctss[ctss$filteredCTSSidx]
-#' clusters  <- CAGEr:::getTagClusterGR(exampleCAGEset, "sample1")
+#' clusters  <- tagClustersGR(exampleCAGEset, "sample1")
 #' clusters.cumsum <- CAGEr:::.getCumsum(ctss, clusters)
 #' identical(lapply(exampleCAGEset@CTSScumulativesTagClusters[[1]],decode), lapply(clusters.cumsum, decode))
 #' # Not identical if not decoded because Rle method is attached to S4Vectors in one case
@@ -110,7 +110,7 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 #' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(ce, "Zf.30p.dome"))
 #' ctss      <- ctss[ctss$filteredCTSSidx]
-#' clusters  <- CAGEr:::getTagClusterGR(ce, "Zf.30p.dome")
+#' clusters  <- tagClustersGR(ce, "Zf.30p.dome")
 #' clusters.cumsum <- CAGEr:::.getCumsum(ctss, head(clusters))
 #' decode(clusters.cumsum[[1]])
 #' ctss[queryHits(findOverlaps(ctss, clusters[1]))]

@@ -547,8 +547,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 #' if (! identical(df, TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 #' if (! all(df == TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 #' 
-#' CAGEr:::getTagClusterGR(ce)
-#' head(TCgranges2dataframe(CAGEr:::getTagClusterGR(ce)[[1]]))
+#' tagClustersGR(ce)
+#' head(TCgranges2dataframe(tagClustersGR(ce, 1)))
 NULL
 
 #' @name TCgranges2dataframe

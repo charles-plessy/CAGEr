@@ -64,7 +64,7 @@ function (object, clusters, useMulticore = FALSE, nrCores = NULL){
 			message("\t-> ", s)
 			samples.cumsum.list[[s]] <-
 			  .getCumsum( ctss      = .CTSS(CTSSnormalizedTpmGR(object, s))
-			            , clusters  = getTagClusterGR(object, s)
+			            , clusters  = tagClustersGR(object, s)
 			            , useMulticore = useMulticore, nrCores = nrCores)
 		}
 		CTSScumulativesTagClusters(object) <-samples.cumsum.list

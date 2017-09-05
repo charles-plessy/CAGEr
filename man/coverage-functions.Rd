@@ -16,7 +16,7 @@
 \arguments{
 \item{ctss.chr}{A CTSS.chr object (guaranteed to have only one chromosome).}
 
-\item{clusters}{GRanges as per \code{getTagClusterGR}.}
+\item{clusters}{GRanges as per \code{tagClustersGR}.}
 
 \item{ctss}{GRanges as per \code{CTSScoordinatesGR}, with the score of one sample.}
 
@@ -54,7 +54,7 @@ CAGEr:::.getCumsumChr2(clusters, ctss, chrom, str)
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEset, "sample1"))
 ctss      <- ctss[ctss$filteredCTSSidx]
-clusters  <- CAGEr:::getTagClusterGR(exampleCAGEset, "sample1")
+clusters  <- tagClustersGR(exampleCAGEset, "sample1")
 clusters.cumsum <- CAGEr:::.getCumsum(ctss, clusters)
 identical(lapply(exampleCAGEset@CTSScumulativesTagClusters[[1]],decode), lapply(clusters.cumsum, decode))
 # Not identical if not decoded because Rle method is attached to S4Vectors in one case
@@ -70,7 +70,7 @@ clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(ce, "Zf.30p.dome"))
 ctss      <- ctss[ctss$filteredCTSSidx]
-clusters  <- CAGEr:::getTagClusterGR(ce, "Zf.30p.dome")
+clusters  <- tagClustersGR(ce, "Zf.30p.dome")
 clusters.cumsum <- CAGEr:::.getCumsum(ctss, head(clusters))
 decode(clusters.cumsum[[1]])
 ctss[queryHits(findOverlaps(ctss, clusters[1]))]
