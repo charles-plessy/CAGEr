@@ -351,8 +351,8 @@ function (object){
 #'     {A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
 #'      \code{Rle} integers.}
 #'   \item{\code{CTSStagCountGR}:}
-#'     {A \code{\link{GenomicRanges}} object containing a \code{score} column indicating
-#'     expression values for a given sample.}
+#'     {A \code{\link{CTSS}} object (wrapping \code{GRanges}) containing a \code{score}
+#'     column indicating expression values for a given sample.}
 #' }
 #' 
 #' @seealso \code{\link{getCTSS}}
@@ -499,7 +499,7 @@ setMethod( "CTSStagCountGR", "CAGEr", function (object, sample) {
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSStagCountDF(object)[[sample]]
   gr <- gr[score(gr) != 0]
-  gr
+  .CTSS(gr)
 })
 
 
@@ -727,7 +727,7 @@ setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, sample) {
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSSnormalizedTpmDF(object)[[sample]]
   gr <- gr[score(gr) != 0]
-  gr
+  .CTSS(gr)
 })
 
 #' @name CTSSclusteringMethod
