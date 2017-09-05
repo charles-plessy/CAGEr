@@ -16,6 +16,8 @@
 #' @examples 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
+#' 
+#' @export
 
 # (See <https://github.com/Bioconductor/Contributions/issues/261#issuecomment-277479436>.)
 
