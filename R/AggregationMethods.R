@@ -18,8 +18,8 @@
 #'        contribute to the total signal, regardless whether they pass the threshold for
 #'        constructing the clusters or not.
 #'        
-#' @param qLow,qUp Set which "lower" (or "upper") quantile should be used as 5′
-#'        (or 3′) boundary of the tag cluster.  If \code{qLow = NULL} or \code{qUp = NULL},
+#' @param qLow,qUp Set which "lower" (or "upper") quantile should be used as 5'
+#'        (or 3') boundary of the tag cluster.  If \code{qLow = NULL} or \code{qUp = NULL},
 #'        the start (or end) position of the TC is used.
 #' 
 #' @param maxDist Maximal length of the gap (in base-pairs) between two tag clusters for them to
@@ -31,7 +31,7 @@
 #' overall signal.  To be able to compare all samples at the level of clusters of TSSs, TCs
 #' from all CAGE datasets are aggregated into a single set of consensus clusters.
 #' First, TCs with signal \code{>= tpmThreshold} from all CAGE datasets are selected, and their
-#' 5′ and 3′ boundaries are determined based on provided \code{qLow} and \code{qUp} parameter
+#' 5' and 3' boundaries are determined based on provided \code{qLow} and \code{qUp} parameter
 #' (or the start and end coordinates, if \code{qLow = NULL} and \code{qUp = NULL}.
 #' Finally, the defined set of TCs from all CAGE datasets is reduced to a non-overlapping set
 #' of consensus clusters by merging overlapping TCs and TCs \code{<= maxDist} base-pairs apart.

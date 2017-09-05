@@ -26,8 +26,8 @@ cluster.  When set to \code{FALSE} all TCs that overlap consensus cluster will
 contribute to the total signal, regardless whether they pass the threshold for
 constructing the clusters or not.}
 
-\item{qLow, qUp}{Set which "lower" (or "upper") quantile should be used as 5′
-(or 3′) boundary of the tag cluster.  If \code{qLow = NULL} or \code{qUp = NULL},
+\item{qLow, qUp}{Set which "lower" (or "upper") quantile should be used as 5'
+(or 3') boundary of the tag cluster.  If \code{qLow = NULL} or \code{qUp = NULL},
 the start (or end) position of the TC is used.}
 
 \item{maxDist}{Maximal length of the gap (in base-pairs) between two tag clusters for them to
@@ -59,7 +59,7 @@ between samples in both their number, genomic coordinates, position  of dominant
 overall signal.  To be able to compare all samples at the level of clusters of TSSs, TCs
 from all CAGE datasets are aggregated into a single set of consensus clusters.
 First, TCs with signal \code{>= tpmThreshold} from all CAGE datasets are selected, and their
-5′ and 3′ boundaries are determined based on provided \code{qLow} and \code{qUp} parameter
+5' and 3' boundaries are determined based on provided \code{qLow} and \code{qUp} parameter
 (or the start and end coordinates, if \code{qLow = NULL} and \code{qUp = NULL}.
 Finally, the defined set of TCs from all CAGE datasets is reduced to a non-overlapping set
 of consensus clusters by merging overlapping TCs and TCs \code{<= maxDist} base-pairs apart.
@@ -70,8 +70,8 @@ CAGE samples.
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 head(consensusClusters(exampleCAGEset))
-aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
-  excludeSignalBelowThreshold = FALSE, maxDist = 100)
+aggregateTagClusters( exampleCAGEset, tpmThreshold = 50
+                    , excludeSignalBelowThreshold = FALSE, maxDist = 100)
 head(consensusClusters(exampleCAGEset))
 aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
@@ -83,6 +83,7 @@ clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+head(consensusClusters(ce))
 
 }
 \seealso{
@@ -95,7 +96,7 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{consensusClustersDESeq2}},
-  \code{\link{consensusClusters}},
+  \code{\link{consensusClustersGR}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{plotInterquantileWidth}},
   \code{\link{quantilePositions}},
