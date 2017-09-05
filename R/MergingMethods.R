@@ -52,12 +52,10 @@
 #' 
 #' @export
 
-setGeneric(
-name="mergeSamples",
-def=function(object, mergeIndex, mergedSampleLabels){
-	standardGeneric("mergeSamples")
-}
-)
+setGeneric("mergeSamples", function(object, mergeIndex, mergedSampleLabels)
+	standardGeneric("mergeSamples"))
+
+#' @rdname mergeSamples
 
 checkMergeOK <- function(object, objName, mergeIndex, mergedSampleLabels) {
   if( length(mergeIndex) != length(sampleLabels(object)))
@@ -76,10 +74,10 @@ checkMergeOK <- function(object, objName, mergeIndex, mergedSampleLabels) {
     stop("Duplicated sample labels are not allowed!")
 }
 
-setMethod("mergeSamples",
-signature(object = "CAGEset", mergeIndex = "numeric"),
-function (object, mergeIndex, mergedSampleLabels){
+#' @rdname mergeSamples
 
+setMethod( "mergeSamples", c("CAGEset", mergeIndex = "numeric")
+         , function (object, mergeIndex, mergedSampleLabels) {
 	objName <- deparse(substitute(object))
 	sample.labels <- sampleLabels(object)
 	tag.count <- object@tagCountMatrix
@@ -98,19 +96,14 @@ function (object, mergeIndex, mergedSampleLabels){
 	
 	assign(objName, new.CAGE.set, envir = parent.frame())
 	invisible(1)	
-	
-}
-)
+})
 
 myRowSumsL <- function(l)
   Reduce( f    = `+`
         , x    = DataFrame(l)
         , init = Rle(rep(0L, nrow(DataFrame(l)))))
 
-setMethod("mergeSamples",
-signature(object = "CAGEexp"),
-function (object, mergeIndex, mergedSampleLabels){
-
+setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSampleLabels) {
   objName <- deparse(substitute(object))
   checkMergeOK(object, objName, mergeIndex, mergedSampleLabels)
 

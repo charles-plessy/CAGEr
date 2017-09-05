@@ -4,12 +4,16 @@
 \name{tagClusters}
 \alias{tagClusters}
 \alias{tagClusters,CAGEr-method}
+\alias{tagClustersGR,CAGEr-method}
 \title{Extract tag clusters (TCs) for individual CAGE experiments}
 \usage{
 tagClusters(object, sample = NULL, returnInterquantileWidth = FALSE,
   qLow = NULL, qUp = NULL)
 
 \S4method{tagClusters}{CAGEr}(object, sample = NULL,
+  returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
+
+\S4method{tagClustersGR}{CAGEr}(object, sample = NULL,
   returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
 }
 \arguments{

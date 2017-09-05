@@ -109,12 +109,17 @@
 #' 
 #' @export
 
-setGeneric(
-name="clusterCTSS",
-def=function(object, threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE, method = "distclu", maxDist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, minStability = 1, maxLength = 500, reduceToNonoverlapping = TRUE, customClusters = NULL, useMulticore = FALSE, nrCores = NULL){
-	standardGeneric("clusterCTSS")
-}
-)
+setGeneric( "clusterCTSS"
+          , function( object
+                    , threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE
+                    , method = "distclu", maxDist = 20
+                    , removeSingletons = FALSE, keepSingletonsAbove = Inf
+                    , minStability = 1, maxLength = 500
+                    , reduceToNonoverlapping = TRUE, customClusters = NULL
+                    , useMulticore = FALSE, nrCores = NULL)
+              standardGeneric("clusterCTSS"))
+
+#' @rdname clusterCTSS
 
 setMethod("clusterCTSS",
 signature(object = "CAGEset"),
@@ -172,9 +177,9 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 	object@tagClusters <- lapply(ctss.cluster.list, TCgranges2dataframe)
 	assign(objName, object, envir = parent.frame())
 	invisible(1)
-	
-}
-)
+})
+
+#' @rdname clusterCTSS
 
 setMethod("clusterCTSS",
 signature(object = "CAGEexp"),

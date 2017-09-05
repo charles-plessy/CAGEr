@@ -45,10 +45,10 @@ hanabiPlot(h, group = 1:5, pch=1:5, col="purple")
 }
 \seealso{
 Other CAGEr richness functions: \code{\link{hanabi}},
-  \code{\link{plot.hanabi}}, \code{\link{points.hanabi}}
+  \code{\link{plot.hanabi}}
 
 Other CAGEr richness functions: \code{\link{hanabi}},
-  \code{\link{plot.hanabi}}, \code{\link{points.hanabi}}
+  \code{\link{plot.hanabi}}
 
 Other CAGEr plot functions: \code{\link{plotAnnot}},
   \code{\link{plotCorrelation}},

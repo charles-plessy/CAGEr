@@ -2,10 +2,17 @@
 % Please edit documentation in R/Richness.R
 \name{plot.hanabi}
 \alias{plot.hanabi}
+\alias{points.hanabi}
+\alias{lines.hanabi}
 \title{plot.hanabi}
 \usage{
-plot.hanabi(x, alpha = 0.5, col = "black", xlab = "Total counts",
-  ylab = "Unique features", main = "Hanabi plot", pch = 1, ...)
+\method{plot}{hanabi}(x, alpha = 0.5, col = "black",
+  xlab = "Total counts", ylab = "Unique features", main = "Hanabi plot",
+  pch = 1, ...)
+
+\method{points}{hanabi}(x, ...)
+
+\method{lines}{hanabi}(x, ...)
 }
 \arguments{
 \item{x}{The hanabi object to plot.}
@@ -23,14 +30,14 @@ can be recycled that way).}
 
 \item{pch}{Plot character at the tip of the lines.}
 
-\item{...}{other arguments passed to the generic plot function.}
+\item{...}{Other parameters passed to the generic plot, points or lines functions.}
 }
 \description{
 Plotting Hanabi objects
 }
 \seealso{
 Other CAGEr richness functions: \code{\link{hanabiPlot}},
-  \code{\link{hanabi}}, \code{\link{points.hanabi}}
+  \code{\link{hanabi}}
 }
 \author{
 Charles Plessy

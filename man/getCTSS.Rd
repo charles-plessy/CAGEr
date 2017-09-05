@@ -3,9 +3,19 @@
 \docType{methods}
 \name{getCTSS}
 \alias{getCTSS}
+\alias{getCTSS,CAGEset-method}
+\alias{getCTSS,CAGEexp-method}
 \title{Reading CAGE data from input file(s) and detecting TSSs}
 \usage{
 getCTSS(object, sequencingQualityThreshold = 10,
+  mappingQualityThreshold = 20, removeFirstG = TRUE,
+  correctSystematicG = TRUE)
+
+\S4method{getCTSS}{CAGEset}(object, sequencingQualityThreshold = 10,
+  mappingQualityThreshold = 20, removeFirstG = TRUE,
+  correctSystematicG = TRUE)
+
+\S4method{getCTSS}{CAGEexp}(object, sequencingQualityThreshold = 10,
   mappingQualityThreshold = 20, removeFirstG = TRUE,
   correctSystematicG = TRUE)
 }

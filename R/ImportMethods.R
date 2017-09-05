@@ -109,12 +109,11 @@
 #' @importFrom  S4Vectors Rle
 #' @export
 
-setGeneric(
-name="getCTSS",
-def=function(object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE, correctSystematicG = TRUE){
-	standardGeneric("getCTSS")
-}
-)
+setGeneric( "getCTSS"
+          , function( object
+                    , sequencingQualityThreshold = 10, mappingQualityThreshold = 20
+                    , removeFirstG = TRUE, correctSystematicG = TRUE)
+	            standardGeneric("getCTSS"))
 
 checkFilesExist <- function(paths) {
   for (f in paths)
@@ -154,10 +153,11 @@ addCTSScolumn <- function(CTSS.all.samples, CTSS) {
   merge(CTSS.all.samples, CTSS, all.x = TRUE, all.y = TRUE)
 }
 
-setMethod("getCTSS",
-signature(object = "CAGEset"),
-function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20, removeFirstG = TRUE, correctSystematicG = TRUE){
-  
+#' @rdname getCTSS
+
+setMethod("getCTSS", "CAGEset", function ( object
+                                         , sequencingQualityThreshold, mappingQualityThreshold
+                                         , removeFirstG, correctSystematicG) {
   # Initialise values
   objName <- deparse(substitute(object))
   sample.labels <- sampleLabels(object)
@@ -528,13 +528,12 @@ import.CAGEscanMolecule <- function(filepath) {
   parseCAGEscanBlocksToGrangeTSS(molecules)
 }
 
-setMethod( "getCTSS"
-         , signature(object = "CAGEexp")
+#' @rdname getCTSS
+
+setMethod( "getCTSS", "CAGEexp"
          , function ( object
-                    , sequencingQualityThreshold = 10
-                    , mappingQualityThreshold = 20
-                    , removeFirstG = TRUE
-                    , correctSystematicG = TRUE ){
+                    , sequencingQualityThreshold, mappingQualityThreshold
+                    , removeFirstG, correctSystematicG) {
 
   objName <- deparse(substitute(object))
   

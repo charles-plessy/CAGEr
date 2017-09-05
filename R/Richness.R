@@ -68,15 +68,21 @@ setGeneric( "hanabi"
                     , from = NULL)
               standardGeneric("hanabi"))
 
+#' @rdname hanabi
+
 setMethod("hanabi", "Rle", function(x, n, step, from) {
   hanabi(as.vector(x), n = n, step = step, from = from)
 })
+
+#' @rdname hanabi
 
 setMethod("hanabi", "numeric", function(x, n, step, from) {
   if (any(round(x) != x))
     stop("All scores must be integers.")
   hanabi(as.integer(x))
 })
+
+#' @rdname hanabi
 
 setMethod("hanabi", "integer", function(x, n, step, from) {
   ns <- step ^ (0:n)
@@ -90,6 +96,8 @@ setMethod("hanabi", "integer", function(x, n, step, from) {
   .hanabi(h)
 })
 
+#' @rdname hanabi
+
 setMethod("hanabi", "GRanges", function(x, n, step, from) {
   if (any(round(score(x)) != score(x)))
     stop("All scores must be integers.")
@@ -100,43 +108,23 @@ setMethod("hanabi", "GRanges", function(x, n, step, from) {
 # Uses `unlist(SimpleList())` to move the hanabi class from inside to
 # outside the list, taking advantage of the base class SimpleList.
 
+#' @rdname hanabi
+
 setMethod("hanabi", "DataFrame", function(x, n, step, from) {
   unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
 })
+
+#' @rdname hanabi
 
 setMethod("hanabi", "data.frame", function(x, n, step, from) {
   unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
 })
 
+#' @rdname hanabi
+
 setMethod("hanabi", "GRangesList", function(x, n, step, from) {
   unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
 })
-
-#' points.hanabi
-#' 
-#' Add a final point in hanabi plots.
-#' 
-#' Will only add a point for the final, non-subsampled value of each
-#' sample of in a hanabi object.
-#' 
-#' @param x The hanabi object.
-#' @param ... Other parameters passed to the generic points function
-#' 
-#' @family CAGEr richness functions
-#' @author Charles Plessy
-#' 
-#' @export points.hanabi
-#' @export lines.hanabi
-
-points.hanabi <- function(x, ...) {
-  xmax <- sapply(x, function(x) max(x$x))
-  ymax <- sapply(x, function(x) max(x$y))
-  points(xmax, ymax, ...)
-}
-
-lines.hanabi  <- function(x, ...) {
-  invisible(Map(lines, x, ...))
-}
 
 #' @name .add.alpha
 #' @noRd
@@ -163,7 +151,7 @@ lines.hanabi  <- function(x, ...) {
 #' @param ylab Vertical axis label.
 #' @param main Plot title.
 #' @param pch Plot character at the tip of the lines.
-#' @param ... other arguments passed to the generic plot function.
+#' @param ... Other parameters passed to the generic plot, points or lines functions.
 #' 
 #' @family CAGEr richness functions
 #' 
@@ -196,6 +184,24 @@ plot.hanabi <-
   points( x
         , col = col
         , pch = pch)
+}
+
+#' @name points.hanabi
+#' @rdname plot.hanabi
+#' @export
+
+points.hanabi <- function(x, ...) {
+  xmax <- sapply(x, function(x) max(x$x))
+  ymax <- sapply(x, function(x) max(x$y))
+  points(xmax, ymax, ...)
+}
+
+#' @name lines.hanabi
+#' @rdname plot.hanabi
+#' @export
+
+lines.hanabi  <- function(x, ...) {
+  invisible(Map(lines, x, ...))
 }
 
 #' hanabiPlot
