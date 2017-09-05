@@ -57,7 +57,7 @@ Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{consensusClustersDESeq2}},
-  \code{\link{consensusClusters}},
+  \code{\link{consensusClustersGR}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{quantilePositions}},
   \code{\link{tagClusters}}

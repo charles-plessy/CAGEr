@@ -3,15 +3,15 @@
 \docType{methods}
 \name{mergeSamples}
 \alias{mergeSamples}
-\alias{checkMergeOK}
 \alias{mergeSamples,CAGEset,numeric-method}
+\alias{mergeSamples,CAGEexp,ANY-method}
 \title{Merging CAGE datasets (samples)}
 \usage{
 mergeSamples(object, mergeIndex, mergedSampleLabels)
 
-checkMergeOK(object, objName, mergeIndex, mergedSampleLabels)
-
 \S4method{mergeSamples}{CAGEset,numeric}(object, mergeIndex, mergedSampleLabels)
+
+\S4method{mergeSamples}{CAGEexp,ANY}(object, mergeIndex, mergedSampleLabels)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}

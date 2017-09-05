@@ -55,8 +55,6 @@
 setGeneric("mergeSamples", function(object, mergeIndex, mergedSampleLabels)
 	standardGeneric("mergeSamples"))
 
-#' @rdname mergeSamples
-
 checkMergeOK <- function(object, objName, mergeIndex, mergedSampleLabels) {
   if( length(mergeIndex) != length(sampleLabels(object)))
     stop( "length of ", sQuote("mergeIndex"), " must match number of samples! See "
@@ -102,6 +100,8 @@ myRowSumsL <- function(l)
   Reduce( f    = `+`
         , x    = DataFrame(l)
         , init = Rle(rep(0L, nrow(DataFrame(l)))))
+
+#' @rdname mergeSamples
 
 setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSampleLabels) {
   objName <- deparse(substitute(object))

@@ -77,12 +77,9 @@
 #' 
 #' @export
 
-setGeneric(
-name="normalizeTagCount",
-def=function(object, method = "powerLaw", fitInRange = c(10, 1000), alpha = 1.25, T = 10^6){
-	standardGeneric("normalizeTagCount")
-}
-)
+setGeneric( "normalizeTagCount"
+          , function(object, method = "powerLaw", fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
+              standardGeneric("normalizeTagCount"))
 
 #' .normalizeTagCount_switcher
 #' 
@@ -106,10 +103,10 @@ def=function(object, method = "powerLaw", fitInRange = c(10, 1000), alpha = 1.25
 }
 
 # For the CAGEset class, normalizeTagCount populates the normalizedTpmMatrix slot.
- 
-setMethod("normalizeTagCount",
-signature(object = "CAGEset"),
-function (object, method, fitInRange, alpha, T){
+
+#' @rdname normalizeTagCount
+
+setMethod("normalizeTagCount", "CAGEset", function (object, method, fitInRange, alpha, T) {
 	objName <- deparse(substitute(object))
 	object@normalizedTpmMatrix <- .normalizeTagCount_switcher(method, object, fitInRange, alpha, T)
 	assign(objName, object, envir = parent.frame())
@@ -119,9 +116,9 @@ function (object, method, fitInRange, alpha, T){
 # For the CAGEexp class, normalizeTagCount populates the normalized slot or the tagCountMatrix
 # experiment.
 
-setMethod("normalizeTagCount",
-signature(object = "CAGEexp"),
-function (object, method, fitInRange, alpha, T){
+#' @rdname normalizeTagCount
+#' 
+setMethod("normalizeTagCount", "CAGEexp", function (object, method, fitInRange, alpha, T) {
 	objName <- deparse(substitute(object))
 	se <- CTSStagCountSE(object)
 	assays(se)$normalizedTpmMatrix <- .normalizeTagCount_switcher(method, object, fitInRange, alpha, T)

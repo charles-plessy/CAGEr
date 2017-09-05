@@ -9,6 +9,8 @@
 \alias{consensusClustersTpmDf,CAGEset-method}
 \alias{consensusClustersTpmDf,CAGEexp-method}
 \alias{consensusClustersTpmDF}
+\alias{consensusClustersTpmDF,CAGEset-method}
+\alias{consensusClustersTpmDF,CAGEexp-method}
 \title{Extracting consensus clusters tpm matrix from CAGEset object}
 \usage{
 consensusClustersTpm(object)
@@ -26,6 +28,10 @@ consensusClustersTpmDf(object)
 \S4method{consensusClustersTpmDf}{CAGEexp}(object)
 
 consensusClustersTpmDF(object)
+
+\S4method{consensusClustersTpmDF}{CAGEset}(object)
+
+\S4method{consensusClustersTpmDF}{CAGEexp}(object)
 }
 \arguments{
 \item{object}{A CAGEr object.}
