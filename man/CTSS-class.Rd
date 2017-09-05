@@ -18,6 +18,7 @@ only on a single chromosome.  It is used internally by CAGEr for type safety.
 \examples{
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
+
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(ce))
 }

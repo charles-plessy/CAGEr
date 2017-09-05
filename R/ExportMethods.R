@@ -75,17 +75,15 @@
 #' @importFrom VGAM zeta
 #' @export
 
-setGeneric(
-name="plotReverseCumulatives",
-def=function(object, values = "raw", fitInRange = c(10, 1000), onePlot = FALSE, main = NULL){
-	standardGeneric("plotReverseCumulatives")
-}
-)
+setGeneric( "plotReverseCumulatives"
+          , function( object, values = "raw"
+                    , fitInRange = c(10, 1000), onePlot = FALSE, main = NULL)
+	standardGeneric("plotReverseCumulatives"))
 
-setMethod("plotReverseCumulatives",
-signature(object = "CAGEr"),
-function (object, values = "raw", fitInRange, onePlot, main){
-		
+#' @rdname plotReverseCumulatives
+
+setMethod( "plotReverseCumulatives", "CAGEr"
+         , function (object, values, fitInRange, onePlot, main) {
 	sample.labels <- sampleLabels(object)
 	if(values == "raw"){
 		tag.count <- CTSStagCountDf(object)
@@ -139,9 +137,7 @@ function (object, values = "raw", fitInRange, onePlot, main){
 	}
 	#dev.off()
 	#message("\nFile 'CTSS_reverse_cumulatives_", values, "_all_samples.pdf' has been created in your working directory (", getwd(), ")")
-	
-}
-)
+})
 
 #' @name exportCTSStoBedGraph
 #' 
@@ -190,17 +186,13 @@ function (object, values = "raw", fitInRange, onePlot, main){
 #' 
 #' @export
 
-setGeneric(
-name="exportCTSStoBedGraph",
-def=function(object, values = "normalized", format = "BigWig", oneFile = TRUE){
-	standardGeneric("exportCTSStoBedGraph")
-}
-)
+setGeneric( "exportCTSStoBedGraph"
+          , function(object, values = "normalized", format = "BigWig", oneFile = TRUE)
+            	standardGeneric("exportCTSStoBedGraph"))
 
-setMethod("exportCTSStoBedGraph",
-signature(object = "CAGEr"),
-function (object, values = "normalized", format = "BigWig", oneFile = TRUE){
-  
+#' @rdname exportCTSStoBedGraph
+
+setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, oneFile) {
   rr <- CTSScoordinatesGR(object)
   genome <- getRefGenome(genomeName(object))
   seqinfo(rr) <- seqinfo(genome)[seqlevels(rr)]
@@ -271,17 +263,15 @@ function (object, values = "normalized", format = "BigWig", oneFile = TRUE){
 #' 
 #' @export
 
-setGeneric(
-name="plotInterquantileWidth",
-def=function(object, clusters, tpmThreshold = 5, qLow = 0.1, qUp = 0.9, xlim = c(0,150), ...){
-	standardGeneric("plotInterquantileWidth")
-}
-)
+setGeneric( "plotInterquantileWidth"
+          , function( object, clusters, tpmThreshold = 5
+                    , qLow = 0.1, qUp = 0.9, xlim = c(0,150), ...)
+            	standardGeneric("plotInterquantileWidth"))
 
-setMethod("plotInterquantileWidth",
-signature(object = "CAGEr"),
-function (object, clusters, tpmThreshold, qLow, qUp, xlim = c(0,150), ...){
-	
+#' @rdname plotInterquantileWidth
+
+setMethod( "plotInterquantileWidth", "CAGEr"
+         , function (object, clusters, tpmThreshold, qLow, qUp, xlim, ...){
 	sample.labels <- sampleLabels(object)
 	cols <- names(sample.labels)
 	
@@ -493,18 +483,15 @@ function (object, what){
 #' 
 #' @export
 
-setGeneric(
-name="exportToBed",
-def=function(object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALSE, oneFile = TRUE){
-	standardGeneric("exportToBed")
-}
-)
+setGeneric( "exportToBed"
+          , function( object, what, qLow = NULL, qUp = NULL
+                    , colorByExpressionProfile = FALSE, oneFile = TRUE)
+            	standardGeneric("exportToBed"))
 
+#' @rdname exportToBed
 
-setMethod("exportToBed",
-signature(object = "CAGEr"),
-function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALSE, oneFile = TRUE){
-	
+setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
+                                          , colorByExpressionProfile, oneFile) {
 	sample.labels <- sampleLabels(object)
 
 	if(what == "CTSS") {
@@ -687,11 +674,4 @@ function (object, what, qLow = NULL, qUp = NULL, colorByExpressionProfile = FALS
 	}else{
 		message("\nFiles '", sub(sample.labels[1], "*", track.file[1]), "' for all samples have been created in your working directory (", getwd(), ")")
 	}
-	
-}
-)
-
-
-
-
-
+})
