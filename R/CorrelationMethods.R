@@ -172,6 +172,9 @@ setMethod( "plotCorrelation", "CAGEr"
 
 # my version of smooth scatter that allows passing range.x argument to grDevices:::.smoothScatterCalcDensity function to calculate 2D kernel smoothed density
 
+#' @importFrom grDevices blues9 colorRamp colorRampPalette xy.coords
+#' @importFrom graphics points
+
 .mySmoothScatter <- function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRampPalette(c("white",
 blues9)), nrpoints = 100, pch = ".", cex = 1, col = "black",
 transformation = function(x) x^0.25, postPlotHook = box,
