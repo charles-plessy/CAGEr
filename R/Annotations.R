@@ -198,12 +198,10 @@ mapStats <- function( libs
   if (scope == "counts") {
     totalIs("librarySizes")
     columns <- c("Promoter", "Exon", "Intron", "Intergenic")
-    libs <- within(libs, {
-      Promoter   <- promoter
-      Exon       <- exon
-      Intron     <- intron
-      Intergenic <- librarySizes - promoter - intron - exon
-    })
+    libs$Promoter   <- libs$promoter
+    libs$Exon       <- libs$exon
+    libs$Intron     <- libs$intron
+    libs$Intergenic <- libs$librarySizes - libs$promoter - libs$intron - libs$exon
   } else if (scope == "custom") {
     stopifnot(is.function(customScope))
     custom.list <- customScope(libs)
@@ -214,36 +212,30 @@ mapStats <- function( libs
     totalIs("mapped")
     columns <- c( "Promoter", "Exon", "Intron", "Intergenic"
                 , "Duplicates", "Non_proper")
-    libs <- within(libs, {
-      Non_proper <- mapped - properpairs
-      Duplicates <- properpairs - librarySizes
-      Intergenic <- librarySizes - promoter - intron - exon
-      Intron     <- intron
-      Exon       <- exon
-      Promoter   <- promoter
-    })
+    libs$Non_proper <- libs$mapped       - libs$properpairs
+    libs$Duplicates <- libs$properpairs  - libs$librarySizes
+    libs$Intergenic <- libs$librarySizes - libs$promoter - libs$intron - libs$exon
+    libs$Intron     <- libs$intron
+    libs$Exon       <- libs$exon
+    libs$Promoter   <- libs$promoter
   } else if (scope == "qc") {
     totalIs("extracted")
     columns <- c( "Tag_dust", "rDNA", "Spikes", "Unmapped"
                 , "Non_proper", "Duplicates", "Counts")
-    libs <- within(libs, {
-      Tag_dust     <- extracted   - rdna - spikes - cleaned
-      rDNA         <- rdna
-      Spikes       <- spikes
-      Unmapped     <- cleaned     - mapped
-      Non_proper   <- mapped      - properpairs
-      Duplicates   <- properpairs - librarySizes
-      Counts       <- librarySizes
-    })
+    libs$Tag_dust     <- libs$extracted   - libs$rdna - libs$spikes - libs$cleaned
+    libs$rDNA         <- libs$rdna
+    libs$Spikes       <- libs$spikes
+    libs$Unmapped     <- libs$cleaned     - libs$mapped
+    libs$Non_proper   <- libs$mapped      - libs$properpairs
+    libs$Duplicates   <- libs$properpairs - libs$librarySizes
+    libs$Counts       <- libs$librarySizes
    } else if (scope == "steps") {
     totalIs("extracted")
     columns <- c("Cleaning", "Mapping", "Deduplication", "Counts")
-    libs <- within(libs, {
-      Cleaning      <- extracted   - cleaned
-      Mapping       <- cleaned     - properpairs
-      Deduplication <- properpairs - librarySizes
-      Counts        <- librarySizes
-    })
+    libs$Cleaning      <- libs$extracted   - libs$cleaned
+    libs$Mapping       <- libs$cleaned     - libs$properpairs
+    libs$Deduplication <- libs$properpairs - libs$librarySizes
+    libs$Counts        <- libs$librarySizes
     if ("total" %in% colnames(libs)) {
       totalIs("total")
       libs$Extraction <- with(libs, total - extracted)
@@ -253,9 +245,7 @@ mapStats <- function( libs
     if (scope == "all")        totalIs("extracted")
     if (scope == "annotation") totalIs("mapped")
     columns <- c("promoter","exon","intron","mapped","rdna", "tagdust")
-    libs <- within(libs, {
-       mapped <- mapped - promoter - intron - exon
-    })
+    libs$mapped <- libs$mapped - libs$promoter - libs$intron - libs$exon
   }
   
   doMean <- function (X) tapply(libs[,X] / total, group, mean)
