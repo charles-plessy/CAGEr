@@ -533,7 +533,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 #' 
 #' @title Private functions to convert TC formats
 #' 
-#' @details Interconvert tag clusters (TC) formats used in classes CAGEset
+#' @description Interconvert tag clusters (TC) formats used in classes CAGEset
 #' (\code{data.frame}) and CAGEexp (\code{GRanges}).
 #' 
 #' @family df2granges converters

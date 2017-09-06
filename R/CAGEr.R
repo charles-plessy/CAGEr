@@ -5,7 +5,7 @@
 #' 
 #' @title CAGEr objects
 #' 
-#' @details The CAGEr package provides two classes of objects to load, contain
+#' @description The CAGEr package provides two classes of objects to load, contain
 #' and process CAGE data:
 #' \itemize{
 #'   \item The \code{\link{CAGEset}} class is the original object format in CAGEr,

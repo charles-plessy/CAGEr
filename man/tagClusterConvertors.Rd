@@ -15,7 +15,7 @@ TCdataframe2granges(df)
 
 \item{df}{Consensus clusters in \code{data.frame} format.}
 }
-\details{
+\description{
 Interconvert tag clusters (TC) formats used in classes CAGEset
 (\code{data.frame}) and CAGEexp (\code{GRanges}).
 }

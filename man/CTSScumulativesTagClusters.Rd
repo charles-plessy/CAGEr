@@ -27,6 +27,9 @@ CTSScumulativesTagClusters(object) <- value
 
 \item{value}{CTSScumulativesTagClusters data}
 }
+\description{
+Accessor function.
+}
 \seealso{
 Other CAGEr clusters functions: \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},

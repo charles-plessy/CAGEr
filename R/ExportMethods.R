@@ -72,8 +72,8 @@
 #' normalizeTagCount(exampleCAGEexp)
 #' plotReverseCumulatives(exampleCAGEexp, values = "normalized",fitInRange = c(5,100), onePlot = TRUE)
 #' 
-#' @importFrom graphics box par plot strwidth text
-#' @importFrom stats cor
+#' @importFrom graphics abline box legend par plot strwidth text
+#' @importFrom stats cor median
 #' @importFrom VGAM zeta
 #' @export
 

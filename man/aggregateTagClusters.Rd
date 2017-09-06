@@ -8,11 +8,10 @@
 \usage{
 aggregateTagClusters(object, tpmThreshold = 5,
   excludeSignalBelowThreshold = TRUE, qLow = NULL, qUp = NULL,
-  maxDist = 100)
+  maxDist = 100, useMulticore = FALSE, nrCores = NULL)
 
-\S4method{aggregateTagClusters}{CAGEr}(object, tpmThreshold = 5,
-  excludeSignalBelowThreshold = TRUE, qLow = NULL, qUp = NULL,
-  maxDist = 100)
+\S4method{aggregateTagClusters}{CAGEr}(object, tpmThreshold,
+  excludeSignalBelowThreshold, qLow, qUp, maxDist)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object}
@@ -32,6 +31,12 @@ the start (or end) position of the TC is used.}
 
 \item{maxDist}{Maximal length of the gap (in base-pairs) between two tag clusters for them to
 be part of the same consensus clusters.}
+
+\item{useMulticore}{Logical, should multicore be used.  \code{useMulticore = TRUE} is
+supported only on Unix-like platforms.}
+
+\item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}.  Default value
+\code{NULL} uses all detected cores.}
 }
 \value{
 For \code{\link{CAGEset}} objects, the \code{consensusClusters} slot will be
@@ -84,6 +89,7 @@ clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
 head(consensusClusters(ce))
+aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE, maxDist = 100)
 
 }
 \seealso{

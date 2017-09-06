@@ -4,7 +4,7 @@
 \name{CAGEr-class}
 \alias{CAGEr-class}
 \title{CAGEr objects}
-\details{
+\description{
 The CAGEr package provides two classes of objects to load, contain
 and process CAGE data:
 \itemize{
