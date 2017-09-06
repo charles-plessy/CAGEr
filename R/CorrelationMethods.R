@@ -53,17 +53,16 @@
 #' 
 #' @export
 
-setGeneric(
-name="plotCorrelation",
-def=function(object, what = "CTSS", values = "raw", samples = "all", method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE, plotSize=800){
-	standardGeneric("plotCorrelation")
-}
-)
+setGeneric( "plotCorrelation"
+          , function( object, what = "CTSS", values = "raw"
+                    , samples = "all", method = "pearson"
+                    , tagCountThreshold = 1, applyThresholdBoth = FALSE, plotSize=800)
+              standardGeneric("plotCorrelation"))
 
-setMethod("plotCorrelation",
-signature(object = "CAGEr"),
-function (object, what, values, samples, method, tagCountThreshold, applyThresholdBoth, plotSize){
-	
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation", "CAGEr"
+         , function (object, what, values, samples, method, tagCountThreshold, applyThresholdBoth, plotSize){
 	if(what == "CTSS"){
 		if(values == "raw"){
 			tag.count <- CTSStagCountDF(object)
@@ -168,9 +167,7 @@ function (object, what, values, samples, method, tagCountThreshold, applyThresho
 	#message("\nFile '", filename, "' has been created in your working directory (", getwd(), ")")
 	
 	return(corr.m)
-	
-}
-)
+})
 
 
 # my version of smooth scatter that allows passing range.x argument to grDevices:::.smoothScatterCalcDensity function to calculate 2D kernel smoothed density
@@ -233,5 +230,3 @@ yaxs = par("yaxs"), ...)
         points(x[sel, ], pch = pch, cex = cex, col = col)
     }
 }
-
-

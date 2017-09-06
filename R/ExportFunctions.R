@@ -73,6 +73,7 @@ se2grPlusOrMinus <- function(strand, data) {
 #' 
 #' @noRd
 #' @importFrom rtracklayer export.bw
+#' @importFrom utils write.table
 
 .export.bw.all <- function(data, sample.labels, v, genome) {
     rd.list <- lapply(as.list(sample.labels), function(x) {

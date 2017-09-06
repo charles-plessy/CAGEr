@@ -119,8 +119,9 @@ setMethod("librarySizes<-", "CAGEexp", function (object, value){
 })
 
 
-#' @name CTSScoordinatesGR
+#' @name CTSScoordinatesGR<-
 #' @rdname CTSScoordinates
+#' @param value Coordinates to update, in a format according to the function name.
 #' @export
 
 setGeneric("CTSScoordinatesGR<-", function(object, value) standardGeneric("CTSScoordinatesGR<-"))
@@ -140,7 +141,7 @@ setMethod("CTSScoordinatesGR<-", "CAGEexp", function (object, value){
 })
 
 
-#' @name CTSStagCountSE
+#' @name CTSStagCountSE<-
 #' @rdname CTSScoordinates
 #' @export
 

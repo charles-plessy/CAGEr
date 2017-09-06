@@ -8,10 +8,10 @@
 \alias{CTSScoordinatesGR}
 \alias{CTSScoordinatesGR,CAGEset-method}
 \alias{CTSScoordinatesGR,CAGEexp-method}
-\alias{CTSScoordinatesGR}
+\alias{CTSScoordinatesGR<-}
 \alias{CTSScoordinatesGR<-,CAGEset-method}
 \alias{CTSScoordinatesGR<-,CAGEexp-method}
-\alias{CTSStagCountSE}
+\alias{CTSStagCountSE<-}
 \alias{CTSStagCountSE<-,CAGEset-method}
 \alias{CTSStagCountSE<-,CAGEexp-method}
 \title{Extracting genomic coordinates of TSSs from CAGEr object}
@@ -42,6 +42,8 @@ CTSStagCountSE(object) <- value
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
+
+\item{value}{Coordinates to update, in a format according to the function name.}
 }
 \value{
 \code{CTSScoordinates} returns a \code{data.frame} with genomic coordinates of all

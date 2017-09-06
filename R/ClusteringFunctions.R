@@ -284,6 +284,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 # MC Frith, E Valen, A Krogh, Y Hayashizaki, P Carninci, A Sandelin, Genome Research 2008 18(1):1-12)
 #
 
+#' @importFrom utils tail
+
 .paraclu1 <- function(ctss) {
 	
 	sit <- nrow(ctss)
