@@ -63,8 +63,9 @@ NULL
 #' @export
 
 CCgranges2dataframe <- function(gr) {
+  if (is.null(gr$tpm)) gr$tpm <- gr$score
   gr$score <- NULL
-  df <- data.frame( consensus.cluster  = gr$consensus.cluster)
+  df <- data.frame( consensus.cluster  = as.integer(gr$consensus.cluster))  # Make sure it does not sort lexically!
   gr$consensus.cluster <- NULL
   if(!is.null(df$cluster)) {
     df <- cbind(df, gr$cluster)

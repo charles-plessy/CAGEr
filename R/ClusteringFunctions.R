@@ -564,7 +564,7 @@ TCgranges2dataframe <- function(gr) {
     df <- data.frame(cluster = gr$cluster)
     gr$cluster <- NULL
   } else {
-    df <- data.frame(cluster = names(gr))
+    df <- data.frame(cluster = as.integer(names(gr)))  # Make sure it does not sort lexically!
   }
   df <- cbind(df , data.frame( chr     = decode(seqnames(gr))
                              , start   = start(gr)
