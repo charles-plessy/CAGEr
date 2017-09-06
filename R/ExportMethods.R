@@ -258,6 +258,8 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 #' @family CAGEr export functions
 #' @family CAGEr clusters functions
 #' 
+#' @importFrom graphics hist
+#' 
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' plotInterquantileWidth( object = exampleCAGEset, clusters = "tagClusters"

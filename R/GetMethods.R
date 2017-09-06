@@ -928,6 +928,8 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
 #' @name tagClustersQuantile
 #' @title Quantile metadata stored in CAGEr objects.
 #' 
+#' @description Accessor functions to quantile metadata.
+#' 
 #' @param object A \code{\link{CAGEr}} object.
 #' @param value A list (one entry per sample) of data frames with multiple columns:
 #'        \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}

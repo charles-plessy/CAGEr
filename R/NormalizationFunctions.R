@@ -60,6 +60,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 #' signal), b = intercept in the logX-logY plot)
 #' 
 #' @importFrom data.table data.table setkey setnames
+#' @importFrom stats coefficients lm
 #' @noRd
 
 .fit.power.law.to.reverse.cumulative <- function(values, val.range = c(10, 1000)) {

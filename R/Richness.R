@@ -157,6 +157,8 @@ setMethod("hanabi", "GRangesList", function(x, n, step, from) {
 #' 
 #' @author Charles Plessy
 #' 
+#' @importFrom graphics lines
+#' 
 #' @export plot.hanabi
 
 plot.hanabi <-

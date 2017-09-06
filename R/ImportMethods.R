@@ -256,7 +256,8 @@ setMethod("getCTSS", "CAGEset", function ( object
 #' accordingly to the BSgenome.
 #' 
 #' @importFrom GenomeInfoDb seqinfo
-#' @importFrom GenomeInfoDb seqlevels
+#' @importFrom GenomeInfoDb seqlengths
+#' @importFrom GenomeInfoDb seqlevels seqlevels<-
 #' @importFrom GenomeInfoDb seqnames
 #' @importFrom S4Vectors %in%
 
@@ -429,6 +430,8 @@ import.bedScore <- function(filepath) {
 #' @family loadFileIntoGRanges
 #' 
 #' @importFrom rtracklayer import.bed
+#' @importFrom GenomeInfoDb sortSeqlevels
+#' @importFrom GenomicRanges countOverlaps
 #' 
 #' @examples
 #' # TODO: add exmaple file
@@ -456,6 +459,8 @@ import.bedCTSS <- function(filepath) {
 #' 
 #' @seealso loadFileIntoGRanges
 #' @family loadFileIntoGRanges
+#' 
+#' @importFrom utils read.table
 #' 
 #' @examples
 #' import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))

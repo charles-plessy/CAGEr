@@ -88,9 +88,11 @@ dispatches each for (possibly parallel) processing.
 }
 \examples{
 
+library(IRanges)
+
 #.cluster.ctss.strand
 ctss.iranges.chr <- IRanges(c(1,3,4,12,14,25,28), w=1)
-.cluster.ctss.strand(ctss.iranges.chr, 5)
+CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 5)
 
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 ctss.chr <- CTSScoordinatesGR(ce)
@@ -98,11 +100,11 @@ ctss.chr <- ctss.chr[strand(ctss.chr) == "+"]
 ctss.iranges.chr <- ranges(ctss.chr)
 # Same result if not sorted
 identical(
-  .cluster.ctss.strand(ctss.iranges.chr, 20),
-  .cluster.ctss.strand(ctss.iranges.chr[sample(seq_along(ctss.iranges.chr))], 20)
+  CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 20),
+  CAGEr:::.cluster.ctss.strand(ctss.iranges.chr[sample(seq_along(ctss.iranges.chr))], 20)
 )
 # Returns an emtpy data.table object if given an empty IRanges object.
-identical(.cluster.ctss.strand(IRanges(), 20), data.table())
+identical(CAGEr:::.cluster.ctss.strand(IRanges(), 20), data.table::data.table())
 
 #.cluster.ctss.chr
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))

@@ -10,8 +10,9 @@ aggregateTagClusters(object, tpmThreshold = 5,
   excludeSignalBelowThreshold = TRUE, qLow = NULL, qUp = NULL,
   maxDist = 100, useMulticore = FALSE, nrCores = NULL)
 
-\S4method{aggregateTagClusters}{CAGEr}(object, tpmThreshold,
-  excludeSignalBelowThreshold, qLow, qUp, maxDist)
+\S4method{aggregateTagClusters}{CAGEr}(object, tpmThreshold = 5,
+  excludeSignalBelowThreshold = TRUE, qLow = NULL, qUp = NULL,
+  maxDist = 100, useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object}

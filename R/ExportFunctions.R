@@ -7,6 +7,7 @@
 	values <- values[values != 0]
 
 # using data.table package
+	num <- nr_tags <- NULL # To keep R CMD check happy
 	v <- data.table(num = 1, nr_tags = values)
 	v <- v[, sum(num), by = nr_tags]
 	setkey(v, nr_tags)

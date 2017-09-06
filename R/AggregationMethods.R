@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEexp.R CAGEr.R ClusteringFunctions.R
+#' @include AllClasses.R CAGEexp.R CAGEr.R ClusteringFunctions.R Multicore.R
 
 #' @name aggregateTagClusters
 #' 

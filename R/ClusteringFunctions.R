@@ -39,9 +39,11 @@ NULL
 #' 
 #' @examples
 #' 
+#' library(IRanges)
+#' 
 #' #.cluster.ctss.strand
 #' ctss.iranges.chr <- IRanges(c(1,3,4,12,14,25,28), w=1)
-#' .cluster.ctss.strand(ctss.iranges.chr, 5)
+#' CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 5)
 #' 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' ctss.chr <- CTSScoordinatesGR(ce)
@@ -49,11 +51,11 @@ NULL
 #' ctss.iranges.chr <- ranges(ctss.chr)
 #' # Same result if not sorted
 #' identical(
-#'   .cluster.ctss.strand(ctss.iranges.chr, 20),
-#'   .cluster.ctss.strand(ctss.iranges.chr[sample(seq_along(ctss.iranges.chr))], 20)
+#'   CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 20),
+#'   CAGEr:::.cluster.ctss.strand(ctss.iranges.chr[sample(seq_along(ctss.iranges.chr))], 20)
 #' )
 #' # Returns an emtpy data.table object if given an empty IRanges object.
-#' identical(.cluster.ctss.strand(IRanges(), 20), data.table())
+#' identical(CAGEr:::.cluster.ctss.strand(IRanges(), 20), data.table::data.table())
 
 setGeneric(".cluster.ctss.strand", function(ctss.iranges.chr, max.dist) standardGeneric(".cluster.ctss.strand"))
 
@@ -198,6 +200,7 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
     w[ceiling(length(w)/2)]
   }
 	
+  chr <- pos <- tpm <- cluster <- NULL  # To keep R CMD check happy.
   clusters <- ctss.clustered[ , list( chr[1]
                                     , min(pos)
                                     , max(pos)
@@ -339,8 +342,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 			nrCores <- detectCores()
 		}		
 		
-		ctss.df.plus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, chr == x & strand == "+")})
-		ctss.df.minus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, chr == x & strand == "-")})
+		ctss.df.plus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "+")})
+		ctss.df.minus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "-")})
 		ctss.df.list <- append(ctss.df.plus.list, ctss.df.minus.list)
 		clusters.list <- mclapply(ctss.df.list, .paraclu2, mc.cores = nrCores)
 		n <- length(clusters.list)/2
@@ -350,8 +353,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	
 		clusters.list <- list()
 		for(ch in unique(ctss.df$chr)){
-			cl.plus <- .paraclu2(ctss = subset(ctss.df, chr == ch & strand == "+"))
-			cl.minus <- .paraclu2(ctss = subset(ctss.df, chr == ch & strand == "-"))
+			cl.plus <- .paraclu2(ctss = subset(ctss.df, ctss.df$chr == ch & strand == "+"))
+			cl.minus <- .paraclu2(ctss = subset(ctss.df, ctss.df$chr == ch & strand == "-"))
 			clusters.list[[ch]] <- rbind(cl.plus, cl.minus)
 		}
 	}
@@ -454,8 +457,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 		}		
 		ctss.cluster.list <- mclapply(as.list(unique(custom.clusters$chr)), function(x) {
 									  
-									  ctss.df.chr <- subset(ctss.df, chr == x)
-									  custom.clusters <- subset(custom.clusters, chr == x)
+									  ctss.df.chr <- subset(ctss.df, ctss.df$chr == x)
+									  custom.clusters <- subset(custom.clusters, custom.clusters$chr == x)
 									  if(nrow(custom.clusters)>0){
 										ctss.cluster.chr.df <- .cluster.ctss.chr.predef(ctss.df = ctss.df.chr, custom.clusters = custom.clusters)
 									  }
@@ -464,8 +467,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	}else{
 		ctss.cluster.list <- lapply(as.list(unique(custom.clusters$chr)), function(x) {
 									
-									ctss.df.chr <- subset(ctss.df, chr == x)
-									custom.clusters <- subset(custom.clusters, chr == x)
+									ctss.df.chr <- subset(ctss.df, ctss.df$chr == x)
+									custom.clusters <- subset(custom.clusters, custom.clusters$chr == x)
 									if(nrow(custom.clusters)>0){
 										ctss.cluster.chr.df <- .cluster.ctss.chr.predef(ctss.df = ctss.df.chr, custom.clusters = custom.clusters)
 									}
@@ -494,6 +497,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 .summarize.clusters.predef <- function(ctss.cluster.df) {
 	
 	ctss.cluster <- data.table(ctss.cluster.df)
+	chr <- pos <- tpm <- cluster <- NULL  # To keep R CMD check happy.
 	ctss.cluster <- ctss.cluster[, list(chr[1], start[1], end[1], strand[1], length(pos), pos[which(tpm == max(tpm))[ceiling(length(which(tpm == max(tpm)))/2)]], sum(tpm), max(tpm)), by = cluster]
 	setnames(ctss.cluster, c("cluster", "chr", "start", "end", "strand", "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss")) 
 	ctss.cluster <- data.frame(ctss.cluster)
