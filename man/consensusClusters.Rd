@@ -87,13 +87,19 @@ sample.  When \code{returnInterquantileWidth = TRUE}, additional sample-specific
 is returned, including position of the dominant TSS, and interquantile width of the consensus
 clusters in the specified sample.
 }
+\description{
+Extracts the information on consensus clusters from a CAGEr object.
+}
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-clusters.general <- consensusClusters(exampleCAGEset)
-head(clusters.general)
+head(consensusClusters(exampleCAGEset))
+head(consensusClusters(exampleCAGEset, sample = "sample2"))
 
-clusters.sample <- consensusClusters(exampleCAGEset, sample = "sample2")
-head(clusters.sample)
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+clusterCTSS(ce)
+aggregateTagClusters(ce)
+head(consensusClusters(ce))
+head(consensusClusters(ce, 2))
 
 }
 \seealso{

@@ -17,6 +17,13 @@
 #' the whole clustering with GRanges is more elegant, but looping on a GRangesList was just
 #' too slow.  Maybe the operation on the \code{data.table} is more efficient because it is
 #' vectorised.
+#' 
+#' @examples
+#' # Get example data
+#' library(IRanges)
+#' library(GenomicRanges)
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' normalizeTagCount(ce)
 NULL
 
 #' @name .cluster.ctss.strand
@@ -39,13 +46,10 @@ NULL
 #' 
 #' @examples
 #' 
-#' library(IRanges)
-#' 
 #' #.cluster.ctss.strand
 #' ctss.iranges.chr <- IRanges(c(1,3,4,12,14,25,28), w=1)
 #' CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 5)
 #' 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' ctss.chr <- CTSScoordinatesGR(ce)
 #' ctss.chr <- ctss.chr[strand(ctss.chr) == "+"]
 #' ctss.iranges.chr <- ranges(ctss.chr)
@@ -92,9 +96,8 @@ setMethod(".cluster.ctss.strand", "IRanges", function(ctss.iranges.chr, max.dist
 #' @examples 
 #' 
 #' #.cluster.ctss.chr
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 #' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(ce))
-#' .cluster.ctss.chr(ctss.chr, 20)
+#' CAGEr:::.cluster.ctss.chr(ctss.chr, 20)
 
 setGeneric(".cluster.ctss.chr", function(ctss.chr, max.dist) standardGeneric(".cluster.ctss.chr"))
 
@@ -127,13 +130,12 @@ setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
 #' @examples 
 #' 
 #' # .ctss2clusters
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
 #' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
 #' score(ctss) <- CTSSnormalizedTpmDF(ce)[[1]]
-#' seqnames(ctss)[rep(c(T,F), length(ctss) / 2)] <- "chr16"
+#' seqnames(ctss)[rep(c(TRUE,FALSE), length(ctss) / 2)] <- "chr16"
 #' ctss
-#' .ctss2clusters(ctss, 20)
+#' clusters <- CAGEr:::.ctss2clusters(ctss, 20)
+#' clusters
 
 setGeneric(".ctss2clusters", function(ctss, max.dist = 20, useMulticore = FALSE, nrCores = NULL) standardGeneric(".ctss2clusters"))
 
@@ -181,15 +183,9 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
 #' @examples 
 #' 
 #' # .summarize.clusters
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
-#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
-#' score(ctss) <- CTSSnormalizedTpmDF(ce)[[1]]
-#' seqnames(ctss)[rep(c(T,F), length(ctss) / 2)] <- "chr16"
-#' clusters <- .ctss2clusters(ctss, 20)
-#' .summarize.clusters(clusters)
-#' .summarize.clusters(clusters, removeSingletons = TRUE)
-#' .summarize.clusters(clusters, removeSingletons = TRUE, keepSingletonsAbove = 5)
+#' CAGEr:::.summarize.clusters(clusters)
+#' CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE)
+#' CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE, keepSingletonsAbove = 5)
 
 setGeneric(".summarize.clusters", function(ctss.clustered, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf) standardGeneric(".summarize.clusters"))
 
@@ -200,7 +196,7 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
     w[ceiling(length(w)/2)]
   }
 	
-  chr <- pos <- tpm <- cluster <- NULL  # To keep R CMD check happy.
+  chr <- pos <- tpm <- cluster <- id <- NULL  # To keep R CMD check happy.
   clusters <- ctss.clustered[ , list( chr[1]
                                     , min(pos)
                                     , max(pos)
@@ -215,7 +211,7 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
                       , "nr_ctss", "dominant_ctss", "tpm", "tpm.dominant_ctss"))
   
 	if(removeSingletons)
-		clusters <- subset(clusters, nr_ctss > 1 | tpm >= keepSingletonsAbove)
+		clusters <- subset(clusters, clusters$nr_ctss > 1 | clusters$tpm >= keepSingletonsAbove)
   
   gr <- GRanges( seqnames = Rle(factor(clusters$chr))
                , ranges   = IRanges(clusters$start, clusters$end)
@@ -247,8 +243,6 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
 #' @examples 
 #' 
 #' # .distclu
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
 #' .distclu(CTSStagCountSE(ce))
 #' \dontrun{
 #' .distclu(CTSStagCountSE(ce), useMulticore = TRUE)
@@ -361,17 +355,17 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	
 	clusters <- do.call(rbind, clusters.list)
 	
-	clusters <- subset(clusters, (max_d >= (minStability * min_d)) & ((end - start + 1) <= maxLength))
+	clusters <- subset(clusters, (clusters$max_d >= (minStability * clusters$min_d)) & ((end - start + 1) <= maxLength))
 	
 	if(removeSingletons == TRUE){
-		clusters <- subset(clusters, !(start == end & tpm < keepSingletonsAbove))
+		clusters <- subset(clusters, !(clusters$start == clusters$end & clusters$tpm < keepSingletonsAbove))
 	}
 	
 	if(reduceToNonoverlapping == TRUE){
 		clusters.gr <- GRanges(seqnames = clusters$chr, ranges = IRanges(start = clusters$start, end = clusters$end), strand = clusters$strand, elementMetadata = clusters)
 		o <- findOverlaps(clusters.gr, drop.self = TRUE, type = "within")
 		clusters.gr <- clusters.gr[-queryHits(o)]
-		clusters <- subset(clusters, paste(chr, strand, start, end, sep = ".") %in% paste(seqnames(clusters.gr), strand(clusters.gr), start(clusters.gr), end(clusters.gr), sep = "."))
+		clusters <- subset(clusters, paste(clusters$chr, clusters$strand, clusters$start, clusters$end, sep = ".") %in% paste(seqnames(clusters.gr), strand(clusters.gr), start(clusters.gr), end(clusters.gr), sep = "."))
 	}
 	clusters <- cbind(cluster = c(1:nrow(clusters)), clusters)
 	clusters$start <- clusters$start - 1

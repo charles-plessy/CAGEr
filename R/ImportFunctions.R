@@ -6,10 +6,12 @@
 .estimate.G.addition.and.correct <- function(ctss, G.chance, correction.orientation) {
 	
 	ctss.dt <- data.table(ctss)
+	removedG <- pos <- NULL # Keep R CMD check happy
 	ctss.count <- ctss.dt[, list(length(removedG), sum(removedG)), by = pos]
 	setkey(ctss.count, pos)
 	
 	# select the 'G' positions in the genome that had some tags before moving the 'G' mismatch reads from previous position - these should be further corrected
+	V1 <- V2 <- NULL # Keep R CMD check happy
 	ctss.to.correct <- data.frame(subset(ctss.count, V1 != V2))
 	
 	if(nrow(ctss.to.correct) > 0){
@@ -52,7 +54,8 @@
 		ctss.final <- data.frame(pos = ctss.count$pos, nr_tags = ctss.count$V1)
 	}
 	
-	return(subset(ctss.final, nr_tags > 0))
+	
+	return(subset(ctss.final, ctss.final$nr_tags > 0))
 	
 }
 

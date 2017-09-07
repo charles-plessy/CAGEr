@@ -87,14 +87,16 @@ the position and score of a main peak, for each cluster.
 dispatches each for (possibly parallel) processing.
 }
 \examples{
-
+# Get example data
 library(IRanges)
+library(GenomicRanges)
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+normalizeTagCount(ce)
 
 #.cluster.ctss.strand
 ctss.iranges.chr <- IRanges(c(1,3,4,12,14,25,28), w=1)
 CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 5)
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 ctss.chr <- CTSScoordinatesGR(ce)
 ctss.chr <- ctss.chr[strand(ctss.chr) == "+"]
 ctss.iranges.chr <- ranges(ctss.chr)
@@ -107,33 +109,23 @@ identical(
 identical(CAGEr:::.cluster.ctss.strand(IRanges(), 20), data.table::data.table())
 
 #.cluster.ctss.chr
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(ce))
-.cluster.ctss.chr(ctss.chr, 20)
+CAGEr:::.cluster.ctss.chr(ctss.chr, 20)
 
 # .ctss2clusters
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
 ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
 score(ctss) <- CTSSnormalizedTpmDF(ce)[[1]]
-seqnames(ctss)[rep(c(T,F), length(ctss) / 2)] <- "chr16"
+seqnames(ctss)[rep(c(TRUE,FALSE), length(ctss) / 2)] <- "chr16"
 ctss
-.ctss2clusters(ctss, 20)
+clusters <- CAGEr:::.ctss2clusters(ctss, 20)
+clusters
 
 # .summarize.clusters
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
-ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
-score(ctss) <- CTSSnormalizedTpmDF(ce)[[1]]
-seqnames(ctss)[rep(c(T,F), length(ctss) / 2)] <- "chr16"
-clusters <- .ctss2clusters(ctss, 20)
-.summarize.clusters(clusters)
-.summarize.clusters(clusters, removeSingletons = TRUE)
-.summarize.clusters(clusters, removeSingletons = TRUE, keepSingletonsAbove = 5)
+CAGEr:::.summarize.clusters(clusters)
+CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE)
+CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE, keepSingletonsAbove = 5)
 
 # .distclu
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
 .distclu(CTSStagCountSE(ce))
 \dontrun{
 .distclu(CTSStagCountSE(ce), useMulticore = TRUE)

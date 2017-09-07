@@ -2,7 +2,7 @@
 #' 
 #' @title CAGE Transcription Start Site class
 #' 
-#' @details The \code{CTSS} class represents CAGE transcription start sites (CTSS) at
+#' @description  The \code{CTSS} class represents CAGE transcription start sites (CTSS) at
 #' single-nucleotide resolution, using GRanges as base class.  It is used internally by CAGEr
 #' for type safety.
 #' 

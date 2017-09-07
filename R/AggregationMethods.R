@@ -24,6 +24,12 @@
 #' 
 #' @param maxDist Maximal length of the gap (in base-pairs) between two tag clusters for them to
 #'        be part of the same consensus clusters.
+#'        
+#' @param useMulticore Logical, should multicore be used.  \code{useMulticore = TRUE} is
+#'        supported only on Unix-like platforms.
+#' 
+#' @param nrCores Number of cores to use when \code{useMulticore = TRUE}.  Default value
+#'        \code{NULL} uses all detected cores.
 #' 
 #' @details Since the tag clusters (TCs) returned by the \code{\link{clusterCTSS}} function
 #' are constructed separately for every CAGE sample within the CAGEr object, they can differ

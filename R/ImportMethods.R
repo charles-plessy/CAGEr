@@ -312,6 +312,7 @@ loadFileIntoGRanges <- function( filepath
 #' @seealso loadFileIntoGRanges
 #' @family loadFileIntoGRanges
 #' 
+#' @importFrom Rsamtools bamFlag<-
 #' @importFrom Rsamtools ScanBamParam
 #' @importFrom Rsamtools scanBamFlag
 #' @importFrom Rsamtools scanBam

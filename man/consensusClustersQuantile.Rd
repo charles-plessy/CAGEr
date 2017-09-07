@@ -50,3 +50,6 @@ consensusClustersQuantileUp(object) <- value
 \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
 indicates a quantile.}
 }
+\description{
+Accessors for consensus cluster quantile data in CAGEr objects.
+}

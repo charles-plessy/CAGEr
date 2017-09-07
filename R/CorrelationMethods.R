@@ -47,6 +47,8 @@
 #' 
 #' @family CAGEr plot functions
 #' 
+#' @importFrom graphics axis
+#' 
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' plotCorrelation(object = exampleCAGEset)

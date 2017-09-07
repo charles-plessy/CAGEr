@@ -47,6 +47,15 @@
 #' ce$l1 <- colSums(CTSStagCountDf(ce) > 0)
 #' ce$l1
 #' 
+#' # Further methods to process the data.
+#' normalizeTagCount(ce)
+#' clusterCTSS(ce)
+#' 
+# The commands above were used to create the example CAGEexp object.
+#' \dontrun{
+#' saveRDS(ce, file = "inst/extdata/CAGEexp.rds")
+#' }
+#' 
 #' @seealso CAGEset-class
 #' 
 #' @rdname CAGEexp-class

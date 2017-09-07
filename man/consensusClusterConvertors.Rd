@@ -15,7 +15,7 @@ CCdataframe2granges(df)
 
 \item{df}{Consensus clusters in \code{data.frame} format.}
 }
-\details{
+\description{
 Interconvert consensus clusters (CC) formats used in classes CAGEset
 (\code{data.frame}) and CAGEexp (\code{GRanges}).
 }

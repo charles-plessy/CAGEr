@@ -2,6 +2,7 @@
 
 #' scoreShift
 #' @importFrom parallel detectCores
+#' @importFrom stats p.adjust
 #' @noRd
 #' @export
 

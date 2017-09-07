@@ -2,6 +2,8 @@
 
 #' @name hanabi-class
 #' 
+#' @description TBD
+#' 
 #' @title Hanabi class
 #' 
 #' @details TBD

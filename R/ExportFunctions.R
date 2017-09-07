@@ -240,7 +240,7 @@ value.low=min(vec), value.high=max(vec), value.mid=(value.low+value.high)/2, ...
 	
 }
 
-
+#' @importFrom IRanges reverse
 
 .make.cluster.bed.track <- function(clusters.q, use.blocks = T, q.low = NULL, q.up = NULL, track.file, track.name = 'q_track', track.description = 'q track', name = ".", cols = "0,0,0", itemRgb = FALSE, app = T) {
 	

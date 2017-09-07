@@ -103,10 +103,10 @@ function (object, what, which="all"){
 			r$expression_class <- NA
 			r$expression_class[as.integer(names(classes))] <- classes
 			if(which == "all") {
-				r <- subset(r, !(is.na(expression_class)))
+				r <- subset(r, !(is.na(r$expression_class)))
 				return(r)
 			}else if(as.character(which) %in% unique(classes)){
-				r <- subset(r, expression_class == as.character(which))
+				r <- subset(r, r$expression_class == as.character(which))
 				return(r)
 			}else{
 				stop("'which' parameter must be either 'all' or one of the expression classes! See expressionClasses(", objName, ", what='CTSS') for CTSS expression classes in your dataset!")
@@ -122,10 +122,10 @@ function (object, what, which="all"){
 			r$expression_class <- NA
 			r$expression_class[as.integer(names(classes))] <- classes
 			if(which == "all") {
-				r <- subset(r, !(is.na(expression_class)))
+				r <- subset(r, !(is.na(r$expression_class)))
 				return(r)
 			}else if(as.character(which) %in% unique(classes)){
-				r <- subset(r, expression_class == as.character(which))
+				r <- subset(r, r$expression_class == as.character(which))
 				return(r)
 			}else{
 				stop("'which' parameter must be either 'all' or one of the expression classes! See expressionClasses(", objName, ", what='consensusClusters') for consensusCluster expression classes in your dataset!")

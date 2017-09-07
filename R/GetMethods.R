@@ -1081,6 +1081,8 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
 #' 
 #' @title Get or set consensus clusters from CAGEr objects
 #' 
+#' @description Extracts the information on consensus clusters from a CAGEr object.
+#' 
 #' @param object A \code{\link{CAGEr}} object.
 #' 
 #' @param sample Optional. Label of the CAGE dataset (experiment, sample) for which to extract
@@ -1113,11 +1115,14 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
 #' 
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-#' clusters.general <- consensusClusters(exampleCAGEset)
-#' head(clusters.general)
+#' head(consensusClusters(exampleCAGEset))
+#' head(consensusClusters(exampleCAGEset, sample = "sample2"))
 #' 
-#' clusters.sample <- consensusClusters(exampleCAGEset, sample = "sample2")
-#' head(clusters.sample)
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' clusterCTSS(ce)
+#' aggregateTagClusters(ce)
+#' head(consensusClusters(ce))
+#' head(consensusClusters(ce, 2))
 #' 
 #' @export
 
@@ -1182,6 +1187,8 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
 #' @name consensusClustersQuantile
 #' @title Quantile metadata stored in CAGEr objects.
 #' 
+#' @description Accessors for consensus cluster quantile data in CAGEr objects.
+#' 
 #' @param object A \code{\link{CAGEr}} object.
 #' @param value A list (one entry per sample) of data frames with multiple columns:
 #'        \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
@@ -1237,8 +1244,10 @@ setMethod("consensusClustersQuantileUp", "CAGEexp", function (object, samples) {
 
 
 #' @name CTSScumulativesTagClusters
-#' 
+#'  
 #' @title Get/set CTSS cumulative TC data
+#' 
+#' @description Accessor function.
 #' 
 #' @param object A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.
 #' 
@@ -1342,8 +1351,12 @@ setMethod("consensusClustersTpmDf", "CAGEexp", function (object) {
 
 setGeneric("consensusClustersTpmDF", function(object) standardGeneric("consensusClustersTpmDF"))
 
+#' @rdname consensusClustersTpm
+
 setMethod("consensusClustersTpmDF", "CAGEset", function (object)
 	DataFrame(object@consensusClustersTpmMatrix))
+
+#' @rdname consensusClustersTpm
 
 setMethod("consensusClustersTpmDF", "CAGEexp", function (object) {
   consensusClustersSE <- object[["consensusClusters"]]

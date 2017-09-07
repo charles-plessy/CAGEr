@@ -67,6 +67,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 
 # using data.table package	
 	v <- data.table(num = 1, nr_tags = values)
+	num <- nr_tags <- NULL # Keep R CMD check happy.
 	v <- v[, sum(num), by = nr_tags]
 	setkey(v, nr_tags)
 	v$V1 <- rev(cumsum(rev(v$V1)))

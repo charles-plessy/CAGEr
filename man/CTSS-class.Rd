@@ -7,11 +7,12 @@
 \alias{CTSS.chr-class}
 \alias{.CTSS.chr}
 \title{CAGE Transcription Start Site class}
-\details{
+\description{
 The \code{CTSS} class represents CAGE transcription start sites (CTSS) at
 single-nucleotide resolution, using GRanges as base class.  It is used internally by CAGEr
 for type safety.
-
+}
+\details{
 The \code{CTSS.chr} class represents a \code{CTSS} object that is guaranteed to be
 only on a single chromosome.  It is used internally by CAGEr for type safety.
 }
