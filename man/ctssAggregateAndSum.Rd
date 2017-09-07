@@ -6,9 +6,9 @@
 \alias{.ctssAggregateAndSum,data.table-method}
 \title{Aggregate identical CTSS and sum their scores.}
 \usage{
-.ctssAggregateAndSum(ctss)
+.ctssAggregateAndSum(ctss, scoreColName)
 
-\S4method{.ctssAggregateAndSum}{data.table}(ctss)
+\S4method{.ctssAggregateAndSum}{data.table}(ctss, scoreColName)
 }
 \description{
 Private function using  \code{data.table} objects to preform grouping
@@ -22,5 +22,5 @@ ctssDT <- data.table( chr       = c("chr1", "chr1", "chr1", "chr2")
                     , strand    = c("+"   , "+"   , "-"   , "-"   )
                     , tag_count = c(1     , 1     , 1     , 1     ))
 ctssDT
-.ctssAggregateAndSum(ctssDT)
+.ctssAggregateAndSum(ctssDT, "tag_count")
 }

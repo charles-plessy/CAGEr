@@ -386,7 +386,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 		message("\t-> ", s)
 		d <- data[,c("chr", "pos", "strand", s)]
 		colnames(d) <- c("chr", "pos", "strand", "tpm")
-		d <- subset(d, tpm>0)
+		d <- d[d$tpm>0,]
 		ctss.cluster.df <- .paraclu3(ctss.df = d, minStability = minStability, maxLength = maxLength, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, reduceToNonoverlapping = reduceToNonoverlapping, useMulticore = useMulticore, nrCores = nrCores)
 		ctss.cluster.list[[s]] <- ctss.cluster.df
 		
@@ -510,7 +510,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 		message("\t->  ", s)
 		d <- data[,c("chr", "pos", "strand", s)]
 		colnames(d) <- c("chr", "pos", "strand", "tpm")
-		d <- subset(d, tpm > 0)
+		d <- d[d$tpm > 0,]
 		ctss.cluster.df <- .ctss2clusters.predef(ctss.df = d, custom.clusters = custom.clusters, useMulticore = useMulticore, nrCores = nrCores)
 		ctss.cluster.list[[s]] <- ctss.cluster.df
 		invisible(gc())

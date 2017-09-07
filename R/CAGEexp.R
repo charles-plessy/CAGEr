@@ -46,14 +46,17 @@
 #' 
 #' ce$l1 <- colSums(CTSStagCountDf(ce) > 0)
 #' ce$l1
-#' 
-#' # Further methods to process the data.
+#'  
+#' # The commands below were used to create the example CAGEexp object in the "extdata" folder.
+#' \dontrun{
 #' normalizeTagCount(ce)
 #' clusterCTSS(ce)
-#' 
-# The commands above were used to create the example CAGEexp object.
-#' \dontrun{
-#' saveRDS(ce, file = "inst/extdata/CAGEexp.rds")
+#' cumulativeCTSSdistribution(ce, "tagClusters")
+#' quantilePositions(ce, "tagClusters")
+#' aggregateTagClusters(ce)
+#' cumulativeCTSSdistribution(ce, "consensusClusters")
+#' quantilePositions(ce, "consensusClusters")
+#' saveRDS(ce, file = "inst/extdata/CAGEexp.rds", compress = "xz")
 #' }
 #' 
 #' @seealso CAGEset-class

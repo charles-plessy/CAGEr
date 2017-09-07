@@ -775,26 +775,6 @@ function (object){
 })
 
 
-setGeneric("CTSScumulativesCC", function(object, sample = NULL) {
-  validSamples(object, sample)
-  standardGeneric("CTSScumulativesCC")
-})
-
-setMethod("CTSScumulativesCC", "CAGEset", function (object, sample) {
-  if (is.null(sample)) return(object@CTSScumulativesConsensusClusters)
-	object@CTSScumulativesConsensusClusters[[sample]]
-})
-
-setMethod("CTSScumulativesCC", "CAGEexp", function (object, sample) {
-  cc <- metadata(object)$CTSScumulativesConsensusClusters
-  if (is.null(cc))
-    stop( "No cumulative sums found, run ", sQuote("cumulativeCTSSdistribution"), " first.")
-  if (is.null(sample))
-    return(metadata(object)$CTSScumulativesConsensusClusters)
-  metadata(object)$CTSScumulativesConsensusClusters[[sample]]
-})
-
-
 #' @name tagClusters
 #' 
 #' @title Extract tag clusters (TCs) for individual CAGE experiments
@@ -1257,29 +1237,66 @@ setMethod("consensusClustersQuantileUp", "CAGEexp", function (object, samples) {
 
 #' @name CTSScumulativesTagClusters
 #'  
-#' @title Get/set CTSS cumulative TC data
+#' @title Get/set CTSS cumulative TC or CC data
 #' 
 #' @description Accessor function.
 #' 
 #' @param object A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.
+#' @param sample A valid sample name.
+#' 
+#' @return List of numeric Rle.
 #' 
 #' @family CAGEr clusters functions
 #' @family CAGEr accessor methods
 #' 
 #' @export
 
-setGeneric("CTSScumulativesTagClusters", function(object) standardGeneric("CTSScumulativesTagClusters"))
-
-#' @rdname CTSScumulativesTagClusters
-
-setMethod("CTSScumulativesTagClusters", "CAGEset", function (object){
-	object@CTSScumulativesTagClusters
+setGeneric("CTSScumulativesTagClusters", function(object, sample = NULL) {
+  validSamples(object, sample)
+  standardGeneric("CTSScumulativesTagClusters")
 })
 
 #' @rdname CTSScumulativesTagClusters
 
-setMethod("CTSScumulativesTagClusters", "CAGEexp", function (object){
-  metadata(object)$CTSScumulativesTagClusters
+setMethod("CTSScumulativesTagClusters", "CAGEset", function (object, sample){
+    if (is.null(sample)) return(object@CTSScumulativesTagClusters)
+	object@CTSScumulativesTagClusters[[sample]]
+})
+
+#' @rdname CTSScumulativesTagClusters
+
+setMethod("CTSScumulativesTagClusters", "CAGEexp", function (object, sample){
+  tc <- metadata(object)$CTSScumulativesTagClusters
+  if (is.null(tc))
+    stop( "No cumulative sums found, run ", sQuote("cumulativeCTSSdistribution"), " first."
+        , call. = FALSE)
+  if (is.null(sample)) return(tc)
+  tc[[sample]]
+})
+
+#' @rdname CTSScumulativesTagClusters
+
+setGeneric("CTSScumulativesCC", function(object, sample = NULL) {
+  validSamples(object, sample)
+  standardGeneric("CTSScumulativesCC")
+})
+
+#' @rdname CTSScumulativesTagClusters
+
+setMethod("CTSScumulativesCC", "CAGEset", function (object, sample) {
+  if (is.null(sample)) return(object@CTSScumulativesConsensusClusters)
+	object@CTSScumulativesConsensusClusters[[sample]]
+})
+
+#' @rdname CTSScumulativesTagClusters
+
+setMethod("CTSScumulativesCC", "CAGEexp", function (object, sample) {
+  cc <- metadata(object)$CTSScumulativesConsensusClusters
+  if (is.null(cc))
+    stop( "No cumulative sums found, run ", sQuote("cumulativeCTSSdistribution"), " first."
+        , call. = FALSE)
+  if (is.null(sample)) return(cc)
+  cc[[sample]]
 })
 
 #' @name consensusClustersTpm

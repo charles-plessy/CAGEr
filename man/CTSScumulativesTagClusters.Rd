@@ -5,16 +5,25 @@
 \alias{CTSScumulativesTagClusters}
 \alias{CTSScumulativesTagClusters,CAGEset-method}
 \alias{CTSScumulativesTagClusters,CAGEexp-method}
+\alias{CTSScumulativesCC}
+\alias{CTSScumulativesCC,CAGEset-method}
+\alias{CTSScumulativesCC,CAGEexp-method}
 \alias{CTSScumulativesTagClusters<-}
 \alias{CTSScumulativesTagClusters<-,CAGEset-method}
 \alias{CTSScumulativesTagClusters<-,CAGEexp-method}
-\title{Get/set CTSS cumulative TC data}
+\title{Get/set CTSS cumulative TC or CC data}
 \usage{
-CTSScumulativesTagClusters(object)
+CTSScumulativesTagClusters(object, sample = NULL)
 
-\S4method{CTSScumulativesTagClusters}{CAGEset}(object)
+\S4method{CTSScumulativesTagClusters}{CAGEset}(object, sample = NULL)
 
-\S4method{CTSScumulativesTagClusters}{CAGEexp}(object)
+\S4method{CTSScumulativesTagClusters}{CAGEexp}(object, sample = NULL)
+
+CTSScumulativesCC(object, sample = NULL)
+
+\S4method{CTSScumulativesCC}{CAGEset}(object, sample = NULL)
+
+\S4method{CTSScumulativesCC}{CAGEexp}(object, sample = NULL)
 
 CTSScumulativesTagClusters(object) <- value
 
@@ -25,7 +34,12 @@ CTSScumulativesTagClusters(object) <- value
 \arguments{
 \item{object}{A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.}
 
+\item{sample}{A valid sample name.}
+
 \item{value}{CTSScumulativesTagClusters data}
+}
+\value{
+List of numeric Rle.
 }
 \description{
 Accessor function.
