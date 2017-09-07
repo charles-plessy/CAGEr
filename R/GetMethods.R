@@ -910,7 +910,7 @@ setMethod("tagClustersGR", "CAGEr", function (object, sample, returnInterquantil
     mcols(tc)[[qUpName]]  <- tagClustersQuantileUp (object)[[sample]][,qUpName]
     tc$interquantile_width <- mcols(tc)[[qUpName]] - mcols(tc)[[qLowName]] + 1
   }
-  tc
+  .TagClusters(tc)
 })
 
 #' @name filteredCTSSidx
