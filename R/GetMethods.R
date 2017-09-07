@@ -897,6 +897,7 @@ setMethod("tagClustersGR", "CAGEr", function (object, sample, returnInterquantil
     tc <- TCdataframe2granges(object@tagClusters[[sample]])
   } else if (class(object) == "CAGEexp") {
     tc <- metadata(object)$tagClusters[[sample]]
+    if (is.null(tc)) stop("No clusters found in the object, run ", sQuote("clusterCTSS"), " first.", call. = FALSE)
   } else {
     stop("Unsupported CAGEr class.")
   }
