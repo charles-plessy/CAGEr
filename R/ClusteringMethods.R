@@ -242,3 +242,75 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
   assign(objName, object, envir = parent.frame())
   invisible(1)
 })
+
+#' @name .clusterAggregateAndSum
+#' @rdname clusterAggregateAndSum
+#' 
+#' @title Aggregate identical clusters and sum their scores.
+#' 
+#' @description Private function using  \code{data.table} objects to preform grouping
+#' operations at a high performance.  These functions use \emph{non-standard evaluation}
+#' in a context that raises warnings in \code{R CMD check}.  By separating these functions
+#' from the rest of the code, I hope to make the workarounds easier to manage.
+
+setGeneric(".clusterAggregateAndSum", function (clusters, key) standardGeneric(".clusterAggregateAndSum"))
+
+#' @rdname clusterAggregateAndSum
+#' @importFrom data.table setkeyv setnames
+
+setMethod(".clusterAggregateAndSum", "data.table", function (clusters, key) {
+  setkeyv(clusters, key)
+  chr <- min <- max <- strand <- tpm <- NULL
+	clusters <- clusters[ , list( chr[1]
+	                            , min(start)
+	                            , max(end)
+	                            , strand[1]
+	                            , sum(tpm))
+	                      , by = key]
+	setnames(clusters, c(key, "chr", "start", "end", "strand", "tpm"))
+	setkeyv(clusters, key)
+})
+
+#' @rdname clusterAggregateAndSum
+#' @importFrom data.table data.table
+
+setMethod(".clusterAggregateAndSum", "data.frame", function (clusters, key) {
+  as.data.frame(.clusterAggregateAndSum(data.table(clusters), key))
+})
+
+#' @rdname clusterAggregateAndSum
+
+setMethod(".clusterAggregateAndSum", "ConsensusClusters", function (clusters, key) {
+  CCdataframe2granges(.clusterAggregateAndSum(CCgranges2dataframe(clusters), key))
+})
+
+
+#' @name .ctssAggregateAndSum
+#' @rdname ctssAggregateAndSum
+#' 
+#' @title Aggregate identical CTSS and sum their scores.
+#' 
+#' @description Private function using  \code{data.table} objects to preform grouping
+#' operations at a high performance.  These functions use \emph{non-standard evaluation}
+#' in a context that raises warnings in \code{R CMD check}.  By separating these functions
+#' from the rest of the code, I hope to make the workarounds easier to manage.
+
+setGeneric(".ctssAggregateAndSum", function (ctss) standardGeneric(".ctssAggregateAndSum"))
+
+#' @rdname ctssAggregateAndSum
+#' @importFrom data.table setkeyv setnames
+#' @example 
+#' ctssDT <- data.table( chr       = c("chr1", "chr1", "chr1", "chr2")
+#'                     , pos       = c(1     , 1     , 2     , 1     )
+#'                     , strand    = c("+"   , "+"   , "-"   , "-"   )
+#'                     , tag_count = c(1     , 1     , 1     , 1     ))
+#' ctssDT
+#' .ctssAggregateAndSum(ctssDT)
+
+setMethod(".ctssAggregateAndSum", "data.table", function (ctss) {
+  if (! all(c("chr", "pos", "strand") %in% colnames(ctss))) stop("These are not CTSSes.")
+  if (! "tag_count" %in% colnames(ctss)) stop("Missing ", sQuote("tag_count"), " column.")
+  chr <- pos <- strand <- tag_count <- NULL
+  ctssDT[ , as.integer(sum(tag_count))
+          , by = list(chr, pos, strand)]
+})

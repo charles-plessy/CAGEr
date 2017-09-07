@@ -1,3 +1,5 @@
+#' @include ClusteringMethods.R
+
 ###################################################################################################
 # Implementation of an algorithm for correcting systematic G nucleotide addition bias to CAGE tags
 # (as described in Carninci et al., Nature Genetics 2006, Supplementary Information, section 3-e)
@@ -156,7 +158,7 @@
 		CTSS <- CTSS[,c("chr", "pos", "strand")]
 		CTSS$tag_count <- 1
 		CTSS <- data.table(CTSS)
-		CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
+		CTSS <- .ctssAggregateAndSum(CTSS)
 	}
   setnames(CTSS, c("chr", "pos", "strand", sample.label)) 
   setkey(CTSS, chr, pos, strand)
