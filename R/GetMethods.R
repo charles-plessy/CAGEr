@@ -775,13 +775,24 @@ function (object){
 })
 
 
-setGeneric("CTSScumulativesCC", function(object) standardGeneric("CTSScumulativesCC"))
+setGeneric("CTSScumulativesCC", function(object, sample = NULL) {
+  validSamples(object, sample)
+  standardGeneric("CTSScumulativesCC")
+})
 
-setMethod("CTSScumulativesCC", "CAGEset", function (object)
-	object@CTSScumulativesConsensusClusters)
+setMethod("CTSScumulativesCC", "CAGEset", function (object, sample) {
+  if (is.null(sample)) return(object@CTSScumulativesConsensusClusters)
+	object@CTSScumulativesConsensusClusters[[sample]]
+})
 
-setMethod("CTSScumulativesCC", "CAGEexp", function (object)
-  metadata(object)$CTSScumulativesConsensusClusters)
+setMethod("CTSScumulativesCC", "CAGEexp", function (object, sample) {
+  cc <- metadata(object)$CTSScumulativesConsensusClusters
+  if (is.null(cc))
+    stop( "No cumulative sums found, run ", sQuote("cumulativeCTSSdistribution"), " first.")
+  if (is.null(sample))
+    return(metadata(object)$CTSScumulativesConsensusClusters)
+  metadata(object)$CTSScumulativesConsensusClusters[[sample]]
+})
 
 
 #' @name tagClusters
