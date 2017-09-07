@@ -51,3 +51,22 @@
     if (length(unique(seqnames(object))) != 1)
       return("Mutiple sequnames found: CTSS.chr objects should be only on a single chromosome.")
 )
+
+
+#' @name ConsensusClusters
+#' 
+#' @title Consensus clusters class
+#' 
+#' @details The \code{ConsensusClusters} class represents consensus clusters.
+#' It is used internally by CAGEr for type safety.
+
+.ConsensusClusters <- setClass( "ConsensusClusters", contains = "GRanges")
+
+#' @name TagClusters
+#' 
+#' @title Tag clusters class
+#' 
+#' @details The \code{TagClusters} class represents tag clusters.
+#' It is used internally by CAGEr for type safety.
+
+.TagClusters <- setClass( "TagClusters", contains = "GRanges")
