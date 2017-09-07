@@ -61,14 +61,14 @@ total span of the region.
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 head(cbind(
-  CAGEr:::tagClustersQuantileLow(exampleCAGEset)[[1]],
-  CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
+  CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
+  CAGEr:::tagClustersQuantileUp (exampleCAGEset, 1)
 ))
 quantilePositions( object = exampleCAGEset, clusters = "tagClusters"
                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
 head(cbind(
-  CAGEr:::tagClustersQuantileLow(exampleCAGEset)[[1]],
-  CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
+  CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
+  CAGEr:::tagClustersQuantileUp(exampleCAGEset,1 )
 ))
 
 aggregateTagClusters(exampleCAGEset, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
@@ -76,22 +76,14 @@ quantilePositions( object = exampleCAGEset, clusters = "consensusClusters"
                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
                  
 head(cbind(
-  CAGEr:::consensusClustersQuantileLow(exampleCAGEset)[[1]],
-  CAGEr:::consensusClustersQuantileUp(exampleCAGEset)[[1]]
+  CAGEr:::consensusClustersQuantileLow(exampleCAGEset, 1),
+  CAGEr:::consensusClustersQuantileUp(exampleCAGEset , 1)
 ))
 
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
-clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
-           , nrPassThreshold = 1, method = "distclu", maxDist = 20
-           , removeSingletons = TRUE, keepSingletonsAbove = 100)
-cumulativeCTSSdistribution(ce, clusters = "tagClusters")
-quantilePositions( ce, clusters = "tagClusters"
-                 , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
-aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
-cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
-quantilePositions( ce, clusters = "consensusClusters"
-                 , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+quantilePositions( ce, "tagClusters",       qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+tagClustersGR(ce)
+quantilePositions( ce, "consensusClusters", qLow = c(0.1,0.2), qUp = c(0.8,0.9))
 
 }
 \seealso{

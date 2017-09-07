@@ -14,7 +14,7 @@
 \alias{tagClustersQuantileLow<-,CAGEexp-method}
 \alias{tagClustersQuantileUp<-}
 \alias{tagClustersQuantileUp<-,CAGEset-method}
-\alias{tagClustersQuantileUp<-,CAGEexp-method}
+\alias{tagClustersQuantileLow<-,CAGEexp-method}
 \title{Quantile metadata stored in CAGEr objects.}
 \usage{
 tagClustersQuantileLow(object, samples = NULL)
@@ -29,17 +29,17 @@ tagClustersQuantileUp(object, samples = NULL)
 
 \S4method{tagClustersQuantileUp}{CAGEexp}(object, samples = NULL)
 
-tagClustersQuantileLow(object) <- value
+tagClustersQuantileLow(object, sample = NULL) <- value
 
-\S4method{tagClustersQuantileLow}{CAGEset}(object) <- value
+\S4method{tagClustersQuantileLow}{CAGEset}(object, sample = NULL) <- value
 
-\S4method{tagClustersQuantileLow}{CAGEexp}(object) <- value
+\S4method{tagClustersQuantileLow}{CAGEexp}(object, sample = NULL) <- value
 
-tagClustersQuantileUp(object) <- value
+tagClustersQuantileUp(object, sample = NULL) <- value
 
-\S4method{tagClustersQuantileUp}{CAGEset}(object) <- value
+\S4method{tagClustersQuantileUp}{CAGEset}(object, sample = NULL) <- value
 
-\S4method{tagClustersQuantileUp}{CAGEexp}(object) <- value
+\S4method{tagClustersQuantileLow}{CAGEexp}(object, sample = NULL) <- value
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
