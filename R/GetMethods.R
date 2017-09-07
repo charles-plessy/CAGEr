@@ -716,14 +716,14 @@ function (object){
 #'  
 #' @export
 
-setGeneric("CTSSnormalizedTpmGR", function(object, sample) standardGeneric("CTSSnormalizedTpmGR"))
+setGeneric("CTSSnormalizedTpmGR", function(object, sample) {
+  validSamples(object, sample)
+  standardGeneric("CTSSnormalizedTpmGR")
+  })
 
 #' @rdname CTSSnormalizedTpm
 
 setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, sample) {
-  if (! (sample %in% sampleLabels(object) |
-       sample %in% seq_along(sampleLabels(object))))
-  stop(sQuote("sample"), " must be the name or number of a sample label.")
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSSnormalizedTpmDF(object)[[sample]]
   gr <- gr[score(gr) != 0]
