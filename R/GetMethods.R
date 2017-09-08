@@ -888,7 +888,8 @@ setMethod("tagClustersGR", "CAGEr", function (object, sample, returnInterquantil
     tc <- TCdataframe2granges(object@tagClusters[[sample]])
   } else if (class(object) == "CAGEexp") {
     tc <- metadata(object)$tagClusters[[sample]]
-    if (is.null(tc)) stop("No clusters found in the object, run ", sQuote("clusterCTSS"), " first.", call. = FALSE)
+    if (is.null(tc))
+      stop( "No clusters found, run ", sQuote("clusterCTSS"), " first." , call. = FALSE)
   } else {
     stop("Unsupported CAGEr class.")
   }
@@ -983,34 +984,47 @@ setMethod("getConsensusClusters", "CAGEset", function (object){
 })
 
 setMethod("getConsensusClusters", "CAGEexp", function (object){
-  CCgranges2dataframe(rowRanges(consensusClustersSE))
+  cc <- rowRanges(consensusClustersSE(object))
+  cc$consensus.cluster <- names(cc)
+  CCgranges2dataframe(cc)
 })
 
 
 #' @name consensusClustersGR
-#' @noRd
+#' @rdname consensusClusters
 #' @export
 
-setGeneric("consensusClustersGR", function(object) standardGeneric("consensusClustersGR"))
+setGeneric("consensusClustersGR", function(object, sample = NULL) {
+  validSamples(object, sample)
+  standardGeneric("consensusClustersGR")})
 
-setMethod("consensusClustersGR", "CAGEset", function (object)
-  CCdataframe2granges(object@consensusClusters))
+#' @rdname consensusClusters
 
-setMethod("consensusClustersGR", "CAGEexp", function (object) {
+setMethod("consensusClustersGR", "CAGEset", function (object, sample) {
+  if (is.null(sample)) return(CCdataframe2granges(object@consensusClusters))
+  CCdataframe2granges(object@consensusClusters)})
+
+#' @rdname consensusClusters
+
+setMethod("consensusClustersGR", "CAGEexp", function (object, sample) {
   if(is.null(experiments(object)$consensusClusters))
     stop("No consensus clusters found.  See ", sQuote("?aggregateTagClusters"), " on how to create them.")
-  rowRanges(consensusClustersSE(object))
+  .ConsensusClusters(rowRanges(consensusClustersSE(object)))
 })
 
 
 #' @name consensusClustersSE
-#' @noRd
+#' @rdname consensusClusters
 #' @export
 
 setGeneric("consensusClustersSE", function(object) standardGeneric("consensusClustersSE"))
 
+#' @rdname consensusClusters
+
 setMethod("consensusClustersSE", "CAGEset", function (object)
 	stop("CAGEset objects not supported"))
+
+#' @rdname consensusClusters
 
 setMethod("consensusClustersSE", "CAGEexp", function (object)
   experiments(object)$consensusClusters)
