@@ -13,6 +13,9 @@
 \alias{consensusClusters<-}
 \alias{consensusClusters<-,CAGEset-method}
 \alias{consensusClusters<-,CAGEexp-method}
+\alias{consensusClustersSE<-}
+\alias{consensusClustersSE<-,CAGEset,ANY-method}
+\alias{consensusClustersSE<-,CAGEexp,RangedSummarizedExperiment-method}
 \alias{consensusClustersGR<-}
 \alias{consensusClustersGR<-,CAGEset-method}
 \alias{consensusClustersGR<-,CAGEexp-method}
@@ -44,6 +47,13 @@ consensusClusters(object) <- value
 \S4method{consensusClusters}{CAGEset}(object) <- value
 
 \S4method{consensusClusters}{CAGEexp}(object) <- value
+
+consensusClustersSE(object) <- value
+
+\S4method{consensusClustersSE}{CAGEset,ANY}(object) <- value
+
+
+  \S4method{consensusClustersSE}{CAGEexp,RangedSummarizedExperiment}(object) <- value
 
 consensusClustersGR(object) <- value
 

@@ -307,9 +307,7 @@ setMethod("consensusClustersSE<-", "CAGEset", function (object, value){
 
 #' @rdname consensusClusters
 
-setMethod("consensusClustersSE<-", "CAGEexp", function (object, value){
-  if (! is(value, "RangedSummarizedExperiment"))
-    stop("Value must be a RangedSummarizedExperiment object.")
+setMethod("consensusClustersSE<-", c("CAGEexp", "RangedSummarizedExperiment"), function (object, value){
   if (! all(colnames(value) == sampleLabels(object)))
     stop ("The CTSS data must match the CAGEexp object, with samples in the same order.")
   sampleMapSE <-
