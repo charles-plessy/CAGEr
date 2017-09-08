@@ -119,7 +119,7 @@ setMethod( "plotCorrelation", "CAGEr"
 				x <- x[idx]
 				y <- y[idx]
 			
-				pairwise.cor <- cor(x = x, y = y, method = method)
+				pairwise.cor <- cor(x = decode(x), y = decode(y), method = method) # decode() in case of Rle.
 				plot(1, 1, type = "n", bty = "n", xlim = c(0,1), ylim = c(0,1), axes = F)
 				txt <- sprintf("%.2f", pairwise.cor)
 				txt.abs <- sprintf("%.2f", abs(pairwise.cor))
