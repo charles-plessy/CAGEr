@@ -7,8 +7,14 @@
 #' @name .make.consensus.clusters
 #' @noRd
 #' @importFrom IRanges reduce
+#' @importFrom S4Vectors endoapply
 
-.make.consensus.clusters <- function(TC.list, plus.minus = 0, tpm.th = 0) {
+setGeneric( ".make.consensus.clusters"
+          , function(TC.list, plus.minus = 0, tpm.th = 0)
+              standardGeneric(".make.consensus.clusters"))
+
+
+setMethod(".make.consensus.clusters", "list", function(TC.list, plus.minus, tpm.th) {
 	
 	TC.df <- do.call(rbind, TC.list)
 	TC.df <- subset(TC.df, tpm >= tpm.th)
@@ -33,13 +39,36 @@
 	colnames(consensus.clusters) = c('consensus.cluster', col.n, 'sample')
 	return(consensus.clusters[order(consensus.clusters$consensus.cluster),])
 	
-}
+})
+
+setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minus, tpm.th) {
+  gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpm.th])
+  
+  clusters.gr <- unlist(gr.list)
+  mcols(clusters.gr) <- NULL
+	names(clusters.gr) <- NULL
+  suppressWarnings(start(clusters.gr) <- start(clusters.gr) - plus.minus) # Suppress warnings because we trim later
+	suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + plus.minus)
+	clusters.gr <- reduce(trim(clusters.gr))
+	
+	gr.list <- endoapply( gr.list
+                      , function (gr) {
+    o = findOverlaps(clusters.gr, gr)
+    gr$consensus.cluster <- queryHits(o)
+    gr$sample <- "tbd" # Can not retreive 
+    gr
+  })
+	
+	for (i in seq_along(gr.list)) gr.list[[i]]$sample <- names(gr.list)[[i]]
+	
+	unname(unlist(gr.list))
+})
 
 #' @name consensusClusterConvertors
 #' 
 #' @title Private functions to convert CC formats
 #' 
-#' @details Interconvert consensus clusters (CC) formats used in classes CAGEset
+#' @description  Interconvert consensus clusters (CC) formats used in classes CAGEset
 #' (\code{data.frame}) and CAGEexp (\code{GRanges}).
 #' 
 #' @examples 
@@ -65,7 +94,12 @@ NULL
 CCgranges2dataframe <- function(gr) {
   if (is.null(gr$tpm)) gr$tpm <- gr$score
   gr$score <- NULL
-  df <- data.frame( consensus.cluster  = as.integer(gr$consensus.cluster))  # Make sure it does not sort lexically!
+  consensus.cluster <-
+    suppressWarnings(as.integer(gr$consensus.cluster))  # Make sure it does not sort lexically!
+  if (any(is.na(consensus.cluster))) {                  # Revert if the IDs were not numbers.
+    consensus.cluster <- gr$consensus.cluster
+  }
+  df <- data.frame(consensus.cluster = consensus.cluster) 
   gr$consensus.cluster <- NULL
   if(!is.null(df$cluster)) {
     df <- cbind(df, gr$cluster)

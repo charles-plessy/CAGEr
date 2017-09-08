@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEexp.R CAGEr.R ClusteringFunctions.R Multicore.R
+#' @include AllClasses.R CAGEexp.R CAGEr.R ClusteringMethods.R ClusteringFunctions.R CTSS.R Multicore.R
 
 #' @name aggregateTagClusters
 #' 
@@ -70,19 +70,20 @@
 #' @examples
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' head(consensusClusters(exampleCAGEset))
-#' aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
-#'   excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' aggregateTagClusters( exampleCAGEset, tpmThreshold = 50
+#'                     , excludeSignalBelowThreshold = FALSE, maxDist = 100)
 #' head(consensusClusters(exampleCAGEset))
 #' aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
 #'   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 #' head(consensusClusters(exampleCAGEset))
 #' 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
-#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
-#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
-#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 #' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' consensusClustersGR(ce)
+#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE, maxDist = 100)
+#' consensusClustersGR(ce)
+#' aggregateTagClusters( ce, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE, maxDist = 100
+#'                     , qLow = 0.1, qUp = 0.9)
 #' 
 #' @export
 
@@ -90,71 +91,79 @@ setGeneric( "aggregateTagClusters"
           , function( object
                     , tpmThreshold = 5, excludeSignalBelowThreshold = TRUE
                     , qLow = NULL, qUp = NULL
-                    , maxDist = 100)
+                    , maxDist = 100
+                    , useMulticore = FALSE, nrCores = NULL)
           	  standardGeneric("aggregateTagClusters"))
 
 #' @rdname aggregateTagClusters
 
 setMethod( "aggregateTagClusters", "CAGEr"
-         , function (object, tpmThreshold, excludeSignalBelowThreshold, qLow, qUp, maxDist) {
+         , function ( object, tpmThreshold, excludeSignalBelowThreshold
+                    , qLow, qUp, maxDist, useMulticore, nrCores) {
 	objName <- deparse(substitute(object))
 
   if (all( !is.null(qLow), !is.null(qUp))) {
-    TC.list <- tagClusters(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
-    TC.list <- lapply(TC.list, function(x) { x[["start"]] <- x[[paste0("q_", qLow)]]
-                                             x[["end"]]   <- x[[paste0("q_", qUp)]]
-                                             x})
+    TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
+    TC.list <- endoapply(TC.list, function(x) { start(x) <- mcols(x)[[paste0("q_", qLow)]]
+                                                end(x)   <- mcols(x)[[paste0("q_", qUp)]]
+                                                x})
   } else {
-    TC.list <- tagClusters(object)
+    TC.list <- tagClustersGR(object)
   }
-	
-  consensus.clusters <- .make.consensus.clusters(TC.list = TC.list, plus.minus = round(maxDist/2), tpm.th = tpmThreshold)		
-
-	if(excludeSignalBelowThreshold){
-		m <- tapply(consensus.clusters$tpm, INDEX = list(consensus.cluster = consensus.clusters$consensus.cluster, sample = consensus.clusters$sample), FUN = sum)
+  consensus.clusters <- .make.consensus.clusters( TC.list = TC.list
+                                                , plus.minus = round(maxDist/2)
+                                                , tpm.th = tpmThreshold)
+  consensus.clusters <- .ConsensusClusters(consensus.clusters)
+	if (excludeSignalBelowThreshold) {
+		m <- tapply(score(consensus.clusters), INDEX = list(consensus.cluster = consensus.clusters$consensus.cluster, sample = consensus.clusters$sample), FUN = sum)
 		m[is.na(m)] <- 0
+		m <- m[, sampleLabels(object)]
 	}
-	
-	consensus.clusters <- data.table(consensus.clusters)
-	setkey(consensus.clusters, consensus.cluster)
-	consensus.clusters <- consensus.clusters[, list(chr[1], min(start), max(end), strand[1], sum(tpm)), by = consensus.cluster]
-	setnames(consensus.clusters, c("consensus.cluster", "chr", "start", "end", "strand", "tpm"))
-	setkey(consensus.clusters, consensus.cluster)
-	consensus.clusters <- as.data.frame(consensus.clusters)
-		
-	if(!excludeSignalBelowThreshold){
-		idx <- filteredCTSSidx(object)
-		ctss <- cbind(CTSScoordinates(object)[idx,], CTSSnormalizedTpm(object)[idx,,drop=F])
 
-		tpm.list <- lapply(sampleLabels(object), function(x) {ctss.s <- ctss[,c("chr", "pos", "strand", x)]; colnames(ctss.s)[4] <- "tagcount"; .getTotalTagCount(ctss.df = ctss.s, ctss.clusters = consensus.clusters, id.column = "consensus.cluster")})
-		m <- matrix(unlist(tpm.list), nrow = nrow(consensus.clusters))
-		dim.n <- list(consensus.cluster = as.character(consensus.clusters$consensus.cluster), sample = unname(sampleLabels(object)))
-		dimnames(m) <- dim.n
+	consensus.clusters <- .clusterAggregateAndSum(consensus.clusters, "consensus.cluster")
+	
+  if (!excludeSignalBelowThreshold) {
+    useMulticore <- .checkMulticore(useMulticore)
+    .getTotalTagCountSample <- function(x) {
+		  ctss.s <- CTSSnormalizedTpmGR(object, x)
+		  ctss.s <- ctss.s[ctss.s$filteredCTSSidx]
+		  .getTotalTagCount(ctss = ctss.s, ctss.clusters = consensus.clusters)}
+    if(useMulticore == TRUE){
+      if(is.null(nrCores))  nrCores <- detectCores()
+      tpm.list <- mclapply(sampleLabels(object), .getTotalTagCountSample, mc.cores = nrCores)  
+    }else{
+      tpm.list <- lapply(sampleLabels(object), .getTotalTagCountSample)
+    }
+		names(tpm.list) <- sampleLabels(object)
+		m <- as.matrix(data.frame(tpm.list))
 		consensus.clusters$tpm <- rowSums(m) 
 	}
 	
 	if (class(object) == "CAGEset") {
 	  object@consensusClustersTpmMatrix <- m
-	  consensusClusters(object) <- consensus.clusters
+	  consensusClusters(object) <- CCgranges2dataframe(consensus.clusters)
 	}
 	
 	if (class(object) == "CAGEexp") {
-	 # See ranges2genes for similar code.
-	 gr     <- CCdataframe2granges(consensus.clusters)
-	 names(gr) <- as.character(gr)
-   cnames <- findOverlaps(CTSScoordinatesGR(object), gr)
-   cnames <- as(cnames, "List")
-   cnames <- extractList(names(gr), cnames)
-   cnames <- unique(cnames)
-   cnames <- unstrsplit(cnames, ";")
-   CTSScoordinatesGR(object)$cluster <- Rle(cnames)
-	 counts <- rowsum(CTSStagCountDf(object), cnames)
-   object$outOfClusters <- unlist(counts[1,])
-   counts <- counts[-1,]
-   counts <- counts[names(gr),]
-   rownames(m)[gr$consensus.cluster] <- names(gr)
-	  consensusClustersSE(object) <-
-	    SummarizedExperiment( rowRanges = gr
+    # See ranges2genes for similar code.
+    names(consensus.clusters) <- as.character(consensus.clusters)
+    cnames <- findOverlaps(CTSScoordinatesGR(object), consensus.clusters)
+    cnames <- as(cnames, "List")
+    cnames <- extractList(names(consensus.clusters), cnames)
+    cnames <- unique(cnames)
+    cnames <- unstrsplit(cnames, ";")
+    CTSScoordinatesGR(object)$cluster <- Rle(cnames)
+    counts <- rowsum(CTSStagCountDf(object), cnames)
+    if (rownames(counts[1,]) == "") {  # If some CTSS were not in clusters
+      object$outOfClusters <- unlist(counts[1,])
+      counts <- counts[-1,]
+    } else {
+      object$outOfClusters <- 0
+    }
+    counts <- counts[names(consensus.clusters),]
+    rownames(m)[consensus.clusters$consensus.cluster] <- names(consensus.clusters)
+    consensusClustersSE(object) <-
+	    SummarizedExperiment( rowRanges = consensus.clusters
 	                        , assays    = SimpleList( counts = as.matrix(counts)
 	                                                , normalized = m))
 	}
