@@ -293,6 +293,34 @@ setMethod("consensusClusters<-", "CAGEexp", function (object, value){
   stop("Not supported for CAGEexp.")
 })
 
+#' @name consensusClustersSE<-
+#' @rdname consensusClusters
+#' @export
+
+setGeneric("consensusClustersSE<-", function(object, value) standardGeneric("consensusClustersSE<-"))
+
+#' @rdname consensusClusters
+
+setMethod("consensusClustersSE<-", "CAGEset", function (object, value){
+	stop("Not implemented for the CAGEset class.")
+})
+
+#' @rdname consensusClusters
+
+setMethod("consensusClustersSE<-", "CAGEexp", function (object, value){
+  if (! is(value, "RangedSummarizedExperiment"))
+    stop("Value must be a RangedSummarizedExperiment object.")
+  if (! all(colnames(value) == sampleLabels(object)))
+    stop ("The CTSS data must match the CAGEexp object, with samples in the same order.")
+  sampleMapSE <-
+    listToMap(list(consensusClusters = data.frame( primary = sampleLabels(object)
+                                              , colname = colnames(value))))
+  sampleMap(object) <-
+    rbind( sampleMap(object)[sampleMap(object)$assay != "consensusClusters",]
+         , sampleMapSE)
+  experiments(object)$consensusClusters <- value
+  if (validObject(object)) object
+})
 
 #' @name consensusClustersQuantileLow<-
 #' @rdname consensusClustersQuantile
