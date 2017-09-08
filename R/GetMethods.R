@@ -947,8 +947,7 @@ setMethod("tagClustersQuantileLow", "CAGEset", function (object, samples) {
 #' @rdname tagClustersQuantile
 
 setMethod("tagClustersQuantileLow", "CAGEexp", function (object, samples) {
-  if (is.null(samples)) return(metadata(object)$tagClustersQuantileLow)
-  metadata(object)$tagClustersQuantileLow[[samples]]
+  stop("Not supported for CAGEexp; get quantile data via ", sQuote("tagClustersGR") , ".")
 })
 
 
@@ -970,8 +969,7 @@ setMethod("tagClustersQuantileUp", "CAGEset", function (object, samples) {
 #' @rdname tagClustersQuantile
 
 setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples) {
-  if (is.null(samples)) return(metadata(object)$tagClustersQuantileUp)
-  metadata(object)$tagClustersQuantileUp[[samples]]
+  stop("Not supported for CAGEexp; get quantile data via ", sQuote("tagClustersGR") , ".")
 })
 
 
