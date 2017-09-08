@@ -58,11 +58,14 @@
 # RETURNS: integer vector of total tag count per cluster 
 
 
+setGeneric( ".getTotalTagCount"
+          , function(ctss, ctss.clusters)
+          	  standardGeneric(".getTotalTagCount"))
 
-.getTotalTagCount <- function(ctss.df, ctss.clusters, id.column) {
-	
+setMethod( ".getTotalTagCount", "data.frame"
+         , function(ctss, ctss.clusters) {
 	ctss.clusters.gr <- GRanges(seqnames = ctss.clusters$chr, ranges = IRanges(start = ctss.clusters$start + 1, end = ctss.clusters$end), strand = ctss.clusters$strand, consensus.cluster = ctss.clusters$consensus.cluster)
-	ctss.gr <- GRanges(seqnames = ctss.df$chr, ranges = IRanges(start = ctss.df$pos, end = ctss.df$pos), strand = ctss.df$strand, tpm = ctss.df$tagcount)
+	ctss.gr <- GRanges(seqnames = ctss$chr, ranges = IRanges(start = ctss$pos, end = ctss$pos), strand = ctss$strand, tpm = ctss$tagcount)
 	o <- findOverlaps(ctss.clusters.gr, ctss.gr)
 	tpm.dt <- data.table(tpm = ctss.gr$tpm[subjectHits(o)], consensus.cluster = ctss.clusters.gr$consensus.cluster[queryHits(o)])
 	tpm.df <- as.data.frame(tpm.dt[,sum(tpm),by=consensus.cluster])
@@ -72,10 +75,18 @@
 	tag.count <- tpm.df$V1
 	names(tag.count) <- tpm.df$consensus.cluster
 	return(tag.count)
-	
-}
+})
 
-
+setMethod( ".getTotalTagCount", "CTSS"
+         , function(ctss, ctss.clusters) {
+	o <- findOverlaps(ctss.clusters, ctss)
+	tpm <- tapply( decode(score(ctss)[subjectHits(o)])
+	             , ctss.clusters$consensus.cluster[queryHits(o)]
+	             , sum)
+	ctss.clusters$total <- 0
+	mcols(ctss.clusters)[as.numeric(names(tpm)),"total"] <- tpm
+	ctss.clusters$total
+})
 
 .ksStat <- function(cumsum.matrix){
 	

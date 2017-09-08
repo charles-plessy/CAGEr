@@ -115,7 +115,7 @@ function (object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE, useMulticore =
 				colnames(d) <- c("chr", "pos", "strand", "tagcount")
 				d <- subset(d, tagcount>0)
 				ctss.clusters <- ctss.clusters.orig[ctss.clusters.orig[,s]>0,]
-				tag.count <- .getTotalTagCount(ctss.df = d, ctss.clusters = ctss.clusters, id.column = "consensus.cluster")
+				tag.count <- .getTotalTagCount(ctss.df = d, ctss.clusters = ctss.clusters)
 				tag.count.new <- template.tagcount
 				tag.count.new[names(tag.count)] <- as.integer(tag.count)  # for some reason at this step the vector is converted to list when run within this function (does not happen when run normally outside the function)!!!
 				tag.count.list[[s]] <- unlist(tag.count.new)
