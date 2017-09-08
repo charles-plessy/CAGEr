@@ -294,22 +294,22 @@ setMethod(".clusterAggregateAndSum", "ConsensusClusters", function (clusters, ke
 #' in a context that raises warnings in \code{R CMD check}.  By separating these functions
 #' from the rest of the code, I hope to make the workarounds easier to manage.
 
-setGeneric(".ctssAggregateAndSum", function (ctss) standardGeneric(".ctssAggregateAndSum"))
+setGeneric( ".ctssAggregateAndSum"
+          , function (ctss, scoreColName) standardGeneric(".ctssAggregateAndSum"))
 
 #' @rdname ctssAggregateAndSum
-#' @importFrom data.table setkeyv setnames
-#' @example 
+#' @examples
 #' ctssDT <- data.table( chr       = c("chr1", "chr1", "chr1", "chr2")
 #'                     , pos       = c(1     , 1     , 2     , 1     )
 #'                     , strand    = c("+"   , "+"   , "-"   , "-"   )
 #'                     , tag_count = c(1     , 1     , 1     , 1     ))
 #' ctssDT
-#' .ctssAggregateAndSum(ctssDT)
+#' .ctssAggregateAndSum(ctssDT, "tag_count")
 
-setMethod(".ctssAggregateAndSum", "data.table", function (ctss) {
+setMethod(".ctssAggregateAndSum", "data.table", function (ctss, scoreColName) {
   if (! all(c("chr", "pos", "strand") %in% colnames(ctss))) stop("These are not CTSSes.")
-  if (! "tag_count" %in% colnames(ctss)) stop("Missing ", sQuote("tag_count"), " column.")
-  chr <- pos <- strand <- tag_count <- NULL
-  ctssDT[ , as.integer(sum(tag_count))
-          , by = list(chr, pos, strand)]
+  chr <- pos <- strand <- NULL
+  ctssDT[ , sum(.SD[[1]])
+        , by = .(chr, pos, strand)
+        , .SDcols = scoreColName]
 })

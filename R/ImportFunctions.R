@@ -121,7 +121,7 @@
 			setnames(CTSS.no.G.plus, c("chr", "pos", "strand", "nr_tags"))
 			CTSS.plus.final <- rbind(CTSS.G.plus.corrected, as.data.frame(CTSS.no.G.plus))
 			CTSS.plus.final <- data.table(CTSS.plus.final)
-			CTSS.plus.final <- CTSS.plus.final[, sum(nr_tags), by = list(chr, pos, strand)]
+			CTSS.plus.final <- .ctssAggregateAndSum(CTSS.plus.final, "nr_tags")
 
 		}else{
 		
@@ -142,7 +142,7 @@
 			setnames(CTSS.no.G.minus, c("chr", "pos", "strand", "nr_tags"))
 			CTSS.minus.final <- rbind(CTSS.G.minus.corrected, as.data.frame(CTSS.no.G.minus))
 			CTSS.minus.final <- data.table(CTSS.minus.final)
-			CTSS.minus.final <- CTSS.minus.final[, sum(nr_tags), by = list(chr, pos, strand)]
+			CTSS.minus.final <- .ctssAggregateAndSum(CTSS.minus.final, "nr_tags")
 
 		}else{
 			
@@ -158,7 +158,7 @@
 		CTSS <- CTSS[,c("chr", "pos", "strand")]
 		CTSS$tag_count <- 1
 		CTSS <- data.table(CTSS)
-		CTSS <- .ctssAggregateAndSum(CTSS)
+		CTSS <- .ctssAggregateAndSum(CTSS, "tag_count")
 	}
   setnames(CTSS, c("chr", "pos", "strand", sample.label)) 
   setkey(CTSS, chr, pos, strand)
