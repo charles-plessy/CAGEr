@@ -54,14 +54,14 @@
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' head(cbind(
-#'   CAGEr:::tagClustersQuantileLow(exampleCAGEset)[[1]],
-#'   CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
+#'   CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
+#'   CAGEr:::tagClustersQuantileUp (exampleCAGEset, 1)
 #' ))
 #' quantilePositions( object = exampleCAGEset, clusters = "tagClusters"
 #'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
 #' head(cbind(
-#'   CAGEr:::tagClustersQuantileLow(exampleCAGEset)[[1]],
-#'   CAGEr:::tagClustersQuantileUp(exampleCAGEset)[[1]]
+#'   CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
+#'   CAGEr:::tagClustersQuantileUp(exampleCAGEset,1 )
 #' ))
 #' 
 #' aggregateTagClusters(exampleCAGEset, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
@@ -69,22 +69,14 @@
 #'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
 #'                  
 #' head(cbind(
-#'   CAGEr:::consensusClustersQuantileLow(exampleCAGEset)[[1]],
-#'   CAGEr:::consensusClustersQuantileUp(exampleCAGEset)[[1]]
+#'   CAGEr:::consensusClustersQuantileLow(exampleCAGEset, 1),
+#'   CAGEr:::consensusClustersQuantileUp(exampleCAGEset , 1)
 #' ))
 #' 
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
-#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
-#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
-#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-#' cumulativeCTSSdistribution(ce, clusters = "tagClusters")
-#' quantilePositions( ce, clusters = "tagClusters"
-#'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
-#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
-#' cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
-#' quantilePositions( ce, clusters = "consensusClusters"
-#'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#' quantilePositions( ce, "tagClusters",       qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#' tagClustersGR(ce)
+#' quantilePositions( ce, "consensusClusters", qLow = c(0.1,0.2), qUp = c(0.8,0.9))
 #' 
 #' @export
 
@@ -94,60 +86,58 @@ setGeneric( "quantilePositions"
 
 #' @rdname quantilePositions
 
-setMethod("quantilePositions",
-signature(object = "CAGEr"),
-function (object, clusters, qLow, qUp, useMulticore, nrCores){
-
-  useMulticore <- .checkMulticore(useMulticore)
-	
+setMethod( "quantilePositions", "CAGEr"
+         ,function (object, clusters, qLow, qUp, useMulticore, nrCores) {
 	objName <- deparse(substitute(object))
-
-	message("\nGetting positions of quantiles within clusters...")
-	
-	ctss.clusters.q.low.list <- list()
-	ctss.clusters.q.up.list <- list()
-	
-	if(clusters == "tagClusters"){	
-		
-		samples.cumsum.list <- CTSScumulativesTagClusters(object)
-		
-		for(s in sampleLabels(object)) {
-			message("\t-> ", s)
-			
-			clusters.cumsum.list <- samples.cumsum.list[[s]]
-			ctss.clusters <- tagClusters(object, sample = s)
-			ctss.clusters.q.low <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qLow, useMulticore = useMulticore, nrCores = nrCores)
-			ctss.clusters.q.up <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qUp, useMulticore = useMulticore, nrCores = nrCores)
-
-			ctss.clusters.q.low.list[[s]] <- ctss.clusters.q.low[,c(which(colnames(ctss.clusters.q.low) == "cluster"), grep("q_", colnames(ctss.clusters.q.low), fixed = T))]
-			ctss.clusters.q.up.list[[s]] <- ctss.clusters.q.up[,c(which(colnames(ctss.clusters.q.up) == "cluster"), grep("q_", colnames(ctss.clusters.q.up), fixed = T))]
-		
-		}
-		
-		tagClustersQuantileLow(object) <- ctss.clusters.q.low.list
-		tagClustersQuantileUp(object)  <- ctss.clusters.q.up.list
-		
-	}else if (clusters == "consensusClusters"){
-		samples.cumsum.list <- CTSScumulativesCC(object)
-		ctss.clusters.orig <- merge(consensusClusters(object), consensusClustersTpm(object), by.x = 1, by.y = 0)
-		
-		for(s in sampleLabels(object)) {
-			message("\t-> ", s)
-			
-			clusters.cumsum.list <- samples.cumsum.list[[s]]
-			ctss.clusters <- ctss.clusters.orig[ctss.clusters.orig[,s]>0,]
-			colnames(ctss.clusters)[which(colnames(ctss.clusters) == "consensus.cluster")] = "cluster"
-			ctss.clusters.q.low <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qLow, useMulticore = useMulticore, nrCores = nrCores)
-			ctss.clusters.q.up <- .get.quant.pos(cluster.cumsums = clusters.cumsum.list, coors = ctss.clusters, q = qUp, useMulticore = useMulticore, nrCores = nrCores)
-			
-			ctss.clusters.q.low.list[[s]] <- ctss.clusters.q.low[,c(which(colnames(ctss.clusters.q.low) == "cluster"), grep("q_", colnames(ctss.clusters.q.low), fixed = T))]
-			ctss.clusters.q.up.list[[s]] <- ctss.clusters.q.up[,c(which(colnames(ctss.clusters.q.up) == "cluster"), grep("q_", colnames(ctss.clusters.q.up), fixed = T))]
-		}
-		consensusClustersQuantileLow(object) <- ctss.clusters.q.low.list
-		consensusClustersQuantileUp(object)  <- ctss.clusters.q.up.list
-	}else{
-		stop("'clusters' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
+	gr2tcq <- function(gr, q) {
+	  tcq <- mcols(gr)[, paste("q", q, sep = "_"), drop = FALSE]
+	  tcq <- data.frame(lapply(tcq, decode))
+	  tcq <- tcq + start(gr)
+	  cbind(cluster = names(gr), tcq)
 	}
+	message("\nGetting positions of quantiles within clusters...")
+	if (clusters == "tagClusters") {
+	  ctss.clusters <- lapply(sampleLabels(object), function(s) {
+	    message("\t-> ", s)
+	    .get.quant.pos( cumsums = CTSScumulativesTagClusters(object, s)
+		                , clusters = tagClustersGR(object, s)
+		                , q = c(qLow, qUp)
+		                , useMulticore = useMulticore
+		                , nrCores = nrCores)
+	  })
+	  names(ctss.clusters) <- sampleLabels(object)
+	  ctss.clusters <- GRangesList(ctss.clusters)
+		if(class(object) == "CAGEexp") {
+		  tagClustersGR(object) <- ctss.clusters
+		} else if (class(object) == "CAGEset") {
+		  for (s in names(ctss.clusters)) {
+	  	  tagClustersQuantileLow(object, s) <- gr2tcq(ctss.clusters[[s]], qLow)
+        tagClustersQuantileUp (object, s) <- gr2tcq(ctss.clusters[[s]], qUp)
+		  }
+		} else stop("Unsupported CAGEr class.")
+	} else if (clusters == "consensusClusters"){
+	  cons.clusters.l <- lapply(sampleLabels(object), function(s) {
+	    message("\t-> ", s)
+	    .get.quant.pos( cumsums = CTSScumulativesCC(object, s)
+		                , clusters = consensusClustersGR(object)
+		                , q = c(qLow, qUp)
+		                , useMulticore = useMulticore
+		                , nrCores = nrCores)
+	  })
+	  names(cons.clusters.l) <- sampleLabels(object)
+	  cons.clusters.l <- GRangesList(cons.clusters.l)
+	  
+		if(class(object) == "CAGEexp") {
+      for (qName in paste("q", c(qLow, qUp), sep = "_")) {
+        assays(consensusClustersSE(object))[[qName]] <-
+          DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
+		} else if (class(object) == "CAGEset") {
+		  for (s in names(ctss.clusters)) {
+	  	  consensusClustersQuantileLow(object, s) <- gr2tcq(cons.clusters.l[[s]], qLow)
+        consensusClustersQuantileUp (object, s) <- gr2tcq(cons.clusters.l[[s]], qUp)
+		  }
+		} else stop("Unsupported CAGEr class.")
+	} else stop("'clusters' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
 	assign(objName, object, envir = parent.frame())
 	invisible(1)
 })
