@@ -243,13 +243,13 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
 #' @examples 
 #' 
 #' # .distclu
-#' .distclu(CTSStagCountSE(ce))
+#' CAGEr:::.distclu(CTSStagCountSE(ce))
 #' \dontrun{
-#' .distclu(CTSStagCountSE(ce), useMulticore = TRUE)
+#' CAGEr:::.distclu(CTSStagCountSE(ce), useMulticore = TRUE)
 #' }
 #' 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-#' .distclu(CTSStagCountSE(exampleCAGEset))
+#' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEset))
 
 setGeneric(".distclu", function(se, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, useMulticore = FALSE, nrCores = NULL) standardGeneric(".distclu"))
 

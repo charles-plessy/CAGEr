@@ -1198,7 +1198,7 @@ function (object, samples = NULL, returnInterquantileWidth = FALSE, qLow = NULL,
         }else{
             cc <- getConsensusClusters(object)
             cc <- merge(cc[,-which(colnames(cc) == "tpm")], cc.s, by.x = 1, by.y = 1, all.x = T, all.y = F)
-            cc <- subset(cc, tpm>0)
+            cc <- subset(cc, cc$tpm>0)
         }
         return(cc)
     }else{

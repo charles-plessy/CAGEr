@@ -126,11 +126,11 @@ CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE)
 CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE, keepSingletonsAbove = 5)
 
 # .distclu
-.distclu(CTSStagCountSE(ce))
+CAGEr:::.distclu(CTSStagCountSE(ce))
 \dontrun{
-.distclu(CTSStagCountSE(ce), useMulticore = TRUE)
+CAGEr:::.distclu(CTSStagCountSE(ce), useMulticore = TRUE)
 }
 
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-.distclu(CTSStagCountSE(exampleCAGEset))
+CAGEr:::.distclu(CTSStagCountSE(exampleCAGEset))
 }

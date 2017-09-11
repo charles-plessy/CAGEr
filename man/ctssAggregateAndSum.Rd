@@ -28,5 +28,5 @@ ctssDT <- data.table::data.table(
   strand    = c("+"   , "+"   , "-"   , "-"   ),
   tag_count = c(1     , 1     , 1     , 1     ))
 ctssDT
-.ctssAggregateAndSum(ctssDT, "tag_count")
+CAGEr:::.ctssAggregateAndSum(ctssDT, "tag_count")
 }

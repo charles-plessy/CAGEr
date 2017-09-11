@@ -310,7 +310,7 @@ setMethod(".clusterAggregateAndSum", "ConsensusClusters", function (clusters, ke
 #'   strand    = c("+"   , "+"   , "-"   , "-"   ),
 #'   tag_count = c(1     , 1     , 1     , 1     ))
 #' ctssDT
-#' .ctssAggregateAndSum(ctssDT, "tag_count")
+#' CAGEr:::.ctssAggregateAndSum(ctssDT, "tag_count")
 
 setGeneric( ".ctssAggregateAndSum"
           , function (ctssDT, scoreColName) standardGeneric(".ctssAggregateAndSum"))

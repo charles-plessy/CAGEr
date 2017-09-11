@@ -294,7 +294,7 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 		q.up <- tagClustersQuantileUp(object)
 		idx.list <- lapply(as.list(sample.labels), function(x) {
 			   
-								cl <- tagClusters(object, sample = x)
+								cl <- tagClusters(object, samples = x)
 								idx <- cl$tpm >= tpmThreshold
 								return(idx)
 						   
@@ -540,7 +540,7 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		q.up <- lapply(q.up, function(x) {colnames(x)[2:ncol(x)] <- paste("qUp_", do.call(rbind, strsplit(colnames(x)[2:ncol(x)], split = "_", fixed = T))[,2], sep = ""); return(x)})
 		q <- lapply(as.list(1:length(sample.labels)), function(x) {merge(q.low[[x]], q.up[[x]], by.x = "cluster", by.y = "cluster")})
 		names(q) <- sample.labels
-		clusters <- lapply(as.list(sample.labels), function(x) {tagClusters(object, sample = x)})
+		clusters <- lapply(as.list(sample.labels), function(x) {tagClusters(object, samples = x)})
 		names(clusters) <- sample.labels
 		clusters.q.list <- lapply(as.list(sample.labels), function(x) {merge(clusters[[x]], q[[x]], by.x = "cluster", by.y = "cluster")})
 		track.names <- paste(sample.labels, paste(" (tag clusters (TC) q(", qLow, ")-q(",qUp,"))", sep = ""), sep = "")
@@ -553,7 +553,7 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first, or omit 'qLow' and 'qUp' parameters to use start and end coordinates instead!")
 		}else{
 			use.blocks <- F
-			clusters.q.list <- lapply(as.list(sample.labels), function(x) {tagClusters(object, sample = x)})			
+			clusters.q.list <- lapply(as.list(sample.labels), function(x) {tagClusters(object, samples = x)})			
 			track.names <- paste(sample.labels, paste(" (tag clusters (TC))", sep = ""), sep = "")
 			r <- ""
 		}

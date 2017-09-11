@@ -142,7 +142,7 @@ setMethod("show",
 	cat("CTSS clustering method: ", object@clusteringMethod, "\n", sep = "")
 	cat("Number of TCs per sample:\n")
 	if(length(object@tagClusters) > 0){
-		cat(sapply(sampleLabels(object), function(x) {paste("\t-> ", x, ": ", nrow(tagClusters(object, sample = x)), "\n", sep = "")}))
+		cat(sapply(sampleLabels(object), function(x) {paste("\t-> ", x, ": ", nrow(tagClusters(object, samples = x)), "\n", sep = "")}))
 	}
 	cat("=======================================\n")
 	cat("Consensus cluster information\n")
