@@ -1142,7 +1142,7 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
 #' clusterCTSS(ce)
 #' aggregateTagClusters(ce)
 #' head(consensusClusters(ce))
-#' head(consensusClusters(ce, 2))
+#' consensusClustersGR(ce, 2)
 #' 
 #' @export
 
@@ -1161,6 +1161,9 @@ function (object, samples = NULL, returnInterquantileWidth = FALSE, qLow = NULL,
     if(is.null(samples)){
         return(getConsensusClusters(object))
     }else if(samples %in% sampleLabels(object)){
+      if(class(object) == "CAGEexp")
+        stop( sQuote("samples"), " option not supported for CAGEexp objects.  Use "
+            , sQuote("consensusClustersGR()"), " instead.")
         
         cc.s <- cbind(cluster = as.integer(rownames(consensusClustersTpm(object))), tpm = consensusClustersTpm(object)[,samples])
         
