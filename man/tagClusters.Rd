@@ -5,10 +5,12 @@
 \alias{tagClusters}
 \alias{tagClusters,CAGEr-method}
 \alias{tagClustersGR}
-\alias{tagClustersGR,CAGEr-method}
+\alias{tagClustersGR,CAGEset-method}
+\alias{tagClustersGR,CAGEexp-method}
 \alias{tagClustersGR<-}
 \alias{tagClustersGR<-,CAGEset,ANY-method}
 \alias{tagClustersGR<-,CAGEexp,TagClusters-method}
+\alias{tagClustersGR<-,CAGEexp,GRangesList-method}
 \title{Extract tag clusters (TCs) for individual CAGE experiments}
 \usage{
 tagClusters(object, samples = NULL, returnInterquantileWidth = FALSE,
@@ -20,7 +22,10 @@ tagClusters(object, samples = NULL, returnInterquantileWidth = FALSE,
 tagClustersGR(object, sample = NULL, returnInterquantileWidth = FALSE,
   qLow = NULL, qUp = NULL)
 
-\S4method{tagClustersGR}{CAGEr}(object, sample = NULL,
+\S4method{tagClustersGR}{CAGEset}(object, sample = NULL,
+  returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
+
+\S4method{tagClustersGR}{CAGEexp}(object, sample = NULL,
   returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
 
 tagClustersGR(object, samples = NULL) <- value
@@ -28,6 +33,9 @@ tagClustersGR(object, samples = NULL) <- value
 \S4method{tagClustersGR}{CAGEset,ANY}(object, samples = NULL) <- value
 
 \S4method{tagClustersGR}{CAGEexp,TagClusters}(object,
+  samples = NULL) <- value
+
+\S4method{tagClustersGR}{CAGEexp,GRangesList}(object,
   samples = NULL) <- value
 }
 \arguments{

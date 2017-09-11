@@ -4,6 +4,7 @@
 \name{CAGEexp-class}
 \alias{CAGEexp-class}
 \alias{CAGEexp}
+\alias{coerce}
 \title{CAGEr class to hold all data and metadata about one CAGE experiment.}
 \description{
 The \code{CAGEr} class is a \code{\link[MultiAssayExperiment]{MultiAssayExperiment}}
@@ -26,7 +27,6 @@ for an example on how to create a BSgenome package.
 }}
 
 \examples{
-
 library("MultiAssayExperiment")
 library("SummarizedExperiment")
 pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
@@ -60,6 +60,8 @@ ce$l1
  
 # The commands below were used to create the example CAGEexp object in the "extdata" folder.
 \dontrun{
+ce <- ce[,c(5, 2, 1, 3, 4)]  # Non-aplhabetic order, may help to catch bugs.
+CTSStagCountSE(ce) <- CTSStagCountSE(ce)[1:5000,]  # Slim the object
 normalizeTagCount(ce)
 clusterCTSS(ce)
 cumulativeCTSSdistribution(ce, "tagClusters")

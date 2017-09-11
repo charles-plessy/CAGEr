@@ -15,7 +15,6 @@
 #' for an example on how to create a BSgenome package.
 #' 
 #' @examples 
-#' 
 #' library("MultiAssayExperiment")
 #' library("SummarizedExperiment")
 #' pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
@@ -49,6 +48,8 @@
 #'  
 #' # The commands below were used to create the example CAGEexp object in the "extdata" folder.
 #' \dontrun{
+#' ce <- ce[,c(5, 2, 1, 3, 4)]  # Non-aplhabetic order, may help to catch bugs.
+#' CTSStagCountSE(ce) <- CTSStagCountSE(ce)[1:5000,]  # Slim the object
 #' normalizeTagCount(ce)
 #' clusterCTSS(ce)
 #' cumulativeCTSSdistribution(ce, "tagClusters")
@@ -112,7 +113,8 @@ CAGEexp <- setClass("CAGEexp",
   }
 )
 
-#' @noRd
+#' @name coerce
+#' @rdname CAGEexp-class
 
 setAs("data.frame", "CAGEexp", function(from){
   

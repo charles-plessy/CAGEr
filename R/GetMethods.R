@@ -351,7 +351,7 @@ function (object){
 #'     {A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
 #'      \code{Rle} integers.}
 #'   \item{\code{CTSStagCountGR}:}
-#'     {A \code{\link{CTSS}} object (wrapping \code{GRanges}) containing a \code{score}
+#'     {A \code{CTSS} object (wrapping \code{GRanges}) containing a \code{score}
 #'     column indicating expression values for a given sample.}
 #' }
 #' 

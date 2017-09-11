@@ -268,6 +268,8 @@ setMethod("tagClustersGR<-", c("CAGEexp", "TagClusters"), function (object, valu
   if (validObject(object)) object
 })
 
+#' @rdname tagClusters
+
 setMethod("tagClustersGR<-", c("CAGEexp", "GRangesList"), function (object, value, samples) {
 	metadata(object)$tagClusters <- value
   if (validObject(object)) object
