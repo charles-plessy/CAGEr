@@ -64,16 +64,16 @@ setMethod("plotAnnot", "data.frame",
           , customScope = NULL
           , normalise = TRUE) {
   ggplot( mapStats(x, scope=scope, group=group, customScope = customScope, normalise = normalise)
-        , aes( x    = group
-             , y    = value
-             , fill = variable)
+        , aes_string( x    = "group"
+                    , y    = "value"
+                    , fill = "variable")
         , main = all) +
     geom_bar(stat="identity", position = position_stack(reverse = TRUE)) +
-    geom_segment(aes( xend = group
-                    , y    = ystart
-                    , yend = yend)) +
-    geom_point( aes( x = group
-                   , y = yend)
+    geom_segment(aes_string( xend = "group"
+                           , y    = "ystart"
+                           , yend = "yend")) +
+    geom_point( aes_string( x = "group"
+                          , y = "yend")
               , shape = "|") +
     coord_flip() +
     ggtitle(title)
