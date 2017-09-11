@@ -13,17 +13,17 @@
 \alias{CTSScumulativesTagClusters<-,CAGEexp-method}
 \title{Get/set CTSS cumulative TC or CC data}
 \usage{
-CTSScumulativesTagClusters(object, sample = NULL)
+CTSScumulativesTagClusters(object, samples = NULL)
 
-\S4method{CTSScumulativesTagClusters}{CAGEset}(object, sample = NULL)
+\S4method{CTSScumulativesTagClusters}{CAGEset}(object, samples = NULL)
 
-\S4method{CTSScumulativesTagClusters}{CAGEexp}(object, sample = NULL)
+\S4method{CTSScumulativesTagClusters}{CAGEexp}(object, samples = NULL)
 
-CTSScumulativesCC(object, sample = NULL)
+CTSScumulativesCC(object, samples = NULL)
 
-\S4method{CTSScumulativesCC}{CAGEset}(object, sample = NULL)
+\S4method{CTSScumulativesCC}{CAGEset}(object, samples = NULL)
 
-\S4method{CTSScumulativesCC}{CAGEexp}(object, sample = NULL)
+\S4method{CTSScumulativesCC}{CAGEexp}(object, samples = NULL)
 
 CTSScumulativesTagClusters(object) <- value
 
@@ -34,7 +34,7 @@ CTSScumulativesTagClusters(object) <- value
 \arguments{
 \item{object}{A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.}
 
-\item{sample}{A valid sample name.}
+\item{samples}{One or more valid sample names.}
 
 \item{value}{CTSScumulativesTagClusters data}
 }

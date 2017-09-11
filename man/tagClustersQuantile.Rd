@@ -29,17 +29,17 @@ tagClustersQuantileUp(object, samples = NULL)
 
 \S4method{tagClustersQuantileUp}{CAGEexp}(object, samples = NULL)
 
-tagClustersQuantileLow(object, sample = NULL) <- value
+tagClustersQuantileLow(object, samples = NULL) <- value
 
-\S4method{tagClustersQuantileLow}{CAGEset}(object, sample = NULL) <- value
+\S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL) <- value
 
-\S4method{tagClustersQuantileLow}{CAGEexp}(object, sample = NULL) <- value
+\S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL) <- value
 
-tagClustersQuantileUp(object, sample = NULL) <- value
+tagClustersQuantileUp(object, samples = NULL) <- value
 
-\S4method{tagClustersQuantileUp}{CAGEset}(object, sample = NULL) <- value
+\S4method{tagClustersQuantileUp}{CAGEset}(object, samples = NULL) <- value
 
-\S4method{tagClustersQuantileLow}{CAGEexp}(object, sample = NULL) <- value
+\S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL) <- value
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}

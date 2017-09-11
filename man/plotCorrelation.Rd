@@ -60,6 +60,9 @@ pairs of selected samples and calculates the correlation between them.
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 plotCorrelation(object = exampleCAGEset)
 
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+plotCorrelation(ce)
+
 }
 \seealso{
 Other CAGEr plot functions: \code{\link{hanabiPlot}},

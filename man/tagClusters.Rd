@@ -11,10 +11,10 @@
 \alias{tagClustersGR<-,CAGEexp,TagClusters-method}
 \title{Extract tag clusters (TCs) for individual CAGE experiments}
 \usage{
-tagClusters(object, sample = NULL, returnInterquantileWidth = FALSE,
+tagClusters(object, samples = NULL, returnInterquantileWidth = FALSE,
   qLow = NULL, qUp = NULL)
 
-\S4method{tagClusters}{CAGEr}(object, sample = NULL,
+\S4method{tagClusters}{CAGEr}(object, samples = NULL,
   returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
 
 tagClustersGR(object, sample = NULL, returnInterquantileWidth = FALSE,
@@ -23,18 +23,18 @@ tagClustersGR(object, sample = NULL, returnInterquantileWidth = FALSE,
 \S4method{tagClustersGR}{CAGEr}(object, sample = NULL,
   returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
 
-tagClustersGR(object, sample = NULL) <- value
+tagClustersGR(object, samples = NULL) <- value
 
-\S4method{tagClustersGR}{CAGEset,ANY}(object, sample = NULL) <- value
+\S4method{tagClustersGR}{CAGEset,ANY}(object, samples = NULL) <- value
 
 \S4method{tagClustersGR}{CAGEexp,TagClusters}(object,
-  sample = NULL) <- value
+  samples = NULL) <- value
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
 
-\item{sample}{Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.
-If \code{sample = NULL}, a list of all the clusters for each samples is returned.}
+\item{samples}{Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.
+If \code{samples = NULL}, a list of all the clusters for each sample is returned.}
 
 \item{returnInterquantileWidth}{Should the interquantile width for each tag cluster be returned.}
 

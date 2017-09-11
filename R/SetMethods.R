@@ -201,48 +201,48 @@ setMethod("CTSScumulativesTagClusters<-", "CAGEexp", function (object, value) {
 #' @rdname tagClustersQuantile
 
 setGeneric( "tagClustersQuantileLow<-"
-          , function(object, value, sample = NULL)
+          , function(object, value, samples = NULL)
               standardGeneric("tagClustersQuantileLow<-"))
 
 #' @rdname tagClustersQuantile
 
-setMethod("tagClustersQuantileLow<-", "CAGEset", function (object, value, sample) {
-  validSamples(object, sample)
-  if(is.null(sample)) {
+setMethod("tagClustersQuantileLow<-", "CAGEset", function (object, value, samples) {
+  validSamples(object, samples)
+  if(is.null(samples)) {
 	  object@tagClustersQuantileLow <- value
   } else {
-    object@tagClustersQuantileLow[[sample]] <- value
+    object@tagClustersQuantileLow[[samples]] <- value
   }
 	if (validObject(object)) object
 })
 
 #' @rdname tagClustersQuantile
 
-setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, value, sample)
+setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, value, samples)
   stop("Not supported for CAGEexp.  Use tagClustersGR<- instead."))
 
 #' @name tagClustersQuantileUp<-
 #' @rdname tagClustersQuantile
 #' 
 setGeneric( "tagClustersQuantileUp<-"
-          , function(object, value, sample = NULL)
+          , function(object, value, samples = NULL)
               standardGeneric("tagClustersQuantileUp<-"))
 
 #' @rdname tagClustersQuantile
 
-setMethod("tagClustersQuantileUp<-", "CAGEset", function (object, value, sample) {
-  validSamples(object, sample)
-  if(is.null(sample)) {
+setMethod("tagClustersQuantileUp<-", "CAGEset", function (object, value, samples) {
+  validSamples(object, samples)
+  if(is.null(samples)) {
 	  object@tagClustersQuantileUp <- value
   } else {
-    object@tagClustersQuantileUp[[sample]] <- value
+    object@tagClustersQuantileUp[[samples]] <- value
   }
 	if (validObject(object)) object
 })
 
 #' @rdname tagClustersQuantile
 
-setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, value, sample)
+setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, value, samples)
   stop("Not supported for CAGEexp.  Use tagClustersGR<- instead."))
 
 
@@ -252,23 +252,23 @@ setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, value, sample
 #' @param value A \code{\link{TagClusters}} object.
 
 setGeneric( "tagClustersGR<-"
-          , function(object, value, sample = NULL)
+          , function(object, value, samples = NULL)
             standardGeneric("tagClustersGR<-"))
 
 #' @rdname tagClusters
 
-setMethod("tagClustersGR<-", "CAGEset", function (object, value, sample)
+setMethod("tagClustersGR<-", "CAGEset", function (object, value, samples)
   stop("Not supported for CAGEset. Set tagClustersQuantileLow/Up instead."))
 
 #' @rdname tagClusters
 
-setMethod("tagClustersGR<-", c("CAGEexp", "TagClusters"), function (object, value, sample) {
-  validSamples(object, sample)
-	metadata(object)$tagClusters[[sample]] <- value
+setMethod("tagClustersGR<-", c("CAGEexp", "TagClusters"), function (object, value, samples) {
+  validSamples(object, samples)
+	metadata(object)$tagClusters[[samples]] <- value
   if (validObject(object)) object
 })
 
-setMethod("tagClustersGR<-", c("CAGEexp", "GRangesList"), function (object, value, sample) {
+setMethod("tagClustersGR<-", c("CAGEexp", "GRangesList"), function (object, value, samples) {
 	metadata(object)$tagClusters <- value
   if (validObject(object)) object
 })

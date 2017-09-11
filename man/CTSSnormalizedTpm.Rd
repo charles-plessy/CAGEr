@@ -33,15 +33,15 @@ CTSSnormalizedTpmDF(object)
 
 \S4method{CTSSnormalizedTpmDF}{CAGEexp}(object)
 
-CTSSnormalizedTpmGR(object, sample)
+CTSSnormalizedTpmGR(object, samples)
 
-\S4method{CTSSnormalizedTpmGR}{CAGEr}(object, sample)
+\S4method{CTSSnormalizedTpmGR}{CAGEr}(object, samples)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
 
-\item{sample}{The name of a sample as reported by \code{sampleLabels(object)},
-or the number of that sample.}
+\item{samples}{The name of sample(s) as reported by \code{sampleLabels(object)},
+or the number identifying the sample(s).}
 }
 \value{
 \code{CTSSnormalizedTpm} returns a \code{data.frame} containing coordinates

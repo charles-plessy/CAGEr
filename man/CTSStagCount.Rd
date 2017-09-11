@@ -40,16 +40,16 @@ CTSStagCountDA(object)
 
 \S4method{CTSStagCountDA}{CAGEr}(object)
 
-CTSStagCountGR(object, sample)
+CTSStagCountGR(object, samples)
 
-\S4method{CTSStagCountGR}{CAGEr}(object, sample)
+\S4method{CTSStagCountGR}{CAGEr}(object, samples)
 
 CTSStagCountSE(object)
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}
 
-\item{sample}{(For \code{CTSStagCountGR}.) Name or number of a sample.}
+\item{samples}{(For \code{CTSStagCountGR}.) Name(s) or number(s) identifying sample(s).}
 }
 \value{
 Returns an object with number of CAGE tags supporting each TSS
