@@ -245,6 +245,12 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 #' @name .clusterAggregateAndSum
 #' @rdname clusterAggregateAndSum
 #' 
+#' @param clusters Clusters to be aggregated.  \code{data.frame}, or
+#' \code{ConsensusClusters}, which will be coerced to \code{data.frame}.
+#' 
+#' @param key Name of the column containing the factor used to aggregate
+#' the clusters.
+#' 
 #' @title Aggregate identical clusters and sum their scores.
 #' 
 #' @description Private function using  \code{data.table} objects to preform grouping
@@ -289,27 +295,32 @@ setMethod(".clusterAggregateAndSum", "ConsensusClusters", function (clusters, ke
 #' 
 #' @title Aggregate identical CTSS and sum their scores.
 #' 
+#' @param ctssDT A \code{\link{data.table}} representing CTSSes.
+#' @param scoreColName The name of the column containing the scores to sum.
+#' 
 #' @description Private function using  \code{data.table} objects to preform grouping
 #' operations at a high performance.  These functions use \emph{non-standard evaluation}
 #' in a context that raises warnings in \code{R CMD check}.  By separating these functions
 #' from the rest of the code, I hope to make the workarounds easier to manage.
-
-setGeneric( ".ctssAggregateAndSum"
-          , function (ctss, scoreColName) standardGeneric(".ctssAggregateAndSum"))
-
-#' @rdname ctssAggregateAndSum
+#' 
 #' @examples
-#' ctssDT <- data.table( chr       = c("chr1", "chr1", "chr1", "chr2")
-#'                     , pos       = c(1     , 1     , 2     , 1     )
-#'                     , strand    = c("+"   , "+"   , "-"   , "-"   )
-#'                     , tag_count = c(1     , 1     , 1     , 1     ))
+#' ctssDT <- data.table::data.table(
+#'   chr       = c("chr1", "chr1", "chr1", "chr2"),
+#'   pos       = c(1     , 1     , 2     , 1     ),
+#'   strand    = c("+"   , "+"   , "-"   , "-"   ),
+#'   tag_count = c(1     , 1     , 1     , 1     ))
 #' ctssDT
 #' .ctssAggregateAndSum(ctssDT, "tag_count")
 
-setMethod(".ctssAggregateAndSum", "data.table", function (ctss, scoreColName) {
-  if (! all(c("chr", "pos", "strand") %in% colnames(ctss))) stop("These are not CTSSes.")
-  chr <- pos <- strand <- NULL
+setGeneric( ".ctssAggregateAndSum"
+          , function (ctssDT, scoreColName) standardGeneric(".ctssAggregateAndSum"))
+
+#' @rdname ctssAggregateAndSum
+
+setMethod(".ctssAggregateAndSum", "data.table", function (ctssDT, scoreColName) {
+  if (! all(c("chr", "pos", "strand") %in% colnames(ctssDT))) stop("These are not CTSSes.")
+  chr <- pos <- strand <- .SD <- NULL
   ctssDT[ , sum(.SD[[1]])
-        , by = .(chr, pos, strand)
+        , by = list(chr, pos, strand)
         , .SDcols = scoreColName]
 })

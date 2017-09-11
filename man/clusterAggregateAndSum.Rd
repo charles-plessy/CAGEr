@@ -16,6 +16,13 @@
 
 \S4method{.clusterAggregateAndSum}{ConsensusClusters}(clusters, key)
 }
+\arguments{
+\item{clusters}{Clusters to be aggregated.  \code{data.frame}, or
+\code{ConsensusClusters}, which will be coerced to \code{data.frame}.}
+
+\item{key}{Name of the column containing the factor used to aggregate
+the clusters.}
+}
 \description{
 Private function using  \code{data.table} objects to preform grouping
 operations at a high performance.  These functions use \emph{non-standard evaluation}

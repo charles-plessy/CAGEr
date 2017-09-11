@@ -6,9 +6,14 @@
 \alias{.ctssAggregateAndSum,data.table-method}
 \title{Aggregate identical CTSS and sum their scores.}
 \usage{
-.ctssAggregateAndSum(ctss, scoreColName)
+.ctssAggregateAndSum(ctssDT, scoreColName)
 
-\S4method{.ctssAggregateAndSum}{data.table}(ctss, scoreColName)
+\S4method{.ctssAggregateAndSum}{data.table}(ctssDT, scoreColName)
+}
+\arguments{
+\item{ctssDT}{A \code{\link{data.table}} representing CTSSes.}
+
+\item{scoreColName}{The name of the column containing the scores to sum.}
 }
 \description{
 Private function using  \code{data.table} objects to preform grouping
@@ -17,10 +22,11 @@ in a context that raises warnings in \code{R CMD check}.  By separating these fu
 from the rest of the code, I hope to make the workarounds easier to manage.
 }
 \examples{
-ctssDT <- data.table( chr       = c("chr1", "chr1", "chr1", "chr2")
-                    , pos       = c(1     , 1     , 2     , 1     )
-                    , strand    = c("+"   , "+"   , "-"   , "-"   )
-                    , tag_count = c(1     , 1     , 1     , 1     ))
+ctssDT <- data.table::data.table(
+  chr       = c("chr1", "chr1", "chr1", "chr2"),
+  pos       = c(1     , 1     , 2     , 1     ),
+  strand    = c("+"   , "+"   , "-"   , "-"   ),
+  tag_count = c(1     , 1     , 1     , 1     ))
 ctssDT
 .ctssAggregateAndSum(ctssDT, "tag_count")
 }
