@@ -109,7 +109,7 @@ ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 clusterCTSS(ce)
 aggregateTagClusters(ce)
 head(consensusClusters(ce))
-head(consensusClusters(ce, 2))
+consensusClustersGR(ce, 2)
 
 }
 \seealso{

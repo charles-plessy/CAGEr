@@ -50,6 +50,7 @@
 #' \dontrun{
 #' ce <- ce[,c(5, 2, 1, 3, 4)]  # Non-aplhabetic order, may help to catch bugs.
 #' CTSStagCountSE(ce) <- CTSStagCountSE(ce)[1:5000,]  # Slim the object
+#' annotateCTSS(ce , readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
 #' normalizeTagCount(ce)
 #' clusterCTSS(ce)
 #' cumulativeCTSSdistribution(ce, "tagClusters")

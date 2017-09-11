@@ -48,8 +48,6 @@ See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
 }
 \examples{
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
-annotateCTSS(ce, gff)
 p <- plotAnnot(ce, 'counts', 'Here is the title')
 print(p)
 p + ggplot2::theme_bw()

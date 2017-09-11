@@ -35,8 +35,6 @@
 #' 
 #' @examples
 #' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
-#' annotateCTSS(ce, gff)
 #' p <- plotAnnot(ce, 'counts', 'Here is the title')
 #' print(p)
 #' p + ggplot2::theme_bw()
@@ -46,7 +44,7 @@
 #' plotAnnot(ce, 'counts', group = "myGroups")
 #' 
 #' @docType methods
-#' @importFrom ggplot2 aes coord_flip geom_bar geom_segment geom_point
+#' @importFrom ggplot2 aes_string coord_flip geom_bar geom_segment geom_point
 #' @importFrom ggplot2 ggplot ggtitle position_stack
 #' @export
 
