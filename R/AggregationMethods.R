@@ -104,9 +104,10 @@ setMethod( "aggregateTagClusters", "CAGEr"
 
   if (all( !is.null(qLow), !is.null(qUp))) {
     TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
-    TC.list <- endoapply(TC.list, function(x) { start(x) <- mcols(x)[[paste0("q_", qLow)]]
-                                                end(x)   <- mcols(x)[[paste0("q_", qUp)]]
-                                                x})
+    TC.list <- endoapply(TC.list, function(x) {
+      start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x)
+      end(x)   <- mcols(x)[[paste0("q_", qUp)]]  + start(x)
+      x})
   } else {
     TC.list <- tagClustersGR(object)
   }
