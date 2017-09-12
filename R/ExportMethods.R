@@ -7,9 +7,9 @@
 
 #' @name plotReverseCumulatives
 #' 
-#' @title Plotting reverse cumulative number of CAGE tags per CTSS
+#' @title Plot reverse cumulative number of CAGE tags per CTSS
 #' 
-#' @description Creates PDF file with plots of reverse cumulative number of CAGE
+#' @description Plots the reverse cumulative distribution of the number of CAGE
 #' tags per CTSS for all CAGE datasets present in the \code{\link{CAGEr}} object.
 #' The plots should be used as help in choosing the parameters for power-law
 #' normalization: the range of values to fit the power-law and the slope of the
@@ -17,9 +17,8 @@
 #' 
 #' @param object A CAGEr object
 #' 
-#' @param values Specifies which values should be plotted.  Can be either
-#' \code{"raw"} to plot reverse cumulatives of raw CAGE tag counts or
-#' \code{"normalized"} to plot normalized tag count values.
+#' @param values Which values should be plotted: \code{"raw"} (default) for raw CAGE
+#' tag counts or \code{"normalized"} for normalized tag count values.
 #' 
 #' @param fitInRange An integer vector with two values specifying a range of tag
 #' count values to be used for fitting a power-law distribution to reverse
@@ -27,7 +26,7 @@
 #' See Details.
 #' 
 #' @param onePlot Logical, should all CAGE datasets be plotted in the same
-#' plot (TRUE) or in separate plots (FALSE) within the same PDF file. 
+#' plot (TRUE) or in separate plots (FALSE). 
 #' 
 #' @param main Main title for the plot.
 #' 
@@ -63,14 +62,13 @@
 #' 
 #' @examples 
 #' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-#' plotReverseCumulatives(exampleCAGEset, values = "raw",fitInRange = c(10,500), onePlot = TRUE)
+#' plotReverseCumulatives(exampleCAGEset, fitInRange = c(10,500), onePlot = TRUE)
 #' plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 #' 
-#' exampleCAGEexp <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' plotReverseCumulatives(exampleCAGEexp, values = "raw",fitInRange = c(5,100), onePlot = TRUE)
-#' plotReverseCumulatives(exampleCAGEexp[,3:4], values = "raw",fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
-#' normalizeTagCount(exampleCAGEexp)
-#' plotReverseCumulatives(exampleCAGEexp, values = "normalized",fitInRange = c(5,100), onePlot = TRUE)
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' plotReverseCumulatives(ce, fitInRange = c(5,100), onePlot = TRUE)
+#' plotReverseCumulatives(ce[,4:5], fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
+#' plotReverseCumulatives(ce, values = "normalized", fitInRange = c(5,100), onePlot = TRUE)
 #' 
 #' @importFrom graphics abline box legend par plot strwidth text
 #' @importFrom stats cor median
@@ -78,7 +76,7 @@
 #' @export
 
 setGeneric( "plotReverseCumulatives"
-          , function( object, values = "raw"
+          , function( object, values = c("raw", "normalized")
                     , fitInRange = c(10, 1000), onePlot = FALSE, main = NULL)
 	standardGeneric("plotReverseCumulatives"))
 
@@ -87,28 +85,23 @@ setGeneric( "plotReverseCumulatives"
 setMethod( "plotReverseCumulatives", "CAGEr"
          , function (object, values, fitInRange, onePlot, main) {
 	sample.labels <- sampleLabels(object)
-	if(values == "raw"){
-		tag.count <- CTSStagCountDf(object)
-	}else if(values == "normalized"){
-		tag.count <- CTSSnormalizedTpmDf(object)
-	}else{
-		stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
-	}
-	
+	values <- match.arg(values)
 	#pdf(file = paste("CTSS_reverse_cumulatives_", values, "_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
-	par(mar = c(5,5,5,2))
+	old.par <- par(mar = c(5,5,5,2))
+	on.exit(par(old.par))
 	cols <- names(sample.labels)
 	
 	if(values == "raw"){
-		fit.coefs.m <- apply(tag.count, 2, function(x) {.fit.power.law.to.reverse.cumulative(values = as.integer(x), val.range = fitInRange)})
+	  tag.count <- CTSStagCountDF(object)
+		fit.coefs.m <- as.matrix(data.frame(lapply(tag.count, function(x) {.fit.power.law.to.reverse.cumulative(values = as.integer(x), val.range = fitInRange)})))
 		fit.slopes <- fit.coefs.m[1,]
 		names(fit.slopes) <- sample.labels
 		reference.slope <- min(median(fit.slopes), -1.05)
-		library.sizes <- librarySizes(object)
-		reference.library.size <- 10^floor(log10(median(library.sizes)))
+		reference.library.size <- 10^floor(log10(median(librarySizes(object))))
 #reference.intercept <- log(reference.library.size/zeta(-1*reference.slope))  # intercept on natural logarithm scale
 		reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
 	}else if(values == "normalized"){
+	  tag.count <- CTSSnormalizedTpmDF(object)
 #		fit.coefs.m <- apply(tag.count, 2, function(x) {.fit.power.law.to.reverse.cumulative(values = x, val.range = fitInRange)})
 	}
 	
@@ -132,14 +125,16 @@ setMethod( "plotReverseCumulatives", "CAGEr"
 		}
 	}else{
 		if(values == "raw"){
-			sapply(sample.labels, function(x) {vals <- as.integer(tag.count[, x]); .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = ifelse(is.null(main), "All samples", x), col.title = cols[which(sample.labels == x)]); abline(v = fitInRange, lty = "dotted"); abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash"); text(min(fitInRange), 10^6, labels = paste(" alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,1), col = cols[which(sample.labels == x)], cex = 1.3); legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)})
+			sapply(sample.labels, function(x) {vals <- as.integer(tag.count[, x]); .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)]); abline(v = fitInRange, lty = "dotted"); abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash"); text(min(fitInRange), 10^6, labels = paste(" alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,1), col = cols[which(sample.labels == x)], cex = 1.3); legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)})
 		}else if(values == "normalized"){
-			sapply(sample.labels, function(x) {vals <- tag.count[, x]; .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = ifelse(is.null(main), "All samples", x), col.title = cols[which(sample.labels == x)])})
+			sapply(sample.labels, function(x) {vals <- tag.count[, x]; .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)])})
 		}
 	}
+	invisible(TRUE)
 	#dev.off()
 	#message("\nFile 'CTSS_reverse_cumulatives_", values, "_all_samples.pdf' has been created in your working directory (", getwd(), ")")
 })
+
 
 #' @name exportCTSStoBedGraph
 #' 

@@ -4,20 +4,19 @@
 \name{plotReverseCumulatives}
 \alias{plotReverseCumulatives}
 \alias{plotReverseCumulatives,CAGEr-method}
-\title{Plotting reverse cumulative number of CAGE tags per CTSS}
+\title{Plot reverse cumulative number of CAGE tags per CTSS}
 \usage{
-plotReverseCumulatives(object, values = "raw", fitInRange = c(10, 1000),
-  onePlot = FALSE, main = NULL)
-
-\S4method{plotReverseCumulatives}{CAGEr}(object, values = "raw",
+plotReverseCumulatives(object, values = c("raw", "normalized"),
   fitInRange = c(10, 1000), onePlot = FALSE, main = NULL)
+
+\S4method{plotReverseCumulatives}{CAGEr}(object, values = c("raw",
+  "normalized"), fitInRange = c(10, 1000), onePlot = FALSE, main = NULL)
 }
 \arguments{
 \item{object}{A CAGEr object}
 
-\item{values}{Specifies which values should be plotted.  Can be either
-\code{"raw"} to plot reverse cumulatives of raw CAGE tag counts or
-\code{"normalized"} to plot normalized tag count values.}
+\item{values}{Which values should be plotted: \code{"raw"} (default) for raw CAGE
+tag counts or \code{"normalized"} for normalized tag count values.}
 
 \item{fitInRange}{An integer vector with two values specifying a range of tag
 count values to be used for fitting a power-law distribution to reverse
@@ -25,7 +24,7 @@ cumulatives.  Used only when \code{values = "raw"}, otherwise ignored.
 See Details.}
 
 \item{onePlot}{Logical, should all CAGE datasets be plotted in the same
-plot (TRUE) or in separate plots (FALSE) within the same PDF file.}
+plot (TRUE) or in separate plots (FALSE).}
 
 \item{main}{Main title for the plot.}
 }
@@ -35,7 +34,7 @@ dataset within CAGEr object.  Alpha values of fitted power-laws and suggested
 referent power-law distribution are reported on the plot in case \code{values = "raw"}.
 }
 \description{
-Creates PDF file with plots of reverse cumulative number of CAGE
+Plots the reverse cumulative distribution of the number of CAGE
 tags per CTSS for all CAGE datasets present in the \code{\link{CAGEr}} object.
 The plots should be used as help in choosing the parameters for power-law
 normalization: the range of values to fit the power-law and the slope of the
@@ -61,14 +60,13 @@ which all samples will be normalized. For details about normalization see
 }
 \examples{
 load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-plotReverseCumulatives(exampleCAGEset, values = "raw",fitInRange = c(10,500), onePlot = TRUE)
+plotReverseCumulatives(exampleCAGEset, fitInRange = c(10,500), onePlot = TRUE)
 plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 
-exampleCAGEexp <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-plotReverseCumulatives(exampleCAGEexp, values = "raw",fitInRange = c(5,100), onePlot = TRUE)
-plotReverseCumulatives(exampleCAGEexp[,3:4], values = "raw",fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
-normalizeTagCount(exampleCAGEexp)
-plotReverseCumulatives(exampleCAGEexp, values = "normalized",fitInRange = c(5,100), onePlot = TRUE)
+ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+plotReverseCumulatives(ce, fitInRange = c(5,100), onePlot = TRUE)
+plotReverseCumulatives(ce[,4:5], fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
+plotReverseCumulatives(ce, values = "normalized", fitInRange = c(5,100), onePlot = TRUE)
 
 }
 \references{
