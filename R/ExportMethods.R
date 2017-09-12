@@ -108,9 +108,10 @@ setMethod( "plotReverseCumulatives", "CAGEr"
 	if(onePlot == TRUE){
 		vals <- tag.count[, 1]		
 		if(values == "raw"){
-			.plotReverseCumulative(values = as.integer(vals), col = cols[1], title = ifelse(is.null(main), "All samples", main))
+			.plotReverseCumulative(values = vals, col = cols[1], title = ifelse(is.null(main), "All samples", main))
 			if(length(sample.labels) > 1){
-				sapply(c(2:length(sample.labels)), function(x) {vals <- as.integer(tag.count[, sample.labels[x]]); .plotReverseCumulative(values = vals, col = cols[x], add = TRUE)})
+				sapply( c(2:length(sample.labels))
+				      , function(x) .plotReverseCumulative(values = tag.count[, sample.labels[x]], col = cols[x], add = TRUE))
 			}
 			abline(v = fitInRange, lty = "dotted")
 			abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash")

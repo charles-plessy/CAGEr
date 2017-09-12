@@ -8,21 +8,26 @@
 
 # using data.table package
 	num <- nr_tags <- NULL # To keep R CMD check happy
-	v <- data.table(num = 1, nr_tags = values)
+	v <- data.table(num = 1, nr_tags = decode(values))
 	v <- v[, sum(num), by = nr_tags]
 	setkey(v, nr_tags)
 	
 #	v <- aggregate(values, by = list(values), FUN = length)
 #	colnames(v) <- c('nr_tags', 'V1')
 	
-	if(add){
-		lines(sort(c(v$nr_tags - (v$nr_tags - c(0, v$nr_tags[-length(v$nr_tags)]))/2, v$nr_tags + (c(v$nr_tags[-1], v$nr_tags[length(v$nr_tags)]+1) - v$nr_tags)/2)), rep(rev(cumsum(rev(v$V1))), each = 2), col = col, lwd = 2)
-	}else{
-		plot(sort(c(v$nr_tags - (v$nr_tags - c(0, v$nr_tags[-length(v$nr_tags)]))/2, v$nr_tags + (c(v$nr_tags[-1], v$nr_tags[length(v$nr_tags)]+1) - v$nr_tags)/2)), rep(rev(cumsum(rev(v$V1))), each = 2), xaxt = 'n', yaxt = 'n', log = "xy", type = "l", lwd = 2, col = col, xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)", main = title, cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = col.title, xlim = c(1, 10^5), ylim = c(1, 10^6))	
+	x <- sort(c(v$nr_tags - (v$nr_tags - c(0, v$nr_tags[-length(v$nr_tags)]))/2, v$nr_tags + (c(v$nr_tags[-1], v$nr_tags[length(v$nr_tags)]+1) - v$nr_tags)/2))
+	y <- rep(rev(cumsum(rev(v$V1))), each = 2)
 	
-		axis(side = 1, at = as.integer(sapply(10^(seq(0,6,1)), function(x) {seq(x,10*x-1,x)})), labels = rep("", 63), cex.axis = 1.8)   		   
+	if(add){
+		lines(x, y, col = col, lwd = 2)
+	}else{
+		plot(x, y, xaxt = 'n', yaxt = 'n', log = "xy", type = "l", lwd = 2, col = col, xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)", main = title, cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = col.title, xlim = c(1, 10^5), ylim = c(1, 10^6))	
+	
+	  ticks <- as.integer(sapply(10^(seq(0,6,1)), function(x) {seq(x,10*x-1,x)}))
+
+		axis(side = 1, at = ticks, labels = rep("", 63), cex.axis = 1.8)   		   
 		axis(side = 1, at = 10^(seq(0,6,1)), labels = formatC(10^(seq(0,6,1)), format = "f", digits = 0), cex.axis = 1.8)		   
-		axis(side = 2, at = as.integer(sapply(10^(seq(0,6,1)), function(x) {seq(x,10*x-1,x)})), labels = rep("", 63), cex.axis = 1.8)   		   
+		axis(side = 2, at = ticks, labels = rep("", 63), cex.axis = 1.8)   		   
 		axis(side = 2, at = 10^(seq(0,6,1)), labels = formatC(10^(seq(0,6,1)), format = "f", digits = 0), cex.axis = 1.8)
 	}
 	
