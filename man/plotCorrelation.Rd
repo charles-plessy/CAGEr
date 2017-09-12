@@ -67,6 +67,7 @@ plotCorrelation(ce)
 \seealso{
 Other CAGEr plot functions: \code{\link{hanabiPlot}},
   \code{\link{plotAnnot}},
+  \code{\link{plotExpressionProfiles}},
   \code{\link{plotReverseCumulatives}}
 }
 \author{

@@ -52,6 +52,7 @@ Other CAGEr richness functions: \code{\link{hanabi}},
 
 Other CAGEr plot functions: \code{\link{plotAnnot}},
   \code{\link{plotCorrelation}},
+  \code{\link{plotExpressionProfiles}},
   \code{\link{plotReverseCumulatives}}
 }
 \author{

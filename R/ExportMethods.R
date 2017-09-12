@@ -347,27 +347,59 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 )
 
 #' @name plotExpressionProfiles
-#' @noRd
+#' 
+#' @title Plotting expression profiles derived from CAGE data
+#' 
+#' @description Creates PDF file with beanplots representing distribution of normalized
+#' expression across CAGE experiments for individual expression classes.  Different
+#' expression classes are shown in different colors and are labeled according to the labels
+#' returned by expression clustering.
+#' 
+#' @param object A \code{\link{CAGEset}} object.
+#' 
+#' @param what Which level of expression clustering should be used.  Can be either
+#' \code{"CTSS"} to plot expression profiles of individual CTSSs or \code{"consensusClusters"}
+#' to plot expression profiles of consensus clusters.
+#' 
+#' @details The created file contains beanplots representing distribution of normalized
+#' expression across CAGE experiments for individual expression classes shown in separate
+#' boxes.  Each labeled box represents one expression class and contains a set of
+#' beanplots - one per CAGE experiment. Individual CAGE experiments are shown on X-axis and
+#' scaled normalized expression on Y-axis.  Individual beanplots show distribution of
+#' normalized expression values of elements belonging to specific expression class in
+#' particular CAGE experiment, and the entire box represents single expression profile.
+#' Different expression classes (boxes) are plotted in different colors and are labeled with
+#' labels returned by expression clustering.
+#' 
+#' @return Creates PDF file named "CTSS_expression_profiles.pdf" (in case \code{what = "CTSS"})
+#' or "consensusClusters_expression_profiles.pdf" (in case \code{what = "consensusClusters"})
+#' in the working directory.
+#' 
+#' @author Vanja Haberle
+#' 
+#' @family CAGEr plot functions
+#' 
+#' @seealso \code{\link{getExpressionProfiles}}, \code{\link{expressionClasses}},
+#'          \code{\link{extractExpressionClass}}.
+#'          
+#' @examples
+#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
+#' plotExpressionProfiles(object = exampleCAGEset, what = "CTSS")
+#' 
 #' @export
 
-setGeneric(
-name="plotExpressionProfiles",
-def=function(object, what){
-	standardGeneric("plotExpressionProfiles")
-}
-)
+setGeneric( "plotExpressionProfiles"
+          , function(object, what) standardGeneric("plotExpressionProfiles"))
 
-setMethod("plotExpressionProfiles",
-signature(object = "CAGEset"),
-function (object, what){
+setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
 	
 	if(what == "CTSS") {
 		
 		cl <- CTSSexpressionClasses(object)
 		if(length(cl)>0){
-			tpm.mx <- normalizedTpm(object)
+			tpm.mx <- object@normalizedTpmMatrix
 			tpm.mx <- tpm.mx[as.integer(names(cl)),]
-			cl.method <- CTSSexpressionClusteringMethod(object)
+			cl.method <- object@CTSSexpressionClusteringMethod
 		}else{
 			stop("No CTSS expression profiling has been done yet! Run getExpressionProfiles function first!")
 		}
@@ -396,9 +428,7 @@ function (object, what){
 	suppressWarnings(.plot.clusters.beanplots(value.matrix = m, cl = cl, cl.method = cl.method, dim.som.x = max(cl[,1]) + 1, dim.som.y = max(cl[,2]) + 1, cex.axis = 3, las = 2))
 	dev.off()
 	message("\nFile '", file_name, "' has been created in your working directory (", getwd(), ")")	
-	
-}
-)
+})
 
 #' @name exportToBed
 #' 

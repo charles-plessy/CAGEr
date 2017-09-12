@@ -501,7 +501,7 @@ import.CTSS <- function(filepath) {
 #'                     , "chr11:66272364-66272460")
 #' myFirstBlock <- sub("[,;|].*", "", myMolecule)
 #' 
-#' parseCAGEscanBlocksToGrangeTSS(myFirstBlock)
+#' CAGEr:::parseCAGEscanBlocksToGrangeTSS(myFirstBlock)
 
 parseCAGEscanBlocksToGrangeTSS <- function (blocks) {
   blocks <- strsplit(blocks, "[:-]")

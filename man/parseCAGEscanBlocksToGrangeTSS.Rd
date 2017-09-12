@@ -28,7 +28,7 @@ myMolecule <- paste0( "chr11:66268633-66268693,"
                     , "chr11:66272364-66272460")
 myFirstBlock <- sub("[,;|].*", "", myMolecule)
 
-parseCAGEscanBlocksToGrangeTSS(myFirstBlock)
+CAGEr:::parseCAGEscanBlocksToGrangeTSS(myFirstBlock)
 }
 \seealso{
 import.CAGEscanMolecule

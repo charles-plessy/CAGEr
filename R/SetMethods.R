@@ -262,7 +262,7 @@ setMethod("tagClustersGR<-", "CAGEset", function (object, samples, value)
 
 #' @rdname tagClusters
 
-setMethod("tagClustersGR<-", c("CAGEexp", "TagClusters"), function (object, samples, value) {
+setMethod("tagClustersGR<-", c(object = "CAGEexp", value = "TagClusters"), function (object, samples, value) {
   validSamples(object, samples)
 	metadata(object)$tagClusters[[samples]] <- value
   if (validObject(object)) object
@@ -270,7 +270,7 @@ setMethod("tagClustersGR<-", c("CAGEexp", "TagClusters"), function (object, samp
 
 #' @rdname tagClusters
 
-setMethod("tagClustersGR<-", c("CAGEexp", "GRangesList"), function (object, samples, value) {
+setMethod("tagClustersGR<-", c("CAGEexp", "missing", "GRangesList"), function (object, samples, value) {
 	metadata(object)$tagClusters <- value
   if (validObject(object)) object
 })
