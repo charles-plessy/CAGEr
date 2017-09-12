@@ -1,6 +1,6 @@
 #' @name CTSS-class
 #' 
-#' @title CAGE Transcription Start Site class
+#' @title Classes for type safety.
 #' 
 #' @description  The \code{CTSS} class represents CAGE transcription start sites (CTSS) at
 #' single-nucleotide resolution, using GRanges as base class.  It is used internally by CAGEr
@@ -55,7 +55,7 @@
 
 #' @name ConsensusClusters
 #' 
-#' @title Consensus clusters class
+#' @rdname CTSS-class
 #' 
 #' @details The \code{ConsensusClusters} class represents consensus clusters.
 #' It is used internally by CAGEr for type safety.
@@ -64,7 +64,7 @@
 
 #' @name TagClusters
 #' 
-#' @title Tag clusters class
+#' @rdname CTSS-class
 #' 
 #' @details The \code{TagClusters} class represents tag clusters.
 #' It is used internally by CAGEr for type safety.

@@ -4,11 +4,16 @@
 \name{expressionClasses}
 \alias{expressionClasses}
 \alias{expressionClasses,CAGEset-method}
+\alias{expressionClasses,CAGEexp-method}
 \title{Extract labels of expression classes}
 \usage{
-expressionClasses(object, what)
+expressionClasses(object, what = c("CTSS", "consensusClusters"))
 
-\S4method{expressionClasses}{CAGEset}(object, what)
+\S4method{expressionClasses}{CAGEset}(object, what = c("CTSS",
+  "consensusClusters"))
+
+\S4method{expressionClasses}{CAGEexp}(object, what = c("CTSS",
+  "consensusClusters"))
 }
 \arguments{
 \item{object}{A \code{\link{CAGEset}} object.}

@@ -6,7 +6,11 @@
 \alias{.CTSS}
 \alias{CTSS.chr-class}
 \alias{.CTSS.chr}
-\title{CAGE Transcription Start Site class}
+\alias{ConsensusClusters}
+\alias{.ConsensusClusters}
+\alias{TagClusters}
+\alias{.TagClusters}
+\title{Classes for type safety.}
 \description{
 The \code{CTSS} class represents CAGE transcription start sites (CTSS) at
 single-nucleotide resolution, using GRanges as base class.  It is used internally by CAGEr
@@ -15,6 +19,12 @@ for type safety.
 \details{
 The \code{CTSS.chr} class represents a \code{CTSS} object that is guaranteed to be
 only on a single chromosome.  It is used internally by CAGEr for type safety.
+
+The \code{ConsensusClusters} class represents consensus clusters.
+It is used internally by CAGEr for type safety.
+
+The \code{TagClusters} class represents tag clusters.
+It is used internally by CAGEr for type safety.
 }
 \examples{
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
