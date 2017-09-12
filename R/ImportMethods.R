@@ -619,7 +619,8 @@ function (source, dataset, group, sample){
 			
 		if(dataset[1] == "ENCODEtissueCAGEfly"){
 			genome.name <- "BSgenome.Dmelanogaster.UCSC.dm3"
-			data(ENCODEtissueCAGEfly, envir = environment())
+			ENCODEtissueCAGEfly <- NULL
+			data("ENCODEtissueCAGEfly", envir = environment())
 			if(group == "embryo"){
 				if(sample == "mixed_embryos_0-24hr"){
 					
@@ -634,7 +635,8 @@ function (source, dataset, group, sample){
 		
 		}else{
 			genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
-			data(ENCODEhumanCellLinesSamples, envir = environment())
+			ENCODEhumanCellLinesSamples <- NULL
+			data("ENCODEhumanCellLinesSamples", envir = environment())
 			info.df <- ENCODEhumanCellLinesSamples
 			
 			if(!(all(dataset %in% info.df$dataset))){
@@ -732,10 +734,10 @@ function (source, dataset, group, sample){
 		}else if(!("package:FANTOM3and4CAGE" %in% search())){
 			stop("Requested CAGE data package is not loaded! Please load the data package by calling 'library(FANTOM3and4CAGE)'")
 		}
-		
-		data(FANTOMhumanSamples, envir = environment())
+		FANTOMhumanSamples <- FANTOMmouseSamples <- NULL
+		data("FANTOMhumanSamples", envir = environment())
 		info.df1 <- FANTOMhumanSamples
-		data(FANTOMmouseSamples, envir = environment())
+		data("FANTOMmouseSamples", envir = environment())
 		info.df2 <- FANTOMmouseSamples
 				
 		if(!(all(dataset %in% info.df1$dataset) | all(dataset %in% info.df2$dataset))){
@@ -846,11 +848,13 @@ function (source, dataset, group, sample){
 			stop("For FANTOM5, dataset can be either 'human' or 'mouse'!")
 		}
 		if(dataset == "human"){
-			data(FANTOM5humanSamples, envir = environment())
+		  FANTOM5humanSamples <- NULL
+			data("FANTOM5humanSamples", envir = environment())
 			samples.info <- FANTOM5humanSamples
 			genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
 		}else if(dataset == "mouse"){
-			data(FANTOM5mouseSamples, envir = environment())
+		  FANTOM5mouseSamples <- NULL
+			data("FANTOM5mouseSamples", envir = environment())
 			samples.info <- FANTOM5mouseSamples
 			genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
 		}		
@@ -891,14 +895,16 @@ function (source, dataset, group, sample){
 			stop("Requested CAGE data package is not loaded! Please load the data package by calling 'library(ZebrafishDevelopmentalCAGE)'")
 		}
 		
-		data(ZebrafishSamples, envir = environment())
+	  ZebrafishSamples <- NULL
+		data("ZebrafishSamples", envir = environment())
 		if(dataset == "ZebrafishCAGE"){
 			if(group == "development"){
 				if(!(all(sample %in% ZebrafishSamples$sample))){
 					stop("Some sample names cannot be found for the specified dataset! Call data(ZebrafishSamples) and check the 'sample' column for valid sample names!")
 				}else{
 					genome.name <- "BSgenome.Drerio.UCSC.danRer7"
-					data(ZebrafishCAGE, envir = environment())
+					ZebrafishCAGE <- NULL
+					data("ZebrafishCAGE", envir = environment())
 					ctssTable <- ZebrafishCAGE[["development"]][,c("chr", "pos", "strand", sample)]
                     ctssTable <- ctssTable[apply(ctssTable[,4:ncol(ctssTable),drop=FALSE], 1, function(x) {any(x>0)}),]
 				}
