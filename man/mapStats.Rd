@@ -49,10 +49,8 @@ See the plotAnnot vignette for details on what the scopes are.
 \examples{
 library(SummarizedExperiment)
 ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
-annotateCTSS(ce, gff)
-mapStats(as.data.frame(colData(ce)), "counts", sampleLabels(ce))
-mapStats(as.data.frame(colData(ce)), "counts", c("A", "A", "B", "B", "C"))
+CAGEr:::mapStats(as.data.frame(colData(ce)), "counts", sampleLabels(ce))
+CAGEr:::mapStats(as.data.frame(colData(ce)), "counts", c("A", "A", "B", "B", "C"))
 
 }
 \seealso{

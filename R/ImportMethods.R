@@ -464,7 +464,7 @@ import.bedCTSS <- function(filepath) {
 #' @importFrom utils read.table
 #' 
 #' @examples
-#' import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))
+#' CAGEr:::import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))
 
 import.CTSS <- function(filepath) {
   CTSS <- read.table( file = filepath
@@ -596,6 +596,7 @@ setMethod( "getCTSS", "CAGEexp"
 
 #' importPublicData
 #' @noRd
+#' @importFrom utils data
 #' @export
 
 setGeneric(

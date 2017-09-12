@@ -173,8 +173,12 @@ setMethod( "getExpressionProfiles", "CAGEset"
 setGeneric( "extractExpressionClass", function(object, what, which="all")
   standardGeneric("extractExpressionClass"))
 
+#' @rdname extractExpressionClass
+
 setMethod( "extractExpressionClass", "CAGEexp", function (object, what, which="all")
   stop("Not supported for CAGEexp objects."))
+
+#' @rdname extractExpressionClass
 
 setMethod( "extractExpressionClass", "CAGEset", function (object, what, which="all"){
 	objName <- deparse(substitute(object))

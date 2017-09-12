@@ -16,7 +16,7 @@ the same as the FANTOM5 "CTSS" files (which are plain BED).}
 Imports a "CTSS" file in a GRanges object
 }
 \examples{
-import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))
+CAGEr:::import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))
 }
 \seealso{
 loadFileIntoGRanges
