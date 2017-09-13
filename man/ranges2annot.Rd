@@ -2,25 +2,26 @@
 % Please edit documentation in R/Annotations.R
 \name{ranges2annot}
 \alias{ranges2annot}
-\title{ranges2annot}
+\title{hierarchical annotation of CTSs}
 \usage{
 ranges2annot(ranges, annot)
 }
 \arguments{
-\item{ranges}{The Genomics Ranges object, for example extracted from a
+\item{ranges}{The CTSS (GRanges) object, for example extracted from a
 RangedSummarizedExperiment object with the \code{rowRanges}
 command.}
 
-\item{annot}{A \code{\link{GRanges}} object containing \code{type} and
-\code{transcript_type} metadata providing enough information for
-inferring promoters, exons and introns.  Typically GENCODE.}
+\item{annot}{A \code{\link{GRanges}} from which promoter positions will
+be inferred.  Typically GENCODE.  If the \code{type} metadata is present,
+it should contain \sQuote{gene}, \sQuote{exon} and \sQuote{transcript} among
+its values.  Otherwise, all entries are considered transcripts.
+If the \code{transcript_type} metadata is available, the entries may
+be not primary products (for instance \sQuote{snoRNA}) are discarded.}
 }
 \value{
 A Run-length-encoded (Rle) factor of same length as the GRanges object,
-        indicating if the interval is promoter, exon, intron or unknown.
-}
-\description{
-hierarchical annotation of a Genomic Range as promoter, exon or intron.
+        indicating if the interval is promoter, exon, intron or unknown, or
+        just promoter, gene, unknown if the \code{type} metadata is absent.
 }
 \details{
 Only the biotypes that are likely to have a promoter will be filtered
@@ -28,12 +29,7 @@ in.  This is currently hardcoded in the function; see its source code.  Example
 of biotypes without a promoter: VDJ segments, etc.
 }
 \examples{
-library(SummarizedExperiment)
-CTSScoordinatesGR(exampleCAGEexp)$annotation <-
   ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
-colData(exampleCAGEexp)[levels(CTSScoordinatesGR(exampleCAGEexp)$annotation)] <-
-  DataFrame(t(sapply( CTSStagCountDF(exampleCAGEexp)
-                    , function(X) tapply(X, CTSScoordinatesGR(exampleCAGEexp)$annotation, sum))))
 
 }
 \seealso{

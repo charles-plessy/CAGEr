@@ -278,7 +278,7 @@ mapStats <- function( libs
 #' @param object A \code{\link{CAGEexp}} object (\code{\link{CAGEset}}s are
 #'   not supported).
 #'   
-#' @param ranges A \code{\link{GRanges}} object containing \code{gene_name},
+#' @param ranges A \code{\link{GRanges}} object, optionally containing \code{gene_name},
 #'   \code{type} and \code{transcript_type} metadata.
 #'   
 #' @return \code{annotateCTSS} returns the input object with the following modifications:
@@ -286,10 +286,13 @@ mapStats <- function( libs
 #' \itemize{
 #'   \item The Genomic Ranges of the \code{tagCountMatrix} experiment gains a
 #'     \code{annotation} metadata column, with levels such as \dQuote{promoter},
-#'     \dQuote{exon}, \dQuote{intron} and \dQuote{unknown"}, and a \code{genes}
-#'     column, with gene symbols from the annotation.
-#'   \item New column data added, indicating total counts in each of the annotation
-#'     levels.
+#'     \dQuote{exon}, \dQuote{intron} and \dQuote{unknown}.  If the annotation
+#'     has a \code{gene_name} metadata, then a \code{genes} column is also added,
+#'     with gene symbols from the annotation.
+#'   \item The sample data get new columns, indicating total counts in each of the
+#'     annotation levels.   If the annotation has a \code{gene_name} metadata, then
+#'     a \code{genes} column is added to indicate the number of different gene symbols
+#'     detected.
 #' }
 #' 
 #' @seealso The \code{\link{exampleZv9_annot}} example data.
@@ -317,7 +320,7 @@ setMethod("annotateCTSS", "CAGEset", function (object, ranges){
 setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
   objName <- deparse(substitute(object))
   if(is.null(experiments(object)$tagCountMatrix))
-    stop(objName, " does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
+    stop(objName, " does not contain CTSS expression data, see ", dQuote("getCTSS()"), ".")
   
   CTSScoordinatesGR(object)$genes      <- ranges2genes(CTSScoordinatesGR(object), ranges)
   CTSScoordinatesGR(object)$annotation <- ranges2annot(CTSScoordinatesGR(object), ranges)
@@ -336,18 +339,12 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
 #' 
 #' @rdname annotateCTSS
 #' 
-#' @details \code{annotateConsensusClusters} annotates the \emph{consensus clusters}
+#' @description \code{annotateConsensusClusters} annotates the \emph{consensus clusters}
 #' of a CAGEr object.
 #'   
-#' @return \code{annotateConsensusClusters} returns the input object with the following
-#' modification:
-#' 
-#' \itemize{
-#'   \item The Genomic Ranges of the \code{consensusClusters} experiment gains a
-#'     \code{annotation} metadata column, with levels such as \dQuote{promoter},
-#'     \dQuote{exon}, \dQuote{intron} and \dQuote{unknown"}, and a \code{genes}
-#'     column, with gene symbols from the annotation.
-#' }
+#' @return \code{annotateConsensusClusters} returns the input object with the same
+#' modifications as above.  An \code{outOfClusters} column is added to the sample metadata
+#' to reflect the number of molecules that do not have their TSS in a consensus cluster.
 #' 
 #' @examples 
 #' annotateConsensusClusters(exampleCAGEexp, exampleZv9_annot)
@@ -368,10 +365,9 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
   objName <- deparse(substitute(object))
   if(is.null(experiments(object)$tagCountMatrix))
     stop(objName, " does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
-  
-  consensusClustersGR(object)$genes      <- ranges2genes(consensusClustersGR(object), ranges)
   consensusClustersGR(object)$annotation <- ranges2annot(consensusClustersGR(object), ranges)
-
+  if(!is.null(ranges$gene_name))
+    consensusClustersGR(object)$genes    <- ranges2genes(consensusClustersGR(object), ranges)
   if (validObject(object)) {
     assign(objName, object, envir = parent.frame())
     invisible(1)
@@ -379,20 +375,24 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 })
 
 
-#' ranges2annot
+#' @name ranges2annot
 #' 
-#' hierarchical annotation of a Genomic Range as promoter, exon or intron.
+#' @title hierarchical annotation of CTSs
 #' 
-#' @param ranges The Genomics Ranges object, for example extracted from a
-#'               RangedSummarizedExperiment object with the \code{rowRanges}
-#'               command.
+#' @param ranges The CTSS (GRanges) object, for example extracted from a
+#'        RangedSummarizedExperiment object with the \code{rowRanges}
+#'        command.
 #' 
-#' @param annot A \code{\link{GRanges}} object containing \code{type} and
-#'   \code{transcript_type} metadata providing enough information for
-#'   inferring promoters, exons and introns.  Typically GENCODE.
+#' @param annot A \code{\link{GRanges}} from which promoter positions will
+#'        be inferred.  Typically GENCODE.  If the \code{type} metadata is present,
+#'        it should contain \sQuote{gene}, \sQuote{exon} and \sQuote{transcript} among
+#'        its values.  Otherwise, all entries are considered transcripts.
+#'        If the \code{transcript_type} metadata is available, the entries may
+#'        be not primary products (for instance \sQuote{snoRNA}) are discarded.
 #' 
 #' @return A Run-length-encoded (Rle) factor of same length as the GRanges object,
-#'         indicating if the interval is promoter, exon, intron or unknown.
+#'         indicating if the interval is promoter, exon, intron or unknown, or
+#'         just promoter, gene, unknown if the \code{type} metadata is absent.
 #' 
 #' @details Only the biotypes that are likely to have a promoter will be filtered
 #' in.  This is currently hardcoded in the function; see its source code.  Example
@@ -404,23 +404,17 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' @author Charles Plessy
 #' 
 #' @examples
-#' library(SummarizedExperiment)
-#' CTSScoordinatesGR(exampleCAGEexp)$annotation <-
 #'   ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
-#' colData(exampleCAGEexp)[levels(CTSScoordinatesGR(exampleCAGEexp)$annotation)] <-
-#'   DataFrame(t(sapply( CTSStagCountDF(exampleCAGEexp)
-#'                     , function(X) tapply(X, CTSScoordinatesGR(exampleCAGEexp)$annotation, sum))))
 #' 
 #' @importFrom GenomicRanges findOverlaps promoters
 #' @importFrom S4Vectors Rle
 
 ranges2annot <- function(ranges, annot) {
-  if (is.null(annot$type) | is.null(annot$transcript_type))
-    stop("Annotation must contain ", dQuote("type"), " and ", dQuote("transcript_type"), " metdata.")
-  classes <- c("promoter", "exon", "intron", "unknown")
   typesWithPromoter <- c( "protein_coding", "processed_transcript", "lincRNA"
-                          , "antisense", "processed_pseudogene"
-                          , "unprocessed_pseudogene")
+                        , "antisense", "processed_pseudogene"
+                        , "unprocessed_pseudogene")
+  if(!is.null(annot$transcript_type))
+    annot <- annot[annot$transcript_type %in% typesWithPromoter]
   
   findOverlapsBool <- function(A, B) {
     overlap <- findOverlaps(A, B)
@@ -428,19 +422,28 @@ ranges2annot <- function(ranges, annot) {
     any(overlap)
   }
   
-  p <- findOverlapsBool( ranges
-                         , promoters( annot[ annot$type == "transcript"
-                                           & annot$transcript_type %in% typesWithPromoter]
-                                      , 500, 500))
-  e <- findOverlapsBool(ranges, annot[annot$type == "exon"])
-  t <- findOverlapsBool(ranges, annot[annot$type == "transcript"])
-  
-  annot <- sapply( 1:length(ranges), function(i) {
-    if (p[i]) {classes[1]}
-    else if (e[i]) {classes[2]}
-    else if (t[i]) {classes[3]}
-    else           {classes[4]}
-  })
+  if(!is.null(annot$type)) {
+    classes <- c("promoter", "exon", "intron", "unknown")
+    p <- findOverlapsBool(ranges, promoters(annot[annot$type == "transcript"], 500, 500))
+    e <- findOverlapsBool(ranges, annot[annot$type == "exon"])
+    t <- findOverlapsBool(ranges, annot[annot$type == "transcript"])
+    annot <- sapply( 1:length(ranges), function(i) {
+      if      (p[i]) {classes[1]}
+      else if (e[i]) {classes[2]}
+      else if (t[i]) {classes[3]}
+      else           {classes[4]}
+    })
+  } else {
+    classes <- c("promoter", "gene", "unknown")
+    p <- findOverlapsBool(ranges, promoters(annot, 500, 500))
+    g <- findOverlapsBool(ranges, annot)
+    annot <- sapply( 1:length(ranges), function(i) {
+      if      (p[i]) {classes[1]}
+      else if (g[i]) {classes[2]}
+      else           {classes[3]}
+    })
+  }
+
   annot <- factor(annot, levels = classes)
   Rle(annot)
 }
