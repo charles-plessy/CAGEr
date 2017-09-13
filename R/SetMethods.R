@@ -98,8 +98,10 @@ setMethod("sampleLabels<-", "CAGEset", function (object, value){
 setMethod("sampleLabels<-", "CAGEexp", function (object, value){
   if (length(sampleLabels(object)) != length(value))
     stop("Number of labels differ from number of samples.")
-  object$sampleLabels       <- value
-  rownames(colData(object)) <- value
+  object$sampleLabels       <- unname(value)
+  rownames(colData(object)) <- unname(value)
+  if (! is.null(names(value)))
+    object$Colors <- names(value)
   if (validObject(object)) object
 })
 
