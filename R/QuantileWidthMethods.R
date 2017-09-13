@@ -57,24 +57,24 @@
 #'   CAGEr:::tagClustersQuantileUp (exampleCAGEset, 1)
 #' ))
 #' quantilePositions( object = exampleCAGEset, clusters = "tagClusters"
-#'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#'                  , qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
 #' head(cbind(
 #'   CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
-#'   CAGEr:::tagClustersQuantileUp(exampleCAGEset,1 )
+#'   CAGEr:::tagClustersQuantileUp (exampleCAGEset,1 )
 #' ))
 #' 
-#' aggregateTagClusters(exampleCAGEset, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' cumulativeCTSSdistribution(exampleCAGEset, "consensusClusters") # Defaults in object do not fit
 #' quantilePositions( object = exampleCAGEset, clusters = "consensusClusters"
-#'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#'                  , qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
 #'                  
 #' head(cbind(
 #'   CAGEr:::consensusClustersQuantileLow(exampleCAGEset, 1),
-#'   CAGEr:::consensusClustersQuantileUp(exampleCAGEset , 1)
+#'   CAGEr:::consensusClustersQuantileUp (exampleCAGEset , 1)
 #' ))
 #' 
-#' quantilePositions(exampleCAGEexp, "tagClusters",       qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#' quantilePositions(exampleCAGEexp, "tagClusters",       qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
 #' tagClustersGR(exampleCAGEexp)
-#' quantilePositions(exampleCAGEexp, "consensusClusters", qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+#' quantilePositions(exampleCAGEexp, "consensusClusters", qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
 #' 
 #' @export
 
