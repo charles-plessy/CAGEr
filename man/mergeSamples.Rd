@@ -59,7 +59,7 @@ exampleCAGEset
 mergeSamples( exampleCAGEexp
             , mergeIndex = c(3,2,4,4,1)
             , mergedSampleLabels = c("zf_unfertilized", "zf_high", "zf_30p_dome", "zf_prim6"))
-ce
+exampleCAGEexp
 
 }
 \author{
