@@ -22,10 +22,7 @@ data in the experiment slot \code{geneExpMatrix} and the sample metadata
 of the \code{\link{CAGEexp}} object.
 }
 \examples{
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
-CTSStoGenes(ce)
-GeneExpSE(ce)
+GeneExpSE(exampleCAGEexp)
 
 }
 \seealso{

@@ -52,8 +52,6 @@ The slots \code{shiftingGroupX}, \code{shiftingGroupY} and \code{consensusCluste
 \code{\link{getShiftingPromoters}}
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-
 scoreShift(object = exampleCAGEset, groupX = c("sample1", "sample2"),
 groupY = "sample3", testKS = TRUE, useTpmKS = FALSE)
 }

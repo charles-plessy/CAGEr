@@ -29,16 +29,15 @@ of biotypes without a promoter: VDJ segments, etc.
 }
 \examples{
 library(SummarizedExperiment)
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
-CTSScoordinatesGR(ce)$annotation <- ranges2annot(CTSScoordinatesGR(ce), gff)
-colData(ce)[levels(CTSScoordinatesGR(ce)$annotation)] <-
-  DataFrame(t(sapply( CTSStagCountDF(ce)
-                    , function(X) tapply(X, CTSScoordinatesGR(ce)$annotation, sum))))
+CTSScoordinatesGR(exampleCAGEexp)$annotation <-
+  ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
+colData(exampleCAGEexp)[levels(CTSScoordinatesGR(exampleCAGEexp)$annotation)] <-
+  DataFrame(t(sapply( CTSStagCountDF(exampleCAGEexp)
+                    , function(X) tapply(X, CTSScoordinatesGR(exampleCAGEexp)$annotation, sum))))
 
 }
 \seealso{
-\code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
+\code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
 
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
   \code{\link{plotAnnot}}, \code{\link{ranges2genes}}

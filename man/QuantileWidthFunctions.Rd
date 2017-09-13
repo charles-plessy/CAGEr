@@ -28,7 +28,6 @@ distribution of tpm within the cluster
 }
 \examples{
 \dontrun{ #because it runs through quantilePositions() anyway.
-ce       <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
 cumsums  <- CTSScumulativesTagClusters(object, 1)
 clusters <- tagClustersGR(object, 1)
 .get.quant.pos(cumsums, clusters, c(.1, .9))

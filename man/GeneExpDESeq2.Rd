@@ -25,11 +25,8 @@ of the \code{\link{CAGEexp}} object.  The formula must be built using factors
 already present in the sample metadata.
 }
 \examples{
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
-CTSStoGenes(ce)
-ce$group <- factor(c("a", "a", "b", "b", "a"))
-GeneExpDESeq2(ce, ~group)
+exampleCAGEexp$group <- factor(c("a", "a", "b", "b", "a"))
+GeneExpDESeq2(exampleCAGEexp, ~group)
 
 }
 \seealso{

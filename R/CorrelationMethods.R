@@ -51,11 +51,9 @@
 #' @importFrom S4Vectors decode
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' plotCorrelation(object = exampleCAGEset)
 #' 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' plotCorrelation(ce)
+#' plotCorrelation(exampleCAGEexp)
 #' 
 #' @export
 

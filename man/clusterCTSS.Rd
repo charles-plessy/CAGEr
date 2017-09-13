@@ -107,18 +107,16 @@ different datasets can further be aggregated into a single referent set of conse
 clusters by calling \code{\link{aggregateTagClusters}} function.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 head(tagClusters(exampleCAGEset, "sample1"))
 clusterCTSS( object = exampleCAGEset, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 head(tagClusters(exampleCAGEset, "sample1"))
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-tagClustersGR(ce, "Zf.30p.dome")
+tagClustersGR(exampleCAGEexp, "Zf.30p.dome")
 
 }
 \references{

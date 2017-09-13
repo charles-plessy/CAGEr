@@ -44,7 +44,6 @@ span of the region, because it takes into account the magnitude of the expressio
 region.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 plotInterquantileWidth( object = exampleCAGEset, clusters = "tagClusters"
                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
 

@@ -58,7 +58,6 @@
 #' \code{\link{extractExpressionClass}}.
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' getExpressionProfiles(exampleCAGEset, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
 #'                      , method = "som", xDim = 3, yDim = 3)
 #' 
@@ -164,7 +163,6 @@ setMethod( "getExpressionProfiles", "CAGEset"
 #'          \code{\link{expressionClasses}}.
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' CTSSexprClasses <- extractExpressionClass(exampleCAGEset, what = "CTSS", which = "all")
 #' head(CTSSexprClasses)
 #' 

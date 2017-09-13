@@ -38,20 +38,17 @@ Calculates cumulative sum of CAGE signal along each tag cluster or
 consensus cluster in every CAGE dataset within CAGEset object.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
 cumulativeCTSSdistribution(object = exampleCAGEset, clusters = "tagClusters")
 CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
 cumulativeCTSSdistribution(exampleCAGEset, clusters = "consensusClusters")
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
-clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-cumulativeCTSSdistribution(ce, clusters = "tagClusters")
-aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
-cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
+cumulativeCTSSdistribution(exampleCAGEexp, clusters = "tagClusters")
+aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+cumulativeCTSSdistribution(exampleCAGEexp, clusters = "consensusClusters")
            
 }
 \seealso{

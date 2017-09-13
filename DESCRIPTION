@@ -71,6 +71,7 @@ Collate:
     'Richness.R'
     'ShiftingFunctions.R'
     'ShiftingMethods.R'
+LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 Encoding: UTF-8

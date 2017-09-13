@@ -33,7 +33,6 @@ Retrieves labels of expression classes of either individual CTSSs or consensus
 clusters from a CAGEset object.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 
 exprClasses <- expressionClasses(exampleCAGEset, what = "CTSS")
 exprClasses

@@ -61,14 +61,12 @@
 #' @family CAGEr plot functions
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' plotReverseCumulatives(exampleCAGEset, fitInRange = c(10,500), onePlot = TRUE)
 #' plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 #' 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' plotReverseCumulatives(ce, fitInRange = c(5,100), onePlot = TRUE)
-#' plotReverseCumulatives(ce[,4:5], fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
-#' plotReverseCumulatives(ce, values = "normalized", fitInRange = c(5,100), onePlot = TRUE)
+#' plotReverseCumulatives(exampleCAGEexp, fitInRange = c(5,100), onePlot = TRUE)
+#' plotReverseCumulatives(exampleCAGEexp[,4:5], fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
+#' plotReverseCumulatives(exampleCAGEexp, values = "normalized", fitInRange = c(5,100), onePlot = TRUE)
 #' 
 #' @importFrom graphics abline box legend par plot strwidth text
 #' @importFrom stats cor median
@@ -178,7 +176,6 @@ setMethod( "plotReverseCumulatives", "CAGEr"
 #' @seealso \code{\link{normalizeTagCount}}
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "bedGraph", oneFile = TRUE)
 #' exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "BigWig", oneFile = TRUE)
 #' 
@@ -257,7 +254,6 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 #' @importFrom graphics hist
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' plotInterquantileWidth( object = exampleCAGEset, clusters = "tagClusters"
 #'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
 #' 
@@ -379,7 +375,6 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 #'          \code{\link{extractExpressionClass}}.
 #'          
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' plotExpressionProfiles(object = exampleCAGEset, what = "CTSS")
 #' 
 #' @export
@@ -502,7 +497,6 @@ setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
 #' @family CAGEr export functions
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' 
 #' ### exporting CTSSs colored by expression class
 #' exportToBed(object = exampleCAGEset, what = "CTSS", colorByExpressionProfile = TRUE)

@@ -26,7 +26,6 @@ Extracts the label of the method used for CTSS clustering into tag
 clusters from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 CTSSclusteringMethod(exampleCAGEset)
 
 }

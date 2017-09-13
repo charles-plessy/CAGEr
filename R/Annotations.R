@@ -34,14 +34,13 @@
 #' @author Charles Plessy
 #' 
 #' @examples
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' p <- plotAnnot(ce, 'counts', 'Here is the title')
+#' p <- plotAnnot(exampleCAGEexp, 'counts', 'Here is the title')
 #' print(p)
 #' p + ggplot2::theme_bw()
 #' ggplot2::theme_set(ggplot2::theme_bw()) ; p
-#' plotAnnot(ce, 'counts', 'Same, non-normalised', normalise = FALSE)
-#' ce$myGroups <- c("A", "A", "B", "B", "C")
-#' plotAnnot(ce, 'counts', group = "myGroups")
+#' plotAnnot(exampleCAGEexp, 'counts', 'Same, non-normalised', normalise = FALSE)
+#' exampleCAGEexp$myGroups <- c("A", "A", "B", "B", "C")
+#' plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
 #' 
 #' @docType methods
 #' @importFrom ggplot2 aes_string coord_flip geom_bar geom_segment geom_point
@@ -142,9 +141,8 @@ setMethod("plotAnnot", "CAGEexp",
 #' 
 #' @examples
 #' library(SummarizedExperiment)
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' CAGEr:::mapStats(as.data.frame(colData(ce)), "counts", sampleLabels(ce))
-#' CAGEr:::mapStats(as.data.frame(colData(ce)), "counts", c("A", "A", "B", "B", "C"))
+#' CAGEr:::mapStats(as.data.frame(colData(exampleCAGEexp)), "counts", sampleLabels(exampleCAGEexp))
+#' CAGEr:::mapStats(as.data.frame(colData(exampleCAGEexp)), "counts", c("A", "A", "B", "B", "C"))
 #' 
 #' @importFrom gtools mixedorder
 #' @importFrom plyr ddply
@@ -294,7 +292,7 @@ mapStats <- function( libs
 #'     levels.
 #' }
 #' 
-#' @seealso The \code{\link{Zv9_annot}} example data.
+#' @seealso The \code{\link{exampleZv9_annot}} example data.
 #' @family CAGEr object modifiers
 #' @family CAGEr annotation functions
 #' 
@@ -302,10 +300,8 @@ mapStats <- function( libs
 #' 
 #' @examples 
 #' library(SummarizedExperiment)
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
-#' annotateCTSS(ce, gff)
-#' colData(ce)
+#' annotateCTSS(exampleCAGEexp, exampleZv9_annot)
+#' colData(exampleCAGEexp)
 #' 
 #' @export
 
@@ -354,13 +350,8 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
 #' }
 #' 
 #' @examples 
-#' normalizeTagCount(ce)
-#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
-#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
-#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
-#' annotateConsensusClusters(ce, gff)
-#' consensusClustersGR(ce)
+#' annotateConsensusClusters(exampleCAGEexp, exampleZv9_annot)
+#' consensusClustersGR(exampleCAGEexp)
 #' 
 #' @export
 
@@ -408,18 +399,17 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' of biotypes without a promoter: VDJ segments, etc.
 #'         
 #' @family CAGEr annotation functions
-#' @seealso \code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
+#' @seealso \code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
 #' 
 #' @author Charles Plessy
 #' 
 #' @examples
 #' library(SummarizedExperiment)
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
-#' CTSScoordinatesGR(ce)$annotation <- ranges2annot(CTSScoordinatesGR(ce), gff)
-#' colData(ce)[levels(CTSScoordinatesGR(ce)$annotation)] <-
-#'   DataFrame(t(sapply( CTSStagCountDF(ce)
-#'                     , function(X) tapply(X, CTSScoordinatesGR(ce)$annotation, sum))))
+#' CTSScoordinatesGR(exampleCAGEexp)$annotation <-
+#'   ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
+#' colData(exampleCAGEexp)[levels(CTSScoordinatesGR(exampleCAGEexp)$annotation)] <-
+#'   DataFrame(t(sapply( CTSStagCountDF(exampleCAGEexp)
+#'                     , function(X) tapply(X, CTSScoordinatesGR(exampleCAGEexp)$annotation, sum))))
 #' 
 #' @importFrom GenomicRanges findOverlaps promoters
 #' @importFrom S4Vectors Rle
@@ -475,14 +465,13 @@ ranges2annot <- function(ranges, annot) {
 #'         
 #' @family CAGEr annotation functions
 #' @family CAGEr gene expression analysis functions
-#' @seealso \code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
+#' @seealso \code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
 #' 
 #' @author Charles Plessy
 #' 
 #' @examples
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
-#' CTSScoordinatesGR(ce)$genes <- ranges2genes(CTSScoordinatesGR(ce), gff)
+#' CTSScoordinatesGR(exampleCAGEexp)$genes <-
+#'   ranges2genes(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 #' 
 #' @importFrom GenomicRanges findOverlaps
 #' @importFrom S4Vectors List Rle unstrsplit
@@ -499,7 +488,7 @@ ranges2genes <- function(ranges, genes) {
   Rle(gnames)
 }
 
-#' @name Zv9_annot
+#' @name exampleZv9_annot
 #' 
 #' @title Example zebrafish annotation data
 #' 
@@ -581,10 +570,10 @@ ranges2genes <- function(ranges, genes) {
 #' gff <- gff[start(gff) > 26000000 & end(gff) < 54000000]
 #' seqlevels(gff) <- seqlevelsInUse(gff)
 #' 
-#' saveRDS(gff, "inst/extdata/Zv9_annot.rds")}
+#' save(gff, "data/exampleZv9_annot.RData", compress = "xz")}
 #' 
 #' @examples 
-#' gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
+#' exampleZv9_annot
 NULL
 
 #' @name CTSStoGenes
@@ -619,10 +608,8 @@ NULL
 #' @family CAGEr gene expression analysis functions
 #' 
 #' @examples 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
-#' CTSStoGenes(ce)
-#' all(librarySizes(ce) - colSums(SummarizedExperiment::assay(GeneExpSE(ce))) == ce$unannotated)
+#' CTSStoGenes(exampleCAGEexp)
+#' all(librarySizes(exampleCAGEexp) - colSums(SummarizedExperiment::assay(GeneExpSE(exampleCAGEexp))) == exampleCAGEexp$unannotated)
 #' 
 #' @docType methods
 #' @importFrom SummarizedExperiment assay

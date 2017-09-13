@@ -84,7 +84,6 @@ function.  For \code{colorByExpressionProfile = FALSE} all consensus clusters ar
 black.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 
 ### exporting CTSSs colored by expression class
 exportToBed(object = exampleCAGEset, what = "CTSS", colorByExpressionProfile = TRUE)

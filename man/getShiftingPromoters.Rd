@@ -31,8 +31,6 @@ getShiftingPromoters(object, tpmThreshold = 0, scoreThreshold = -Inf, fdrThresho
 \code{\link{scoreShift}}
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
-
 shifting.promoters <- getShiftingPromoters(object = exampleCAGEset,
 tpmThreshold = 100, scoreThreshold = 0.4, fdrThreshold = 0.01)
 head(shifting.promoters)

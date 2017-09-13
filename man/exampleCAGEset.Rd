@@ -9,6 +9,5 @@ This is a \code{\link{CAGEset}} object that contains CAGE data for part of chrom
 \format{A \code{\link{CAGEset}} object}
 \keyword{datasets}
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 exampleCAGEset
 }

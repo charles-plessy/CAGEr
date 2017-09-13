@@ -91,7 +91,6 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' @importFrom parallel detectCores
 #'
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEset, "sample1"))
 #' ctss      <- ctss[ctss$filteredCTSSidx]
 #' clusters  <- tagClustersGR(exampleCAGEset, "sample1")
@@ -103,14 +102,12 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
 #' clusters[1]
 #' 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
-#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+#' clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
 #'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-#' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(ce, "Zf.30p.dome"))
+#' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEexp, "Zf.30p.dome"))
 #' ctss      <- ctss[ctss$filteredCTSSidx]
-#' clusters  <- tagClustersGR(ce, "Zf.30p.dome")
+#' clusters  <- tagClustersGR(exampleCAGEexp, "Zf.30p.dome")
 #' clusters.cumsum <- CAGEr:::.getCumsum(ctss, head(clusters))
 #' decode(clusters.cumsum[[1]])
 #' ctss[queryHits(findOverlaps(ctss, clusters[1]))]

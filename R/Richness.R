@@ -58,8 +58,7 @@
 #' @export hanabi
 #' 
 #' @examples
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' h <- hanabi(CTSStagCountDF(ce))
+#' h <- hanabi(CTSStagCountDF(exampleCAGEexp))
 #' h
 #' plot(h)
 
@@ -233,11 +232,10 @@ lines.hanabi  <- function(x, ...) {
 #' @author Charles Plessy
 #'  
 #' @examples
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' h <- hanabi(CTSStagCountDF(ce))
+#' h <- hanabi(CTSStagCountDF(exampleCAGEexp))
 #' hanabiPlot(h, group = 1:5)
-#' hanabiPlot(hanabi(CTSStagCountDF(ce), n = 20, step = 0.8, from = 25000), group = 1:5)
-#' hanabiPlot(hanabi(CTSStagCountDF(ce), n = 10, step = 0.98), group = 1:5)
+#' hanabiPlot(hanabi(CTSStagCountDF(exampleCAGEexp), n = 20, step = 0.8, from = 25000), group = 1:5)
+#' hanabiPlot(hanabi(CTSStagCountDF(exampleCAGEexp), n = 10, step = 0.98), group = 1:5)
 #' hanabiPlot(h, group=c("A", "A", "B", "C", "B"), col=c("red", "green", "blue"))
 #' hanabiPlot(h, group = 1:5, pch=1:5, col="purple")
 #' 

@@ -37,10 +37,8 @@ of an annotated \code{\link{CAGEexp}} object.  \code{\link{CAGEset}} objects are
 not supported.
 }
 \examples{
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
-CTSStoGenes(ce)
-all(librarySizes(ce) - colSums(SummarizedExperiment::assay(GeneExpSE(ce))) == ce$unannotated)
+CTSStoGenes(exampleCAGEexp)
+all(librarySizes(exampleCAGEexp) - colSums(SummarizedExperiment::assay(GeneExpSE(exampleCAGEexp))) == exampleCAGEexp$unannotated)
 
 }
 \seealso{

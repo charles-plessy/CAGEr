@@ -73,7 +73,6 @@ The following input file types are supported:
 }
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 inputFilesType(exampleCAGEset)
 
 }

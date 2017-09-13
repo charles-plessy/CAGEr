@@ -72,7 +72,6 @@
 #' @family CAGEr normalised data functions
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' normalizeTagCount(exampleCAGEset, method = "powerLaw")
 #' 
 #' @export

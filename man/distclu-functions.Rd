@@ -90,14 +90,12 @@ dispatches each for (possibly parallel) processing.
 # Get example data
 library(IRanges)
 library(GenomicRanges)
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
 
 #.cluster.ctss.strand
 ctss.iranges.chr <- IRanges(c(1,3,4,12,14,25,28), w=1)
 CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 5)
 
-ctss.chr <- CTSScoordinatesGR(ce)
+ctss.chr <- CTSScoordinatesGR(exampleCAGEexp)
 ctss.chr <- ctss.chr[strand(ctss.chr) == "+"]
 ctss.iranges.chr <- ranges(ctss.chr)
 # Same result if not sorted
@@ -109,12 +107,12 @@ identical(
 identical(CAGEr:::.cluster.ctss.strand(IRanges(), 20), data.table::data.table())
 
 #.cluster.ctss.chr
-ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(ce))
+ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))
 CAGEr:::.cluster.ctss.chr(ctss.chr, 20)
 
 # .ctss2clusters
-ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
-score(ctss) <- CTSSnormalizedTpmDF(ce)[[1]]
+ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEexp))
+score(ctss) <- CTSSnormalizedTpmDF(exampleCAGEexp)[[1]]
 seqnames(ctss)[rep(c(TRUE,FALSE), length(ctss) / 2)] <- "chr16"
 ctss
 clusters <- CAGEr:::.ctss2clusters(ctss, 20)
@@ -126,11 +124,10 @@ CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE)
 CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE, keepSingletonsAbove = 5)
 
 # .distclu
-CAGEr:::.distclu(CTSStagCountSE(ce))
+CAGEr:::.distclu(CTSStagCountSE(exampleCAGEexp))
 \dontrun{
-CAGEr:::.distclu(CTSStagCountSE(ce), useMulticore = TRUE)
+CAGEr:::.distclu(CTSStagCountSE(exampleCAGEexp), useMulticore = TRUE)
 }
 
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 CAGEr:::.distclu(CTSStagCountSE(exampleCAGEset))
 }

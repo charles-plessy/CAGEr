@@ -33,7 +33,6 @@ Extracts the tag count for all detected TSSs in all CAGE datasets
 from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 tagCount <- CTSStagCount(exampleCAGEset)
 head(tagCount)
 

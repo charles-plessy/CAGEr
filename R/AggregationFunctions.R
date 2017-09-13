@@ -72,7 +72,6 @@ setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minu
 #' (\code{data.frame}) and CAGEexp (\code{GRanges}).
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' df <- consensusClusters(exampleCAGEset)
 #' head(df)
 #' gr <- CCdataframe2granges(df)

@@ -30,7 +30,6 @@ function and stored in the \code{librarySizes} slot of \code{CAGEset} objects,
 or in the \code{librarySizes} column of the \code{colData} ov \code{CAGEexp} objects.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 librarySizes(exampleCAGEset)
 
 }

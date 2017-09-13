@@ -59,7 +59,6 @@ the CAGE signal of that region. Width of that central part is refered to as
 total span of the region.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 head(cbind(
   CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
   CAGEr:::tagClustersQuantileUp (exampleCAGEset, 1)
@@ -80,10 +79,9 @@ head(cbind(
   CAGEr:::consensusClustersQuantileUp(exampleCAGEset , 1)
 ))
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-quantilePositions( ce, "tagClusters",       qLow = c(0.1,0.2), qUp = c(0.8,0.9))
-tagClustersGR(ce)
-quantilePositions( ce, "consensusClusters", qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+quantilePositions(exampleCAGEexp, "tagClusters",       qLow = c(0.1,0.2), qUp = c(0.8,0.9))
+tagClustersGR(exampleCAGEexp)
+quantilePositions(exampleCAGEexp, "consensusClusters", qLow = c(0.1,0.2), qUp = c(0.8,0.9))
 
 }
 \seealso{

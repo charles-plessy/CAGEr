@@ -40,7 +40,6 @@ of the genome name can not run some commands that need access to genomic data,
 such as BigWig export or G-correction.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 genomeName(exampleCAGEset)
 
 }

@@ -68,7 +68,6 @@
 #' @importFrom data.table data.table setkey setnames
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' head(consensusClusters(exampleCAGEset))
 #' aggregateTagClusters( exampleCAGEset, tpmThreshold = 50
 #'                     , excludeSignalBelowThreshold = FALSE, maxDist = 100)
@@ -77,13 +76,12 @@
 #'   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 #' head(consensusClusters(exampleCAGEset))
 #' 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
-#' consensusClustersGR(ce)
-#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE, maxDist = 100)
-#' consensusClustersGR(ce)
-#' aggregateTagClusters( ce, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE, maxDist = 100
-#'                     , qLow = 0.1, qUp = 0.9)
+#' aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' consensusClustersGR(exampleCAGEexp)
+#' aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE, maxDist = 100)
+#' consensusClustersGR(exampleCAGEexp)
+#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE
+#'                     , maxDist = 100, qLow = 0.1, qUp = 0.9)
 #' 
 #' @export
 

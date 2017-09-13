@@ -58,7 +58,6 @@ Extracts the genomic coordinates of all detected TSSs
 from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 CTSS <- CTSScoordinates(exampleCAGEset)
 head(CTSS)
 

@@ -64,19 +64,17 @@ Extracts tag clusters (TCs) produced by \code{\link{clusterCTSS}} function for
 a specified CAGE experiment from a CAGEr object.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 TC <- tagClusters(exampleCAGEset, "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
 head(TC)
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
-clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+normalizeTagCount(exampleCAGEexp)
+clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-cumulativeCTSSdistribution(ce, clusters = "tagClusters")
-quantilePositions( ce, clusters = "tagClusters"
+cumulativeCTSSdistribution(exampleCAGEexp, clusters = "tagClusters")
+quantilePositions( exampleCAGEexp, clusters = "tagClusters"
                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
-TC <- tagClusters(ce, "sample2", TRUE, 0.1, 0.9)
+TC <- tagClusters(exampleCAGEexp, "sample2", TRUE, 0.1, 0.9)
 head(TC)
 }
 \seealso{

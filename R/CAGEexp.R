@@ -21,44 +21,46 @@
 #'                                , "ctss$"
 #'                                , full.names = TRUE)
 #' sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
-#' ce <- CAGEexp( metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7")
-#'              , colData  = DataFrame( inputFiles     = pathsToInputFiles
-#'                                    , sampleLabels   = sampleLabels
-#'                                    , inputFilesType = "ctss"
-#'                                    , row.names      = sampleLabels))
+#' exampleCAGEexp <-
+#'   CAGEexp( metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7")
+#'          , colData  = DataFrame( inputFiles     = pathsToInputFiles
+#'                                , sampleLabels   = sampleLabels
+#'                                , inputFilesType = "ctss"
+#'                                , row.names      = sampleLabels))
 #' 
 #' # Expression data is loaded by the getCTSS() function, that also calculates
 #' # library sizes and store them in the object's column data.
 #' 
-#' getCTSS(ce)
-#' librarySizes(ce)
-#' colData(ce)
+#' getCTSS(exampleCAGEexp)
+#' librarySizes(exampleCAGEexp)
+#' colData(exampleCAGEexp)
 #' 
 #' # CTSS data is stored internally as a SummarizedExperiemnt that can be retreived
 #' # as a whole, or as GRanges, or as an expression DataFrame.
 #' 
-#' CTSStagCountSE(ce)
-#' CTSScoordinatesGR(ce)
-#' CTSStagCountDF(ce)
+#' CTSStagCountSE(exampleCAGEexp)
+#' CTSScoordinatesGR(exampleCAGEexp)
+#' CTSStagCountDF(exampleCAGEexp)
 #' 
 #' # Columns of the "colData" table are accessible directly via the "$" operator.
 #' 
-#' ce$l1 <- colSums(CTSStagCountDf(ce) > 0)
-#' ce$l1
+#' exampleCAGEexp$l1 <- colSums(CTSStagCountDf(exampleCAGEexp) > 0)
+#' exampleCAGEexp$l1
 #'  
 #' # The commands below were used to create the example CAGEexp object in the "extdata" folder.
 #' \dontrun{
-#' ce <- ce[,c(5, 2, 1, 3, 4)]  # Non-aplhabetic order, may help to catch bugs.
-#' CTSStagCountSE(ce) <- CTSStagCountSE(ce)[1:5000,]  # Slim the object
-#' annotateCTSS(ce , readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
-#' normalizeTagCount(ce)
-#' clusterCTSS(ce)
-#' cumulativeCTSSdistribution(ce, "tagClusters")
-#' quantilePositions(ce, "tagClusters")
-#' aggregateTagClusters(ce)
-#' cumulativeCTSSdistribution(ce, "consensusClusters")
-#' quantilePositions(ce, "consensusClusters")
-#' saveRDS(ce, file = "inst/extdata/CAGEexp.rds", compress = "xz")
+#' exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
+#' CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object
+#' annotateCTSS(exampleCAGEexp , exampleZv9_annot)
+#' CTSStoGenes(exampleCAGEexp)
+#' normalizeTagCount(exampleCAGEexp)
+#' clusterCTSS(exampleCAGEexp)
+#' cumulativeCTSSdistribution(exampleCAGEexp, "tagClusters")
+#' quantilePositions(exampleCAGEexp, "tagClusters")
+#' aggregateTagClusters(exampleCAGEexp)
+#' cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters")
+#' quantilePositions(exampleCAGEexp, "consensusClusters")
+#' save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
 #' }
 #' 
 #' @seealso CAGEset-class
@@ -157,18 +159,18 @@ setAs("data.frame", "CAGEexp", function(from){
   gr            <- GRanges(from$chr, IRanges(from$pos, width = 1), from$strand)
   counts        <- DataFrame(lapply(from[,4:ncol(from),drop=FALSE], Rle))
   
-  ce <- new( "CAGEexp"
-           , metadata = list(genomeName = NULL)
+  object <-
+    CAGEexp( metadata = list(genomeName = NULL)
            , colData = DataFrame( inputFiles     = "data.frame"
                                 , sampleLabels   = sample.labels
                                 , inputFilesType = "CTSStable"
                                 , row.names      = sample.labels))
 
-  ce$librarySizes <- as.integer(colSums(from[,4:ncol(from),drop=FALSE]))
+  object$librarySizes <- as.integer(colSums(from[,4:ncol(from),drop=FALSE]))
   
-  CTSStagCountSE(ce) <-
+  CTSStagCountSE(object) <-
     SummarizedExperiment( rowRanges = gr
                         , assays    = SimpleList(counts = counts))
   
-  return(ce)
+  return(object)
 })

@@ -47,14 +47,13 @@ Stacked barplots with error bars inspired from
 See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
 }
 \examples{
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-p <- plotAnnot(ce, 'counts', 'Here is the title')
+p <- plotAnnot(exampleCAGEexp, 'counts', 'Here is the title')
 print(p)
 p + ggplot2::theme_bw()
 ggplot2::theme_set(ggplot2::theme_bw()) ; p
-plotAnnot(ce, 'counts', 'Same, non-normalised', normalise = FALSE)
-ce$myGroups <- c("A", "A", "B", "B", "C")
-plotAnnot(ce, 'counts', group = "myGroups")
+plotAnnot(exampleCAGEexp, 'counts', 'Same, non-normalised', normalise = FALSE)
+exampleCAGEexp$myGroups <- c("A", "A", "B", "B", "C")
+plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
 
 }
 \seealso{

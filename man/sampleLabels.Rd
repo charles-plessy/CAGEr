@@ -47,7 +47,6 @@ usign the \code{rainbow} function.  Assigned colors are not guaranteed
 to be stable.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 sampleLabels(exampleCAGEset)
 
 }

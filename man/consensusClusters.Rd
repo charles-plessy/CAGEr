@@ -101,15 +101,13 @@ clusters in the specified sample.
 Extracts the information on consensus clusters from a CAGEr object.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 head(consensusClusters(exampleCAGEset))
 head(consensusClusters(exampleCAGEset, samples = "sample2"))
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-clusterCTSS(ce)
-aggregateTagClusters(ce)
-head(consensusClusters(ce))
-consensusClustersGR(ce, 2)
+clusterCTSS(exampleCAGEexp)
+aggregateTagClusters(exampleCAGEexp)
+head(consensusClusters(exampleCAGEexp))
+consensusClustersGR(exampleCAGEexp, 2)
 
 }
 \seealso{

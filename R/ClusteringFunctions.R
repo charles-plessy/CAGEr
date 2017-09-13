@@ -22,8 +22,6 @@
 #' # Get example data
 #' library(IRanges)
 #' library(GenomicRanges)
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
 NULL
 
 #' @name .cluster.ctss.strand
@@ -50,7 +48,7 @@ NULL
 #' ctss.iranges.chr <- IRanges(c(1,3,4,12,14,25,28), w=1)
 #' CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 5)
 #' 
-#' ctss.chr <- CTSScoordinatesGR(ce)
+#' ctss.chr <- CTSScoordinatesGR(exampleCAGEexp)
 #' ctss.chr <- ctss.chr[strand(ctss.chr) == "+"]
 #' ctss.iranges.chr <- ranges(ctss.chr)
 #' # Same result if not sorted
@@ -96,7 +94,7 @@ setMethod(".cluster.ctss.strand", "IRanges", function(ctss.iranges.chr, max.dist
 #' @examples 
 #' 
 #' #.cluster.ctss.chr
-#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(ce))
+#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))
 #' CAGEr:::.cluster.ctss.chr(ctss.chr, 20)
 
 setGeneric(".cluster.ctss.chr", function(ctss.chr, max.dist) standardGeneric(".cluster.ctss.chr"))
@@ -130,8 +128,8 @@ setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
 #' @examples 
 #' 
 #' # .ctss2clusters
-#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
-#' score(ctss) <- CTSSnormalizedTpmDF(ce)[[1]]
+#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEexp))
+#' score(ctss) <- CTSSnormalizedTpmDF(exampleCAGEexp)[[1]]
 #' seqnames(ctss)[rep(c(TRUE,FALSE), length(ctss) / 2)] <- "chr16"
 #' ctss
 #' clusters <- CAGEr:::.ctss2clusters(ctss, 20)
@@ -243,12 +241,11 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
 #' @examples 
 #' 
 #' # .distclu
-#' CAGEr:::.distclu(CTSStagCountSE(ce))
+#' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEexp))
 #' \dontrun{
-#' CAGEr:::.distclu(CTSStagCountSE(ce), useMulticore = TRUE)
+#' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEexp), useMulticore = TRUE)
 #' }
 #' 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEset))
 
 setGeneric(".distclu", function(se, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, useMulticore = FALSE, nrCores = NULL) standardGeneric(".distclu"))
@@ -537,7 +534,6 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 #' @family df2granges converters
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' df <- tagClusters(exampleCAGEset, 1)
 #' head(df)
 #' gr <- TCdataframe2granges(df)
@@ -547,8 +543,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 #' if (! identical(df, TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 #' if (! all(df == TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 #' 
-#' tagClustersGR(ce)
-#' head(TCgranges2dataframe(tagClustersGR(ce, 1)))
+#' tagClustersGR(exampleCAGEexp)
+#' head(TCgranges2dataframe(tagClustersGR(exampleCAGEexp, 1)))
 NULL
 
 #' @name TCgranges2dataframe

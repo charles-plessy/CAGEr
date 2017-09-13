@@ -35,7 +35,6 @@ Extracts the paths to CAGE data input files from
 \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 inputFiles(exampleCAGEset)
 
 }

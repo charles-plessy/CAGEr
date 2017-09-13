@@ -34,7 +34,6 @@ corresponding expression class.
 Extracts CTSSs or consensus clusters belonging to a specified expression class.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 CTSSexprClasses <- extractExpressionClass(exampleCAGEset, what = "CTSS", which = "all")
 head(CTSSexprClasses)
 

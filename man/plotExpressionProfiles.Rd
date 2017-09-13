@@ -36,7 +36,6 @@ Different expression classes (boxes) are plotted in different colors and are lab
 labels returned by expression clustering.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 plotExpressionProfiles(object = exampleCAGEset, what = "CTSS")
 
 }

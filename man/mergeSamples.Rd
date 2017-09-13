@@ -51,14 +51,12 @@ by merging datasets labeled with lowest \code{mergeIndex} value (in this case \c
 \emph{etc}.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 mergeSamples( exampleCAGEset
             , mergeIndex = c(1,1,2)
             , mergedSampleLabels = c("mergedSample1", "mergedSample2"))
 exampleCAGEset
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-mergeSamples( ce
+mergeSamples( exampleCAGEexp
             , mergeIndex = c(3,2,4,4,1)
             , mergedSampleLabels = c("zf_unfertilized", "zf_high", "zf_30p_dome", "zf_prim6"))
 ce

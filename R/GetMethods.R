@@ -23,7 +23,6 @@
 #' @author Vanja Haberle
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' genomeName(exampleCAGEset)
 #' 
 #' @export
@@ -67,7 +66,6 @@ function (object){
 #' @author Vanja Haberle
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' inputFiles(exampleCAGEset)
 #' 
 #' @export
@@ -148,7 +146,6 @@ function (object){
 #' @seealso \code{\link{getCTSS}}
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' inputFilesType(exampleCAGEset)
 #' 
 #' @family CAGEr accessor methods
@@ -196,7 +193,6 @@ function (object){
 #' @seealso \code{\link{getCTSS}}
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' librarySizes(exampleCAGEset)
 #'
 #' @author Vanja Haberle
@@ -242,7 +238,6 @@ function (object){
 #' \code{\link{getCTSS}}
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' CTSS <- CTSScoordinates(exampleCAGEset)
 #' head(CTSS)
 #'
@@ -364,13 +359,11 @@ function (object){
 #' @seealso \code{\link{getCTSS}}
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' head(CTSStagCount(exampleCAGEset))
 #' head(CTSStagCountDf(exampleCAGEset))
 #' CTSStagCountDF(exampleCAGEset)
 #' CTSStagCountDA(exampleCAGEset)
 #' 
-#' exampleCAGEexp <- readRDS(system.file("extdata", "CAGEexp.rds", package="CAGEr"))
 #' head(CTSStagCount(exampleCAGEexp))
 #' head(CTSStagCountDf(exampleCAGEset))
 #' CTSStagCountDF(exampleCAGEset)
@@ -526,7 +519,6 @@ setMethod( "CTSStagCountGR", "CAGEr", function (object, samples) {
 #' @seealso \code{\link{getCTSS}}
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' tagCount <- CTSStagCount(exampleCAGEset)
 #' head(tagCount)
 #' 
@@ -608,12 +600,10 @@ function (object){
 #' @seealso \code{\link{normalizeTagCount}}
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' head(CTSSnormalizedTpm(exampleCAGEset))
 #' 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
-#' head(CTSSnormalizedTpm(ce))
+#' normalizeTagCount(exampleCAGEexp)
+#' head(CTSSnormalizedTpm(exampleCAGEexp))
 #' 
 #' @author Vanja Haberle
 #' @family CAGEr accessor methods
@@ -649,12 +639,10 @@ function (object){
 #' @return \code{CTSSnormalizedTpmDf} returns a \code{data.frame} of normalised expression values.
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' head(CTSSnormalizedTpmDf(exampleCAGEset))
 #' 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
-#' head(CTSSnormalizedTpmDf(ce))
+#' normalizeTagCount(exampleCAGEexp)
+#' head(CTSSnormalizedTpmDf(exampleCAGEexp))
 #' 
 #' @export
 
@@ -751,7 +739,6 @@ setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, samples) {
 #' @seealso \code{\link{clusterCTSS}}
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' CTSSclusteringMethod(exampleCAGEset)
 #' 
 #' @author Vanja Haberle
@@ -811,19 +798,17 @@ function (object){
 #' @export
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' TC <- tagClusters(exampleCAGEset, "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
 #' head(TC)
 #' 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
-#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
+#' normalizeTagCount(exampleCAGEexp)
+#' clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
 #'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-#' cumulativeCTSSdistribution(ce, clusters = "tagClusters")
-#' quantilePositions( ce, clusters = "tagClusters"
+#' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "tagClusters")
+#' quantilePositions( exampleCAGEexp, clusters = "tagClusters"
 #'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
-#' TC <- tagClusters(ce, "sample2", TRUE, 0.1, 0.9)
+#' TC <- tagClusters(exampleCAGEexp, "sample2", TRUE, 0.1, 0.9)
 #' head(TC)
 
 setGeneric( "tagClusters"
@@ -1070,16 +1055,9 @@ setMethod("consensusClustersSE", "CAGEexp", function (object)
 #' @family CAGEr expression analysis functions
 #' @family CAGEr clusters functions
 #' 
-#' @examples 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' normalizeTagCount(ce)
-#' clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
-#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
-#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-#' aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
-#' annotateConsensusClusters(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
-#' ce$group <- c("a", "a", "b", "b", "a")
-#' consensusClustersDESeq2(ce, ~group)
+#' @examples
+#' exampleCAGEexp$group <- c("a", "a", "b", "b", "a")
+#' consensusClustersDESeq2(exampleCAGEexp, ~group)
 #' 
 #' @export
 
@@ -1140,15 +1118,13 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
 #' @family CAGEr clusters functions
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' head(consensusClusters(exampleCAGEset))
 #' head(consensusClusters(exampleCAGEset, samples = "sample2"))
 #' 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' clusterCTSS(ce)
-#' aggregateTagClusters(ce)
-#' head(consensusClusters(ce))
-#' consensusClustersGR(ce, 2)
+#' clusterCTSS(exampleCAGEexp)
+#' aggregateTagClusters(exampleCAGEexp)
+#' head(consensusClusters(exampleCAGEexp))
+#' consensusClustersGR(exampleCAGEexp, 2)
 #' 
 #' @export
 
@@ -1363,7 +1339,6 @@ setMethod("CTSScumulativesCC", "CAGEexp", function (object, samples) {
 #' @seealso \code{\link{consensusClusters}}
 #' 
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' clusters.tpm <- consensusClustersTpm(exampleCAGEset)
 #' head(clusters.tpm)
 #' consensusClustersTpmDF(exampleCAGEset)
@@ -1452,7 +1427,6 @@ setMethod("consensusClustersTpmDF", "CAGEexp", function (object) {
 #'          \code{\link{extractExpressionClass}}
 #'          
 #' @examples
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' 
 #' exprClasses <- expressionClasses(exampleCAGEset, what = "CTSS")
 #' exprClasses
@@ -1568,10 +1542,7 @@ setMethod("consensusClustersExpressionClusteringMethod", "CAGEexp", function (ob
 #' @author Charles Plessy
 #' 
 #' @examples 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
-#' CTSStoGenes(ce)
-#' GeneExpSE(ce)
+#' GeneExpSE(exampleCAGEexp)
 #' 
 #' @export
 
@@ -1607,12 +1578,9 @@ setMethod("GeneExpSE", "CAGEexp", function (object)
 #' @family CAGEr gene expression analysis functions
 #' @family CAGEr accessor methods
 #' 
-#' @examples 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' annotateCTSS(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
-#' CTSStoGenes(ce)
-#' ce$group <- factor(c("a", "a", "b", "b", "a"))
-#' GeneExpDESeq2(ce, ~group)
+#' @examples
+#' exampleCAGEexp$group <- factor(c("a", "a", "b", "b", "a"))
+#' GeneExpDESeq2(exampleCAGEexp, ~group)
 #' 
 #' @export
 

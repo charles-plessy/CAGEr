@@ -77,7 +77,6 @@ getRefGenome <- function(reference.genome) {
 #' @author Vanja Haberle
 #' 
 #' @examples 
-#' load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 #' sampleLabels(exampleCAGEset)
 #' 
 #' @family CAGEr accessor methods

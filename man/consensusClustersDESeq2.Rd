@@ -25,15 +25,8 @@ of the \code{\link{CAGEexp}} object.  The formula must be built using factors
 already present in the sample metadata.
 }
 \examples{
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
-clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
-           , nrPassThreshold = 1, method = "distclu", maxDist = 20
-           , removeSingletons = TRUE, keepSingletonsAbove = 100)
-aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
-annotateConsensusClusters(ce, readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr")))
-ce$group <- c("a", "a", "b", "b", "a")
-consensusClustersDESeq2(ce, ~group)
+exampleCAGEexp$group <- c("a", "a", "b", "b", "a")
+consensusClustersDESeq2(exampleCAGEexp, ~group)
 
 }
 \seealso{

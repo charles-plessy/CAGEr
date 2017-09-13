@@ -27,11 +27,9 @@ The \code{TagClusters} class represents tag clusters.
 It is used internally by CAGEr for type safety.
 }
 \examples{
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
+ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEexp))
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(ce))
+ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))
 }
 \author{
 Charles Plessy

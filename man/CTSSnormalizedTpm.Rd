@@ -57,19 +57,15 @@ in all CAGE datasets from \code{\link{CAGEset}} and
 \code{\link{CAGEexp}} objects.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 head(CTSSnormalizedTpm(exampleCAGEset))
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
-head(CTSSnormalizedTpm(ce))
+normalizeTagCount(exampleCAGEexp)
+head(CTSSnormalizedTpm(exampleCAGEexp))
 
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 head(CTSSnormalizedTpmDf(exampleCAGEset))
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-normalizeTagCount(ce)
-head(CTSSnormalizedTpmDf(ce))
+normalizeTagCount(exampleCAGEexp)
+head(CTSSnormalizedTpmDf(exampleCAGEexp))
 
 }
 \seealso{

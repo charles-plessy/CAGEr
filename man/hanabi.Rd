@@ -61,8 +61,7 @@ because hanabi plots can be made from CTSS, clustered or gene-level
 data, therefore it is not possible to guess which one to use.
 }
 \examples{
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-h <- hanabi(CTSStagCountDF(ce))
+h <- hanabi(CTSStagCountDF(exampleCAGEexp))
 h
 plot(h)
 }

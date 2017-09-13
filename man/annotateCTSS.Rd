@@ -61,22 +61,15 @@ of a CAGEr object.
 }
 \examples{
 library(SummarizedExperiment)
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
-annotateCTSS(ce, gff)
-colData(ce)
+annotateCTSS(exampleCAGEexp, exampleZv9_annot)
+colData(exampleCAGEexp)
 
-normalizeTagCount(ce)
-clusterCTSS( object = ce, threshold = 50, thresholdIsTpm = TRUE
-           , nrPassThreshold = 1, method = "distclu", maxDist = 20
-           , removeSingletons = TRUE, keepSingletonsAbove = 100)
-aggregateTagClusters(ce, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
-annotateConsensusClusters(ce, gff)
-consensusClustersGR(ce)
+annotateConsensusClusters(exampleCAGEexp, exampleZv9_annot)
+consensusClustersGR(exampleCAGEexp)
 
 }
 \seealso{
-The \code{\link{Zv9_annot}} example data.
+The \code{\link{exampleZv9_annot}} example data.
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{aggregateTagClusters}},

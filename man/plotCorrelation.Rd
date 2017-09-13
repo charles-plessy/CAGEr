@@ -57,11 +57,9 @@ Creates PNG file with scatter plots of CAGE signal for all
 pairs of selected samples and calculates the correlation between them.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 plotCorrelation(object = exampleCAGEset)
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-plotCorrelation(ce)
+plotCorrelation(exampleCAGEexp)
 
 }
 \seealso{

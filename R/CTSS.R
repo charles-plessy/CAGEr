@@ -14,8 +14,7 @@
 #' @author Charles Plessy
 #' 
 #' @examples 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(ce))
+#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEexp))
 #' 
 #' @export
 
@@ -40,8 +39,7 @@
 #' @import methods
 #' 
 #' @examples 
-#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(ce))
+#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))
 
 .CTSS.chr <-
   setClass( "CTSS.chr"

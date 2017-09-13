@@ -48,9 +48,8 @@ See the plotAnnot vignette for details on what the scopes are.
 }
 \examples{
 library(SummarizedExperiment)
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-CAGEr:::mapStats(as.data.frame(colData(ce)), "counts", sampleLabels(ce))
-CAGEr:::mapStats(as.data.frame(colData(ce)), "counts", c("A", "A", "B", "B", "C"))
+CAGEr:::mapStats(as.data.frame(colData(exampleCAGEexp)), "counts", sampleLabels(exampleCAGEexp))
+CAGEr:::mapStats(as.data.frame(colData(exampleCAGEexp)), "counts", c("A", "A", "B", "B", "C"))
 
 }
 \seealso{

@@ -20,7 +20,6 @@ Interconvert tag clusters (TC) formats used in classes CAGEset
 (\code{data.frame}) and CAGEexp (\code{GRanges}).
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 df <- tagClusters(exampleCAGEset, 1)
 head(df)
 gr <- TCdataframe2granges(df)
@@ -30,8 +29,8 @@ head(TCgranges2dataframe(gr))
 if (! identical(df, TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 if (! all(df == TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 
-tagClustersGR(ce)
-head(TCgranges2dataframe(tagClustersGR(ce, 1)))
+tagClustersGR(exampleCAGEexp)
+head(TCgranges2dataframe(tagClustersGR(exampleCAGEexp, 1)))
 }
 \seealso{
 Other df2granges converters: \code{\link{consensusClusterConvertors}}

@@ -49,7 +49,6 @@ Extracts a table with normalized CAGE tag values for consensus
 clusters across all samples from a \code{\link{CAGEr}} object.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 clusters.tpm <- consensusClustersTpm(exampleCAGEset)
 head(clusters.tpm)
 consensusClustersTpmDF(exampleCAGEset)

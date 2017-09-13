@@ -27,13 +27,12 @@ to genomic ranges.  It is run by \code{\link{annotateCTSS}}, which has to
 be run before \code{\link{CTSStoGenes}}.
 }
 \examples{
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-gff <- readRDS(system.file("extdata/Zv9_annot.rds", package = "CAGEr"))
-CTSScoordinatesGR(ce)$genes <- ranges2genes(CTSScoordinatesGR(ce), gff)
+CTSScoordinatesGR(exampleCAGEexp)$genes <-
+  ranges2genes(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 
 }
 \seealso{
-\code{\link{CTSScoordinatesGR}}, \code{\link{Zv9_annot}}
+\code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
 
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
   \code{\link{plotAnnot}}, \code{\link{ranges2annot}}

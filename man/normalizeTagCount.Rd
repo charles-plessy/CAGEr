@@ -69,7 +69,6 @@ referent distribution specified by \code{alpha} and \code{T}. When \code{T = 10^
 normalized values are expressed as tags per million (tpm).
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 normalizeTagCount(exampleCAGEset, method = "powerLaw")
 
 }

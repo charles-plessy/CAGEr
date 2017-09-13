@@ -59,14 +59,12 @@ which all samples will be normalized. For details about normalization see
 \code{\link{normalizeTagCount}} function.
 }
 \examples{
-load(system.file("data", "exampleCAGEset.RData", package="CAGEr"))
 plotReverseCumulatives(exampleCAGEset, fitInRange = c(10,500), onePlot = TRUE)
 plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 
-ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
-plotReverseCumulatives(ce, fitInRange = c(5,100), onePlot = TRUE)
-plotReverseCumulatives(ce[,4:5], fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
-plotReverseCumulatives(ce, values = "normalized", fitInRange = c(5,100), onePlot = TRUE)
+plotReverseCumulatives(exampleCAGEexp, fitInRange = c(5,100), onePlot = TRUE)
+plotReverseCumulatives(exampleCAGEexp[,4:5], fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
+plotReverseCumulatives(exampleCAGEexp, values = "normalized", fitInRange = c(5,100), onePlot = TRUE)
 
 }
 \references{
