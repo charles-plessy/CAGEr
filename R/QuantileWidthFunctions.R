@@ -35,6 +35,6 @@
 	}
 	cluster.q <- as.data.frame(do.call(rbind, cluster.q))
 	colnames(cluster.q) = paste('q_', q, sep = '')
-	mcols(clusters) <- cbind(mcols(clusters), DataFrame(lapply(cluster.q, Rle)))
+	mcols(clusters)[,colnames(cluster.q)] <- DataFrame(lapply(cluster.q, Rle))
 	clusters
 }
