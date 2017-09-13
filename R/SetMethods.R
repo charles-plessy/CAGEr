@@ -80,7 +80,7 @@ setMethod("inputFilesType<-", "CAGEexp", function (object, value){
 #' @rdname sampleLabels
 #' @family CAGEr setter methods
 #' @param value A character vector with a unique and valid name for each sample.
-#'        the \code{names} attributes indicate the colors.
+#'        The \code{names} attributes indicate the colors.
 #' @author Charles Plessy
 #' @export
 
@@ -491,6 +491,11 @@ setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
 #' sampleLabels(exampleCAGEset)
 #' setColors(exampleCAGEset, colors = c("darkred", "navy", "forestgreen"))
 #' sampleLabels(exampleCAGEset)
+#' 
+#' ce <- readRDS(system.file(package = "CAGEr", "extdata/CAGEexp.rds"))
+#' sampleLabels(ce)
+#' setColors(ce, c("red", "darkgreen", "blue", "grey", "black"))
+#' sampleLabels(ce)
 #' 
 #' @export
 

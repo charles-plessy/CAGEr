@@ -56,22 +56,22 @@ getRefGenome <- function(reference.genome) {
 
 #' @name sampleLabels
 #' 
-#' @title Extracting CAGE datasets labels from CAGEr objects
+#' @title Get/set sample labels
 #' 
-#' @description Extracts the labels and colors of CAGE datasets
-#' from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' @description Gets or sets the labels and colors of CAGE datasets
+#' (samples) from \code{\link{CAGEr}} objects.
 #' 
 #' @param object A CAGEr object.
 #' 
-#' @return Returns a named character vector of labels of all CAGE datasets
-#' present in the CAGEr object.  The values are the lables and the names
+#' @return Returns a named character vector representing labels of all CAGE datasets
+#' present in the CAGEr object.  The vector values are the labels and the vector names
 #' are the colors.
 #' 
 #' @note If no colors are supplied, then default colors will be assigned
 #' usign the \code{rainbow} function.  Assigned colors are not guaranteed
 #' to be stable.
 #' 
-#' @details Renaming samples is possible only in \code{CAGEexp} objects, before
+#' @details In \code{CAGEexp} objects, renaming samples is possible only before
 #' data is loaded.
 #' 
 #' @author Vanja Haberle
@@ -95,7 +95,7 @@ setMethod("sampleLabels", "CAGEset", function (object)
 
 #' @rdname sampleLabels
 
-setMethod("sampleLabels", "CAGEexp", function (object){
+setMethod("sampleLabels", "CAGEexp", function (object) {
   sl <- object$sampleLabels
   if (! is.null(object$Colors)) {
     names(sl) <- object$Colors }

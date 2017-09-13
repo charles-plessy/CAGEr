@@ -8,7 +8,7 @@
 \alias{sampleLabels<-}
 \alias{sampleLabels<-,CAGEset-method}
 \alias{sampleLabels<-,CAGEexp-method}
-\title{Extracting CAGE datasets labels from CAGEr objects}
+\title{Get/set sample labels}
 \usage{
 sampleLabels(object)
 
@@ -26,19 +26,19 @@ sampleLabels(object) <- value
 \item{object}{A CAGEr object.}
 
 \item{value}{A character vector with a unique and valid name for each sample.
-the \code{names} attributes indicate the colors.}
+The \code{names} attributes indicate the colors.}
 }
 \value{
-Returns a named character vector of labels of all CAGE datasets
-present in the CAGEr object.  The values are the lables and the names
+Returns a named character vector representing labels of all CAGE datasets
+present in the CAGEr object.  The vector values are the labels and the vector names
 are the colors.
 }
 \description{
-Extracts the labels and colors of CAGE datasets
-from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+Gets or sets the labels and colors of CAGE datasets
+(samples) from \code{\link{CAGEr}} objects.
 }
 \details{
-Renaming samples is possible only in \code{CAGEexp} objects, before
+In \code{CAGEexp} objects, renaming samples is possible only before
 data is loaded.
 }
 \note{
