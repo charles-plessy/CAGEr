@@ -130,7 +130,7 @@ setMethod( "quantilePositions", "CAGEr"
         assays(consensusClustersSE(object))[[qName]] <-
           DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
 		} else if (class(object) == "CAGEset") {
-		  for (s in names(ctss.clusters)) {
+		  for (s in names(cons.clusters.l)) {
 	  	  consensusClustersQuantileLow(object, s) <- gr2tcq(cons.clusters.l[[s]], qLow)
         consensusClustersQuantileUp (object, s) <- gr2tcq(cons.clusters.l[[s]], qUp)
 		  }
