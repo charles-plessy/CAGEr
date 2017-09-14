@@ -109,7 +109,7 @@
 setGeneric( "clusterCTSS"
           , function( object
                     , threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE
-                    , method = "distclu", maxDist = 20
+                    , method = c("distclu", "paraclu", "custom"), maxDist = 20
                     , removeSingletons = FALSE, keepSingletonsAbove = Inf
                     , minStability = 1, maxLength = 500
                     , reduceToNonoverlapping = TRUE, customClusters = NULL
@@ -118,12 +118,12 @@ setGeneric( "clusterCTSS"
 
 #' @rdname clusterCTSS
 
-setMethod("clusterCTSS",
-signature(object = "CAGEset"),
-function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, removeSingletons, keepSingletonsAbove, minStability, maxLength, reduceToNonoverlapping, customClusters, useMulticore, nrCores){
+setMethod( "clusterCTSS", "CAGEset"
+         , function( object, threshold, nrPassThreshold, thresholdIsTpm, method
+                   , maxDist, removeSingletons, keepSingletonsAbove, minStability
+                   , maxLength, reduceToNonoverlapping, customClusters
+                   , useMulticore, nrCores) {
   
-  useMulticore <- .checkMulticore(useMulticore)
-		
 	objName <- deparse(substitute(object))
 	sample.labels <- sampleLabels(object)
 	
@@ -156,6 +156,7 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 	}
 	
 	message("Clustering...")
+	method <- match.arg(method)
 	if(method == "distclu"){
 		ctss.cluster.list <- .distclu(se = data, max.dist = maxDist, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, useMulticore = useMulticore, nrCores = nrCores)
 	}else if (method == "paraclu"){
@@ -165,8 +166,6 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 			stop("'customClusters' must be given when method = \"custom\"")
 		}
 		ctss.cluster.list <- .predefined.clusters(data = data, sample.labels = sample.labels, custom.clusters = customClusters, useMulticore = useMulticore, nrCores = nrCores)
-	}else{
-		stop("'method' parameter must be one of the (\"distclu\", \"paraclu\", \"custom\")")
 	}
 	
 	object@filteredCTSSidx <- idx
@@ -178,11 +177,11 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 
 #' @rdname clusterCTSS
 
-setMethod("clusterCTSS",
-signature(object = "CAGEexp"),
-function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, removeSingletons, keepSingletonsAbove, minStability, maxLength, reduceToNonoverlapping, customClusters, useMulticore, nrCores){
-  
-  useMulticore <- .checkMulticore(useMulticore)
+setMethod( "clusterCTSS", object = "CAGEexp"
+         , function( object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist
+                   , removeSingletons, keepSingletonsAbove, minStability, maxLength
+                   , reduceToNonoverlapping, customClusters, useMulticore, nrCores) {
+
   objName <- deparse(substitute(object))
   assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
 
@@ -207,7 +206,8 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
 	}
 	
 	message("Clustering...")
-	
+	method <- match.arg(method)
+
   if (method == "distclu") {
     ctss.cluster.list <- .distclu( se = data[rowRanges(data)$filteredCTSSidx,]
                                  , max.dist = maxDist, removeSingletons = removeSingletons
@@ -228,9 +228,6 @@ function (object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist, r
                                              , sample.labels = sampleLabels(object)
                                              , custom.clusters = customClusters
                                              , useMulticore = useMulticore, nrCores = nrCores)
-  } else {
-    stop( sQuote("method"), " parameter must be "
-        , dQuote("distclu"), ", ", dQuote("paraclu"), ", or ", dQuote("custom"), ".")
   }
   
 	CTSStagCountSE(object) <- data
