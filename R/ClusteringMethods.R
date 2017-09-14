@@ -178,7 +178,7 @@ setMethod( "clusterCTSS", "CAGEset"
 
 #' @rdname clusterCTSS
 
-setMethod( "clusterCTSS", object = "CAGEexp"
+setMethod( "clusterCTSS", "CAGEexp"
          , function( object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist
                    , removeSingletons, keepSingletonsAbove, minStability, maxLength
                    , reduceToNonoverlapping, customClusters, useMulticore, nrCores) {

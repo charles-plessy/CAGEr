@@ -571,7 +571,7 @@ setMethod("CTSStagCountSE", "CAGEset", function (object) {
 
 #' @rdname CTSStagCountTable
 
-setMethod("CTSStagCountSE", "CAGEexp", (object) {
+setMethod("CTSStagCountSE", "CAGEexp", function (object) {
   se <- experiments(object)$tagCountMatrix
   if (is.null(se)) stop("Could not find CTSS tag counts, see ", sQuote("?getCTSS"), ".")
   se
