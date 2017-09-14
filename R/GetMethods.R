@@ -719,14 +719,13 @@ setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, samples) {
 })
 
 #' @name CTSSclusteringMethod
-#' @aliases CTSSclusteringMethod,CAGEset CTSSclusteringMethod,CAGEexp
 #' 
 #' @title Extracting CTSS clustering method from CAGEr objects.
 #' 
 #' @description Extracts the label of the method used for CTSS clustering into tag
-#' clusters from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' clusters from \code{\link{CAGEr}} objects.
 #' 
-#' @param object A CAGEset or CAGEexp object.
+#' @param object A CAGEr object.
 #' 
 #' @return Returns a label of the method used for CTSS clustering.
 #' 
@@ -739,27 +738,17 @@ setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, samples) {
 #' @family CAGEr accessor methods
 #' @export CTSSclusteringMethod
 
-setGeneric(
-name="CTSSclusteringMethod",
-def=function(object){
-	standardGeneric("CTSSclusteringMethod")
-})
+setGeneric("CTSSclusteringMethod", function(object) standardGeneric("CTSSclusteringMethod"))
 
 #' @rdname CTSSclusteringMethod
 
-setMethod("CTSSclusteringMethod",
-signature(object = "CAGEset"),
-function (object){
-	object@clusteringMethod
-})
+setMethod("CTSSclusteringMethod", "CAGEset", function (object)
+	object@clusteringMethod)
 
 #' @rdname CTSSclusteringMethod
 
-setMethod("CTSSclusteringMethod",
-signature(object = "CAGEexp"),
-function (object){
-	metadata(object)$clusteringMethod
-})
+setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
+	metadata(object)$clusteringMethod)
 
 
 #' @name tagClusters

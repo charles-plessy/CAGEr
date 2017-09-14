@@ -198,6 +198,30 @@ setMethod("filteredCTSSidx<-", "CAGEexp", function (object, value) {
 })
 
 
+#' @name CTSSclusteringMethod<-
+#' 
+#' @rdname CTSSclusteringMethod
+#' 
+#' @param value character
+
+setGeneric( "CTSSclusteringMethod<-"
+          , function(object, value) standardGeneric("CTSSclusteringMethod<-"))
+
+#' @rdname CTSSclusteringMethod
+
+setMethod("CTSSclusteringMethod<-", "CAGEset", function (object, value) {
+	object@clusteringMethod <- value
+	if (validObject(object)) object
+})
+
+#' @rdname CTSSclusteringMethod
+
+setMethod("CTSSclusteringMethod<-", "CAGEexp", function (object, value) {
+  metadata(object)$clusteringMethod
+  if (validObject(object)) object
+})
+
+
 #' @name  CTSScumulativesTagClusters<-
 #' 
 #' @rdname CTSScumulativesTagClusters
