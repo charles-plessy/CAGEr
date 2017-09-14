@@ -482,13 +482,49 @@ ranges2annot <- function(ranges, annot) {
 ranges2genes <- function(ranges, genes) {
   if (is.null(genes$gene_name))
     stop("Annotation must contain ", dQuote("gene_name"), " metdata.")
-  gnames <- findOverlaps(ranges, genes)
-  gnames <- as(gnames, "List")
-  gnames <- extractList(genes$gene_name, gnames)
-  gnames <- unique(gnames)
-  gnames <- unstrsplit(gnames, ";")
-  Rle(gnames)
+  names(genes) <- genes$gene_name
+  ranges2names(ranges, genes)
 }
+
+
+#' ranges2names
+#' 
+#' Intersection of genomic ranges
+#' 
+#' This private (non-exported) function intersects two genomic ranges and
+#' for each element of the first object returns the name of the elements of
+#' the second object that it intersects with.
+#' 
+#' @param rangesA A \code{\link{GRanges}} object.
+#' @param rangesB A second GRanges object.
+#' 
+#' @return A \code{\link{Rle}} character vector of same length as the \code{rangesA}
+#' GRanges object, indicating one name or a semicolon-separated list of names from
+#' the each \code{rangesB} object.
+#'         
+#' @family CAGEr annotation functions
+#' 
+#' @author Charles Plessy
+#' 
+#' @examples
+#' names(exampleZv9_annot) <- exampleZv9_annot$gene_name
+#' CAGEr:::ranges2names(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
+#' 
+#' @importFrom GenomicRanges findOverlaps
+#' @importFrom S4Vectors List Rle unstrsplit
+#' @importFrom IRanges extractList
+
+ranges2names <- function(rangesA, rangesB) {
+  if (is.null(names(rangesB)))
+    stop(sQuote("rangesB"), " must contain have names.")
+  names <- findOverlaps(rangesA, rangesB)
+  names <- as(names, "List")
+  names <- extractList(names(rangesB), names)
+  names <- unique(names)
+  names <- unstrsplit(names, ";")
+  Rle(names)
+}
+
 
 #' @name exampleZv9_annot
 #' 
