@@ -29,7 +29,7 @@ in.  This is currently hardcoded in the function; see its source code.  Example
 of biotypes without a promoter: VDJ segments, etc.
 }
 \examples{
-  ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
+CAGEr:::ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 
 }
 \seealso{

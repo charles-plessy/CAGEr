@@ -404,7 +404,7 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' @author Charles Plessy
 #' 
 #' @examples
-#'   ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
+#' CAGEr:::ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 #' 
 #' @importFrom GenomicRanges findOverlaps promoters
 #' @importFrom S4Vectors Rle
@@ -473,8 +473,7 @@ ranges2annot <- function(ranges, annot) {
 #' @author Charles Plessy
 #' 
 #' @examples
-#' CTSScoordinatesGR(exampleCAGEexp)$genes <-
-#'   ranges2genes(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
+#' CAGEr:::ranges2genes(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 #' 
 #' @importFrom GenomicRanges findOverlaps
 #' @importFrom S4Vectors List Rle unstrsplit

@@ -27,8 +27,7 @@ to genomic ranges.  It is run by \code{\link{annotateCTSS}}, which has to
 be run before \code{\link{CTSStoGenes}}.
 }
 \examples{
-CTSScoordinatesGR(exampleCAGEexp)$genes <-
-  ranges2genes(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
+CAGEr:::ranges2genes(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 
 }
 \seealso{

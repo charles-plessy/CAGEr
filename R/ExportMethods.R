@@ -382,6 +382,8 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 setGeneric( "plotExpressionProfiles"
           , function(object, what) standardGeneric("plotExpressionProfiles"))
 
+#' @rdname plotExpressionProfiles
+
 setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
 	
 	if(what == "CTSS") {
@@ -420,6 +422,7 @@ setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
 	dev.off()
 	message("\nFile '", file_name, "' has been created in your working directory (", getwd(), ")")	
 })
+
 
 #' @name exportToBed
 #' 
