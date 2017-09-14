@@ -327,42 +327,41 @@ setMethod("consensusClustersSE<-", c("CAGEexp", "RangedSummarizedExperiment"), f
 #' @name consensusClustersQuantileLow<-
 #' @rdname consensusClustersQuantile
 
-setGeneric("consensusClustersQuantileLow<-", function(object, value) standardGeneric("consensusClustersQuantileLow<-"))
+setGeneric( "consensusClustersQuantileLow<-"
+          , function(object, samples = NULL, value)
+              standardGeneric("consensusClustersQuantileLow<-"))
 
 #' @rdname consensusClustersQuantile
 
-setMethod("consensusClustersQuantileLow<-", "CAGEset", function (object, value){
-	object@consensusClustersQuantileLow <- value
+setMethod("consensusClustersQuantileLow<-", "CAGEset", function (object, samples, value){
+	validSamples(object, samples)
+  if(is.null(samples)) {
+	  object@consensusClustersQuantileLow <- value
+  } else {
+    object@consensusClustersQuantileLow[[samples]] <- value
+  }
 	if (validObject(object)) object
-})
-
-#' @rdname consensusClustersQuantile
-
-setMethod("consensusClustersQuantileLow<-", "CAGEexp", function (object, value){
-  metadata(object)$consensusClustersQuantileLow <- value
-  if (validObject(object)) object
 })
 
 
 #' @name consensusClustersQuantileUp<-
 #' @rdname consensusClustersQuantile
 
-setGeneric("consensusClustersQuantileUp<-", function(object, value) standardGeneric("consensusClustersQuantileUp<-"))
+setGeneric( "consensusClustersQuantileUp<-"
+          , function(object, samples = NULL, value)
+              standardGeneric("consensusClustersQuantileUp<-"))
 
 #' @rdname consensusClustersQuantile
 
-setMethod("consensusClustersQuantileUp<-", "CAGEset", function (object, value){
-	object@consensusClustersQuantileUp <- value
-  if (validObject(object)) object
+setMethod("consensusClustersQuantileUp<-", "CAGEset", function (object, samples, value){
+	validSamples(object, samples)
+  if(is.null(samples)) {
+	  object@consensusClustersQuantileUp <- value
+  } else {
+    object@consensusClustersQuantileUp[[samples]] <- value
+  }
+	if (validObject(object)) object
 })
-
-#' @rdname consensusClustersQuantile
-
-setMethod("consensusClustersQuantileUp<-", "CAGEexp", function (object, value){
-  metadata(object)$consensusClustersQuantileUp <- value
-  if (validObject(object)) object
-})
-
 
 
 #' @name `CTSScumulativesCC<-`
