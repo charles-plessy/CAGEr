@@ -916,7 +916,7 @@ setMethod("filteredCTSSidx", "CAGEset", function (object){
 })
 
 setMethod("filteredCTSSidx", "CAGEexp", function (object){
-  decode(rowData(CTSStagCountSE(object))$filteredCTSSidx)
+  rowData(CTSStagCountSE(object))$filteredCTSSidx
 })
 
 #' @name tagClustersQuantile

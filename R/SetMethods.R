@@ -186,7 +186,7 @@ setGeneric( "filteredCTSSidx<-"
 #' @rdname filteredCTSSidx
 
 setMethod("filteredCTSSidx<-", "CAGEset", function (object, value) {
-	object@filteredCTSSidx <- value
+	object@filteredCTSSidx <- decode(value) # CAGEset expects a logical.
 	if (validObject(object)) object
 })
 
