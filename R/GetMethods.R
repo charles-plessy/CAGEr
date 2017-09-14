@@ -552,17 +552,11 @@ signature(object = "CAGEexp"),
 #' 
 #' @export
 
-setGeneric(
-name="CTSStagCountSE",
-def=function(object){
-	standardGeneric("CTSStagCountSE")
-})
+setGeneric("CTSStagCountSE", function(object) standardGeneric("CTSStagCountSE"))
 
 #' @rdname CTSStagCountTable
 
-setMethod("CTSStagCountSE",
-signature(object = "CAGEset"),
-function (object){
+setMethod("CTSStagCountSE", "CAGEset", function (object) {
 	  colData <- data.frame(row.names = sampleLabels(object), samplename = sampleLabels(object), samplecolor = names(sampleLabels(object)))
 	  if (identical(object@normalizedTpmMatrix, data.frame())) {
 	    return(SummarizedExperiment( assays  = list(counts=CTSStagCountDF(object))
@@ -577,10 +571,10 @@ function (object){
 
 #' @rdname CTSStagCountTable
 
-setMethod("CTSStagCountSE",
-signature(object = "CAGEexp"),
-function (object){
-  experiments(object)$tagCountMatrix
+setMethod("CTSStagCountSE", "CAGEexp", (object) {
+  se <- experiments(object)$tagCountMatrix
+  if (is.null(se)) stop("Could not find CTSS tag counts, see ", sQuote("?getCTSS"), ".")
+  se
 })
 
 
