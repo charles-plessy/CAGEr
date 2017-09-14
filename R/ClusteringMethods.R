@@ -187,30 +187,26 @@ setMethod( "clusterCTSS", "CAGEexp"
   assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
   data <- CTSStagCountSE(object)
 
-  if (! "normalizedTpmMatrix" %in% names(data))
+  if (! "normalizedTpmMatrix" %in% names(assays(data)))
     stop( "Could not find normalized CAGE signal values, see ?normalizeTagCount.\n"
         , "clusterCTSS() needs normalized values to create its output tables, that "
         , "include TPM expression columns.")
 
   message("\nFiltering out CTSSs below threshold...")
-	if (threshold > 0) {
-		nr.pass.threshold <- rowSums(DelayedArray(assays(data)[[assay]]) >= threshold)
-		filteredCTSSidx(object) <-
-		  Rle(nr.pass.threshold >= min(nrPassThreshold, length(sampleLabels(object))))
-	} else {
-	  filteredCTSSidx(object) <- Rle(TRUE)
-	}
+  filteredCTSSidx(object) <-
+    .filterCtss(data, threshold = threshold
+               , nrPassThreshold = nrPassThreshold, thresholdIsTpm = thresholdIsTpm)
 	
 	message("Clustering...")
 	method <- match.arg(method)
 
   if (method == "distclu") {
-    ctss.cluster.list <- .distclu( se = data[filteredCTSSidx(object),]
+    ctss.cluster.list <- .distclu( se = data[decode(filteredCTSSidx(object)),]
                                  , max.dist = maxDist, removeSingletons = removeSingletons
                                  , keepSingletonsAbove = keepSingletonsAbove
                                  , useMulticore = useMulticore, nrCores = nrCores)
   } else if (method == "paraclu") {
-    ctss.cluster.list <- .paraclu( data = data[filteredCTSSidx(object),]
+    ctss.cluster.list <- .paraclu( data = data[decode(filteredCTSSidx(object)),]
                                  , sample.labels = sampleLabels(object)
                                  , minStability = minStability, maxLength = maxLength
                                  , removeSingletons = removeSingletons
@@ -220,7 +216,7 @@ setMethod( "clusterCTSS", "CAGEexp"
   } else if(method == "custom") {
     if(is.null(customClusters))
     	stop(sQuote("customClusters"), " must be given when method = ", sQuote("custom"), ".")
-    ctss.cluster.list <- .predefined.clusters( data = data[filteredCTSSidx(object),]
+    ctss.cluster.list <- .predefined.clusters( data = data[decode(filteredCTSSidx(object)),]
                                              , sample.labels = sampleLabels(object)
                                              , custom.clusters = customClusters
                                              , useMulticore = useMulticore, nrCores = nrCores)

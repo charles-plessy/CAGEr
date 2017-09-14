@@ -104,6 +104,7 @@ setMethod("sampleLabels", "CAGEexp", function (object) {
   sl
 })
 
+
 #' @name validSamples
 #' @noRd
 #' @title Private function
@@ -122,4 +123,35 @@ setMethod("validSamples", "CAGEr", function (object, x){
     if (all(x %in% seq_along(sampleLabels(object))))
       return(TRUE)
   stop("Sample(s) not found! Check ", sQuote(paste0("sampleLabels(", objName, ")")), ".")
+})
+
+
+#' @name .filterCtss
+#' @noRd
+#' @param threshold,nrPassThreshold Only CTSSs with signal \code{>= threshold} in
+#'        \code{>= nrPassThreshold} experiments will be used for clustering and will
+#'        contribute towards total signal of the cluster.
+#' @param thresholdIsTpm Logical, is threshold raw tag count value (FALSE) or
+#'        normalized signal (TRUE).
+#' @title Private function
+#' @details Check if a vector of strings or numbers can be used to identify a sample.
+
+setGeneric(".filterCtss", function( object
+                                  , threshold       = 0
+                                  , nrPassThreshold = 1
+                                  , thresholdIsTpm  = TRUE)
+  standardGeneric(".filterCtss"))
+
+setMethod(".filterCtss", "CAGEr", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
+	if (threshold == 0) return(Rle(TRUE))
+  .filterCtss(CTSStagCountSE(object), threshold, nrPassThreshold, thresholdIsTpm)
+})
+
+setMethod(".filterCtss", "RangedSummarizedExperiment", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
+	if (threshold == 0) return(Rle(TRUE))
+  assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
+  if(assay == "normalizedTpmMatrix" & is.null(assays(object)[[assay]]))
+    stop("Normalise the CAGEr object first with ", sQuote("normalizeTagCount()"), ".")
+  nr.pass.threshold <- rowSums(DelayedArray(assays(object)[[assay]]) >= threshold)
+  Rle(nr.pass.threshold >= min(nrPassThreshold, ncol(object)))
 })
