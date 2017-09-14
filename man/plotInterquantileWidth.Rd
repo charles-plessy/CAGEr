@@ -53,6 +53,7 @@ Other CAGEr export functions: \code{\link{exportCTSStoBedGraph}},
   \code{\link{exportToBed}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{consensusClustersDESeq2}},

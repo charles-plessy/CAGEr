@@ -4,7 +4,7 @@
 \name{CAGEexp-class}
 \alias{CAGEexp-class}
 \alias{CAGEexp}
-\alias{coerce}
+\alias{coerce,data.frame,CAGEexp-method}
 \title{CAGEr class to hold all data and metadata about one CAGE experiment.}
 \description{
 The \code{CAGEr} class is a \code{\link[MultiAssayExperiment]{MultiAssayExperiment}}
@@ -58,22 +58,6 @@ CTSStagCountDF(exampleCAGEexp)
 
 exampleCAGEexp$l1 <- colSums(CTSStagCountDf(exampleCAGEexp) > 0)
 exampleCAGEexp$l1
- 
-# The commands below were used to create the example CAGEexp object in the "extdata" folder.
-\dontrun{
-exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
-CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object
-annotateCTSS(exampleCAGEexp , exampleZv9_annot)
-CTSStoGenes(exampleCAGEexp)
-normalizeTagCount(exampleCAGEexp)
-clusterCTSS(exampleCAGEexp)
-cumulativeCTSSdistribution(exampleCAGEexp, "tagClusters")
-quantilePositions(exampleCAGEexp, "tagClusters")
-aggregateTagClusters(exampleCAGEexp)
-cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters")
-quantilePositions(exampleCAGEexp, "consensusClusters")
-save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
-}
 
 }
 \seealso{

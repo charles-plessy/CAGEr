@@ -82,22 +82,26 @@ aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 head(consensusClusters(exampleCAGEset))
 
+consensusClustersGR(exampleCAGEexp)
 aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
 consensusClustersGR(exampleCAGEexp)
 aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE, maxDist = 100)
 consensusClustersGR(exampleCAGEexp)
 aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE
                     , maxDist = 100, qLow = 0.1, qUp = 0.9)
+consensusClustersGR(exampleCAGEexp)
 
 }
 \seealso{
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},
   \code{\link{quantilePositions}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{consensusClustersDESeq2}},
   \code{\link{consensusClustersGR}},

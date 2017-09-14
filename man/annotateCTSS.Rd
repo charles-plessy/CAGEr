@@ -68,6 +68,7 @@ consensusClustersGR(exampleCAGEexp)
 The \code{\link{exampleZv9_annot}} example data.
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
@@ -75,7 +76,8 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{quantilePositions}}
 
 Other CAGEr annotation functions: \code{\link{plotAnnot}},
-  \code{\link{ranges2annot}}, \code{\link{ranges2genes}}
+  \code{\link{ranges2annot}}, \code{\link{ranges2genes}},
+  \code{\link{ranges2names}}
 }
 \author{
 Charles Plessy

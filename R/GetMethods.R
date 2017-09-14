@@ -840,6 +840,10 @@ setMethod("tagClusters", "CAGEr", function (object, samples, returnInterquantile
 })
 
 #' @rdname tagClusters
+#' 
+#' @param sample Label of one CAGE dataset (experiment, sample) for which to extract tag
+#'        clusters. (For \code{tagClustersGR}, only one sample can be extracted.)
+#' 
 #' @export
 
 setGeneric( "tagClustersGR"

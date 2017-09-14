@@ -120,6 +120,7 @@ evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
    \code{\link{librarySizes}}.
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},

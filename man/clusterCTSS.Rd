@@ -8,22 +8,22 @@
 \title{Clustering CTSSs into tag clusters}
 \usage{
 clusterCTSS(object, threshold = 1, nrPassThreshold = 1,
-  thresholdIsTpm = TRUE, method = "distclu", maxDist = 20,
-  removeSingletons = FALSE, keepSingletonsAbove = Inf, minStability = 1,
-  maxLength = 500, reduceToNonoverlapping = TRUE, customClusters = NULL,
-  useMulticore = FALSE, nrCores = NULL)
+  thresholdIsTpm = TRUE, method = c("distclu", "paraclu", "custom"),
+  maxDist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf,
+  minStability = 1, maxLength = 500, reduceToNonoverlapping = TRUE,
+  customClusters = NULL, useMulticore = FALSE, nrCores = NULL)
 
 \S4method{clusterCTSS}{CAGEset}(object, threshold = 1, nrPassThreshold = 1,
-  thresholdIsTpm = TRUE, method = "distclu", maxDist = 20,
-  removeSingletons = FALSE, keepSingletonsAbove = Inf, minStability = 1,
-  maxLength = 500, reduceToNonoverlapping = TRUE, customClusters = NULL,
-  useMulticore = FALSE, nrCores = NULL)
+  thresholdIsTpm = TRUE, method = c("distclu", "paraclu", "custom"),
+  maxDist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf,
+  minStability = 1, maxLength = 500, reduceToNonoverlapping = TRUE,
+  customClusters = NULL, useMulticore = FALSE, nrCores = NULL)
 
 \S4method{clusterCTSS}{CAGEexp}(object, threshold = 1, nrPassThreshold = 1,
-  thresholdIsTpm = TRUE, method = "distclu", maxDist = 20,
-  removeSingletons = FALSE, keepSingletonsAbove = Inf, minStability = 1,
-  maxLength = 500, reduceToNonoverlapping = TRUE, customClusters = NULL,
-  useMulticore = FALSE, nrCores = NULL)
+  thresholdIsTpm = TRUE, method = c("distclu", "paraclu", "custom"),
+  maxDist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf,
+  minStability = 1, maxLength = 500, reduceToNonoverlapping = TRUE,
+  customClusters = NULL, useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
@@ -65,7 +65,8 @@ cluster be removed to make a final set of tag clusters non-overlapping. Used onl
 when \code{method = "paraclu"}.  See Details.}
 
 \item{customClusters}{Genomic coordinates of predefined regions to be used to segment the
-CTSSs.  It has to be a \code{data.frame} with following columns: \code{chr}
+CTSSs.  It has to be a \code{\link{GRanges}} object or a
+\code{data.frame} with following columns: \code{chr}
 (chromosome name), \code{start} (0-based start coordinate), \code{end}
 (end coordinate), \code{strand} (either \code{"+"}, or \code{"-"}).  Used only when
 \code{method = "custom"}.}
@@ -128,6 +129,7 @@ genomes, \emph{Genome Research} \bold{18}(1):1-12,
 \code{\link{tagClusters}}, \code{\link{aggregateTagClusters}}
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{annotateCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
@@ -135,6 +137,7 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{quantilePositions}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{consensusClustersDESeq2}},
   \code{\link{consensusClustersGR}},

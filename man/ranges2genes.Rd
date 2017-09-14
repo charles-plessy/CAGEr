@@ -34,7 +34,8 @@ CAGEr:::ranges2genes(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 \code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
 
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
-  \code{\link{plotAnnot}}, \code{\link{ranges2annot}}
+  \code{\link{plotAnnot}}, \code{\link{ranges2annot}},
+  \code{\link{ranges2names}}
 
 Other CAGEr gene expression analysis functions: \code{\link{CTSStoGenes}},
   \code{\link{GeneExpDESeq2}}

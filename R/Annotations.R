@@ -377,7 +377,10 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 
 #' @name ranges2annot
 #' 
-#' @title hierarchical annotation of CTSs
+#' @title hierarchical annotation of CTSSes
+#' 
+#' @description Assigns region types such as \emph{promoter}, \emph{exon}
+#' or \emph{unknown} to CTSSes.
 #' 
 #' @param ranges The CTSS (GRanges) object, for example extracted from a
 #'        RangedSummarizedExperiment object with the \code{rowRanges}

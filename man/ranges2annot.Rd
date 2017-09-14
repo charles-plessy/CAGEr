@@ -2,7 +2,7 @@
 % Please edit documentation in R/Annotations.R
 \name{ranges2annot}
 \alias{ranges2annot}
-\title{hierarchical annotation of CTSs}
+\title{hierarchical annotation of CTSSes}
 \usage{
 ranges2annot(ranges, annot)
 }
@@ -23,6 +23,10 @@ A Run-length-encoded (Rle) factor of same length as the GRanges object,
         indicating if the interval is promoter, exon, intron or unknown, or
         just promoter, gene, unknown if the \code{type} metadata is absent.
 }
+\description{
+Assigns region types such as \emph{promoter}, \emph{exon}
+or \emph{unknown} to CTSSes.
+}
 \details{
 Only the biotypes that are likely to have a promoter will be filtered
 in.  This is currently hardcoded in the function; see its source code.  Example
@@ -36,7 +40,8 @@ CAGEr:::ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 \code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
 
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
-  \code{\link{plotAnnot}}, \code{\link{ranges2genes}}
+  \code{\link{plotAnnot}}, \code{\link{ranges2genes}},
+  \code{\link{ranges2names}}
 }
 \author{
 Charles Plessy

@@ -58,7 +58,8 @@ plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
 }
 \seealso{
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
-  \code{\link{ranges2annot}}, \code{\link{ranges2genes}}
+  \code{\link{ranges2annot}}, \code{\link{ranges2genes}},
+  \code{\link{ranges2names}}
 
 Other CAGEr plot functions: \code{\link{hanabiPlot}},
   \code{\link{plotCorrelation}},

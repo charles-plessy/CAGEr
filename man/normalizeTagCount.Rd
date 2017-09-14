@@ -81,6 +81,7 @@ constructing the human and mouse promoterome with deepCAGE data, \emph{Genome Bi
 \code{\link{plotReverseCumulatives}}, \code{\link{CTSSnormalizedTpm}}
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},

@@ -51,6 +51,9 @@ boundary (for \code{qLow} and \code{qUp} respectively) when calculating interqua
 Default value \code{NULL} results in using the start coordinate of the cluster.  Used only
 when \code{returnInterquantileWidth = TRUE}, otherwise ignored.}
 
+\item{sample}{Label of one CAGE dataset (experiment, sample) for which to extract tag
+clusters. (For \code{tagClustersGR}, only one sample can be extracted.)}
+
 \item{value}{A \code{\link{TagClusters}} object.}
 }
 \value{
@@ -89,6 +92,7 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{librarySizes}}, \code{\link{sampleLabels}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{consensusClustersDESeq2}},

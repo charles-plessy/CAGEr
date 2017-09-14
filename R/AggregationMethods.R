@@ -232,7 +232,7 @@ setMethod( ".CCtoSE"
 #' @examples 
 #' 
 #' cc <- consensusClustersGR(exampleCAGEexp)
-#' CustomConsensusClusters(exampleCAGEexp, x)
+#' CustomConsensusClusters(exampleCAGEexp, cc)
 #' 
 #' @export
 
@@ -243,6 +243,8 @@ setGeneric( "CustomConsensusClusters"
                     , nrPassThreshold = 1
                     , thresholdIsTpm  = TRUE)
           	  standardGeneric("CustomConsensusClusters"))
+
+#' @rdname CustomConsensusClusters
 
 setMethod( "CustomConsensusClusters", c("CAGEexp", "GRanges")
          , function (object, clusters

@@ -44,7 +44,8 @@ all(librarySizes(exampleCAGEexp) - colSums(SummarizedExperiment::assay(GeneExpSE
 \seealso{
 \code{\link{annotateCTSS}}.
 
-Other CAGEr object modifiers: \code{\link{aggregateTagClusters}},
+Other CAGEr object modifiers: \code{\link{CustomConsensusClusters}},
+  \code{\link{aggregateTagClusters}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},

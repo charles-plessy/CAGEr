@@ -46,22 +46,6 @@
 #' 
 #' exampleCAGEexp$l1 <- colSums(CTSStagCountDf(exampleCAGEexp) > 0)
 #' exampleCAGEexp$l1
-#'  
-#' # The commands below were used to create the example CAGEexp object in the "extdata" folder.
-#' \dontrun{
-#' exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
-#' CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object
-#' annotateCTSS(exampleCAGEexp , exampleZv9_annot)
-#' CTSStoGenes(exampleCAGEexp)
-#' normalizeTagCount(exampleCAGEexp)
-#' clusterCTSS(exampleCAGEexp)
-#' cumulativeCTSSdistribution(exampleCAGEexp, "tagClusters")
-#' quantilePositions(exampleCAGEexp, "tagClusters")
-#' aggregateTagClusters(exampleCAGEexp)
-#' cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters")
-#' quantilePositions(exampleCAGEexp, "consensusClusters")
-#' save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
-#' }
 #' 
 #' @seealso CAGEset-class
 #' 
@@ -116,7 +100,36 @@ CAGEexp <- setClass("CAGEexp",
   }
 )
 
-#' @name coerce
+#' @name exampleCAGEexp
+#' 
+#' @title Example CAGEexp object.
+#' 
+#' @description Lazy-loaded example CAGEexp object, containing most of the CAGEr data
+#' structures created with the CAGEr modifier functions.
+#' 
+#' @format A \code{\link{CAGEexp}} object.
+#' 
+#' @docType data
+#' 
+#' @examples 
+#' # The commands below were used to create the example CAGEexp object in the "extdata" folder.
+#' \dontrun{
+#' exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
+#' CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object
+#' annotateCTSS(exampleCAGEexp , exampleZv9_annot)
+#' CTSStoGenes(exampleCAGEexp)
+#' normalizeTagCount(exampleCAGEexp)
+#' clusterCTSS(exampleCAGEexp)
+#' cumulativeCTSSdistribution(exampleCAGEexp, "tagClusters")
+#' quantilePositions(exampleCAGEexp, "tagClusters")
+#' aggregateTagClusters(exampleCAGEexp)
+#' cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters")
+#' quantilePositions(exampleCAGEexp, "consensusClusters")
+#' save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
+#' }
+NULL
+
+#' @name coerce,data.frame,CAGEexp-method
 #' @rdname CAGEexp-class
 
 setAs("data.frame", "CAGEexp", function(from){

@@ -53,12 +53,14 @@ cumulativeCTSSdistribution(exampleCAGEexp, clusters = "consensusClusters")
 }
 \seealso{
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},
   \code{\link{quantilePositions}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{consensusClustersDESeq2}},
