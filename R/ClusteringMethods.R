@@ -47,7 +47,8 @@
 #'        when \code{method = "paraclu"}.  See Details.
 #' 
 #' @param customClusters Genomic coordinates of predefined regions to be used to segment the
-#'        CTSSs.  It has to be a \code{data.frame} with following columns: \code{chr}
+#'        CTSSs.  It has to be a \code{\link{GRanges}} object or a
+#'        \code{data.frame} with following columns: \code{chr}
 #'        (chromosome name), \code{start} (0-based start coordinate), \code{end}
 #'        (end coordinate), \code{strand} (either \code{"+"}, or \code{"-"}).  Used only when
 #'        \code{method = "custom"}.
@@ -184,37 +185,32 @@ setMethod( "clusterCTSS", object = "CAGEexp"
 
   objName <- deparse(substitute(object))
   assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
+  data <- CTSStagCountSE(object)
 
-  message("\nFiltering CTSSs below threshold...")
-
-  if (! "tagCountMatrix" %in% names(experiments(object)))
-    stop("Could not find CTSS tag counts, see ?getCTSS.")
-
-  if (! "normalizedTpmMatrix" %in% names(assays(CTSStagCountSE(object))))
+  if (! "normalizedTpmMatrix" %in% names(data))
     stop( "Could not find normalized CAGE signal values, see ?normalizeTagCount.\n"
         , "clusterCTSS() needs normalized values to create its output tables, that "
         , "include TPM expression columns.")
 
-  data <- CTSStagCountSE(object)
-
+  message("\nFiltering out CTSSs below threshold...")
 	if (threshold > 0) {
 		nr.pass.threshold <- rowSums(DelayedArray(assays(data)[[assay]]) >= threshold)
-		rowRanges(data)$filteredCTSSidx <-
+		filteredCTSSidx(object) <-
 		  Rle(nr.pass.threshold >= min(nrPassThreshold, length(sampleLabels(object))))
 	} else {
-	  rowRanges(data)$filteredCTSSidx <- Rle(TRUE)
+	  filteredCTSSidx(object) <- Rle(TRUE)
 	}
 	
 	message("Clustering...")
 	method <- match.arg(method)
 
   if (method == "distclu") {
-    ctss.cluster.list <- .distclu( se = data[rowRanges(data)$filteredCTSSidx,]
+    ctss.cluster.list <- .distclu( se = data[filteredCTSSidx(object),]
                                  , max.dist = maxDist, removeSingletons = removeSingletons
                                  , keepSingletonsAbove = keepSingletonsAbove
                                  , useMulticore = useMulticore, nrCores = nrCores)
   } else if (method == "paraclu") {
-    ctss.cluster.list <- .paraclu( data = data[rowRanges(data)$filteredCTSSidx,]
+    ctss.cluster.list <- .paraclu( data = data[filteredCTSSidx(object),]
                                  , sample.labels = sampleLabels(object)
                                  , minStability = minStability, maxLength = maxLength
                                  , removeSingletons = removeSingletons
@@ -223,15 +219,14 @@ setMethod( "clusterCTSS", object = "CAGEexp"
                                  , useMulticore = useMulticore, nrCores = nrCores)
   } else if(method == "custom") {
     if(is.null(customClusters))
-    	stop("'customClusters' must be given when method = \"custom\"")
-    ctss.cluster.list <- .predefined.clusters( data = data[rowRanges(data)$filteredCTSSidx,]
+    	stop(sQuote("customClusters"), " must be given when method = ", sQuote("custom"), ".")
+    ctss.cluster.list <- .predefined.clusters( data = data[filteredCTSSidx(object),]
                                              , sample.labels = sampleLabels(object)
                                              , custom.clusters = customClusters
                                              , useMulticore = useMulticore, nrCores = nrCores)
   }
   
-	CTSStagCountSE(object) <- data
-  metadata(object)$clusteringMethod <- method
+  CTSSclusteringMethod(object) <- method
   metadata(object)$tagClusters <- ctss.cluster.list
   assign(objName, object, envir = parent.frame())
   invisible(1)
