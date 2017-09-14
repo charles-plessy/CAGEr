@@ -174,6 +174,29 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
+#' @name filteredCTSSidx<-
+#' 
+#' @rdname filteredCTSSidx
+#' 
+#' @param value Logical
+
+setGeneric( "filteredCTSSidx<-"
+          , function(object, value) standardGeneric("filteredCTSSidx<-"))
+
+#' @rdname filteredCTSSidx
+
+setMethod("filteredCTSSidx<-", "CAGEset", function (object, value) {
+	object@filteredCTSSidx <- value
+	if (validObject(object)) object
+})
+
+#' @rdname filteredCTSSidx
+
+setMethod("filteredCTSSidx<-", "CAGEexp", function (object, value) {
+  CTSScoordinatesGR(object)$filteredCTSSidx
+  if (validObject(object)) object
+})
+
 
 #' @name  CTSScumulativesTagClusters<-
 #' 
