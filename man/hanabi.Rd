@@ -10,6 +10,7 @@
 \alias{hanabi,DataFrame-method}
 \alias{hanabi,data.frame-method}
 \alias{hanabi,GRangesList-method}
+\alias{hanabi,matrix-method}
 \title{Calcultate richness in preparation for plotting}
 \usage{
 hanabi(x, n = 20, step = 0.75, from = NULL)
@@ -27,6 +28,8 @@ hanabi(x, n = 20, step = 0.75, from = NULL)
 \S4method{hanabi}{data.frame}(x, n = 20, step = 0.75, from = NULL)
 
 \S4method{hanabi}{GRangesList}(x, n = 20, step = 0.75, from = NULL)
+
+\S4method{hanabi}{matrix}(x, n = 20, step = 0.75, from = NULL)
 }
 \arguments{
 \item{x}{An object contained expression counts on which richness scores can

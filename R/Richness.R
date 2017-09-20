@@ -127,6 +127,13 @@ setMethod("hanabi", "GRangesList", function(x, n, step, from) {
   unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
 })
 
+#' @rdname hanabi
+
+setMethod("hanabi", "matrix", function(x, n, step, from) {
+  unlist(SimpleList(apply(x, 2, hanabi, n = n, step = step, from = from)))
+})
+
+
 #' @name .add.alpha
 #' @noRd
 #' @description Accessory function to make the lines a little transparent.
