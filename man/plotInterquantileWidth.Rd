@@ -4,23 +4,23 @@
 \name{plotInterquantileWidth}
 \alias{plotInterquantileWidth}
 \alias{plotInterquantileWidth,CAGEr-method}
-\title{Plot distribution of interquantile width}
+\title{Plot cluster widths}
 \usage{
-plotInterquantileWidth(object, clusters, tpmThreshold = 5, qLow = 0.1,
-  qUp = 0.9, xlim = c(0, 150), ...)
+plotInterquantileWidth(object, clusters = c("tagClusters",
+  "consensusClusters"), tpmThreshold = 5, qLow = 0.1, qUp = 0.9,
+  xlim = c(0, 150), ...)
 
-\S4method{plotInterquantileWidth}{CAGEr}(object, clusters, tpmThreshold = 5,
-  qLow = 0.1, qUp = 0.9, xlim = c(0, 150), ...)
+\S4method{plotInterquantileWidth}{CAGEr}(object, clusters = c("tagClusters",
+  "consensusClusters"), tpmThreshold = 5, qLow = 0.1, qUp = 0.9,
+  xlim = c(0, 150), ...)
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} object}
+\item{object}{A \code{\link{CAGEr}} object}
 
-\item{clusters}{Which clusters should be used.  Can be either \code{"tagClusters"} to plot
-distribution of interquantile width of tag clusters or \code{"consensusClusters"}
-to plot distribution of interquantile width of consensus clusters.}
+\item{clusters}{Which clusters to be used.  (\code{"tagClusters"} for \emph{tag clusters}
+or \code{"consensusClusters"} for \emph{consensus clusters}.}
 
-\item{tpmThreshold}{Only clusters with normalized signal \code{>= tpmThreshold} will be
-included in the histogram.}
+\item{tpmThreshold}{Exclude clusters with normalized signal \code{< tpmThreshold}.}
 
 \item{qLow, qUp}{Position of which "lower" (resp. "upper") quantile should be used as 5'
 (resp. 3') boundary.  See Details.}
@@ -31,7 +31,7 @@ included in the histogram.}
 \emph{etc.}.}
 }
 \description{
-Plots histograms showing distribution of interquantile width of tag clusters or
+Plots histograms of the interquantile width of tag clusters or
 consensus clusters in each CAGE dataset.
 }
 \details{
@@ -47,10 +47,15 @@ region.
 plotInterquantileWidth( object = exampleCAGEset, clusters = "tagClusters"
                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
 
+plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
+                      , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
+
 }
 \seealso{
-Other CAGEr export functions: \code{\link{exportCTSStoBedGraph}},
-  \code{\link{exportToBed}}
+Other CAGEr plot functions: \code{\link{hanabiPlot}},
+  \code{\link{plotAnnot}}, \code{\link{plotCorrelation}},
+  \code{\link{plotExpressionProfiles}},
+  \code{\link{plotReverseCumulatives}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
   \code{\link{CustomConsensusClusters}},

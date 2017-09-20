@@ -216,19 +216,17 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 
 #' @name plotInterquantileWidth
 #' 
-#' @title Plot distribution of interquantile width
+#' @title Plot cluster widths
 #' 
-#' @description Plots histograms showing distribution of interquantile width of tag clusters or
+#' @description Plots histograms of the interquantile width of tag clusters or
 #' consensus clusters in each CAGE dataset.
 #' 
-#' @param object A \code{\link{CAGEset}} object
+#' @param object A \code{\link{CAGEr}} object
 #' 
-#' @param clusters Which clusters should be used.  Can be either \code{"tagClusters"} to plot
-#'        distribution of interquantile width of tag clusters or \code{"consensusClusters"}
-#'        to plot distribution of interquantile width of consensus clusters.
+#' @param clusters Which clusters to be used.  (\code{"tagClusters"} for \emph{tag clusters}
+#'        or \code{"consensusClusters"} for \emph{consensus clusters}.
 #' 
-#' @param tpmThreshold Only clusters with normalized signal \code{>= tpmThreshold} will be
-#'        included in the histogram.
+#' @param tpmThreshold Exclude clusters with normalized signal \code{< tpmThreshold}.
 #' 
 #' @param qLow,qUp Position of which "lower" (resp. "upper") quantile should be used as 5'
 #'        (resp. 3') boundary.  See Details.
@@ -248,95 +246,64 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 #' 
 #' @author Vanja Haberle
 #' 
-#' @family CAGEr export functions
+#' @family CAGEr plot functions
 #' @family CAGEr clusters functions
 #' 
 #' @importFrom graphics hist
 #' 
-#' @examples 
+#' @examples
 #' plotInterquantileWidth( object = exampleCAGEset, clusters = "tagClusters"
+#'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
+#' 
+#' plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
 #'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
 #' 
 #' @export
 
 setGeneric( "plotInterquantileWidth"
-          , function( object, clusters, tpmThreshold = 5
+          , function( object
+                    , clusters = c("tagClusters", "consensusClusters")
+                    , tpmThreshold = 5
                     , qLow = 0.1, qUp = 0.9, xlim = c(0,150), ...)
             	standardGeneric("plotInterquantileWidth"))
 
 #' @rdname plotInterquantileWidth
 
 setMethod( "plotInterquantileWidth", "CAGEr"
-         , function (object, clusters, tpmThreshold, qLow, qUp, xlim, ...){
+         , function (object, clusters, tpmThreshold, qLow, qUp, xlim, ...) {
+           
 	sample.labels <- sampleLabels(object)
 	cols <- names(sample.labels)
-	
-	if(clusters == "tagClusters"){	
-		
-		if(length(tagClustersQuantileLow(object))>0 & length(tagClustersQuantileUp(object))>0) {
-			if(!(paste("q_", qLow, sep = "") %in% colnames(tagClustersQuantileLow(object)[[1]]) & paste("q_", qUp, sep = "") %in% colnames(tagClustersQuantileUp(object)[[1]]))){
-				stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
-			}
-		}else{
-			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
-		}
-		
-		#filename <- "TC"
-		q.low <- tagClustersQuantileLow(object)
-		q.up <- tagClustersQuantileUp(object)
-		idx.list <- lapply(as.list(sample.labels), function(x) {
-			   
-								cl <- tagClusters(object, samples = x)
-								idx <- cl$tpm >= tpmThreshold
-								return(idx)
-						   
-							}
-						   )
-	
-	}else if (clusters == "consensusClusters"){
-		
-		if(length(consensusClustersQuantileLow(object))>0 & length(consensusClustersQuantileUp(object))>0) {
-			
-			if(!(paste("q_", qLow, sep = "") %in% colnames(consensusClustersQuantileLow(object)[[1]]) & paste("q_", qUp, sep = "") %in% colnames(consensusClustersQuantileUp(object)[[1]]))){
-				stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
-			}
-		}else{
-			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first!")
-		}
-		
-		#filename <- "consensusClusters_interquantile_width_all_samples.pdf"
-		q.low <- consensusClustersQuantileLow(object)
-		q.up <- consensusClustersQuantileUp(object)
-		cl <- consensusClustersTpm(object)
-		idx.list <- lapply(as.list(sample.labels), function(x) {idx <- cl[,x][cl[,x] > 0] >= tpmThreshold})		
-		
-	}else{
-		stop("'clusters' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
-	}
+	clusters <- match.arg(clusters)
+	getClustFun <- switch( clusters
+	                     , tagClusters       = tagClustersGR
+	                     , consensusClusters = consensusClustersGR)
 
-	names(idx.list) <- sample.labels
-	
-	#pdf(file = paste(clusters, "_interquantile_width_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
-	par(mar = c(5,5,5,1))
+  old.par <- par(mar = c(5,5,5,1))
+  on.exit(par(old.par))
+  
 	sapply(sample.labels, function(x) {
-		   
-		   q.low.s <- q.low[[x]]
-		   q.low.s <- as.integer(q.low.s[, which(colnames(q.low.s) == paste("q_", qLow, sep = ""))])
-		   q.up.s <- q.up[[x]]
-		   q.up.s <- as.integer(q.up.s[, which(colnames(q.up.s) == paste("q_", qUp, sep = ""))])
-		   width <- q.up.s[idx.list[[x]]] - q.low.s[idx.list[[x]]] + 1
-		   h <- hist(width, breaks = round(max(width)/2), plot = F)
-		   h$counts <- h$counts/sum(h$counts)
-		   col <- as.integer(col2rgb(cols[which(sample.labels == x)]))/255
-		   plot(h, xlim = xlim, main = x, xlab = paste(clusters, " interquantile width q", qLow, "-q", qUp, " (bp)", sep = ""), ylab = "relative frequency", col = rgb(col[1], col[2], col[3], 0.5), border = cols[which(sample.labels == x)], cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = cols[which(sample.labels == x)], ...)
-		   
-		   }
-		   )
-	#dev.off()
-	#message("\nFile '", clusters, "_interquantile_width_all_samples.pdf' has been created in your working directory (", getwd(), ")")
-	
-}
-)
+    gr <- tagClustersGR(object, x, returnInterquantileWidth = TRUE, qLow = qLow, qUp = qUp)
+    gr <- gr[score(gr) >= tpmThreshold]
+    width <- decode(gr$interquantile_width)
+    h <- hist(width, breaks = round(max(width)/2), plot = F)
+    h$counts <- h$counts/sum(h$counts)
+    col <- as.integer(col2rgb(cols[which(sample.labels == x)]))/255
+    plot( h
+        , xlim = xlim
+        , main = x
+        , xlab = paste0(clusters, " interquantile width q", qLow, "-q", qUp, " (bp)")
+        , ylab = "relative frequency"
+        , col = rgb(col[1], col[2], col[3], 0.5)
+        , border = cols[which(sample.labels == x)]
+        , cex.axis = 1.8
+        , cex.lab = 1.8
+        , cex.main = 2.5
+        , col.main = cols[which(sample.labels == x)]
+        , ...)
+  })
+	invisible(1)
+})
 
 #' @name plotExpressionProfiles
 #' 
