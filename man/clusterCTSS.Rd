@@ -5,7 +5,7 @@
 \alias{clusterCTSS}
 \alias{clusterCTSS,CAGEset-method}
 \alias{clusterCTSS,CAGEexp-method}
-\title{Clustering CTSSs into tag clusters}
+\title{Cluster CTSSs into tag clusters}
 \usage{
 clusterCTSS(object, threshold = 1, nrPassThreshold = 1,
   thresholdIsTpm = TRUE, method = c("distclu", "paraclu", "custom"),

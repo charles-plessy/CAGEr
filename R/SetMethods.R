@@ -176,6 +176,8 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
 
 #' @name filteredCTSSidx<-
 #' 
+#' @noRd 
+#' 
 #' @param value Logical
 
 setGeneric( "filteredCTSSidx<-"

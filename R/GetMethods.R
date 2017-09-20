@@ -781,18 +781,10 @@ setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
 #' @export
 #' 
 #' @examples
-#' TC <- tagClusters(exampleCAGEset, "sample2", returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
-#' head(TC)
+#' head(tagClusters( exampleCAGEset, "sample2"
+#'                 , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9))
 #' 
-#' normalizeTagCount(exampleCAGEexp)
-#' clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
-#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
-#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-#' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "tagClusters")
-#' quantilePositions( exampleCAGEexp, clusters = "tagClusters"
-#'                  , qLow = c(0.1,0.2), qUp = c(0.8,0.9))
-#' TC <- tagClusters(exampleCAGEexp, "sample2", TRUE, 0.1, 0.9)
-#' head(TC)
+#' tagClustersGR(exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9)
 
 setGeneric( "tagClusters"
           , function( object, samples = NULL

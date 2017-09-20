@@ -2,7 +2,7 @@
 
 #' @name clusterCTSS
 #' 
-#' @title Clustering CTSSs into tag clusters
+#' @title Cluster CTSSs into tag clusters
 #' 
 #' @description Clusters individual CAGE transcription start sites (CTSSs) along
 #' the genome into tag clusters (TCs) using specified \emph{ab initio} method, or assigns

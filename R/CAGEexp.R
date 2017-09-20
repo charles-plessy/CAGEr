@@ -112,7 +112,8 @@ CAGEexp <- setClass("CAGEexp",
 #' @docType data
 #' 
 #' @examples 
-#' # The commands below were used to create the example CAGEexp object in the "extdata" folder.
+#' # The example commands in the CAGEexp help page were used to create the example
+#' # CAGEexp object used below.
 #' \dontrun{
 #' exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
 #' CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object

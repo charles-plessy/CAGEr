@@ -22,15 +22,15 @@ Interconvert tag clusters (TC) formats used in classes CAGEset
 \examples{
 df <- tagClusters(exampleCAGEset, 1)
 head(df)
-gr <- TCdataframe2granges(df)
+gr <- CAGEr:::TCdataframe2granges(df)
 gr
-head(TCgranges2dataframe(gr))
-# No round-trip because start and end were not integer in df.
-if (! identical(df, TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
-if (! all(df == TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
+head(CAGEr:::TCgranges2dataframe(gr))
+# No exact round-trip because start and end were not integer in df.
+identical(df, CAGEr:::TCgranges2dataframe(gr))
+if (! all(df == CAGEr:::TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 
 tagClustersGR(exampleCAGEexp)
-head(TCgranges2dataframe(tagClustersGR(exampleCAGEexp, 1)))
+head(CAGEr:::TCgranges2dataframe(CAGEr:::tagClustersGR(exampleCAGEexp, 1)))
 }
 \seealso{
 Other df2granges converters: \code{\link{consensusClusterConvertors}}
