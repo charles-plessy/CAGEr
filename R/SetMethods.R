@@ -187,7 +187,7 @@ setMethod("filteredCTSSidx<-", "CAGEset", function (object, value) {
 })
 
 setMethod("filteredCTSSidx<-", "CAGEexp", function (object, value) {
-  CTSScoordinatesGR(object)$filteredCTSSidx
+  CTSScoordinatesGR(object)$filteredCTSSidx <- value
   if (validObject(object)) object
 })
 
