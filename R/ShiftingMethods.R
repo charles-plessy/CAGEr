@@ -189,28 +189,19 @@ setMethod( "scoreShift"
 			names(n) <- clusters.info$consensus.cluster
 			
 		}else{
-			
-			idx <- object@filteredCTSSidx
-			ctss.df <- cbind(CTSScoordinates(object)[idx,], object@tagCountMatrix[idx,,drop=F])
-		
-			ctss.clusters.orig <- merge(object@consensusClusters, object@consensusClustersTpmMatrix, by.x = 1, by.y = 0)
-		
-			template.tagcount <- as.integer(rep(0, nrow(ctss.clusters.orig)))
-			names(template.tagcount) <- ctss.clusters.orig$consensus.cluster
+			template.tagcount <- rep(0L, length(consensusClustersGR(object)))
+			names(template.tagcount) <- consensusClustersGR(object)$consensus.cluster
 			tag.count.list <- list()
 		
 			for(s in c(groupX, groupY)) {
-			
-				d <- ctss.df[,c("chr", "pos", "strand", s)]
-				colnames(d) <- c("chr", "pos", "strand", "tagcount")
-				d <- subset(d, tagcount>0)
-				ctss.clusters <- ctss.clusters.orig[ctss.clusters.orig[,s]>0,]
-				tag.count <- .getTotalTagCount(ctss.df = d, ctss.clusters = ctss.clusters)
+				ctss          <- CTSStagCountGR(object, s)
+				ctss          <- ctss[ctss$filteredCTSSidx]
+				ctss.clusters <- consensusClustersGR(object, s)
+				tag.count     <- .getTotalTagCount(ctss, ctss.clusters)
 				tag.count.new <- template.tagcount
-				tag.count.new[names(tag.count)] <- as.integer(tag.count)  # for some reason at this step the vector is converted to list when run within this function (does not happen when run normally outside the function)!!!
+				tag.count.new[ctss.clusters$consensus.cluster] <- as.integer(tag.count)  # for some reason at this step the vector is converted to list when run within this function (does not happen when run normally outside the function)!!!
 				tag.count.list[[s]] <- unlist(tag.count.new)
 				invisible(gc())
-			
 			}
 			
 			tag.count.m <- do.call(cbind, tag.count.list)
