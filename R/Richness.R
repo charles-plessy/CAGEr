@@ -61,6 +61,7 @@
 #' h <- hanabi(CTSStagCountDF(exampleCAGEexp))
 #' h
 #' plot(h)
+#' hanabi(CTSStagCountGR(exampleCAGEexp, 2))
 
 setGeneric( "hanabi"
           , function( x
@@ -105,25 +106,20 @@ setMethod("hanabi", "GRanges", function(x, n, step, from) {
     hanabi(score(x))
 })
 
-# Same method for DataFrame, data.frame and GRangesList.
+# Same method for list-like or List-like objects, such as list,
+# data.frame, DataFrame or GRangesList.
 # Uses `unlist(SimpleList())` to move the hanabi class from inside to
 # outside the list, taking advantage of the base class SimpleList.
 
 #' @rdname hanabi
 
-setMethod("hanabi", "DataFrame", function(x, n, step, from) {
+setMethod("hanabi", "List", function(x, n, step, from) {
   unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
 })
 
 #' @rdname hanabi
 
-setMethod("hanabi", "data.frame", function(x, n, step, from) {
-  unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
-})
-
-#' @rdname hanabi
-
-setMethod("hanabi", "GRangesList", function(x, n, step, from) {
+setMethod("hanabi", "list", function(x, n, step, from) {
   unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
 })
 

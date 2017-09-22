@@ -7,9 +7,8 @@
 \alias{hanabi,numeric-method}
 \alias{hanabi,integer-method}
 \alias{hanabi,GRanges-method}
-\alias{hanabi,DataFrame-method}
-\alias{hanabi,data.frame-method}
-\alias{hanabi,GRangesList-method}
+\alias{hanabi,List-method}
+\alias{hanabi,list-method}
 \alias{hanabi,matrix-method}
 \title{Calcultate richness in preparation for plotting}
 \usage{
@@ -23,11 +22,9 @@ hanabi(x, n = 20, step = 0.75, from = NULL)
 
 \S4method{hanabi}{GRanges}(x, n = 20, step = 0.75, from = NULL)
 
-\S4method{hanabi}{DataFrame}(x, n = 20, step = 0.75, from = NULL)
+\S4method{hanabi}{List}(x, n = 20, step = 0.75, from = NULL)
 
-\S4method{hanabi}{data.frame}(x, n = 20, step = 0.75, from = NULL)
-
-\S4method{hanabi}{GRangesList}(x, n = 20, step = 0.75, from = NULL)
+\S4method{hanabi}{list}(x, n = 20, step = 0.75, from = NULL)
 
 \S4method{hanabi}{matrix}(x, n = 20, step = 0.75, from = NULL)
 }
@@ -67,6 +64,7 @@ data, therefore it is not possible to guess which one to use.
 h <- hanabi(CTSStagCountDF(exampleCAGEexp))
 h
 plot(h)
+hanabi(CTSStagCountGR(exampleCAGEexp, 2))
 }
 \seealso{
 \code{vegan::rarecurve}.
