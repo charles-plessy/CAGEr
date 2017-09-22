@@ -5,16 +5,22 @@
 \alias{sampleLabels}
 \alias{sampleLabels,CAGEset-method}
 \alias{sampleLabels,CAGEexp-method}
+\alias{sampleList}
+\alias{sampleList,CAGEr-method}
 \alias{sampleLabels<-}
 \alias{sampleLabels<-,CAGEset-method}
 \alias{sampleLabels<-,CAGEexp-method}
-\title{Get/set sample labels}
+\title{Get and set sample labels}
 \usage{
 sampleLabels(object)
 
 \S4method{sampleLabels}{CAGEset}(object)
 
 \S4method{sampleLabels}{CAGEexp}(object)
+
+sampleList(object)
+
+\S4method{sampleList}{CAGEr}(object)
 
 sampleLabels(object) <- value
 
@@ -29,13 +35,23 @@ sampleLabels(object) <- value
 The \code{names} attributes indicate the colors.}
 }
 \value{
-Returns a named character vector representing labels of all CAGE datasets
-present in the CAGEr object.  The vector values are the labels and the vector names
-are the colors.
+\code{sampleLabels} returns a named character vector representing labels of all
+CAGE datasets present in the CAGEr object.  The vector values are the labels and the
+vector names are the colors.
+
+\code{sampleList} returns a named list where elements are the
+position of a sample in the CAGEr object, and element names are the sample
+name, for instance: \code{list(sampleA = 1, sampleB = 2)}.
+Thus, after iterating on it with \code{lapply}, the element names will
+be sample names.
 }
 \description{
-Gets or sets the labels and colors of CAGE datasets
+\code{sampleLabels} gets or sets the labels and colors of CAGE datasets
 (samples) from \code{\link{CAGEr}} objects.
+
+\code{sampleList} is an accessory function for convenience
+iteration in functions such as \code{\link{lapply}} or \code{\link{mapply}}.
+There is no set method for \code{sampleList}.
 }
 \details{
 In \code{CAGEexp} objects, renaming samples is possible only before
@@ -48,6 +64,8 @@ to be stable.
 }
 \examples{
 sampleLabels(exampleCAGEset)
+
+sampleList(exampleCAGEset)
 
 }
 \seealso{

@@ -56,16 +56,16 @@ getRefGenome <- function(reference.genome) {
 
 #' @name sampleLabels
 #' 
-#' @title Get/set sample labels
+#' @title Get and set sample labels
 #' 
-#' @description Gets or sets the labels and colors of CAGE datasets
+#' @description \code{sampleLabels} gets or sets the labels and colors of CAGE datasets
 #' (samples) from \code{\link{CAGEr}} objects.
 #' 
 #' @param object A CAGEr object.
 #' 
-#' @return Returns a named character vector representing labels of all CAGE datasets
-#' present in the CAGEr object.  The vector values are the labels and the vector names
-#' are the colors.
+#' @return \code{sampleLabels} returns a named character vector representing labels of all
+#' CAGE datasets present in the CAGEr object.  The vector values are the labels and the
+#' vector names are the colors.
 #' 
 #' @note If no colors are supplied, then default colors will be assigned
 #' usign the \code{rainbow} function.  Assigned colors are not guaranteed
@@ -104,6 +104,32 @@ setMethod("sampleLabels", "CAGEexp", function (object) {
   sl
 })
 
+#' @description \code{sampleList} is an accessory function for convenience
+#' iteration in functions such as \code{\link{lapply}} or \code{\link{mapply}}.
+#' There is no set method for \code{sampleList}.
+#' 
+#' @return \code{sampleList} returns a named list where elements are the
+#' position of a sample in the CAGEr object, and element names are the sample
+#' name, for instance: \code{list(sampleA = 1, sampleB = 2)}.
+#' Thus, after iterating on it with \code{lapply}, the element names will
+#' be sample names.
+#' 
+#' @examples 
+#' sampleList(exampleCAGEset)
+#' 
+#' @export
+#' @rdname sampleLabels
+
+setGeneric("sampleList", function(object) standardGeneric("sampleList"))
+
+#' @rdname sampleLabels
+
+setMethod("sampleList", "CAGEr", function (object) {
+  sl <- sampleLabels(object)
+  l <- seq_along(sl)
+  names(l) <- sl
+  l
+})
 
 #' @name validSamples
 #' @noRd
