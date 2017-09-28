@@ -66,6 +66,7 @@ plotCorrelation(exampleCAGEexp)
 Other CAGEr plot functions: \code{\link{hanabiPlot}},
   \code{\link{plotAnnot}},
   \code{\link{plotExpressionProfiles}},
+  \code{\link{plotInterquantileWidth}},
   \code{\link{plotReverseCumulatives}}
 }
 \author{

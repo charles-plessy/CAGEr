@@ -64,6 +64,7 @@ Other CAGEr annotation functions: \code{\link{annotateCTSS}},
 Other CAGEr plot functions: \code{\link{hanabiPlot}},
   \code{\link{plotCorrelation}},
   \code{\link{plotExpressionProfiles}},
+  \code{\link{plotInterquantileWidth}},
   \code{\link{plotReverseCumulatives}}
 }
 \author{

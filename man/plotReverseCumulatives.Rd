@@ -77,7 +77,8 @@ expression data: constructing the human and mouse promoterome with deepCAGE data
 
 Other CAGEr plot functions: \code{\link{hanabiPlot}},
   \code{\link{plotAnnot}}, \code{\link{plotCorrelation}},
-  \code{\link{plotExpressionProfiles}}
+  \code{\link{plotExpressionProfiles}},
+  \code{\link{plotInterquantileWidth}}
 }
 \author{
 Vanja Haberle

@@ -53,8 +53,7 @@ exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "BigWig", o
 \seealso{
 \code{\link{normalizeTagCount}}
 
-Other CAGEr export functions: \code{\link{exportToBed}},
-  \code{\link{plotInterquantileWidth}}
+Other CAGEr export functions: \code{\link{exportToBed}}
 }
 \author{
 Vanja Haberle

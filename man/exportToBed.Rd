@@ -94,8 +94,7 @@ exportToBed( object = exampleCAGEset, what = "tagClusters"
 
 }
 \seealso{
-Other CAGEr export functions: \code{\link{exportCTSStoBedGraph}},
-  \code{\link{plotInterquantileWidth}}
+Other CAGEr export functions: \code{\link{exportCTSStoBedGraph}}
 }
 \author{
 Vanja Haberle
