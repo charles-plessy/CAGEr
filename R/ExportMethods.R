@@ -309,7 +309,7 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 #' 
 #' @title Plotting expression profiles derived from CAGE data
 #' 
-#' @description Creates PDF file with beanplots representing distribution of normalized
+#' @description Creates a chart with beanplots representing distribution of normalized
 #' expression across CAGE experiments for individual expression classes.  Different
 #' expression classes are shown in different colors and are labeled according to the labels
 #' returned by expression clustering.
@@ -329,10 +329,6 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 #' particular CAGE experiment, and the entire box represents single expression profile.
 #' Different expression classes (boxes) are plotted in different colors and are labeled with
 #' labels returned by expression clustering.
-#' 
-#' @return Creates PDF file named "CTSS_expression_profiles.pdf" (in case \code{what = "CTSS"})
-#' or "consensusClusters_expression_profiles.pdf" (in case \code{what = "consensusClusters"})
-#' in the working directory.
 #' 
 #' @author Vanja Haberle
 #' 
@@ -382,12 +378,14 @@ setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
 	l <- .extract.cluster.info(tpm.mx, cl)
 	cl <- l[[1]]
 	m <- l[[2]]
-	file_name = paste(what, "_expression_profiles.pdf", sep = "")
-	pdf(file = file_name, height = 5.5 * (max(cl[,2]) + 1) + 3, width = 6 * (max(cl[,1]) + 1))
-	par(omi = c(3,0.5,0.5,0.5), mfrow = c(max(cl[,2]) + 1, max(cl[,1]) + 1))
+	# file_name = paste(what, "_expression_profiles.pdf", sep = "")
+	# pdf(file = file_name, height = 5.5 * (max(cl[,2]) + 1) + 3, width = 6 * (max(cl[,1]) + 1))
+	old.par <- par(omi = c(3,0.5,0.5,0.5), mfrow = c(max(cl[,2]) + 1, max(cl[,1]) + 1))
+	on.exit(par(old.par))
 	suppressWarnings(.plot.clusters.beanplots(value.matrix = m, cl = cl, cl.method = cl.method, dim.som.x = max(cl[,1]) + 1, dim.som.y = max(cl[,2]) + 1, cex.axis = 3, las = 2))
-	dev.off()
-	message("\nFile '", file_name, "' has been created in your working directory (", getwd(), ")")	
+	# dev.off()
+	# message("\nFile '", file_name, "' has been created in your working directory (", getwd(), ")"
+	invisible(TRUE)
 })
 
 

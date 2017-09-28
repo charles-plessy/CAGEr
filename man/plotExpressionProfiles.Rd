@@ -17,13 +17,8 @@ plotExpressionProfiles(object, what)
 \code{"CTSS"} to plot expression profiles of individual CTSSs or \code{"consensusClusters"}
 to plot expression profiles of consensus clusters.}
 }
-\value{
-Creates PDF file named "CTSS_expression_profiles.pdf" (in case \code{what = "CTSS"})
-or "consensusClusters_expression_profiles.pdf" (in case \code{what = "consensusClusters"})
-in the working directory.
-}
 \description{
-Creates PDF file with beanplots representing distribution of normalized
+Creates a chart with beanplots representing distribution of normalized
 expression across CAGE experiments for individual expression classes.  Different
 expression classes are shown in different colors and are labeled according to the labels
 returned by expression clustering.
@@ -49,6 +44,7 @@ plotExpressionProfiles(object = exampleCAGEset, what = "CTSS")
 
 Other CAGEr plot functions: \code{\link{hanabiPlot}},
   \code{\link{plotAnnot}}, \code{\link{plotCorrelation}},
+  \code{\link{plotInterquantileWidth}},
   \code{\link{plotReverseCumulatives}}
 }
 \author{
