@@ -124,9 +124,9 @@ setMethod( "scoreShift"
 		if(is.null(nrCores)){
 			nrCores <- detectCores()
 		}		
-		cumsum.list <- mclapply(a, function(x) {n <- names(x); y <- subset(b, !(consensus.cluster %in% as.integer(names(x)))); if(nrow(y)>0) {nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls)}; names(x) <- c(n, as.character(y$consensus.cluster)); return(x)}, mc.cores = nrCores)
+		cumsum.list <- mclapply(a, function(x) {n <- names(x); y <- subset(b, !(b$consensus.cluster %in% as.integer(names(x)))); if(nrow(y)>0) {nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls)}; names(x) <- c(n, as.character(y$consensus.cluster)); return(x)}, mc.cores = nrCores)
 	}else{
-		cumsum.list <- lapply(a, function(x) {n <- names(x); y <- subset(b, !(consensus.cluster %in% as.integer(names(x)))); if(nrow(y)>0) {nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls)}; names(x) <- c(n, as.character(y$consensus.cluster)); return(x)})
+		cumsum.list <- lapply(a, function(x) {n <- names(x); y <- subset(b, !(b$consensus.cluster %in% as.integer(names(x)))); if(nrow(y)>0) {nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls)}; names(x) <- c(n, as.character(y$consensus.cluster)); return(x)})
 	}
 
 	cumsum.list.r <- list()
@@ -253,7 +253,10 @@ function (object, tpmThreshold = 0, scoreThreshold = -Inf, fdrThreshold = 1){
 	shifting.scores <- object@consensusClustersShiftingScores
 	clusters <- object@consensusClusters
 	
-	sig.shifting <- subset(shifting.scores, (groupX.tpm >= tpmThreshold & groupY.tpm >= tpmThreshold) & shifting.score >= scoreThreshold)
+	sig.shifting <- shifting.scores[ ( shifting.scores$groupX.tpm >= tpmThreshold &
+	                                   shifting.scores$groupY.tpm >= tpmThreshold   ) &
+	                                  shifting.scores$shifting.score >= scoreThreshold
+	                                , ]
 
 	if("fdr.KS" %in% colnames(shifting.scores)){
 		sig.shifting <- subset(sig.shifting, fdr.KS <= fdrThreshold)
