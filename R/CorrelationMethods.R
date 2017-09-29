@@ -178,6 +178,34 @@ setMethod( "plotCorrelation", "CAGEr"
 
 #' @importFrom grDevices blues9 colorRamp colorRampPalette xy.coords
 #' @importFrom graphics points
+#' @importFrom KernSmooth bkde2D
+
+# Local copy of grDevices:::.smoothScatterCalcDensity,
+# to avoid problems in case the original function is changed
+# (since the original is private, we can not assume that changes maintain
+#  compatibility with existing code.)
+grDevices.smoothScatterCalcDensity <- function (x, nbin, bandwidth, range.x) 
+{
+    if (length(nbin) == 1) 
+        nbin <- c(nbin, nbin)
+    if (!is.numeric(nbin) || length(nbin) != 2) 
+        stop("'nbin' must be numeric of length 1 or 2")
+    if (missing(bandwidth)) {
+        bandwidth <- diff(apply(x, 2, stats::quantile, probs = c(0.05, 
+            0.95), na.rm = TRUE, names = FALSE))/25
+        bandwidth[bandwidth == 0] <- 1
+    }
+    else {
+        if (!is.numeric(bandwidth)) 
+            stop("'bandwidth' must be numeric")
+        if (any(bandwidth <= 0)) 
+            stop("'bandwidth' must be positive")
+    }
+    rv <- KernSmooth::bkde2D(x, bandwidth = bandwidth, gridsize = nbin, 
+        range.x = range.x)
+    rv$bandwidth <- bandwidth
+    rv
+}
 
 .mySmoothScatter <- function (x, y = NULL, nbin = 128, bandwidth, colramp = colorRampPalette(c("white",
 blues9)), nrpoints = 100, pch = ".", cex = 1, col = "black",
@@ -215,7 +243,7 @@ yaxs = par("yaxs"), ...)
     else {
         ylim <- range(x[, 2])
     }
-    map <- grDevices:::.smoothScatterCalcDensity(x, nbin, bandwidth, range.x = list(xlim = c(xlim[1] - 1.5*bandwidth[1], xlim[2] + 1.5*bandwidth[1]), ylim = c(ylim[1] - 1.5*bandwidth[2], ylim[2] + 1.5*bandwidth[2])))
+    map <- grDevices.smoothScatterCalcDensity(x, nbin, bandwidth, range.x = list(xlim = c(xlim[1] - 1.5*bandwidth[1], xlim[2] + 1.5*bandwidth[1]), ylim = c(ylim[1] - 1.5*bandwidth[2], ylim[2] + 1.5*bandwidth[2])))
     xm <- map$x1
     ym <- map$x2
     dens <- map$fhat

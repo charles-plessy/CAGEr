@@ -15,6 +15,7 @@ Imports:
     ggplot2 (>= 2.2.0),
     gtools,
     IRanges (>= 2.5.27),
+    KernSmooth,
     MultiAssayExperiment,
     plyr,
     Rsamtools,
