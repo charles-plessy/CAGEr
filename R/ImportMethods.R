@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEr.R CAGEexp.R GetMethods.R SetMethods.R
+#' @include AllClasses.R CAGEr.R CAGEexp.R ClusteringMethods.R GetMethods.R SetMethods.R
 
 #' @name getCTSS
 #' 
@@ -136,14 +136,18 @@ checkFilesExist <- function(paths) {
 toCTSSdt <- function(reads.GRanges, sample.label) {
   reads.GRanges.plus  <- reads.GRanges[strand(reads.GRanges) == "+"]
   reads.GRanges.minus <- reads.GRanges[strand(reads.GRanges) == "-"]
-  CTSS.plus <- data.frame(chr = as.character(seqnames(reads.GRanges.plus)), pos = as.integer(start(reads.GRanges.plus)), strand = rep("+", times = length(reads.GRanges.plus)), stringsAsFactors = F)
-	CTSS.minus <- data.frame(chr = as.character(seqnames(reads.GRanges.minus)), pos = as.integer(end(reads.GRanges.minus)), strand = rep("-", times = length(reads.GRanges.minus)), stringsAsFactors = F)
+  gr2ctssdf <- function(gr, strand)
+    data.frame( chr = as.character(seqnames(gr))
+              , pos = ifelse(strand == "+", start(gr), end(gr))
+              , strand = ifelse(strand == "+", "+", "-")
+              , stringsAsFactors = F)
+  CTSS.plus <- gr2ctssdf(reads.GRanges.plus, "+")
+	CTSS.minus <-gr2ctssdf(reads.GRanges.minus, "-")
   CTSS <- rbind(CTSS.plus, CTSS.minus)
-	CTSS$tag_count <- 1
-	CTSS <- data.table(CTSS)
-	CTSS <- CTSS[, as.integer(sum(tag_count)), by = list(chr, pos, strand)]
-	setnames(CTSS, c("chr", "pos", "strand", sample.label)) 
-	setkey(CTSS, chr, pos, strand)
+	CTSS$tag_count <- 1L
+	CTSS <- .byCtss(data.table(CTSS), "tag_count", sum)
+	setnames(CTSS, c("chr", "pos", "strand", sample.label))
+	setkeyv(CTSS, c("chr", "pos", "strand"))
 	CTSS
 }
 

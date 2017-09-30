@@ -65,7 +65,7 @@
 #' @family CAGEr object modifiers
 #' @family CAGEr clusters functions
 #' 
-#' @importFrom data.table data.table setkey setnames
+#' @importFrom data.table data.table setkeyv setnames
 #' 
 #' @examples
 #' head(consensusClusters(exampleCAGEset))

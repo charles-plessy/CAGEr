@@ -10,7 +10,7 @@
 	ctss.dt <- data.table(ctss)
 	removedG <- pos <- NULL # Keep R CMD check happy
 	ctss.count <- ctss.dt[, list(length(removedG), sum(removedG)), by = pos]
-	setkey(ctss.count, pos)
+	setkeyv(ctss.count, cols = "pos")
 	
 	# select the 'G' positions in the genome that had some tags before moving the 'G' mismatch reads from previous position - these should be further corrected
 	V1 <- V2 <- NULL # Keep R CMD check happy
@@ -61,6 +61,7 @@
 	
 }
 
+
 #' .remove.added.G 
 #' 
 #' Non-exported private helper function
@@ -108,46 +109,42 @@
 		# -> proportion of reads with unambigously added 'G' ('G' in the read and not in the genome) in all unambigous reads (reads with no 'G' at the beginning + reads with unambigously added 'G')
 		G.chance <- (length(G.mismatch.reads.plus) + length(G.mismatch.reads.minus)) / ((length(reads.GRanges.plus) - length(G.reads.plus)) + (length(reads.GRanges.minus) - length(G.reads.minus)) + length(G.mismatch.reads.plus) + length(G.mismatch.reads.minus))
 		
-		if(nrow(CTSS.plus)>0){
-
-			CTSS.G.plus <- CTSS.plus[G.reads.plus,]
-			CTSS.G.plus.corrected <- lapply(as.list(unique(CTSS.G.plus$chr)), function(x) {ctss.corrected <- .estimate.G.addition.and.correct(ctss = subset(CTSS.G.plus, chr == x), G.chance = G.chance, correction.orientation = 1); ctss.corrected$chr = x; return(ctss.corrected)})
-			CTSS.G.plus.corrected <- do.call(rbind, CTSS.G.plus.corrected)
-			CTSS.G.plus.corrected$strand <- "+"
-			CTSS.G.plus.corrected <- CTSS.G.plus.corrected[,c("chr", "pos", "strand", "nr_tags")]
-
-			CTSS.no.G.plus <- data.table(CTSS.plus[-G.reads.plus,])
-			CTSS.no.G.plus <- CTSS.no.G.plus[, length(removedG), by = list(chr, pos, strand)]
-			setnames(CTSS.no.G.plus, c("chr", "pos", "strand", "nr_tags"))
-			CTSS.plus.final <- rbind(CTSS.G.plus.corrected, as.data.frame(CTSS.no.G.plus))
-			CTSS.plus.final <- data.table(CTSS.plus.final)
-			CTSS.plus.final <- .ctssAggregateAndSum(CTSS.plus.final, "nr_tags")
-
-		}else{
+		f <- function(CTSS, filter, strand) {
+      CTSS.G    <- CTSS[filter,]
+    
+      CTSS.G.corrected <-
+        lapply( as.list(unique(CTSS.G$chr))
+              , function(x) { ctss.corrected <-
+                                .estimate.G.addition.and.correct(
+                                     ctss                   = CTSS.G[CTSS.G$chr == x,]
+                                   , G.chance               = G.chance
+                                   , correction.orientation = ifelse(strand == "+", 1, -1))
+                              ctss.corrected$chr <- x
+                              return(ctss.corrected)
+                             })
+      CTSS.G.corrected <- do.call(rbind, CTSS.G.corrected)
+      CTSS.G.corrected$strand <- strand
+      CTSS.G.corrected <- CTSS.G.corrected[, c("chr", "pos", "strand", "nr_tags")]
+      
+      CTSS.no.G <- data.table(CTSS[-filter,])
+      CTSS.no.G <- .byCtss(CTSS.no.G, "removedG", length)
+      setnames(CTSS.no.G, c("chr", "pos", "strand", "nr_tags"))
+      
+      CTSS.final <- rbind(CTSS.G.corrected, as.data.frame(CTSS.no.G))
+      CTSS.final <- .byCtss(data.table(CTSS.final), "nr_tags", sum)
+      CTSS.final
+    }
 		
+		if(nrow(CTSS.plus)>0){
+			CTSS.plus.final <- f(CTSS.plus, G.reads.plus, "+")
+		}else{
 			CTSS.plus.final <- data.table()
-			
 		}
 
 		if(nrow(CTSS.minus)>0){
-
-			CTSS.G.minus <- CTSS.minus[G.reads.minus,]
-			CTSS.G.minus.corrected <- lapply(as.list(unique(CTSS.G.minus$chr)), function(x) {ctss.corrected <- .estimate.G.addition.and.correct(ctss = subset(CTSS.G.minus, chr == x), G.chance = G.chance, correction.orientation = -1); ctss.corrected$chr = x; return(ctss.corrected)})
-			CTSS.G.minus.corrected <- do.call(rbind, CTSS.G.minus.corrected)
-			CTSS.G.minus.corrected$strand <- "-"
-			CTSS.G.minus.corrected <- CTSS.G.minus.corrected[,c("chr", "pos", "strand", "nr_tags")]
-		
-			CTSS.no.G.minus <- data.table(CTSS.minus[-G.reads.minus,])
-			CTSS.no.G.minus <- CTSS.no.G.minus[, length(removedG), by = list(chr, pos, strand)]
-			setnames(CTSS.no.G.minus, c("chr", "pos", "strand", "nr_tags"))
-			CTSS.minus.final <- rbind(CTSS.G.minus.corrected, as.data.frame(CTSS.no.G.minus))
-			CTSS.minus.final <- data.table(CTSS.minus.final)
-			CTSS.minus.final <- .ctssAggregateAndSum(CTSS.minus.final, "nr_tags")
-
+			CTSS.minus.final <- f(CTSS.minus, G.reads.minus, "+")
 		}else{
-			
 			CTSS.minus.final <- data.table()
-			
 		}
 				
 		CTSS <- data.table(rbind(as.data.frame(CTSS.plus.final), as.data.frame(CTSS.minus.final)))
@@ -158,10 +155,10 @@
 		CTSS <- CTSS[,c("chr", "pos", "strand")]
 		CTSS$tag_count <- 1
 		CTSS <- data.table(CTSS)
-		CTSS <- .ctssAggregateAndSum(CTSS, "tag_count")
+		CTSS <- .byCtss(CTSS, "tag_count", sum)
 	}
   setnames(CTSS, c("chr", "pos", "strand", sample.label)) 
-  setkey(CTSS, chr, pos, strand)
+  setkeyv(CTSS, cols = c("chr", "pos", "strand"))
 	return(CTSS)
 }
 

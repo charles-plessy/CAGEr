@@ -10,7 +10,7 @@
 	num <- nr_tags <- NULL # To keep R CMD check happy
 	v <- data.table(num = 1, nr_tags = decode(values))
 	v <- v[, sum(num), by = nr_tags]
-	setkey(v, nr_tags)
+	setkeyv(v, "nr_tags")
 	
 #	v <- aggregate(values, by = list(values), FUN = length)
 #	colnames(v) <- c('nr_tags', 'V1')

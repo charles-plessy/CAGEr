@@ -59,7 +59,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 #' in the logX-logY plot (where X=signal, Y=number of sites that have >= of given
 #' signal), b = intercept in the logX-logY plot)
 #' 
-#' @importFrom data.table data.table setkey setnames
+#' @importFrom data.table data.table setkeyv setnames
 #' @importFrom stats coefficients lm
 #' @noRd
 
@@ -69,7 +69,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 	v <- data.table(num = 1, nr_tags = values)
 	num <- nr_tags <- NULL # Keep R CMD check happy.
 	v <- v[, sum(num), by = nr_tags]
-	setkey(v, nr_tags)
+	setkeyv(v, "nr_tags")
 	v$V1 <- rev(cumsum(rev(v$V1)))
 	setnames(v, c('nr_tags', 'reverse_cumulative'))
 	v <- v[nr_tags >= min(val.range) & nr_tags <= max(val.range)]
