@@ -380,9 +380,9 @@ setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
 	m <- l[[2]]
 	# file_name = paste(what, "_expression_profiles.pdf", sep = "")
 	# pdf(file = file_name, height = 5.5 * (max(cl[,2]) + 1) + 3, width = 6 * (max(cl[,1]) + 1))
-	old.par <- par(omi = c(3,0.5,0.5,0.5), mfrow = c(max(cl[,2]) + 1, max(cl[,1]) + 1))
+	old.par <- par(mfrow = c(max(cl[,2]) + 1, max(cl[,1]) + 1))
 	on.exit(par(old.par))
-	suppressWarnings(.plot.clusters.beanplots(value.matrix = m, cl = cl, cl.method = cl.method, dim.som.x = max(cl[,1]) + 1, dim.som.y = max(cl[,2]) + 1, cex.axis = 3, las = 2))
+	suppressWarnings(.plot.clusters.beanplots(value.matrix = m, cl = cl, cl.method = cl.method, dim.som.x = max(cl[,1]) + 1, dim.som.y = max(cl[,2]) + 1, cex.axis = 1, las = 2))
 	# dev.off()
 	# message("\nFile '", file_name, "' has been created in your working directory (", getwd(), ")"
 	invisible(TRUE)

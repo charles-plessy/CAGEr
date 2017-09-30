@@ -210,7 +210,7 @@ value.low=min(vec), value.high=max(vec), value.mid=(value.low+value.high)/2, ...
 #' @noRd
 #' @importFrom beanplot beanplot
 
-.plot.clusters.beanplots <- function(value.matrix, cl, cl.method, dim.som.x, dim.som.y, ylim = c(0,2), las = 0, labels = colnames(value.matrix), titles = 'number', cex.axis = 1, cex.main = 5, cex.lab = 3, cols = c("red", "gold", "green", "blue")) {
+.plot.clusters.beanplots <- function(value.matrix, cl, cl.method, dim.som.x, dim.som.y, ylim = c(0,2), las = 0, labels = colnames(value.matrix), titles = 'number', cex.axis = 1, cex.main = 2, cex.lab = 1, cols = c("red", "gold", "green", "blue")) {
 	
 	color.matrix.solid <- .myColorMatrix(matrix(cols, nrow=2), nrows=dim.som.y, ncols=dim.som.x)
 	color.matrix.solid = matrix(as.vector(color.matrix.solid), ncol = dim.som.x, byrow = F)
