@@ -293,7 +293,7 @@ setMethod( "getShiftingPromoters", "CAGEset"
 	                                , ]
 
 	if("fdr.KS" %in% colnames(shifting.scores)){
-		sig.shifting <- subset(sig.shifting, fdr.KS <= fdrThreshold)
+		sig.shifting <- sig.shifting[sig.shifting$fdr.KS <= fdrThreshold,]
 	}
 	
 	sig.shifting <- merge(clusters[,c(1:5)], sig.shifting, by.x = "consensus.cluster", by.y = "consensus.cluster", all.x = F, all.y = T)

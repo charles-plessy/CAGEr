@@ -258,6 +258,7 @@ mapStats <- function( libs
   mapstats          <- reshape::melt(mapstats,    id.vars="group")
   mapstats$sd       <- reshape::melt(mapstats.sd, id.vars="group")$value
   
+  value <- NULL # To silence "no visible binding for global variable" error in R CMD check.
   mapstats          <- plyr::ddply( mapstats
                                   , plyr::.(group)
                                   , transform
