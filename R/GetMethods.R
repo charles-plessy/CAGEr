@@ -933,7 +933,7 @@ setMethod("tagClustersQuantileLow", "CAGEset", function (object, samples, q) {
         , "Run 'quantilePositions()' function for desired quantiles first!")
   res <- object@tagClustersQuantileLow
   if (is.null(samples)) {
-    if (!is.null(q) & !all(sapply(x, function(x, q) paste0("q_", q) %in% names(x), q = q)))
+    if (!is.null(q) & !all(sapply(res, function(x, q) paste0("q_", q) %in% names(x), q = q)))
       stop( "Low quantile not found! "
           , "Run 'quantilePositions()' function for desired quantiles first!")
     res
@@ -986,7 +986,7 @@ setMethod("tagClustersQuantileUp", "CAGEset", function (object, samples, q) {
         , "Run 'quantilePositions()' function for desired quantiles first!")
   res <- object@tagClustersQuantileUp
   if (is.null(samples)) {
-    if (!is.null(q) & !all(sapply(x, function(x, q) paste0("q_", q) %in% names(x), q = q)))
+    if (!is.null(q) & !all(sapply(res, function(x, q) paste0("q_", q) %in% names(x), q = q)))
       stop( "Low quantile not found! "
           , "Run 'quantilePositions()' function for desired quantiles first!")
     res
@@ -1264,6 +1264,7 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
 #'        \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
 #'        indicates a quantile.
 #' @param samples Sample name(s), number(s) or \code{NULL} (default) for all samples.
+#' @param sample A single sample name or number, or \code{NULL} (default) for all samples.
 #' @param q A quantile.
 NULL
 
@@ -1325,12 +1326,12 @@ setMethod("consensusClustersQuantile", "CAGEset", function (object, sample, q)
 #' @rdname consensusClustersQuantile
 
 setMethod("consensusClustersQuantile", "CAGEexp", function (object, sample, q) {
-  if(is.null(assays(consensusClustersSE(ce))[[paste0("q_", q)]]))
+  if(is.null(assays(consensusClustersSE(object))[[paste0("q_", q)]]))
     stop("Quantile ", sQuote(q), " not found.")
   if (is.null(sample)) {
-    assays(consensusClustersSE(ce))[[paste0("q_", q)]]
+    assays(consensusClustersSE(object))[[paste0("q_", q)]]
   } else {
-    assays(consensusClustersSE(ce))[[paste0("q_", q)]][[sample]]
+    assays(consensusClustersSE(object))[[paste0("q_", q)]][[sample]]
 }})
 
 
