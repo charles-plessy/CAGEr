@@ -519,14 +519,12 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		
 		colorByExpressionProfile <- FALSE
 		
-		if(!is.null(qLow) & (length(tagClustersQuantileLow(object))>0 & length(tagClustersQuantileLow(object))>0)) {
-		
-		if(paste("q_", qLow, sep = "") %in% colnames(tagClustersQuantileLow(object)[[1]]) & paste("q_", qUp, sep = "") %in% colnames(tagClustersQuantileUp(object)[[1]])){
+		if(!is.null(qLow)) {
 		
 		use.blocks <- T
-		q.low <- tagClustersQuantileLow(object)
+		q.low <- tagClustersQuantileLow(object, q = qLow)
 		q.low <- lapply(q.low, function(x) {colnames(x)[2:ncol(x)] <- paste("qLow_", do.call(rbind, strsplit(colnames(x)[2:ncol(x)], split = "_", fixed = T))[,2], sep = ""); return(x)})
-		q.up <- tagClustersQuantileUp(object)
+		q.up <- tagClustersQuantileUp(object, q = qUp)
 		q.up <- lapply(q.up, function(x) {colnames(x)[2:ncol(x)] <- paste("qUp_", do.call(rbind, strsplit(colnames(x)[2:ncol(x)], split = "_", fixed = T))[,2], sep = ""); return(x)})
 		q <- lapply(as.list(1:length(sample.labels)), function(x) {merge(q.low[[x]], q.up[[x]], by.x = "cluster", by.y = "cluster")})
 		names(q) <- sample.labels
@@ -536,11 +534,6 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		track.names <- paste(sample.labels, paste(" (tag clusters (TC) q(", qLow, ")-q(",qUp,"))", sep = ""), sep = "")
 		r <- paste(".qLow", qLow, "_qUp", qUp, sep = "")
 			
-		}else{
-			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first, or omit 'qLow' and 'qUp' parameters to use start and end coordinates instead!")
-		}
-		}else if(!is.null(qLow)){
-			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first, or omit 'qLow' and 'qUp' parameters to use start and end coordinates instead!")
 		}else{
 			use.blocks <- F
 			clusters.q.list <- lapply(as.list(sample.labels), function(x) {tagClusters(object, samples = x)})			
