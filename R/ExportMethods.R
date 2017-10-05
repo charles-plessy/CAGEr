@@ -519,7 +519,7 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		
 		colorByExpressionProfile <- FALSE
 		
-		if(length(qLow) > 0 & (length(tagClustersQuantileLow(object))>0 & length(tagClustersQuantileLow(object))>0)) {
+		if(!is.null(qLow) & (length(tagClustersQuantileLow(object))>0 & length(tagClustersQuantileLow(object))>0)) {
 		
 		if(paste("q_", qLow, sep = "") %in% colnames(tagClustersQuantileLow(object)[[1]]) & paste("q_", qUp, sep = "") %in% colnames(tagClustersQuantileUp(object)[[1]])){
 		
@@ -539,7 +539,7 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		}else{
 			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first, or omit 'qLow' and 'qUp' parameters to use start and end coordinates instead!")
 		}
-		}else if(length(qLow) > 0){
+		}else if(!is.null(qLow)){
 			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first, or omit 'qLow' and 'qUp' parameters to use start and end coordinates instead!")
 		}else{
 			use.blocks <- F
@@ -575,7 +575,7 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		clusters <- merge(clusters, cl, by.x = "cluster", by.y = "cluster")
 		}
 		
-		if(length(qLow) > 0 & (length(consensusClustersQuantileLow(object))>0 & length(consensusClustersQuantileUp(object))>0)) {
+		if(!is.null(qLow) & (length(consensusClustersQuantileLow(object))>0 & length(consensusClustersQuantileUp(object))>0)) {
 
 		if(paste("q_", qLow, sep = "") %in% colnames(consensusClustersQuantileLow(object)[[1]]) & paste("q_", qUp, sep = "") %in% colnames(consensusClustersQuantileUp(object)[[1]])){
 		
@@ -603,7 +603,7 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		}else{
 			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first, or omit 'qLow' and 'qUp' parameters to use start and end coordinates instead!")
 		}
-		}else if(length(qLow) > 0){
+		}else if(!is.null(qLow)){
 			stop("No data for given quantile positions! Run 'quantilePositions()' function for desired quantiles first, or omit 'qLow' and 'qUp' parameters to use start and end coordinates instead!")
 		}else{
 			use.blocks <- F
