@@ -476,7 +476,8 @@ setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
 #' @export
 
 setGeneric( "exportToBed"
-          , function( object, what, qLow = NULL, qUp = NULL
+          , function( object, what = c("CTSS", "tagClusters", "consensusClusters")
+                    , qLow = NULL, qUp = NULL
                     , colorByExpressionProfile = FALSE, oneFile = TRUE)
             	standardGeneric("exportToBed"))
 
@@ -485,6 +486,7 @@ setGeneric( "exportToBed"
 setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
                                           , colorByExpressionProfile, oneFile) {
 	sample.labels <- sampleLabels(object)
+	what <- match.arg(what)
 
 	if(what == "CTSS") {
 		
@@ -621,9 +623,6 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		}else{
 			track.file <- paste(sample.labels, ".consensusClusters.", r, ".bed", sep = "")		
 		}
-		
-	}else{
-		stop("'what' parameter must be one of the (\"CTSS\", \"tagClusters\", \"consensusClusters\")")
 	}
 
 	if(colorByExpressionProfile == TRUE){
