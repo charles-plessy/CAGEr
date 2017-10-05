@@ -17,17 +17,17 @@
 \alias{tagClustersQuantileLow<-,CAGEexp-method}
 \title{Quantile metadata stored in CAGEr objects.}
 \usage{
-tagClustersQuantileLow(object, samples = NULL)
+tagClustersQuantileLow(object, samples = NULL, q = NULL)
 
-\S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL)
+\S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL, q = NULL)
 
-\S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL)
+\S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL, q = NULL)
 
-tagClustersQuantileUp(object, samples = NULL)
+tagClustersQuantileUp(object, samples = NULL, q = NULL)
 
-\S4method{tagClustersQuantileUp}{CAGEset}(object, samples = NULL)
+\S4method{tagClustersQuantileUp}{CAGEset}(object, samples = NULL, q = NULL)
 
-\S4method{tagClustersQuantileUp}{CAGEexp}(object, samples = NULL)
+\S4method{tagClustersQuantileUp}{CAGEexp}(object, samples = NULL, q = NULL)
 
 tagClustersQuantileLow(object, samples = NULL) <- value
 
@@ -45,6 +45,8 @@ tagClustersQuantileUp(object, samples = NULL) <- value
 \item{object}{A \code{\link{CAGEr}} object.}
 
 \item{samples}{Sample name(s), number(s) or \code{NULL} (default) for all samples.}
+
+\item{q}{A single quantile (not a list)}
 
 \item{value}{A list (one entry per sample) of data frames with multiple columns:
 \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}

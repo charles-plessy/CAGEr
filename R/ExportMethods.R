@@ -472,6 +472,9 @@ setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
 #' ### exporting tag clusters in gene-like representation
 #' exportToBed( object = exampleCAGEset, what = "tagClusters"
 #'            , qLow = 0.1, qUp = 0.9, oneFile = TRUE)
+#'            
+#' exportToBed( object = exampleCAGEexp, what = "tagClusters"
+#'            , qLow = 0.1, qUp = 0.9, oneFile = TRUE)
 #' 
 #' @export
 

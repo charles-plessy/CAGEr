@@ -6,10 +6,12 @@
 \alias{exportToBed,CAGEr-method}
 \title{Create BED tracks of TSSs and clusters of TSSs}
 \usage{
-exportToBed(object, what, qLow = NULL, qUp = NULL,
-  colorByExpressionProfile = FALSE, oneFile = TRUE)
+exportToBed(object, what = c("CTSS", "tagClusters", "consensusClusters"),
+  qLow = NULL, qUp = NULL, colorByExpressionProfile = FALSE,
+  oneFile = TRUE)
 
-\S4method{exportToBed}{CAGEr}(object, what, qLow = NULL, qUp = NULL,
+\S4method{exportToBed}{CAGEr}(object, what = c("CTSS", "tagClusters",
+  "consensusClusters"), qLow = NULL, qUp = NULL,
   colorByExpressionProfile = FALSE, oneFile = TRUE)
 }
 \arguments{
@@ -90,6 +92,9 @@ exportToBed(object = exampleCAGEset, what = "CTSS", colorByExpressionProfile = T
 
 ### exporting tag clusters in gene-like representation
 exportToBed( object = exampleCAGEset, what = "tagClusters"
+           , qLow = 0.1, qUp = 0.9, oneFile = TRUE)
+           
+exportToBed( object = exampleCAGEexp, what = "tagClusters"
            , qLow = 0.1, qUp = 0.9, oneFile = TRUE)
 
 }

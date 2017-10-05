@@ -9,6 +9,9 @@
 \alias{consensusClustersQuantileUp}
 \alias{consensusClustersQuantileUp,CAGEset-method}
 \alias{consensusClustersQuantileUp,CAGEexp-method}
+\alias{consensusClustersQuantile}
+\alias{consensusClustersQuantile,CAGEset-method}
+\alias{consensusClustersQuantile,CAGEexp-method}
 \alias{consensusClustersQuantileLow<-}
 \alias{consensusClustersQuantileLow<-,CAGEset-method}
 \alias{consensusClustersQuantileUp<-}
@@ -27,6 +30,12 @@ consensusClustersQuantileUp(object, samples = NULL)
 
 \S4method{consensusClustersQuantileUp}{CAGEexp}(object, samples = NULL)
 
+consensusClustersQuantile(object, sample = NULL, q)
+
+\S4method{consensusClustersQuantile}{CAGEset}(object, sample = NULL, q)
+
+\S4method{consensusClustersQuantile}{CAGEexp}(object, sample = NULL, q)
+
 consensusClustersQuantileLow(object, samples = NULL) <- value
 
 \S4method{consensusClustersQuantileLow}{CAGEset}(object,
@@ -41,6 +50,10 @@ consensusClustersQuantileUp(object, samples = NULL) <- value
 \item{object}{A \code{\link{CAGEr}} object.}
 
 \item{samples}{Sample name(s), number(s) or \code{NULL} (default) for all samples.}
+
+\item{sample}{A single sample name or number, or \code{NULL} (default) for all samples.}
+
+\item{q}{A quantile.}
 
 \item{value}{A list (one entry per sample) of data frames with multiple columns:
 \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
