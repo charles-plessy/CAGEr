@@ -948,8 +948,25 @@ setMethod("tagClustersQuantileLow", "CAGEset", function (object, samples, q) {
 
 #' @rdname tagClustersQuantile
 
-setMethod("tagClustersQuantileLow", "CAGEexp", function (object, samples) {
-  stop("Not supported for CAGEexp; get quantile data via ", sQuote("tagClustersGR") , ".")
+setMethod("tagClustersQuantileLow", "CAGEexp", function (object, samples, q) {
+  if (length(samples) > 1)
+    stop("Multiple samples not supported for CAGEexp objects(all or just one).")
+  if (is.null(q))
+    stop("A single quantile must be chosen for CAGEexp objects.")
+  if (is.null(samples))
+    return(lapply( sampleList(object)
+                 , tagClustersQuantileLow
+                 , object = object
+                 , q = q))
+  
+  df <- as.data.frame(tagClustersGR(object, samples))
+  qName <- paste0("q_", q)
+  if (! qName %in% names(df))
+    stop( "Low quantile not found! "
+          , "Run 'quantilePositions()' function for desired quantiles first!")
+  df$cluster <- rownames(df)
+  df[[qName]] <- df[[qName]] + df[["start"]]
+  df[,c("cluster", qName)]
 })
 
 
@@ -984,8 +1001,25 @@ setMethod("tagClustersQuantileUp", "CAGEset", function (object, samples, q) {
 
 #' @rdname tagClustersQuantile
 
-setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples) {
-  stop("Not supported for CAGEexp; get quantile data via ", sQuote("tagClustersGR") , ".")
+setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples, q) {
+  if (length(samples) > 1)
+    stop("Multiple samples not supported for CAGEexp objects(all or just one).")
+  if (is.null(q))
+    stop("A single quantile must be chosen for CAGEexp objects.")
+  if (is.null(samples))
+    return(lapply( sampleList(object)
+                 , tagClustersQuantileUp
+                 , object = object
+                 , q = q))
+    
+  df <- as.data.frame(tagClustersGR(object, samples))
+  qName <- paste0("q_", q)
+  if (! qName %in% names(df))
+    stop( "Up quantile not found! "
+          , "Run 'quantilePositions()' function for desired quantiles first!")
+  df$cluster <- rownames(df)
+  df[[qName]] <- df[[qName]] + df[["start"]]
+  df[,c("cluster", qName)]
 })
 
 
