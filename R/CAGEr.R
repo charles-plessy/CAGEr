@@ -145,7 +145,7 @@ setMethod("validSamples", "CAGEr", function (object, x){
   if(class(x) == "character")
     if (all(x %in% sampleLabels(object)))
       return(TRUE)
-  if(class(x) == "numeric")
+  if(class(x) %in% c("integer", "numeric"))
     if (all(x %in% seq_along(sampleLabels(object))))
       return(TRUE)
   stop("Sample(s) not found! Check ", sQuote(paste0("sampleLabels(", objName, ")")), ".")
