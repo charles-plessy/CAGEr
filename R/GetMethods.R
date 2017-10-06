@@ -1235,8 +1235,8 @@ setMethod( "consensusClusters", "CAGEr"
             colnames(cc)[ncol(cc)] <- "tpm.dominant_ctss"
             cc <- cc[,c("consensus.cluster", "chr", "start", "end", "strand", "dominant_ctss", "tpm", "tpm.dominant_ctss")]
             
-            cc.w <- merge(consensusClustersQuantileLow(object)[[sample]], consensusClustersQuantileUp(object)[[sample]])
-            cc.w <- cc.w[,c(1, which(colnames(cc.w) == paste("q_", qLow, sep = "")), which(colnames(cc.w) == paste("q_", qUp, sep = "")))]
+            cc.w <- merge(consensusClustersQuantileLow(object, sample, qLow), consensusClustersQuantileUp(object, sample, qUp))
+            cc.w <- cc.w[,c(1, which(colnames(cc.w) == paste0("q_", qLow)), which(colnames(cc.w) == paste0("q_", qUp)))]
             cc.w$interquantile_width <- cc.w[,3] - cc.w[,2] + 1
             cc <- merge(cc, cc.w, by.x = "consensus.cluster", by.y = "cluster", all.x = T)
         }else{
