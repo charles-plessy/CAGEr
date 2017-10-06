@@ -1213,10 +1213,8 @@ setMethod( "consensusClusters", "CAGEr"
         
         cc.s <- cbind(cluster = as.integer(rownames(consensusClustersTpm(object))), tpm = consensusClustersTpm(object)[,sample])
         
-        if(returnInterquantileWidth & (length(qLow) == 0 | length(qUp) == 0)){
+        if(returnInterquantileWidth & (is.null(qLow) | is.null(qUp))){
             stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")
-        }else if(returnInterquantileWidth & (length(consensusClustersQuantileLow(object))==0 & length(consensusClustersQuantileUp(object))==0)){
-            stop("Interquantile width cannot be returned because no quantile positions for consensus clusters have been calculated yet! Run 'quantilePositions()' first to get the positions of the desired quantiles!")
         }else if(returnInterquantileWidth & (!(paste("q_", qLow, sep = "") %in% colnames(consensusClustersQuantileLow(object)[[sample]]) & paste("q_", qUp, sep = "") %in% colnames(consensusClustersQuantileUp(object)[[sample]])))){
             stop("Interquantile width cannot be returned because specified quantile positions have not been calculated for consensus clusters! Run 'quantilePositions()' again to get the positions of the desired quantiles!")
         }else if(returnInterquantileWidth){
@@ -1275,8 +1273,10 @@ setGeneric("consensusClustersQuantileLow", function(object, samples = NULL) {
 #' @rdname consensusClustersQuantile
 
 setMethod("consensusClustersQuantileLow", "CAGEset", function (object, samples) {
-	if (is.null(samples)) return(object@consensusClustersQuantileLow)
-  object@consensusClustersQuantileLow[[samples]]
+  result <- object@consensusClustersQuantileLow
+  if (identical(result, list()))
+    stop("Quantile positions not calculated yet! Run 'quantilePositions()' first !")
+  ifelse(is.null(samples), result, result[[samples]])
 })
 
 #' @rdname consensusClustersQuantile
@@ -1297,8 +1297,10 @@ setGeneric("consensusClustersQuantileUp", function(object, samples = NULL) {
 #' @rdname consensusClustersQuantile
 
 setMethod("consensusClustersQuantileUp", "CAGEset", function (object, samples) {
-  if (is.null(samples)) return(object@consensusClustersQuantileUp)
-  object@consensusClustersQuantileUp[[samples]]
+  result <- object@consensusClustersQuantileUp
+  if (identical(result, list()))
+    stop("Quantile positions not calculated yet! Run 'quantilePositions()' first !")
+  ifelse(is.null(samples), result, result[[samples]])
 })
 
 #' @rdname consensusClustersQuantile
