@@ -69,8 +69,8 @@ a specified CAGE experiment from a CAGEr object.
 \examples{
 head(tagClusters( exampleCAGEset, "sample2"
                 , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9))
-
 tagClustersGR(exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9)
+
 }
 \seealso{
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},

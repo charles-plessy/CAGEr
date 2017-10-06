@@ -783,8 +783,6 @@ setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
 #' @examples
 #' head(tagClusters( exampleCAGEset, "sample2"
 #'                 , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9))
-#' 
-#' tagClustersGR(exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9)
 
 setGeneric( "tagClusters"
           , function( object, samples = NULL
@@ -834,6 +832,9 @@ setMethod("tagClusters", "CAGEr", function (object, samples, returnInterquantile
 #' 
 #' @param sample Label of one CAGE dataset (experiment, sample) for which to extract tag
 #'        clusters. (For \code{tagClustersGR}, only one sample can be extracted.)
+#' 
+#' @examples
+#' tagClustersGR(exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9)
 #' 
 #' @export
 
