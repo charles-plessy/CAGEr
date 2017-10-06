@@ -1192,18 +1192,18 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
 #' 
 #' @export
 
-setGeneric(
-name="consensusClusters",
-def=function(object, sample=NULL, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
-    standardGeneric("consensusClusters")
+setGeneric( "consensusClusters"
+          , function( object, sample = NULL
+                    , returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL) {
+  validSamples(object, samples)
+  standardGeneric("consensusClusters")
 })
 
 #' @rdname consensusClusters
 
-setMethod("consensusClusters",
-signature(object = "CAGEr"),
-function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL){
-	
+setMethod( "consensusClusters", "CAGEr"
+         , function ( object, sample
+                    , returnInterquantileWidth, qLow, qUp) {
     if(is.null(sample)){
         return(getConsensusClusters(object))
     }else if(sample %in% sampleLabels(object)){
@@ -1247,10 +1247,7 @@ function (object, sample = NULL, returnInterquantileWidth = FALSE, qLow = NULL, 
             cc <- subset(cc, cc$tpm>0)
         }
         return(cc)
-    }else{
-        stop("Provided 'sample' not in the CAGE set! Check sampleLabels()")
     }
-
 })
 
 #' @name consensusClustersQuantile
