@@ -862,8 +862,8 @@ setMethod( "tagClustersGR", "CAGEset"
     .checkqLowUp(qLow, qUp, object, sample)
     qLowName <- paste0("q_", qLow)
     qUpName  <- paste0("q_", qUp)
-    mcols(tc)[[qLowName]] <- tagClustersQuantileLow(object)[[sample]][,qLowName]
-    mcols(tc)[[qUpName]]  <- tagClustersQuantileUp (object)[[sample]][,qUpName]
+    mcols(tc)[[qLowName]] <- tagClustersQuantileLow(object)[[sample]][,qLowName] - start(tc)
+    mcols(tc)[[qUpName]]  <- tagClustersQuantileUp (object)[[sample]][,qUpName]  - start(tc)
     tc$interquantile_width <- mcols(tc)[[qUpName]] - mcols(tc)[[qLowName]] + 1
   }
   .TagClusters(tc)
