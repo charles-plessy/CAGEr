@@ -113,9 +113,12 @@ setMethod( "aggregateTagClusters", "CAGEr"
   } else filter <- TRUE
 	
 	if (class(object) == "CAGEset") {
+	  filteredSE <- CTSStagCountSE(object)[filter,]
 	  .getTotalTagCountSample <- function(x) {
-	    ctss.s <- CTSSnormalizedTpmGR(object, x)
-  	  ctss.s <- ctss.s[ctss.s$filteredCTSSidx & filter]
+      ctss.s        <- .CTSS(rowRanges(filteredSE))
+      score(ctss.s) <- assay(filteredSE, "normalizedTpmMatrix")[[x]]
+      ctss.s        <- ctss.s[ctss.s$filteredCTSSidx]
+      ctss.s        <- ctss.s[score(ctss.s) > 0]
   	  .getTotalTagCount(ctss = ctss.s, ctss.clusters = consensus.clusters)}
       if(.checkMulticore(useMulticore)){
         tpm.list <- mclapply(sampleLabels(object), .getTotalTagCountSample, mc.cores = .getNrCores(nrCores))  
