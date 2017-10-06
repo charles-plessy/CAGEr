@@ -1276,7 +1276,7 @@ setMethod("consensusClustersQuantileLow", "CAGEset", function (object, samples) 
   result <- object@consensusClustersQuantileLow
   if (identical(result, list()))
     stop("Quantile positions not calculated yet! Run 'quantilePositions()' first !")
-  ifelse(is.null(samples), result, result[[samples]])
+  if (is.null(samples)) result else result[[samples]]
 })
 
 #' @rdname consensusClustersQuantile
@@ -1300,7 +1300,7 @@ setMethod("consensusClustersQuantileUp", "CAGEset", function (object, samples) {
   result <- object@consensusClustersQuantileUp
   if (identical(result, list()))
     stop("Quantile positions not calculated yet! Run 'quantilePositions()' first !")
-  ifelse(is.null(samples), result, result[[samples]])
+  if (is.null(samples)) result else result[[samples]]
 })
 
 #' @rdname consensusClustersQuantile
