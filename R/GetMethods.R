@@ -807,8 +807,7 @@ setGeneric( "tagClusters"
 
 setMethod("tagClusters", "CAGEr", function (object, samples, returnInterquantileWidth, qLow, qUp){
   if (is.null(samples)) {
-    tc.list <- lapply(sampleLabels(object), tagClusters, object = object, returnInterquantileWidth = returnInterquantileWidth, qLow = qLow, qUp = qUp)
-    names(tc.list) <- sampleLabels(object)
+    tc.list <- lapply(sampleList(object), tagClusters, object = object, returnInterquantileWidth = returnInterquantileWidth, qLow = qLow, qUp = qUp)
     return(tc.list)
   }
   
