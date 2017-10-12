@@ -1689,3 +1689,32 @@ setMethod( "GeneExpDESeq2", "CAGEexp"
                                 , rowData   = rowData(GeneExpSE(object))
                                 , design    = design)
 })
+
+#' @name seqNameTotalsSE
+#' 
+#' @title Retreives the SummarizedExperiment containing chromosome expression totals.
+#' 
+#' @description Get or set a \code{SummarizedExperiment} summarising whole-chromosome
+#' expression levels in the experiment slot \code{seqNameTotals} and the sample metadata
+#' of the \code{\link{CAGEexp}} object.
+#' 
+#' @param object A \code{CAGEexp} object.
+#' 
+#' @family CAGEr accessor methods
+#' 
+#' @author Charles Plessy
+#' 
+#' @examples 
+#' seqNameTotalsSE(exampleCAGEexp)
+#' 
+#' @export
+
+setGeneric("seqNameTotalsSE", function(object) standardGeneric("seqNameTotalsSE"))
+
+setMethod("seqNameTotalsSE", "CAGEset", function (object)
+	stop("Not implemented for the CAGEset class."))
+
+#' @rdname seqNameTotalsSE
+
+setMethod("seqNameTotalsSE", "CAGEexp", function (object)
+  experiments(object)$seqNameTotals)

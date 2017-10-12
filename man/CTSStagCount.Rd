@@ -100,7 +100,8 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{GeneExpDESeq2}}, \code{\link{GeneExpSE}},
   \code{\link{genomeName}}, \code{\link{inputFilesType}},
   \code{\link{inputFiles}}, \code{\link{librarySizes}},
-  \code{\link{sampleLabels}}, \code{\link{tagClusters}}
+  \code{\link{sampleLabels}},
+  \code{\link{seqNameTotalsSE}}, \code{\link{tagClusters}}
 }
 \author{
 Vanja Haberle

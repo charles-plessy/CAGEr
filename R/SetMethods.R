@@ -503,6 +503,28 @@ setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
+#' @rdname seqNameTotalsSE
+
+setGeneric("seqNameTotalsSE<-", function(object, value) standardGeneric("seqNameTotalsSE<-"))
+
+setMethod("seqNameTotalsSE<-", "CAGEset", function (object, value){
+	stop("Not implemented for the CAGEset class.")})
+
+setMethod( "seqNameTotalsSE<-"
+         , c("CAGEexp", "SummarizedExperiment")
+         , function (object, value) {
+  if (! all(colnames(value) == sampleLabels(object)))
+    stop ("The expression data must match the CAGEexp object, with samples in the same order.")
+  sampleMapSE <-
+    listToMap(list(seqNameTotals = data.frame( primary = sampleLabels(object)
+                                             , colname = colnames(value))))
+  sampleMap(object) <-
+    rbind( sampleMap(object)[sampleMap(object)$assay != "seqNameTotals",]
+         , sampleMapSE)
+  experiments(object)$seqNameTotals <- value
+  if (validObject(object)) object
+})
+
 #' @name setColors
 #' 
 #' @title Setting colors for samples

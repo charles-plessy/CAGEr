@@ -85,7 +85,8 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{aggregateTagClusters}},
   \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
-  \code{\link{getCTSS}}, \code{\link{quantilePositions}}
+  \code{\link{getCTSS}}, \code{\link{quantilePositions}},
+  \code{\link{summariseChrExpr}}
 }
 \author{
 Vanja Haberle

@@ -73,7 +73,8 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{clusterCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},
-  \code{\link{quantilePositions}}
+  \code{\link{quantilePositions}},
+  \code{\link{summariseChrExpr}}
 
 Other CAGEr annotation functions: \code{\link{plotAnnot}},
   \code{\link{ranges2annot}}, \code{\link{ranges2genes}},

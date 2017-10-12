@@ -117,6 +117,7 @@ CAGEexp <- setClass("CAGEexp",
 #' \dontrun{
 #' exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
 #' CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object
+#' summariseChrExpr(exampleCAGEexp)
 #' annotateCTSS(exampleCAGEexp , exampleZv9_annot)
 #' CTSStoGenes(exampleCAGEexp)
 #' normalizeTagCount(exampleCAGEexp)

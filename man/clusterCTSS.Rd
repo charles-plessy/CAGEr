@@ -134,7 +134,8 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{annotateCTSS}},
   \code{\link{cumulativeCTSSdistribution}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},
-  \code{\link{quantilePositions}}
+  \code{\link{quantilePositions}},
+  \code{\link{summariseChrExpr}}
 
 Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
   \code{\link{CustomConsensusClusters}},
