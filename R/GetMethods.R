@@ -1196,7 +1196,7 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
 setGeneric( "consensusClusters"
           , function( object, sample = NULL
                     , returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL) {
-  validSamples(object, samples)
+  validSamples(object, sample)
   standardGeneric("consensusClusters")
 })
 
