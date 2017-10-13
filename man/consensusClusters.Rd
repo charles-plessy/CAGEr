@@ -110,8 +110,12 @@ consensusClustersGR( exampleCAGEexp, sample = 2
 head(consensusClusters(exampleCAGEset))
 head(consensusClusters(exampleCAGEset, sample = "sample2"))
 
-clusterCTSS(exampleCAGEexp)
-aggregateTagClusters(exampleCAGEexp)
+cumulativeCTSSdistribution(exampleCAGEset, "consensusClusters") # Defaults in object do not fit
+quantilePositions(exampleCAGEset, "consensusClusters")
+head(consensusClusters(exampleCAGEset, sample = "sample2"
+                      , returnInterquantileWidth = TRUE
+                      , qLow = 0.1, qUp = 0.9))
+
 head(consensusClusters(exampleCAGEexp))
 consensusClustersGR(exampleCAGEexp, 2)
 

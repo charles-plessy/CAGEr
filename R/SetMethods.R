@@ -504,6 +504,8 @@ setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
 })
 
 #' @rdname seqNameTotalsSE
+#' @param value A SummarizedExperiment object where rows represent reference sequences
+#'        such as chromosomes.
 
 setGeneric("seqNameTotalsSE<-", function(object, value) standardGeneric("seqNameTotalsSE<-"))
 

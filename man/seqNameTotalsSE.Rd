@@ -3,11 +3,14 @@
 \docType{methods}
 \name{seqNameTotalsSE}
 \alias{seqNameTotalsSE}
+\alias{seqNameTotalsSE,CAGEset-method}
 \alias{seqNameTotalsSE,CAGEexp-method}
 \alias{seqNameTotalsSE<-}
 \title{Retreives the SummarizedExperiment containing chromosome expression totals.}
 \usage{
 seqNameTotalsSE(object)
+
+\S4method{seqNameTotalsSE}{CAGEset}(object)
 
 \S4method{seqNameTotalsSE}{CAGEexp}(object)
 
@@ -15,6 +18,9 @@ seqNameTotalsSE(object) <- value
 }
 \arguments{
 \item{object}{A \code{CAGEexp} object.}
+
+\item{value}{A SummarizedExperiment object where rows represent reference sequences
+such as chromosomes.}
 }
 \description{
 Get or set a \code{SummarizedExperiment} summarising whole-chromosome

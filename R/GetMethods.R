@@ -1186,8 +1186,12 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
 #' head(consensusClusters(exampleCAGEset))
 #' head(consensusClusters(exampleCAGEset, sample = "sample2"))
 #' 
-#' clusterCTSS(exampleCAGEexp)
-#' aggregateTagClusters(exampleCAGEexp)
+#' cumulativeCTSSdistribution(exampleCAGEset, "consensusClusters") # Defaults in object do not fit
+#' quantilePositions(exampleCAGEset, "consensusClusters")
+#' head(consensusClusters(exampleCAGEset, sample = "sample2"
+#'                       , returnInterquantileWidth = TRUE
+#'                       , qLow = 0.1, qUp = 0.9))
+#' 
 #' head(consensusClusters(exampleCAGEexp))
 #' consensusClustersGR(exampleCAGEexp, 2)
 #' 
@@ -1245,7 +1249,7 @@ setMethod( "consensusClusters", "CAGEr"
       colnames(cc)[ncol(cc)] <- "tpm.dominant_ctss"
       cc <- cc[,c("consensus.cluster", "chr", "start", "end", "strand", "dominant_ctss", "tpm", "tpm.dominant_ctss")]
       
-      cc.w <- merge(consensusClustersQuantileLow(object, sample, qLow), consensusClustersQuantileUp(object, sample, qUp))
+      cc.w <- merge(consensusClustersQuantileLow(object, sample), consensusClustersQuantileUp(object, sample))
       cc.w <- cc.w[,c(1, which(colnames(cc.w) == paste0("q_", qLow)), which(colnames(cc.w) == paste0("q_", qUp)))]
       cc.w$interquantile_width <- cc.w[,3] - cc.w[,2] + 1
       cc <- merge(cc, cc.w, by.x = "consensus.cluster", by.y = "cluster", all.x = T)
@@ -1714,6 +1718,8 @@ setMethod( "GeneExpDESeq2", "CAGEexp"
 #' @export
 
 setGeneric("seqNameTotalsSE", function(object) standardGeneric("seqNameTotalsSE"))
+
+#' @rdname seqNameTotalsSE
 
 setMethod("seqNameTotalsSE", "CAGEset", function (object)
 	stop("Not implemented for the CAGEset class."))

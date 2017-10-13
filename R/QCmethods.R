@@ -23,6 +23,8 @@
 
 setGeneric("summariseChrExpr", function(object) standardGeneric("summariseChrExpr"))
 
+#' @rdname summariseChrExpr
+
 setMethod("summariseChrExpr", "CAGEexp", function(object) {
   objname <- deparse(substitute(object))
   seqNameTotals <- lapply( sampleList(object)
