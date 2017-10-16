@@ -1401,11 +1401,6 @@ setMethod("CTSScumulativesCC", "CAGEexp", function (object, samples) {
 #' 
 #' @title Extracting consensus clusters tpm matrix from CAGEset object
 #' 
-#' @usage
-#' consensusClustersTpm(object)
-#' consensusClustersTpmDf(object)
-#' consensusClustersTpmDF(object)
-#' 
 #' @description Extracts a table with normalized CAGE tag values for consensus
 #' clusters across all samples from a \code{\link{CAGEr}} object.
 #' 

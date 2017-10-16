@@ -8,8 +8,6 @@
 \title{Extracting consensus clusters tpm matrix from CAGEset object}
 \usage{
 consensusClustersTpm(object)
-consensusClustersTpmDf(object)
-consensusClustersTpmDF(object)
 
 \S4method{consensusClustersTpm}{CAGEset}(object)
 
