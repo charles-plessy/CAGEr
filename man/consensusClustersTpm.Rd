@@ -5,12 +5,6 @@
 \alias{consensusClustersTpm}
 \alias{consensusClustersTpm,CAGEset-method}
 \alias{consensusClustersTpm,CAGEexp-method}
-\alias{consensusClustersTpmDf}
-\alias{consensusClustersTpmDf,CAGEset-method}
-\alias{consensusClustersTpmDf,CAGEexp-method}
-\alias{consensusClustersTpmDF}
-\alias{consensusClustersTpmDF,CAGEset-method}
-\alias{consensusClustersTpmDF,CAGEexp-method}
 \title{Extracting consensus clusters tpm matrix from CAGEset object}
 \usage{
 consensusClustersTpm(object)
@@ -20,38 +14,21 @@ consensusClustersTpmDF(object)
 \S4method{consensusClustersTpm}{CAGEset}(object)
 
 \S4method{consensusClustersTpm}{CAGEexp}(object)
-
-consensusClustersTpmDf(object)
-
-\S4method{consensusClustersTpmDf}{CAGEset}(object)
-
-\S4method{consensusClustersTpmDf}{CAGEexp}(object)
-
-consensusClustersTpmDF(object)
-
-\S4method{consensusClustersTpmDF}{CAGEset}(object)
-
-\S4method{consensusClustersTpmDF}{CAGEexp}(object)
 }
 \arguments{
 \item{object}{A CAGEr object.}
 }
 \value{
-Returns normalized expression valuse of CAGE clusters across all samples.
-\itemize{
-  \item For \code{consensusClustersTpm}, a \code{matrix}.
-  \item For \code{consensusClustersTpmDf}, a \code{data.frame}.
-  \item For \code{consensusClustersTpmDF}, a \code{DataFrame}.
-}
+Returns the \code{matrix} of normalized expression values of CAGE clusters
+across all samples.
 }
 \description{
 Extracts a table with normalized CAGE tag values for consensus
 clusters across all samples from a \code{\link{CAGEr}} object.
 }
 \examples{
-clusters.tpm <- consensusClustersTpm(exampleCAGEset)
-head(clusters.tpm)
-consensusClustersTpmDF(exampleCAGEset)
+head(consensusClustersTpm(exampleCAGEset))
+head(consensusClustersTpm(exampleCAGEexp))
 
 }
 \seealso{

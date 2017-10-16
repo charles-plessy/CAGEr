@@ -76,7 +76,7 @@ setMethod( "plotCorrelation", "CAGEr"
 			stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
 		}
 	}else if(what == "consensusClusters"){
-		tag.count <- consensusClustersTpmDF(object)
+		tag.count <- consensusClustersTpm(object)
 	}else{
 		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
 	}
