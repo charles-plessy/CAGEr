@@ -126,6 +126,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
         tpm.list <-   lapply(sampleList(object), .getTotalTagCountSample)
       }
 		m <- as.matrix(data.frame(tpm.list))
+		rownames(m) <- 1:nrow(m)
 		consensus.clusters$tpm <- rowSums(m)
 	  object@consensusClustersTpmMatrix <- m
 	  consensusClusters(object) <- CCgranges2dataframe(consensus.clusters)
