@@ -23,7 +23,11 @@
 		idx <- NA
 	}else{
 		if(isCumulative){
-			raw <- v[2:length(v)] - v[1:(length(v)-1)]
+			if (length(v) == 1) {
+				raw <- v
+			} else {
+				raw <- v[2:length(v)] - v[1:(length(v)-1)]
+			}
 		}else{
 			raw <- v
 		}
