@@ -1023,22 +1023,6 @@ setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples, q) {
 })
 
 
-#' @name getConsensusClusters
-#' @noRd
-
-setGeneric("getConsensusClusters", function(object) standardGeneric("getConsensusClusters"))
-
-setMethod("getConsensusClusters", "CAGEset", function (object){
-	object@consensusClusters
-})
-
-setMethod("getConsensusClusters", "CAGEexp", function (object){
-  cc <- rowRanges(consensusClustersSE(object))
-  cc$consensus.cluster <- names(cc)
-  CCgranges2dataframe(cc)
-})
-
-
 #' @name consensusClustersGR
 #' @rdname consensusClusters
 #' @export
@@ -1208,8 +1192,15 @@ setGeneric( "consensusClusters"
 
 setMethod( "consensusClusters", "CAGEr"
          , function (object, sample, returnInterquantileWidth, qLow, qUp) {
-           
-    cc <- getConsensusClusters(object)
+    
+    # Get CCs specifically for each class
+    if (class(object) == "CAGEset") {
+      cc <- object@consensusClusters
+    } else if (class(object) == "CAGEexp") {
+      cc <- rowRanges(consensusClustersSE(object))
+      cc$consensus.cluster <- names(cc)
+      cc <- CCgranges2dataframe(cc)
+    } else stop("Unsupported CAGEr class.")
     
     # Return raw without interquantiles if no sample requested
     if(is.null(sample))
