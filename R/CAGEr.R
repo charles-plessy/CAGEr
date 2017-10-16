@@ -108,11 +108,10 @@ setMethod("sampleLabels", "CAGEexp", function (object) {
 #' iteration in functions such as \code{\link{lapply}} or \code{\link{mapply}}.
 #' There is no set method for \code{sampleList}.
 #' 
-#' @return \code{sampleList} returns a named list where elements are the
-#' position of a sample in the CAGEr object, and element names are the sample
-#' name, for instance: \code{list(sampleA = 1, sampleB = 2)}.
-#' Thus, after iterating on it with \code{lapply}, the element names will
-#' be sample names.
+#' @return \code{sampleList} returns a named list where elements and their
+#' names are the sample names, for instance: \code{list(sampleA = "sampleA",
+#' sampleB = "sampleB")}. Thus, after iterating on it with \code{lapply}, the
+#' element names will be sample names.
 #' 
 #' @examples 
 #' sampleList(exampleCAGEset)
@@ -125,9 +124,8 @@ setGeneric("sampleList", function(object) standardGeneric("sampleList"))
 #' @rdname sampleLabels
 
 setMethod("sampleList", "CAGEr", function (object) {
-  sl <- sampleLabels(object)
-  l <- seq_along(sl)
-  names(l) <- sl
+  l <- sampleLabels(object)
+  names(l) <- l
   l
 })
 

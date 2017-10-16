@@ -39,11 +39,10 @@ The \code{names} attributes indicate the colors.}
 CAGE datasets present in the CAGEr object.  The vector values are the labels and the
 vector names are the colors.
 
-\code{sampleList} returns a named list where elements are the
-position of a sample in the CAGEr object, and element names are the sample
-name, for instance: \code{list(sampleA = 1, sampleB = 2)}.
-Thus, after iterating on it with \code{lapply}, the element names will
-be sample names.
+\code{sampleList} returns a named list where elements and their
+names are the sample names, for instance: \code{list(sampleA = "sampleA",
+sampleB = "sampleB")}. Thus, after iterating on it with \code{lapply}, the
+element names will be sample names.
 }
 \description{
 \code{sampleLabels} gets or sets the labels and colors of CAGE datasets
