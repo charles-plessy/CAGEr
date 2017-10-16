@@ -106,8 +106,7 @@ setGeneric( "scoreShift"
 
 #' @rdname scoreShift
 
-setMethod( "scoreShift"
-         , signature(object = "CAGEset", groupX = "character", groupY = "character")
+setMethod( "scoreShift", "CAGEset"
          , function (object, groupX, groupY, testKS, useTpmKS, useMulticore, nrCores) {
 	
   useMulticore <- .checkMulticore(useMulticore)

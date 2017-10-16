@@ -3,14 +3,14 @@
 \docType{methods}
 \name{scoreShift}
 \alias{scoreShift}
-\alias{scoreShift,CAGEset,character,character-method}
+\alias{scoreShift,CAGEset-method}
 \title{Calculate promoter shifting score}
 \usage{
 scoreShift(object, groupX, groupY, testKS = TRUE, useTpmKS = TRUE,
   useMulticore = F, nrCores = NULL)
 
-\S4method{scoreShift}{CAGEset,character,character}(object, groupX, groupY,
-  testKS = TRUE, useTpmKS = TRUE, useMulticore = F, nrCores = NULL)
+\S4method{scoreShift}{CAGEset}(object, groupX, groupY, testKS = TRUE,
+  useTpmKS = TRUE, useMulticore = F, nrCores = NULL)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
