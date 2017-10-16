@@ -1,3 +1,28 @@
+#' @name CAGEr_Multicore
+#' 
+#' @title Multicore support in CAGEr
+#' 
+#' @description CAGEr is in the transition towards using the BiocParallel for
+#' multicore parallelisation.  On Windows platforms, the multicore support
+#' is disabled transparently, that is, attempts to use multiple cores are
+#' silently ignored.
+#' 
+#' @author Charles Plessy
+#' 
+#' @importFrom BiocParallel bplapply
+#' @importFrom BiocParallel MulticoreParam
+#' @importFrom BiocParallel multicoreWorkers
+#' @importFrom BiocParallel SerialParam
+
+CAGEr_Multicore <- function (useMulticore = FALSE, nrCores = NULL) {
+  if (useMulticore) {
+    if (is.null(nrCores)) nrCores <- multicoreWorkers()
+    MulticoreParam(workers = nrCores)
+  }	else {
+    SerialParam()
+  }
+}
+
 #' .checkMulticore
 #' 
 #' Check if multicore exectuion will be possible.
