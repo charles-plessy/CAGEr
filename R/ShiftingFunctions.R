@@ -33,17 +33,16 @@
 }
 
 
-.score.promoter.shifting <- function(cum.sum.stages, useMulticore = F, nrCores = NULL) {	
-	scores <- unlist( bplapply( BPPARAM = CAGEr_Multicore(useMulticore, nrCores)
-	                          , cum.sum.stages
-	                          , function(x) {
-	  less.tpm <- which(x[nrow(x),] == min(x[nrow(x),]))[1]
-	  if (max(x[,less.tpm])>0) {
-	    max(x[,less.tpm] - x[,(3-less.tpm)])/max(x[,less.tpm])
-	  } else {
-	    NA
-	  }
-}))}
+.score.promoter.shifting <- function(cum.sum.stages, useMulticore = F, nrCores = NULL) {
+  unlist(bplapply(cum.sum.stages, function(x) {
+    less.tpm <- which(x[nrow(x),] == min(x[nrow(x),]))[1]
+      if (max(x[,less.tpm]) > 0) {
+        max(x[,less.tpm] - x[,(3-less.tpm)])/max(x[,less.tpm])
+      } else {
+        NA
+      }
+  }, BPPARAM = CAGEr_Multicore(useMulticore, nrCores)))
+}
 
 
 #####
@@ -69,13 +68,9 @@ setMethod( ".getTotalTagCount", "CTSS"
 })
 
 .ksStat <- function(cumsum.matrix){
-	
 	z <- cumsum.matrix[,1]/max(cumsum.matrix[,1]) - cumsum.matrix[,2]/max(cumsum.matrix[,2])
-	ks.stat <- max(abs(z))
-	return(ks.stat)
-	
+	max(abs(z))
 }
-
 
 
 .pKS2 <- function(x, tol){
@@ -106,39 +101,22 @@ setMethod( ".getTotalTagCount", "CTSS"
 				k <- k + 1
 			}
 			x[i] <- new
-			
 		}
-		
 	}
-	
-	return(x)
-	
+	x
 }
 
-	
 .pkstwo <- function(x, tol = 1e-06) {
-
-	if (is.numeric(x)){ 
-		x <- as.double(x)
-	}else{
-		stop("argument 'x' must be numeric")
-	}
-	p <- rep(0, length(x))
-	p[is.na(x)] <- NA
-	IND <- which(!is.na(x) & (x > 0))
-	if (length(IND) > 0){
-		p[IND] <- .pKS2(x = x[IND], tol = as.double(tol))
-	}
-	return(p)
-
+  if (is.numeric(x)) { 
+    x <- as.double(x)
+  } else stop("argument 'x' must be numeric")
+  p <- rep(0, length(x))
+  p[is.na(x)] <- NA
+  IND <- which(!is.na(x) & (x > 0))
+  if (length(IND) > 0) {
+    p[IND] <- .pKS2(x = x[IND], tol = as.double(tol))
+  }
+  p
 }
 
-
-.ksPvalue <- function(d, n){
-
-	1 - .pkstwo(sqrt(n) * d)
-
-}
-
-
-
+.ksPvalue <- function(d, n)	1 - .pkstwo(sqrt(n) * d)
