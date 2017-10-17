@@ -6,9 +6,11 @@
 # RETURNS: list of Rle vectors containing reversed cumulative sums for all elements in the input cumsum list (Rle vectors are shorter by 1 than original vectors because first zero (i.e. here last number) is omitted) 
 
 .reverse.cumsum <- function(cumsum.list, useMulticore = F, nrCores = NULL) {
-	bplapply( BPPARAM = CAGEr_Multicore(useMulticore, nrCores)
-	        , cumsum.list
-	        , function(x) {cumsum(rev(x[2:length(x)] - x[1:(length(x)-1)]))})
+  bplapply(cumsum.list, function(x) {
+    lx <- length(x)
+    if (lx == 1) return(x)
+    cumsum(rev(x[-1] - x[-lx]))
+  }, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 }
 
 .get.dominant.ctss <- function(v, isCumulative = FALSE){
