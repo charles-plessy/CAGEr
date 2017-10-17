@@ -5,24 +5,22 @@
 # ARGUMENTS: cumsum.list - list of Rle vectors (IRanges package) with cumulative sums (first number in the vector needs to be a zero) (such as returned by 'get.cumsum' function)
 # RETURNS: list of Rle vectors containing reversed cumulative sums for all elements in the input cumsum list (Rle vectors are shorter by 1 than original vectors because first zero (i.e. here last number) is omitted) 
 
-.reverse.cumsum <- function(cumsum.list, useMulticore = F, nrCores = NULL) {
-  bplapply(cumsum.list, function(x) {
-    lx <- length(x)
-    if (lx == 1) return(x)
-    cumsum(rev(x[-1] - x[-lx]))
-  }, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+.safediff <- function(x) {
+  lx <- length(x)
+  if (lx == 1) return(x)
+  diff(x)
 }
+
+.reverse.cumsum <- function(cumsum.list, useMulticore = F, nrCores = NULL)
+  bplapply(cumsum.list, function(x) cumsum(rev(.safediff(x)))
+          , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 
 .get.dominant.ctss <- function(v, isCumulative = FALSE){
 	if(all(unique(v) == 0)){
 		idx <- NA
 	}else{
 		if(isCumulative){
-			if (length(v) == 1) {
-				raw <- v
-			} else {
-				raw <- v[2:length(v)] - v[1:(length(v)-1)]
-			}
+		  raw <- .safediff(v)
 		}else{
 			raw <- v
 		}
