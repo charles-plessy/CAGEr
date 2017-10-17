@@ -149,8 +149,12 @@ setMethod( "scoreShift", "CAGEset"
 	  return(m)
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
-	.poolGroups <- function(x) cbind( groupX = rowSums(x[, groupX, drop = FALSE])
-	                                , groupY = rowSums(x[, groupY, drop = FALSE]))
+  .poolGroups <- function(x) {
+    if (!is.matrix(x))
+      x <- t(x) # Clusters of length 1 produced vectors instead of matrices...
+    cbind( groupX = rowSums(x[, groupX, drop = FALSE])
+         , groupY = rowSums(x[, groupY, drop = FALSE]))
+  }
 	
 	cumsum.matrices.groups.f <- bplapply( cumsum.matrices.list.f, .poolGroups
 	                                    , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
