@@ -120,23 +120,51 @@ setMethod( "scoreShift", "CAGEset"
 	a <- object@CTSScumulativesConsensusClusters
 	a <- a[names(a) %in% c(groupX, groupY)]
 	b <- object@consensusClusters
-	cumsum.list <- bplapply(a, function(x) {n <- names(x); y <- subset(b, !(b$consensus.cluster %in% as.integer(names(x)))); if(nrow(y)>0) {nulls <- lapply(as.list(c(1:nrow(y))), function(t) {Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))}); x <- append(x, nulls)}; names(x) <- c(n, as.character(y$consensus.cluster)); return(x)}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
-
-	cumsum.list.r <- list()
-	for(i in 1:length(cumsum.list)){
-		cumsum.list.r[[i]] <- .reverse.cumsum(cumsum.list[[i]], useMulticore = useMulticore, nrCores = nrCores)
-	}
-	names(cumsum.list.r) <- names(cumsum.list)
+	cumsum.list <- bplapply(a, function(x) {
+	  n <- names(x)
+	  y <- subset(b, !(b$consensus.cluster %in% as.integer(names(x))))
+	  if (nrow(y)>0) {
+	    nulls <- lapply(as.list(c(1:nrow(y))), function(t) {
+	      Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))
+	    })
+	    x <- append(x, nulls)
+	  }
+	  names(x) <- c(n, as.character(y$consensus.cluster))
+	  return(x)
+	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
-	cumsum.matrices.list.f <- bplapply(as.list(names(cumsum.list[[1]])), function(x) {sapply(names(cumsum.list), function(y) {as.numeric(cumsum.list[[y]][[x]])})}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))		
-	cumsum.matrices.list.r <- bplapply(as.list(names(cumsum.list.r[[1]])), function(x) {m <- matrix(sapply(names(cumsum.list.r), function(y) {as.numeric(cumsum.list.r[[y]][[x]])}), ncol = length(names(cumsum.list.r))); colnames(m) <- names(cumsum.list.r); return(m)}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
-	cumsum.matrices.groups.f <- bplapply(cumsum.matrices.list.f, function(x) {cbind(groupX = rowSums(x[,groupX,drop=F]), groupY = rowSums(x[,groupY,drop=F]))}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
-	cumsum.matrices.groups.r <- bplapply(cumsum.matrices.list.r, function(x) {cbind(groupX = rowSums(x[,groupX,drop=F]), groupY = rowSums(x[,groupY,drop=F]))}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	cumsum.list.r <- bplapply( cumsum.list, .reverse.cumsum
+	                         , useMulticore = useMulticore, nrCores = nrCores
+	                         , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	
+	cumsum.matrices.list.f <- bplapply(as.list(names(cumsum.list[[1]])), function(x) {
+	  sapply(names(cumsum.list), function(y) {as.numeric(cumsum.list[[y]][[x]])})
+	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	
+	cumsum.matrices.list.r <- bplapply(as.list(names(cumsum.list.r[[1]])), function(x) {
+	  m <- matrix(ncol = length(names(cumsum.list.r)), sapply(names(cumsum.list.r), function(y) {
+	    as.numeric(cumsum.list.r[[y]][[x]])
+	  }))
+	  colnames(m) <- names(cumsum.list.r)
+	  return(m)
+	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	
+	.poolGroups <- function(x) cbind( groupX = rowSums(x[, groupX, drop = FALSE])
+	                                , groupY = rowSums(x[, groupY, drop = FALSE]))
+	
+	cumsum.matrices.groups.f <- bplapply( cumsum.matrices.list.f, .poolGroups
+	                                    , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	
+	cumsum.matrices.groups.r <- bplapply( cumsum.matrices.list.r, .poolGroups
+	                                    , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
 	names(cumsum.matrices.groups.f) <- names(cumsum.list[[1]])
 	names(cumsum.matrices.groups.r) <- names(cumsum.list[[1]])
 	
-	dominant.ctss.pos <- bplapply(as.list(names(cumsum.matrices.groups.f)), function(x) {sapply(c("groupX", "groupY"), function(y) {.get.dominant.ctss(cumsum.matrices.groups.f[[x]][,y], isCumulative = T)})}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	dominant.ctss.pos <- bplapply(as.list(names(cumsum.matrices.groups.f)), function(x) {
+	  sapply(c("groupX", "groupY"), function(y) {.get.dominant.ctss(cumsum.matrices.groups.f[[x]][,y], isCumulative = T)})
+	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	
 	dominant.ctss.pos <- data.frame(consensus.cluster = as.integer(names(cumsum.matrices.groups.f)), do.call(rbind, dominant.ctss.pos))
 	dominant.ctss.pos <- dominant.ctss.pos[order(dominant.ctss.pos$consensus.cluster),]
 	colnames(dominant.ctss.pos) <- c("consensus.cluster", "groupX.pos", "groupY.pos")
