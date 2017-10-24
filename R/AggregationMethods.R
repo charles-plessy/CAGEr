@@ -120,11 +120,8 @@ setMethod( "aggregateTagClusters", "CAGEr"
       ctss.s        <- ctss.s[ctss.s$filteredCTSSidx]
       ctss.s        <- ctss.s[score(ctss.s) > 0]
   	  .getTotalTagCount(ctss = ctss.s, ctss.clusters = consensus.clusters)}
-      if(.checkMulticore(useMulticore)){
-        tpm.list <- mclapply(sampleList(object), .getTotalTagCountSample, mc.cores = .getNrCores(nrCores))  
-     }else{
-        tpm.list <-   lapply(sampleList(object), .getTotalTagCountSample)
-      }
+    tpm.list <- bplapply( sampleList(object), .getTotalTagCountSample
+                        , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 		m <- as.matrix(data.frame(tpm.list))
 		rownames(m) <- 1:nrow(m)
 		consensus.clusters$tpm <- rowSums(m)

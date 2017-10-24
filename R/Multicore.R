@@ -7,7 +7,20 @@
 #' is disabled transparently, that is, attempts to use multiple cores are
 #' silently ignored.
 #' 
+#' @param useMulticore TRUE or FALSE
+#' @param nrCores number of cores to use (leave \code{NULL} to let BiocParallel
+#'        choose).
+#' 
+#' @return Returns either a \code{MulticoreParam} object or a
+#' \code{SerialParam} object.
+#' 
 #' @author Charles Plessy
+#' 
+#' @examples 
+#' CAGEr:::CAGEr_Multicore()
+#' CAGEr:::CAGEr_Multicore(TRUE,)
+#' CAGEr:::CAGEr_Multicore(TRUE, 3)
+#' CAGEr:::CAGEr_Multicore(FALSE, 3)
 #' 
 #' @importFrom BiocParallel bplapply
 #' @importFrom BiocParallel MulticoreParam
@@ -22,42 +35,3 @@ CAGEr_Multicore <- function (useMulticore = FALSE, nrCores = NULL) {
     SerialParam()
   }
 }
-
-#' .checkMulticore
-#' 
-#' Check if multicore exectuion will be possible.
-#' 
-#' Non-exported private helper function.
-#' 
-#' @param useMulticore TRUE or FALSE
-#' 
-#' @return TRUE or FALSE
-#' 
-#' @family CAGEr multicore-enabled functions
-#' 
-#' @noRd
-#' 
-#' @importFrom utils installed.packages
-#' @importFrom parallel mclapply
-#' 
-#' @examples 
-#' useMulticore <- CAGEr:::.checkMulticore(useMulticore)
-
-.checkMulticore <- function (useMulticore) {
-	pt <- .Platform$OS.type
-	if(useMulticore == TRUE){
-		if(pt == "unix"){
-			if("parallel" %in% rownames(installed.packages()) == FALSE){
-				stop("Cannot use multicore because package 'parallel' is not installed!")
-			}
-		  requireNamespace("parallel")
-		}else{
-			useMulticore = FALSE
-			warning("Multicore is not supported on non-Unix platforms! Setting `useMulticore`` to FALSE")
-		}
-	}
-	useMulticore
-}
-
-.getNrCores <- function(nrCores)
-  ifelse(is.null(nrCores), detectCores(), nrCores)

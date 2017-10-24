@@ -142,12 +142,8 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
   ctss <- ctss[score(ctss) != 0]
   ctss.list <- split(ctss, droplevels(seqnames(ctss)))
   ctss.list <- lapply(ctss.list, .CTSS.chr)
-  
-  if(.checkMulticore(useMulticore) == TRUE){
-		ctss.list <- mclapply(ctss.list, .cluster.ctss.chr, max.dist = max.dist, mc.cores = .getNrCores(nrCores))
-	}else{
-		ctss.list <- lapply(ctss.list, .cluster.ctss.chr, max.dist = max.dist)
-	}
+  ctss.list <- bplapply( ctss.list, .cluster.ctss.chr, max.dist = max.dist
+                       , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	max.clust <- sapply(ctss.list, function(x) {max(x$id)})
 	max.clust <- cumsum(c(0, max.clust[-length(max.clust)]))
 	
@@ -260,12 +256,10 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
     clusters <- .ctss2clusters(ctss = d, max.dist = max.dist, useMulticore = useMulticore, nrCores = nrCores)
     ctss.cluster.list[[s]] <- clusters
   }
-
-  if (.checkMulticore(useMulticore) == TRUE) {
-    ctss.cluster.list <- mclapply(ctss.cluster.list, .summarize.clusters, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, mc.cores = .getNrCores(nrCores))
-  } else {
-    ctss.cluster.list <- lapply(ctss.cluster.list, .summarize.clusters, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove)
-}
+  ctss.cluster.list <- bplapply( ctss.cluster.list, .summarize.clusters
+                               , removeSingletons = removeSingletons
+                               , keepSingletonsAbove = keepSingletonsAbove
+                               , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
   GRangesList(ctss.cluster.list)
 })
 
@@ -325,23 +319,13 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 
 .paraclu3 <- function(ctss.df, minStability = 1, maxLength = 500, removeSingletons = FALSE, keepSingletonsAbove = Inf, reduceToNonoverlapping = TRUE, useMulticore = FALSE, nrCores = NULL){
 	
-	if(.checkMulticore(useMulticore) == TRUE){
-		ctss.df.plus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "+")})
-		ctss.df.minus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "-")})
-		ctss.df.list <- append(ctss.df.plus.list, ctss.df.minus.list)
-		clusters.list <- mclapply(ctss.df.list, .paraclu2, mc.cores = .getNrCores(nrCores))
-		n <- length(clusters.list)/2
-		clusters.list <- lapply(as.list(c(1:n)), function(x) {rbind(clusters.list[[x]], clusters.list[[x+n]])})
-	
-	}else{
-	
-		clusters.list <- list()
-		for(ch in unique(ctss.df$chr)){
-			cl.plus <- .paraclu2(ctss = subset(ctss.df, ctss.df$chr == ch & strand == "+"))
-			cl.minus <- .paraclu2(ctss = subset(ctss.df, ctss.df$chr == ch & strand == "-"))
-			clusters.list[[ch]] <- rbind(cl.plus, cl.minus)
-		}
-	}
+	ctss.df.plus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "+")})
+	ctss.df.minus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "-")})
+	ctss.df.list <- append(ctss.df.plus.list, ctss.df.minus.list)
+	clusters.list <- bplapply( ctss.df.list, .paraclu2
+	                         , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	n <- length(clusters.list)/2
+	clusters.list <- lapply(as.list(c(1:n)), function(x) {rbind(clusters.list[[x]], clusters.list[[x+n]])})
 	
 	clusters <- do.call(rbind, clusters.list)
 	
@@ -433,28 +417,13 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 }
 
 .ctss2clusters.predef <- function(ctss.df, custom.clusters, useMulticore = FALSE, nrCores = NULL) {
-	
-	if(.checkMulticore(useMulticore) == TRUE){
-		ctss.cluster.list <- mclapply(as.list(unique(custom.clusters$chr)), function(x) {
-									  
-									  ctss.df.chr <- subset(ctss.df, ctss.df$chr == x)
-									  custom.clusters <- subset(custom.clusters, custom.clusters$chr == x)
-									  if(nrow(custom.clusters)>0){
-										ctss.cluster.chr.df <- .cluster.ctss.chr.predef(ctss.df = ctss.df.chr, custom.clusters = custom.clusters)
-									  }
-									  }, mc.cores = .getNrCores(nrCores)
-									  )		
-	}else{
-		ctss.cluster.list <- lapply(as.list(unique(custom.clusters$chr)), function(x) {
-									
-									ctss.df.chr <- subset(ctss.df, ctss.df$chr == x)
-									custom.clusters <- subset(custom.clusters, custom.clusters$chr == x)
-									if(nrow(custom.clusters)>0){
-										ctss.cluster.chr.df <- .cluster.ctss.chr.predef(ctss.df = ctss.df.chr, custom.clusters = custom.clusters)
-									}
-									}
-									)
-	}
+	ctss.cluster.list <- bplapply(as.list(unique(custom.clusters$chr)), function(x) {
+		ctss.df.chr <- subset(ctss.df, ctss.df$chr == x)
+		custom.clusters <- subset(custom.clusters, custom.clusters$chr == x)
+		if(nrow(custom.clusters)>0){
+			ctss.cluster.chr.df <- .cluster.ctss.chr.predef(ctss.df = ctss.df.chr, custom.clusters = custom.clusters)
+		}
+		}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	max.clust <- unlist(lapply(ctss.cluster.list, function(x) {max(x$cluster)}))
 	max.clust <- cumsum(c(0, max.clust[-length(max.clust)]))
 	invisible(gc())
@@ -503,11 +472,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 		
 	}
 	
-	if(.checkMulticore(useMulticore) == TRUE){
-		ctss.cluster.list <- mclapply(ctss.cluster.list, .summarize.clusters.predef, mc.cores = .getNrCores(nrCores))
-	}else{
-		ctss.cluster.list <- lapply(ctss.cluster.list, .summarize.clusters.predef)
-	}
+	ctss.cluster.list <- bplapply( ctss.cluster.list, .summarize.clusters.predef
+	                             , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	invisible(gc())
 	return(ctss.cluster.list)
 	

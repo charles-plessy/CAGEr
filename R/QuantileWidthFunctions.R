@@ -27,12 +27,8 @@
 .get.quant.pos <- function(cumsums, clusters, q = NULL, useMulticore = FALSE, nrCores = NULL) {
   getQuantilepos <- function(quant, cumsum) length(Filter(isTRUE, cumsum/max(cumsum) < quant))
 
-	if (.checkMulticore(useMulticore)) {
-		cluster.q <- mclapply( cumsums, function(x) sapply(q, getQuantilepos, x)
-		                     , mc.cores = .getNrCores(nrCores))
-	} else {
-		cluster.q <-   lapply(cumsums, function(x) sapply(q, getQuantilepos, x))
-	}
+	cluster.q <- bplapply( cumsums, function(x) sapply(q, getQuantilepos, x)
+	                     , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	cluster.q <- as.data.frame(do.call(rbind, cluster.q))
 	colnames(cluster.q) = paste('q_', q, sep = '')
 	mcols(clusters)[,colnames(cluster.q)] <- DataFrame(lapply(cluster.q, Rle))

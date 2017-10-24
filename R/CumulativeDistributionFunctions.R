@@ -119,19 +119,10 @@ setMethod(".getCumsum", c("GRanges", "GRanges"), function(ctss, clusters, useMul
   getCumSumChrStrand <- function(chrom) {
     plus.cumsum  <- .getCumsumChr2(clusters = clusters, ctss = ctss, chrom = chrom, str = "+")
     minus.cumsum <- .getCumsumChr2(clusters = clusters, ctss = ctss, chrom = chrom, str = "-")
-    append(plus.cumsum, minus.cumsum)
+    c(plus.cumsum, minus.cumsum)
   }
-  if(useMulticore == TRUE) {
-    if (is.null(nrCores)) {
-      nrCores <- detectCores()
-    }
-    clusters.cumsum <- unlist(mclapply(as.list(levels(droplevels(seqnames(clusters)))), getCumSumChrStrand, mc.cores = nrCores))
-  } else {
-		clusters.cumsum <- list()
-		for(chrom in unique(seqnames(clusters))) {
-			clusters.cumsum <- append(clusters.cumsum, getCumSumChrStrand(chrom))
-		}
-	}
+  clusters.cumsum <- unlist(bplapply( seqlevels(clusters), getCumSumChrStrand
+                                    , BPPARAM = CAGEr_Multicore(useMulticore, nrCores)))
 	names(clusters.cumsum) <- names(clusters)
 	clusters.cumsum
 })

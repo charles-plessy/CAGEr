@@ -53,7 +53,6 @@ setGeneric( "cumulativeCTSSdistribution"
 setMethod("cumulativeCTSSdistribution", "CAGEr",
 function (object, clusters, useMulticore = FALSE, nrCores = NULL){
   objName <- deparse(substitute(object))
-	useMulticore <- .checkMulticore(useMulticore)
 	message("\nCalculating cumulative sum of CAGE signal along clusters...")
 	samples.cumsum.list <- list()
 	if(clusters == "tagClusters"){	
