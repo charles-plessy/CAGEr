@@ -31,6 +31,7 @@
 \date{April 25, 2016}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 <<setup, echo=FALSE>>=
 options(width = 60)
 olocale=Sys.setlocale(locale="C")
@@ -491,9 +492,11 @@ and \Rfunction{plotInterquantileWidth} functions as described above, but by sett
 the \Rcode{clusters} parameter to \Rcode{"consensusClusters"}.
 \newline
 Although consensus clusters are created to represent consensus across all samples, they obviously have different CAGE signal and can have different width or position of the dominant TSS in the different samples. Sample-specific information on consensus clusters can be retrieved with the \Rfunction{consensusClusters} function, by specifying desired sample name (analogous to retrieving tag clusters):
-<<eval=FALSE>>=
-consensusCl <- consensusClusters(myCAGEset, sample = "zf_unfertilized_egg",
-		    returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9)
+<<>>=
+cumulativeCTSSdistribution(myCAGEset, "consensusClusters")
+quantilePositions(myCAGEset, clusters = "consensusClusters", qLow = 0.1, qUp = 0.9)
+head(consensusClusters(myCAGEset, sample = "zf_unfertilized_egg",
+		    returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9))
 @
 This will, in addition to genomic coordinates of the consensus clusters, which are constant across all samples, also return the position of the dominant TSS, the CAGE signal (tpm) and the interquantile width specific for a given sample. Note that when specifying individual sample, only the consensus clusters that have some CAGE signal in that sample will be returned (which will be a subset of all consensus clusters).
 

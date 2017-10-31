@@ -593,7 +593,8 @@ consensusClustersGR( ce, sample = "zf_unfertilized_egg"
 
 This will, in addition to genomic coordinates of the consensus clusters, which are constant across all samples, also return the position of the dominant TSS, the CAGE signal (tpm) and the interquantile width specific for a given sample. Note that when specifying individual sample, only the consensus clusters that have some CAGE signal in that sample will be returned (which will be a subset of all consensus clusters).
 
-Data exportfor genome browsers
+
+Data export for genome browsers
 ------------------------------
 
 CAGE data can be visualized in the genomic context by exporting raw or normalized CAGE tag counts
@@ -622,7 +623,6 @@ exportCTSStoBedGraph(ce, values = "normalized", format = "BigWig")
 which will produce two BigWig files per sample (one for TSSs on the plus strand and the other
 for the minus strand) and an accompanying text file with track headers.
 
-
 ```{r CTSSbedGraph, echo=FALSE, fig.cap="CAGE data bedGraph track visualized in the UCSC Genome Browser"}
 knitr::include_graphics("images/CTSSbedGraph.svg")
 ```
@@ -642,59 +642,70 @@ block denotes the position of the dominant TSS.
 knitr::include_graphics("images/TagClustersBed.svg")
 ```
 
-<!--
+
 Expression profiling
 --------------------
 
-Since CAGE signal reflects level of transcription from a given TSS or promoter it can be used for 5′ centered expression profiling.
-Expression clustering can be done at level of individual CTSSs or at level of entire promoters (consensus clusteres). In the former case, 
-feature vector containing log transformed and scaled normalized CAGE signal at individual TSS across multiple samples is used as input 
-for clustering algorithm, whereas in the latter case CAGE signal within the entire consensus cluster is used. \Rpackage{CAGEr} package 
-supports two unsupervised clustering algorithms: kmeans and self-organizing maps (SOM). Both algorithms require to specify number of clusters in advance.
-\newline
-We will perform expression clustering at the level of entire promoter using SOM algorithm and applying it only to promoters with normalized 
-CAGE signal \emph{>= 15} in at least one sample.
-<<>>=
-getExpressionProfiles(myCAGEset, what = "consensusClusters", tpmThreshold = 10, 
-		nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
-@
-Distribution of expression across samples for 8 clusters returned by SOM (4 x 2 map) can be visualized using \Rfunction{plotExpressionProfiles} function 
+Since CAGE signal reflects level of transcription from a given TSS or promoter it can be used
+for 5′ centered expression profiling.  Expression clustering can be done at level of individual
+CTSSs or at level of entire promoters (consensus clusters).  In the former case, feature vector
+containing log transformed and scaled normalized CAGE signal at individual TSS across multiple
+samples is used as input for clustering algorithm, whereas in the latter case CAGE signal
+within the entire consensus cluster is used.  _CAGEr_ supports two unsupervised clustering
+algorithms: kmeans and self-organizing maps (SOM).  Both algorithms require to specify a
+number of clusters in advance.
+
+We will perform expression clustering at the level of entire promoter using SOM algorithm and
+applying it only to promoters with normalized CAGE signal $>= 15$ in at least one sample.
+
+```{r}
+# Not supported yet for CAGEexp objects, sorry.
+# getExpressionProfiles(ce, what = "consensusClusters", tpmThreshold = 10, 
+# 		nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
+```
+
+Distribution of expression across samples for 8 clusters returned by SOM (4 $\times$ 2 map) can
+be visualized using the `plotExpressionProfiles` function 
 as shown in Figure~\ref{fig:ConsensusClustersExpressionProfiles}:
-<<>>=
-plotExpressionProfiles(myCAGEset, what = "consensusClusters")
-@
 
-\begin{figure}[h!]
-\centering
-\includegraphics[width=160mm]{images/ConsensusClustersExpressionProfiles.pdf}
-\caption{Expression clusters}
-\label{fig:ConsensusClustersExpressionProfiles}
-\end{figure}
+```{r}
+# Not supported yet for CAGEexp objects, sorry.
+# plotExpressionProfiles(ce, what = "consensusClusters")
+```
 
-Each cluster is shown in different color and is marked by its label and the number of elements (promoters) in the cluster.
-We can extract promoters belonging to a specific cluster by typing:
-<<>>=
-class3_1 <- extractExpressionClass(myCAGEset, 
-		what = "consensusClusters", which = "3_1")
-head(class3_1)
-@
+
+```{r ConsensusClustersExpressionProfiles, echo=FALSE, fig.cap="Expression clusters"}
+knitr::include_graphics("images/ConsensusClustersExpressionProfiles.svg")
+```
+
+Each cluster is shown in different color and is marked by its label and the
+number of elements (promoters) in the cluster. We can extract promoters
+belonging to a specific cluster by typing:
+
+```{r}
+# Not supported yet for CAGEexp objects, sorry.
+# class3_1 <- extractExpressionClass(ce, 
+# 		what = "consensusClusters", which = "3_1")
+# head(class3_1)
+```
 
 Consensus clusters and information on their expression profile can be exported to a BED file, which allows visualization of the promoters in the 
-genome browser colored in the color of the expression cluster they belong to (Figure~\ref{fig:ConsensusClustersBed}):
-<<eval=FALSE>>=
-exportToBed(myCAGEset, what = "consensusClusters", 
-		colorByExpressionProfile = TRUE)
-@
+genome browser colored in the color of the expression cluster they belong to (Figure~\@ref{fig:ConsensusClustersBed}):
 
-\begin{figure}[h!]
-\centering
-\includegraphics[width=160mm]{images/ConsensusClustersBed.pdf}
-\caption{Consensus clusters colored by expression profile in the genome browser}
-\label{fig:ConsensusClustersBed}
-\end{figure}
+```{r}
+# Not supported yet for CAGEexp objects, sorry.
+# exportToBed(ce, what = "consensusClusters", 
+# 		colorByExpressionProfile = TRUE)
+```
 
-Expression profiling of individual TSSs is done using the same procedure as described above for consensus clusters, only by setting \Rcode{what} parameter 
-to \Rcode{"CTSS"} in all of the functions.
+```{r ConsensusClustersBed, echo=FALSE, fig.cap="Consensus clusters colored by expression profile in the genome browser"}
+knitr::include_graphics("images/ConsensusClustersBed.svg")
+```
+
+Expression profiling of individual TSSs is done using the same procedure as
+described above for consensus clusters, only by setting `wha = "CTSS"` in all
+of the functions.
+
 
 Differential expression analysis
 --------------------------------
@@ -708,63 +719,95 @@ ce$group <- factor(c("a", "a", "b", "b"))
 dds <- consensusClustersDESeq2(ce, ~group)
 ```
 
+
 Shifting promoters
 ------------------
 
-As shown in Figure~\ref{fig:tagClustersBed}, TSSs within the same promoter region can be used differently in different samples. Thus, although the overall transcription level from a promoter 
-does not change between the samples, the differential usage of TSSs or "promoter shifting" may indicate changes in the regulation of transcription from that promoter, which cannot be detected 
-by expression profiling. To detect this promoter shifting, a method described in \cite{Haberle:2014} has been implemented in \Rpackage{CAGEr}. Shifting can be detected between two 
-individual samples or between two groups of samples. In the latter case, samples are first merged into groups and then compared in the same way as two individual samples. For all promoters a 
-shifting score is calculated based on the difference in the cumulative distribution of CAGE signal along that promoter in the two samples. In addition, a more general assessment of differential TSS 
-usage is obtained by performing Kolmogorov-Smirnov test on the cumulative distributions of CAGE signal, as described below. Thus, prior to shifting score calculation and statistical testing, we have to 
-calculate cumulative distribution along all consensus clusters:
-<<>>=
-cumulativeCTSSdistribution(myCAGEset, clusters = "consensusClusters")
-@
-Next, we calculate a shifting score and P-value of Kolmogorov-Smirnov test for all promoters comparing two specified samples:
-<<>>=
-scoreShift(myCAGEset, groupX = "zf_unfertilized_egg", groupY = "zf_prim6",
-		testKS = TRUE, useTpmKS = FALSE)
-@
-This function will calculate shifting score as illustrated in Figure~\ref{fig:ShiftingScore}. Values of shifting score are in range between -Inf and 1. Positive values can be interpreted as the proportion of transcription initiation 
-in the sample with lower expression that is happening "outside" (either upstream or downstream) of the region used for transcription initiation in the other sample. In contrast, negative values 
-indicate no physical separation, \emph{i.e.} the region used for transcription initiation in the sample with lower expression is completely contained within the region used for transcription 
-initiation in the other sample. Thus, shifting score detects only the degree of upstream or downstream shifting, but does not detect more general changes in TSS rearrangement in the region, 
-\emph{e.g.} narrowing or broadening of the region used for transcription.
-\newline
-To assess any general change in the TSS usage within the promoter region, a two-sample Kolmogorov-Smirnov (K-S) test on cumulative 
-sums of CAGE signal along the consensus cluster is performed. Cumulative sums in both samples are scaled to range between 0 and 1 and are considered to be empirical cumulative distribution functions (ECDF) 
-reflecting sampling of TSS positions during transcription initiation. K-S test is performed to assess whether the two underlying probability distributions differ. To obtain a P-value 
-(\emph{i.e.} the level at which the null-hypothesis can be rejected), sample sizes that generated the ECDFs are required, in addition to actual K-S statistics calculated from ECDFs. 
-These are derived either from raw tag counts, \emph{i.e.} exact number of times each TSS in the cluster was sampled during sequencing (when \Rcode{useTpmKS = FALSE}), or from normalized 
-tpm values (when \Rcode{useTpmKS = TRUE}). P-values obtained from K-S tests are further corrected for multiple testing using Benjamini and Hochenberg (BH) method and for each P-value a corresponding false-discovery rate (FDR) is also reported.
+As shown in Figure~\@ref{fig:tagClustersBed}, TSSs within the same promoter
+region can be used differently in different samples.  Thus, although the overall
+transcription level from a promoter does not change between the samples, the
+differential usage of TSSs or _promoter shifting_ may indicate changes in the
+regulation of transcription from that promoter, which cannot be detected by
+expression profiling.  To detect this promoter shifting, a method described in
+@[Haberle:2014] has been implemented in _CAGEr_.  Shifting can be detected
+between two individual samples or between two groups of samples. In the latter
+case, samples are first merged into groups and then compared in the same way as
+two individual samples.  For all promoters a shifting score is calculated based
+on the difference in the cumulative distribution of CAGE signal along that
+promoter in the two samples.  In addition, a more general assessment of
+differential TSS usage is obtained by performing Kolmogorov-Smirnov test on the
+cumulative distributions of CAGE signal, as described below.  Thus, prior to
+shifting score calculation and statistical testing, we have to calculate
+cumulative distribution along all consensus clusters:
 
-\begin{figure}[h!]
-\centering
-\includegraphics[width=130mm]{images/ShiftingScore.pdf}
-\caption{Calculation of shifting score}
-\label{fig:ShiftingScore}
-\end{figure}
+```{r}
+cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
+```
 
+Next, we calculate a shifting score and P-value of Kolmogorov-Smirnov test for
+all promoters comparing two specified samples:
+
+```{r}
+# Not supported yet for CAGEexp objects, sorry.
+# scoreShift(ce, groupX = "zf_unfertilized_egg", groupY = "zf_prim6",
+# 		testKS = TRUE, useTpmKS = FALSE)
+```
+
+This function will calculate shifting score as illustrated in
+Figure \@ref{fig:ShiftingScore}.  Values of shifting score are in range between
+`-Inf` and `1`.  Positive values can be interpreted as the proportion of
+transcription initiation in the sample with lower expression that is happening
+"outside" (either upstream or downstream) of the region used for transcription
+initiation in the other sample.  In contrast, negative values indicate no
+physical separation, _i.e._ the region used for transcription initiation in the
+sample with lower expression is completely contained within the region used for
+transcription initiation in the other sample.  Thus, shifting score detects only
+the degree of upstream or downstream shifting, but does not detect more general
+changes in TSS rearrangement in the region, _e.g._ narrowing or broadening of
+the region used for transcription.
+
+\
+To assess any general change in the TSS usage within the promoter region,
+a two-sample Kolmogorov-Smirnov (K-S) test on cumulative sums of CAGE signal
+along the consensus cluster is performed. Cumulative sums in both samples are
+scaled to range between 0 and 1 and are considered to be empirical cumulative
+distribution functions (ECDF) reflecting sampling of TSS positions during
+transcription initiation.  K-S test is performed to assess whether the two
+underlying probability distributions differ.  To obtain a P-value _i.e._ the
+level at which the null-hypothesis can be rejected), sample sizes that generated
+the ECDFs are required, in addition to actual K-S statistics calculated from
+ECDFs.  These are derived either from raw tag counts, _i.e._ exact number of
+times each TSS in the cluster was sampled during sequencing (when
+`useTpmKS = FALSE`), or from normalized tpm values (when `useTpmKS = TRUE`).
+P-values obtained from K-S tests are further corrected for multiple testing
+using Benjamini and Hochenberg (BH) method and for each P-value a corresponding
+false-discovery rate (FDR) is also reported.
+
+```{r ShiftingScore, echo=FALSE, fig.cap="Calculation of shifting score"}
+knitr::include_graphics("images/ShiftingScore.svg")
+```
 
 We can select a subset of promoters with shifting score and/or FDR above specified threshold:
-<<>>=
-shifting.promoters <- getShiftingPromoters(myCAGEset, 
-		tpmThreshold = 5, scoreThreshold = 0.6,
-		fdrThreshold = 0.01)
-head(shifting.promoters)
-@
-The \Rfunction{getShiftingPromoters} function returns genomic coordinates, shifting score and P-value (FDR) of the promoters, as well as the value of CAGE signal and position of the dominant TSS in the two 
-compared (groups of) samples. Figure~\ref{fig:ShiftingPromoter} shows the difference in the CAGE signal between the two compared samples for one of the selected high-scoring shifting promoters.
 
-\begin{figure}[h!]
-\centering
-\includegraphics[width=160mm]{images/ShiftingPromoter.pdf}
-\caption{Example of shifting promoter}
-\label{fig:ShiftingPromoter}
-\end{figure}
+```{r}
+# Not supported yet for CAGEexp objects, sorry.
+# shifting.promoters <- getShiftingPromoters(ce, 
+# 		tpmThreshold = 5, scoreThreshold = 0.6,
+# 		fdrThreshold = 0.01)
+# head(shifting.promoters)
+```
 
--->
+The `getShiftingPromoters` function returns genomic coordinates, shifting score
+and P-value (FDR) of the promoters, as well as the value of CAGE signal and
+position of the dominant TSS in the two compared (groups of) samples.
+Figure~\@ref{fig:ShiftingPromoter} shows the difference in the CAGE signal
+between the two compared samples for one of the selected high-scoring shifting
+promoters.
+
+```{r ShiftingPromoter, echo=FALSE, fig.cap="Example of shifting promoter"}
+knitr::include_graphics("images/ShiftingPromoter.svg")
+```
+
 
 Appendix
 ========
