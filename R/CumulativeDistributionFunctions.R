@@ -88,8 +88,6 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' sum for each cluster (length of list is equal to number of clusters and names of the list
 #' components corespond to the name of the corresponding cluster) v.
 #'
-#' @importFrom parallel detectCores
-#'
 #' @examples 
 #' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEset, "sample1"))
 #' ctss      <- ctss[ctss$filteredCTSSidx]

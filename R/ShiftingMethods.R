@@ -95,7 +95,6 @@
 #'           , testKS = TRUE, useTpmKS = FALSE)
 #' head(getShiftingPromoters(exampleCAGEset))
 #'
-#' @importFrom parallel detectCores
 #' @importFrom stats p.adjust
 #' @export
 

@@ -123,7 +123,6 @@ setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
 #' 
 #' @importFrom data.table data.table
 #' @importFrom S4Vectors decode
-#' @importFrom parallel detectCores
 #' 
 #' @examples 
 #' 
@@ -231,7 +230,6 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist
 #' 
 #' @importFrom GenomicRanges GRangesList
 #' @importFrom SummarizedExperiment rowRanges
-#' @importFrom parallel detectCores
 #' 
 #' @examples 
 #' 
