@@ -100,9 +100,6 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
 #' clusters[1]
 #' 
-#' clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
-#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
-#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 #' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEexp, "Zf.30p.dome"))
 #' ctss      <- ctss[ctss$filteredCTSSidx]
 #' clusters  <- tagClustersGR(exampleCAGEexp, "Zf.30p.dome")

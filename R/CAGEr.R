@@ -42,6 +42,7 @@ setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
 #' @param reference.genome
 #' 
 #' @author Charles Plessy
+#' @importFrom utils installed.packages
 #' 
 #' @noRd
 
