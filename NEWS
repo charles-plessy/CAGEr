@@ -1,10 +1,45 @@
-CHANGES in version 1.19.0 :
+CHANGES in version 1.21.0 :
+
+BACKWARDS-INCOMPATIBLE CHANGES:
+
+    o The plotting functions send their output to the graphical device instead
+      of writing it to a file.  This makes their use more consistent with most
+      plotting functions in R.
+    
+NEW FEATURES
 
     o New "CAGEexp" class extending the MultiAssayExperiment class.  It stores
-      expression data more efficiently than "CAGEset", and will support the
-      same generic functions.
+      expression data more efficiently than "CAGEset", and uses core
+      Bioconductor typse natively.  For backwards compatibility it also support
+      many of the original generic functions for "CAGEset" objects.
+    o New functions for quality controls such as plotAnnot() or hanabiPlot().
+      See the CAGEexp vignette for details.
+    o Data export as DESeqDataSet object for DESeq2 with the new
+      "consensusClustersDESeq2" and "GeneExpDESeq2" functions.
     o New "bedctss" format to load the FANTOM5 and FANTOM6 CAGE data.
     o New "CAGEscanMolecule" format to load CAGEscan 3.0 data.
+    o Multicore parallelisation with BiocParallel instead of parallel.
+    o New function sampleList() to help looping on samples with lapply().
+    
+OTHER CHANGES
+
+    o Custom clusters of length 1 are accepted.
+    o Example data "exampleCAGEexp", "exampleCAGEexp" and "exampleZv9_annot"
+      are now is lazy-loaded.
+    o Passes R CMD check without errors or notes.
+    o NULL can be passed as genome name, to circumvent the requirement for a
+      BSgenome object when actually not needing one.
+
+DOCUMENTATION UPDATES
+
+    o Roxygen is used to generate the manual pages.
+    o A new vignette describes the "CAGEexp" class.
+
+CHANGES in version 1.18.1 :
+
+    o getCTSS() can now load data from large BAM files.  Before this update,
+      there were "negative length vectors" errors when filtering out low quality
+      reads from datasets with multiple dozens of millions of sequences.
 
 CHANGES in version 1.18.0 :
 
