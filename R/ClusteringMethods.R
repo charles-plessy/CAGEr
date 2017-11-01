@@ -222,7 +222,7 @@ setMethod( "clusterCTSS", "CAGEexp"
                                              , useMulticore = useMulticore, nrCores = nrCores)
   }
   
-  CTSSclusteringMethod(object) <- method
+  CTSSclusteringMethod(ctss.cluster.list) <- method
   metadata(object)$tagClusters <- ctss.cluster.list
   assign(objName, object, envir = parent.frame())
   invisible(1)

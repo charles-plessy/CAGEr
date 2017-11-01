@@ -212,8 +212,17 @@ setMethod("CTSSclusteringMethod<-", "CAGEset", function (object, value) {
 
 #' @rdname CTSSclusteringMethod
 
+setMethod("CTSSclusteringMethod<-", "GRangesList", function (object, value) {
+  metadata(object)$clusteringMethod <- value
+  if (validObject(object)) object
+})
+
+#' @rdname CTSSclusteringMethod
+
 setMethod("CTSSclusteringMethod<-", "CAGEexp", function (object, value) {
-  metadata(object)$clusteringMethod
+  CTSSclusteringMethod(metadata(object)$tagClusters) <- value
+  # extrat directly TCs from metadata slot because tagClustersGR does more that
+  # is not needed here.
   if (validObject(object)) object
 })
 

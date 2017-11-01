@@ -747,8 +747,15 @@ setMethod("CTSSclusteringMethod", "CAGEset", function (object)
 
 #' @rdname CTSSclusteringMethod
 
-setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
+setMethod("CTSSclusteringMethod", "GRangesList", function (object)
 	metadata(object)$clusteringMethod)
+
+#' @rdname CTSSclusteringMethod
+
+setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
+  CTSSclusteringMethod(metadata(object)$tagClusters))
+  # extrat directly TCs from metadata slot because tagClustersGR does more that
+  # is not needed here.
 
 
 #' @name tagClusters
@@ -848,6 +855,7 @@ setGeneric( "tagClustersGR"
                                   , returnInterquantileWidth = returnInterquantileWidth
                                   , qLow = qLow, qUp = qUp))
     names(tc.list) <- sampleLabels(object)
+    metadata(tc.list)$clusteringMethod <- CTSSclusteringMethod(object)
     return(tc.list)
   }
   validSamples(object, sample)
