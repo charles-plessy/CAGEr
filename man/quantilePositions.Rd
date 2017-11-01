@@ -93,7 +93,8 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{getCTSS}}, \code{\link{normalizeTagCount}},
   \code{\link{summariseChrExpr}}
 
-Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
+  \code{\link{CTSScumulativesTagClusters}},
   \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},

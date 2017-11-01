@@ -720,22 +720,24 @@ setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, samples) {
 
 #' @name CTSSclusteringMethod
 #' 
-#' @title Extracting CTSS clustering method from CAGEr objects.
+#' @title Get /set CTSS clustering method
 #' 
-#' @description Extracts the label of the method used for CTSS clustering into tag
-#' clusters from \code{\link{CAGEr}} objects.
+#' @description Returns or sets the name of the method that was used make tag
+#' clusters from the CTSSs of a \code{\link{CAGEr}} object.
 #' 
 #' @param object A CAGEr object.
 #' 
-#' @return Returns a label of the method used for CTSS clustering.
-#' 
 #' @seealso \code{\link{clusterCTSS}}
+#' @family CAGEr accessor methods
+#' @family CAGEr clusters functions
+#' 
+#' @author Vanja Haberle
+#' @author Charles Plessy
 #' 
 #' @examples 
 #' CTSSclusteringMethod(exampleCAGEset)
+#' CTSSclusteringMethod(exampleCAGEexp)
 #' 
-#' @author Vanja Haberle
-#' @family CAGEr accessor methods
 #' @export CTSSclusteringMethod
 
 setGeneric("CTSSclusteringMethod", function(object) standardGeneric("CTSSclusteringMethod"))

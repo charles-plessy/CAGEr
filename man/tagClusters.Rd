@@ -84,7 +84,8 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{librarySizes}}, \code{\link{sampleLabels}},
   \code{\link{seqNameTotalsSE}}
 
-Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
+  \code{\link{CTSScumulativesTagClusters}},
   \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},

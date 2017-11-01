@@ -52,7 +52,8 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{quantilePositions}},
   \code{\link{summariseChrExpr}}
 
-Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
+  \code{\link{CTSScumulativesTagClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{consensusClustersDESeq2}},

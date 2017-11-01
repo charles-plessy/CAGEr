@@ -10,28 +10,27 @@
 #' 
 #' @param object A \code{\link{CAGEr}} object.
 #' 
-#' @param threshold,nrPassThreshold Only CTSSs with signal \code{>= threshold} in
-#'        \code{>= nrPassThreshold} experiments will be used for clustering and will
-#'        contribute towards total signal of the cluster.
+#' @param threshold,nrPassThreshold Ignore CTSSs with signal \code{< threshold}
+#'        in \code{< nrPassThreshold} experiments.
 #' 
-#' @param thresholdIsTpm Logical, is threshold raw tag count value (FALSE) or
-#'        normalized signal (TRUE).
+#' @param thresholdIsTpm Logical indicating if \code{threshold} is expressed in
+#'        raw tag counts (FALSE) or normalized signal (TRUE).
 #' 
-#' @param method Method to be used for clustering. Can be one of the \code{"distclu"},
+#' @param method Method to be used for clustering: \code{"distclu"},
 #'        \code{"paraclu"} or \code{"custom"}.  See Details.
 #' 
 #' @param maxDist Maximal distance between two neighbouring CTSSs for them to be part of the
 #'        same cluster.  Used only when \code{method = "distclu"}, otherwise ignored.
 #' 
-#' @param removeSingletons Logical, should tag clusters containing only one CTSS be removed.
-#'        Ignored when \code{method = "custom"}.
+#' @param removeSingletons Logical indicating if tag clusters containing only
+#'        one CTSS be removed.  Ignored when \code{method = "custom"}.
 #' 
 #' @param keepSingletonsAbove Controls which singleton tag clusters will be removed.
 #'        When \code{removeSingletons = TRUE}, only singletons with signal
 #'        \code{< keepSingletonsAbove} will be removed.  Useful to prevent removing highly
 #'        supported singleton tag clusters.  Default value \code{Inf} results in removing all
-#'         singleton TCs when \code{removeSingletons = TRUE}.  Ignored when
-#'         \code{removeSingletons = FALSE} or \code{method = "custom"}.
+#'        singleton TCs when \code{removeSingletons = TRUE}.  Ignored when
+#'        \code{removeSingletons = FALSE} or \code{method = "custom"}.
 #' 
 #' @param minStability Minimal stability of the cluster, where stability is defined as ratio
 #'        between maximal and minimal density value for which this cluster is maximal scoring.
@@ -46,15 +45,15 @@
 #'        cluster be removed to make a final set of tag clusters non-overlapping. Used only
 #'        when \code{method = "paraclu"}.  See Details.
 #' 
-#' @param customClusters Genomic coordinates of predefined regions to be used to segment the
-#'        CTSSs.  It has to be a \code{\link{GRanges}} object or a
-#'        \code{data.frame} with following columns: \code{chr}
+#' @param customClusters Genomic coordinates of predefined regions to be used to
+#'        segment the CTSSs.  The format is either a \code{\link{GRanges}}
+#'        object or a \code{data.frame} with the following columns: \code{chr}
 #'        (chromosome name), \code{start} (0-based start coordinate), \code{end}
-#'        (end coordinate), \code{strand} (either \code{"+"}, or \code{"-"}).  Used only when
-#'        \code{method = "custom"}.
+#'        (end coordinate), \code{strand} (either \code{"+"}, or \code{"-"}).
+#'        Used only when \code{method = "custom"}.
 #' 
-#' @param useMulticore Logical, should multicore be used.  \code{useMulticore = TRUE} is
-#'        supported only on Unix-like platforms.
+#' @param useMulticore Logical, should multicore be used.  \code{useMulticore = TRUE}
+#'        has no effect on non-Unix-like platforms.
 #' 
 #' @param nrCores Number of cores to use when \code{useMulticore = TRUE}.  Default value
 #'        \code{NULL} uses all detected cores.
@@ -66,15 +65,16 @@
 #' \code{\link{distclu-functions}} for implementation details.  \code{"paraclu"} is an
 #' implementation of Paraclu algorithm for parametric clustering of data attached to
 #' sequences developed by M. Frith (Frith \emph{et al.}, Genome Research, 2007,
-#' \href{http://www.cbrc.jp/paraclu/}{http://www.cbrc.jp/paraclu/}).  Since Paraclu finds
-#' clusters within clusters (unlike distclu), additional parameters (\code{removeSingletons},
-#' \code{keepSingletonsAbove}, \code{minStability}, \code{maxLength} and
-#' \code{reduceToNonoverlapping}) can be specified to simplify the output by discarding too
-#' small (singletons) or too big clusters, and to reduce the clusters to a final set of
-#' non-overlapping clusters.  Clustering is done for every CAGE dataset within CAGEset object
-#' separatelly, resulting in a different set of tag clusters for every CAGE dataset. TCs from
+#' \href{http://cbrc3.cbrc.jp/~martin/paraclu/}{http://cbrc3.cbrc.jp/~martin/paraclu/}).
+#' Since Paraclu finds #' clusters within clusters (unlike distclu), additional
+#' parameters (\code{removeSingletons}, \code{keepSingletonsAbove},
+#' \code{minStability}, \code{maxLength} and \code{reduceToNonoverlapping}) can
+#' be specified to simplify the output by discarding too small (singletons) or
+#' too big clusters, and to reduce the clusters to a final set of non-overlapping
+#' clusters.  Clustering is done for every CAGE dataset within the CAGEr object
+#' separately, resulting in a different set of tag clusters for every CAGE dataset. TCs from
 #' different datasets can further be aggregated into a single referent set of consensus
-#' clusters by calling \code{\link{aggregateTagClusters}} function.
+#' clusters by calling the \code{\link{aggregateTagClusters}} function.
 #' 
 #' @return The slots \code{clusteringMethod}, \code{filteredCTSSidx} and \code{tagClusters} of
 #' the provided \code{\link{CAGEset}} object will be occupied by the information on method used
@@ -82,13 +82,20 @@
 #' respectively.  To retrieve tag clusters for individual CAGE dataset use
 #' \code{\link{tagClusters}} function.
 #' 
+#' In \code{\link{CAGEexp}} objects, the results will be stored as a
+#' \code{\link{GRangesList}} of \code{\link{TagClusters}} objects in the metadata
+#' slot \code{tagClusters}.  The \code{TagClusters} object will contain a
+#' \code{filteredCTSSidx} column if appropriate.  The clustering method name
+#' is saved in the metadata slot of the \code{GRangesList}.
+#' 
 #' @references Frith \emph{et al.} (2007) A code for transcription initiation in mammalian
 #' genomes, \emph{Genome Research} \bold{18}(1):1-12,
 #' (\href{http://www.cbrc.jp/paraclu/}{http://www.cbrc.jp/paraclu/}).
 #' 
 #' @author Vanja Haberle
 #' 
-#' @seealso \code{\link{tagClusters}}, \code{\link{aggregateTagClusters}}
+#' @seealso \code{\link{tagClusters}}, \code{\link{aggregateTagClusters}} and
+#' \code{\link{CTSSclusteringMethod}}.
 #' 
 #' @family CAGEr object modifiers
 #' @family CAGEr clusters functions

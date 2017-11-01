@@ -45,7 +45,8 @@ List of numeric Rle.
 Accessor function.
 }
 \seealso{
-Other CAGEr clusters functions: \code{\link{CustomConsensusClusters}},
+Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
+  \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},
   \code{\link{clusterCTSS}},
   \code{\link{consensusClustersDESeq2}},

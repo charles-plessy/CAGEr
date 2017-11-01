@@ -4,21 +4,27 @@
 \name{CTSSclusteringMethod}
 \alias{CTSSclusteringMethod}
 \alias{CTSSclusteringMethod,CAGEset-method}
+\alias{CTSSclusteringMethod,GRangesList-method}
 \alias{CTSSclusteringMethod,CAGEexp-method}
 \alias{CTSSclusteringMethod<-}
 \alias{CTSSclusteringMethod<-,CAGEset-method}
+\alias{CTSSclusteringMethod<-,GRangesList-method}
 \alias{CTSSclusteringMethod<-,CAGEexp-method}
-\title{Extracting CTSS clustering method from CAGEr objects.}
+\title{Get /set CTSS clustering method}
 \usage{
 CTSSclusteringMethod(object)
 
 \S4method{CTSSclusteringMethod}{CAGEset}(object)
+
+\S4method{CTSSclusteringMethod}{GRangesList}(object)
 
 \S4method{CTSSclusteringMethod}{CAGEexp}(object)
 
 CTSSclusteringMethod(object) <- value
 
 \S4method{CTSSclusteringMethod}{CAGEset}(object) <- value
+
+\S4method{CTSSclusteringMethod}{GRangesList}(object) <- value
 
 \S4method{CTSSclusteringMethod}{CAGEexp}(object) <- value
 }
@@ -27,15 +33,13 @@ CTSSclusteringMethod(object) <- value
 
 \item{value}{character}
 }
-\value{
-Returns a label of the method used for CTSS clustering.
-}
 \description{
-Extracts the label of the method used for CTSS clustering into tag
-clusters from \code{\link{CAGEr}} objects.
+Returns or sets the name of the method that was used make tag
+clusters from the CTSSs of a \code{\link{CAGEr}} object.
 }
 \examples{
 CTSSclusteringMethod(exampleCAGEset)
+CTSSclusteringMethod(exampleCAGEexp)
 
 }
 \seealso{
@@ -50,7 +54,20 @@ Other CAGEr accessor methods: \code{\link{CTSScoordinates}},
   \code{\link{inputFilesType}}, \code{\link{inputFiles}},
   \code{\link{librarySizes}}, \code{\link{sampleLabels}},
   \code{\link{seqNameTotalsSE}}, \code{\link{tagClusters}}
+
+Other CAGEr clusters functions: \code{\link{CTSScumulativesTagClusters}},
+  \code{\link{CustomConsensusClusters}},
+  \code{\link{aggregateTagClusters}},
+  \code{\link{clusterCTSS}},
+  \code{\link{consensusClustersDESeq2}},
+  \code{\link{consensusClustersGR}},
+  \code{\link{cumulativeCTSSdistribution}},
+  \code{\link{plotInterquantileWidth}},
+  \code{\link{quantilePositions}},
+  \code{\link{tagClusters}}
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
