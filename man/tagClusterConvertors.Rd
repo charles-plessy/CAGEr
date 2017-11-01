@@ -19,6 +19,13 @@ TCdataframe2granges(df)
 Interconvert tag clusters (TC) formats used in classes CAGEset
 (\code{data.frame}) and CAGEexp (\code{GRanges}).
 }
+\details{
+The original format used in \code{\link{CAGEset}} objects follows BED
+("0-based") conventsion for the start and end coordinates.  On the other
+hand, the GRanges objects used in \code{\link{CAGEexp}} objects follow
+the "1-based" convention.  Therefore a value of 1 has to be added or
+subtracted to the start positions when converting between both formats.
+}
 \examples{
 df <- tagClusters(exampleCAGEset, 1)
 head(df)

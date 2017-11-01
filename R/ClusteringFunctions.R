@@ -484,6 +484,13 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 #' @description Interconvert tag clusters (TC) formats used in classes CAGEset
 #' (\code{data.frame}) and CAGEexp (\code{GRanges}).
 #' 
+#' @details 
+#' The original format used in \code{\link{CAGEset}} objects follows BED
+#' ("0-based") conventsion for the start and end coordinates.  On the other
+#' hand, the GRanges objects used in \code{\link{CAGEexp}} objects follow
+#' the "1-based" convention.  Therefore a value of 1 has to be added or
+#' subtracted to the start positions when converting between both formats.
+#' 
 #' @family df2granges converters
 #' 
 #' @examples 
@@ -514,7 +521,7 @@ TCgranges2dataframe <- function(gr) {
     df <- data.frame(cluster = as.integer(names(gr)))  # Make sure it does not sort lexically!
   }
   df <- cbind(df , data.frame( chr     = decode(seqnames(gr))
-                             , start   = start(gr)
+                             , start   = start(gr) -1
                              , end     = end(gr)
                              , strand  = decode(droplevels(strand(gr)))))
   if(is.null(gr$tpm))
@@ -531,7 +538,7 @@ TCgranges2dataframe <- function(gr) {
 
 TCdataframe2granges <- function(df) {
 	gr <- GRanges( seqnames           = df$chr
-	             , ranges             = IRanges(df$start, df$end)
+	             , ranges             = IRanges(df$start + 1, df$end)
  	             , score              = df$tpm
                , strand             = df$strand)
 	if(is.null(df[["cluster"]]))
@@ -541,3 +548,4 @@ TCdataframe2granges <- function(df) {
 	names(gr) <- rownames(df)
 	gr
 }
+
