@@ -942,7 +942,7 @@ setMethod("tagClustersQuantile", "TagClusters", function (object, samples, q) {
   if (! is.null(samples))
     stop(sQuote("samples"), " must be NULL.")
   qName <- paste0("q_", q)
-  if (! all(qName %in% colnames(mcols(x))))
+  if (! all(qName %in% colnames(mcols(object))))
     stop( "At least one of the quantiles "
         , paste(sQuote(qName), collapse=" or ")
         , " was not found.")
