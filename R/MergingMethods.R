@@ -113,13 +113,14 @@ setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSample
   
   inputFilesType.new <- tapply(inputFilesType(object), mergeIndex, function(X) paste(unique(X)))
   
-  new.CAGE.exp <- 
-    new( "CAGEexp"
-       , metadata = list(genomeName = genomeName(object))
-       , colData  = DataFrame( inputFiles     = paste(mergedSampleLabels, "_merged", sep = "")
-                             , inputFilesType = inputFilesType.new
-                             , sampleLabels   = mergedSampleLabels
-                             , librarySizes   = lib.sizes.new))
+  new.CAGE.exp <- DataFrame( inputFiles     = paste(mergedSampleLabels, "_merged", sep = "")
+                           , inputFilesType = inputFilesType.new
+                           , sampleLabels   = mergedSampleLabels
+                           , librarySizes   = lib.sizes.new)
+  rownames(new.CAGE.exp) <- mergedSampleLabels
+  
+  new.CAGE.exp <- CAGEexp( metadata = list(genomeName = genomeName(object))
+                     , colData  = new.CAGE.exp)
   
   setColors(new.CAGE.exp, rainbow(n = length(mergedSampleLabels)))
 
