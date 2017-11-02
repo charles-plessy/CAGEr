@@ -925,6 +925,11 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
 #' @param value A list (one entry per sample) of data frames with multiple columns:
 #'        \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
 #'        indicates a quantile.
+#' 
+#' @return Returns a \code{data.frame} where the first column gives cluster
+#' names and the next columns give quantile positions, in \emph{zero-based}
+#' chromosome coordinates (because the tag clusters in CAGEset objects are
+#' represented in zero-based coordinates as well)).
 
 setGeneric("tagClustersQuantile", function(object, samples = NULL, q = NULL)
   standardGeneric("tagClustersQuantile"))
@@ -943,7 +948,7 @@ setMethod("tagClustersQuantile", "TagClusters", function (object, samples, q) {
         , " was not found.")
   tcq <- mcols(object)[, qName, drop = FALSE]
 	tcq <- data.frame(lapply(tcq, decode))
-	tcq <- tcq + start(object)
+	tcq <- tcq + start(object) - 1
 	cbind(cluster = names(object), tcq)
 })
 

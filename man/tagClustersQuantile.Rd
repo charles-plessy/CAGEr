@@ -61,6 +61,12 @@ tagClustersQuantileUp(object, samples = NULL) <- value
 \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
 indicates a quantile.}
 }
+\value{
+Returns a \code{data.frame} where the first column gives cluster
+names and the next columns give quantile positions, in \emph{zero-based}
+chromosome coordinates (because the tag clusters in CAGEset objects are
+represented in zero-based coordinates as well)).
+}
 \description{
 Accessor functions to quantile metadata.
 }
