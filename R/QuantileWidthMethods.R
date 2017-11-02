@@ -80,7 +80,10 @@
 #' @export
 
 setGeneric( "quantilePositions"
-          , function(object, clusters, qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCores = NULL)
+          , function( object
+                    , clusters = c("tagClusters", "consensusClusters")
+                    , qLow = 0.1, qUp = 0.9
+                    , useMulticore = FALSE, nrCores = NULL)
 	standardGeneric("quantilePositions"))
 
 #' @rdname quantilePositions
@@ -94,6 +97,7 @@ setMethod( "quantilePositions", "CAGEr"
 	  tcq <- tcq + start(gr)
 	  cbind(cluster = names(gr), tcq)
 	}
+	clusters <- match.arg(clusters)
 	message("\nGetting positions of quantiles within clusters...")
 	if (clusters == "tagClusters") {
 	  ctss.clusters <- lapply(sampleList(object), function(s) {
@@ -134,7 +138,7 @@ setMethod( "quantilePositions", "CAGEr"
         consensusClustersQuantileUp (object, s) <- gr2tcq(cons.clusters.l[[s]], qUp)
 		  }
 		} else stop("Unsupported CAGEr class.")
-	} else stop("'clusters' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
+	}
 	assign(objName, object, envir = parent.frame())
 	invisible(1)
 })

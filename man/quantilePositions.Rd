@@ -6,11 +6,12 @@
 \alias{quantilePositions,CAGEr-method}
 \title{Determine CTSS quantile positions within clusters}
 \usage{
-quantilePositions(object, clusters, qLow = 0.1, qUp = 0.9,
-  useMulticore = FALSE, nrCores = NULL)
+quantilePositions(object, clusters = c("tagClusters", "consensusClusters"),
+  qLow = 0.1, qUp = 0.9, useMulticore = FALSE, nrCores = NULL)
 
-\S4method{quantilePositions}{CAGEr}(object, clusters, qLow = 0.1, qUp = 0.9,
-  useMulticore = FALSE, nrCores = NULL)
+\S4method{quantilePositions}{CAGEr}(object, clusters = c("tagClusters",
+  "consensusClusters"), qLow = 0.1, qUp = 0.9, useMulticore = FALSE,
+  nrCores = NULL)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
