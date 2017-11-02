@@ -4,7 +4,7 @@
 \name{quantilePositions}
 \alias{quantilePositions}
 \alias{quantilePositions,CAGEr-method}
-\title{Determining positions of CAGE signal quantiles within genomic region}
+\title{Determine CTSS quantile positions within clusters}
 \usage{
 quantilePositions(object, clusters, qLow = 0.1, qUp = 0.9,
   useMulticore = FALSE, nrCores = NULL)
@@ -13,50 +13,51 @@ quantilePositions(object, clusters, qLow = 0.1, qUp = 0.9,
   useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} object}
+\item{object}{A \code{\link{CAGEr}} object.}
 
-\item{clusters}{Which clusters should be used.  Can be either \code{tagClusters}
-to calculate positions of quantiles in tag clusters (different set of genomic
-coordinates for every CAGE experiment) or \code{consensusClusters} to calculate
-positions of quantiles in consensus clusters (same set of genomic coordinates for
-every CAGE experiment).}
+\item{clusters}{Either \code{tagClusters} or \code{consensusClusters}.}
 
-\item{qLow}{Which "lower" quantiles should be calculated.  It has to be a numeric
-vector of values in range \code{[0,1]}.  See Details.}
+\item{qLow, qUp}{Which \dQuote{lower} or \dQuote{upper} quantiles should be
+calculated. Numeric vector of values in range \code{[0,1]}.}
 
-\item{qUp}{Which "upper" quantiles should be calculated.  It has to be a numeric
-vector of values in range \code{[0,1]}.  See Details.}
+\item{useMulticore}{Logical, should multicore be used.
+\code{useMulticore = TRUE} has only effect on Unix-like platforms.}
 
-\item{useMulticore}{Logical, should multicore be used.  \code{useMulticore = TRUE}
-is supported only on Unix-like platforms.}
-
-\item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}.  Default
-value \code{NULL} uses all detected cores.}
+\item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}.
+Default value \code{NULL} uses all detected cores.}
 }
 \value{
 When \code{clusters = "tagClusters"}, the slots \code{tagClustersQuantileLow}
-and \code{tagClustersQuantileUp} of the provided \code{\link{CAGEset}} object will
+and \code{tagClustersQuantileUp} of a provided \code{\link{CAGEset}} object will
 be occupied with the positions of specified quantiles in all tag clusters for all
 CAGE datasets. When \code{clusters = "consensusClusters"} the slots
 \code{consensusClustersQuantileLow} and \code{consensusClustersQuantileUp} will be
 occupied by the corresponding information for consensus clusters.
+
+In \code{\link{CAGEexp}} objects, the positions of the quantiles are defined
+reliatively to the start point of their cluster, for more efficient
+\code{Rle} compression.  The quantile data for \emph{tag clusters} are stored
+in the \code{TagClusters} objects directly.  The quantile data for
+\emph{consensus clusters} are stored in \code{\link{integer}} matrices named
+\dQuote{q_\emph{x}}, where \emph{x} represents the quantile (for instance,
+\code{q_0.1}), and these matrices are \emph{assays} of the
+\code{consensusClusters} \code{\link{RangedSummarizedExperiment}}.
 }
 \description{
-Calculates positions of quantiles of CAGE signal along tag clusters or consensus
-clusters in each CAGE dataset within CAGEset object.  The function calculates
-positions of both \dQuote{lower} and \dQuote{upper} quantiles as described in Details.
+Calculates the positions of \dQuote{upper} and \dQuote{lower}
+quantiles of CAGE signal along \emph{tag clusters} or
+\emph{consensus clusters} in each sample of a  CAGEr object.
 }
 \details{
-Position of the "lower" quantile \code{qLow} is defined as a point that divides the
-genomic region into two parts, so that the 5' part contains \code{< qLow * 100\%} of
-the CAGE signal of that region. Accordingly, position of the "upper" quantile
-\code{qUp} is defined as a point that divides the genomic region into two parts so
-that the 5' part contains \code{>= qUp * 100\%} of the CAGE signal of that region.
-Positions of one "lower" and one "upper" quantile (when \code{qLow <= qUp}) define a
-central part of the genomic region that contains \code{>= (qUp - qLow) * 100\%} of
-the CAGE signal of that region. Width of that central part is refered to as
-"interquantile width", which is a more robust measure of the promoter width than the
-total span of the region.
+The position of a \dQuote{lower} quantile \code{qLow} is defined as
+a point that divides the cluster into two parts, so that the 5' part contains
+\code{< qLow * 100\%} of the CAGE signal of that region (\code{>= qUp * 100\%}
+for \dQuote{upper} quantiles).  Therefore, when \code{qLow <= qUp}, a lower
+and and uppper quantile define a central region that contains
+\code{>= (qUp - qLow) * 100\%} of the CAGE signal of that cluster.  The
+width of that central part is refered to as "interquantile width", which is
+a more robust measure of the promoter width than the total length of the
+cluster.
 }
 \examples{
 head(cbind(
