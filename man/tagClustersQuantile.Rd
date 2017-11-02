@@ -3,6 +3,8 @@
 \docType{methods}
 \name{tagClustersQuantile}
 \alias{tagClustersQuantile}
+\alias{tagClustersQuantile,TagClusters-method}
+\alias{tagClustersQuantile,CAGEexp-method}
 \alias{tagClustersQuantileLow}
 \alias{tagClustersQuantileLow,CAGEset-method}
 \alias{tagClustersQuantileLow,CAGEexp-method}
@@ -17,6 +19,13 @@
 \alias{tagClustersQuantileLow<-,CAGEexp-method}
 \title{Quantile metadata stored in CAGEr objects.}
 \usage{
+tagClustersQuantile(object, samples = NULL, q = NULL)
+
+\S4method{tagClustersQuantile}{TagClusters}(object, samples = NULL,
+  q = NULL)
+
+\S4method{tagClustersQuantile}{CAGEexp}(object, samples = NULL, q = NULL)
+
 tagClustersQuantileLow(object, samples = NULL, q = NULL)
 
 \S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL, q = NULL)

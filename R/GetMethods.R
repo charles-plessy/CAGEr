@@ -925,7 +925,45 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
 #' @param value A list (one entry per sample) of data frames with multiple columns:
 #'        \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
 #'        indicates a quantile.
-NULL
+
+setGeneric("tagClustersQuantile", function(object, samples = NULL, q = NULL)
+  standardGeneric("tagClustersQuantile"))
+
+#' @rdname tagClustersQuantile
+
+setMethod("tagClustersQuantile", "TagClusters", function (object, samples, q) {
+  if (is.null(q))
+    stop("Indicate which quantile(s) to extract from this TagClusters object.")
+  if (! is.null(samples))
+    stop(sQuote("samples"), " must be NULL.")
+  qName <- paste0("q_", q)
+  if (! all(qName %in% colnames(mcols(x))))
+    stop( "At least one of the quantiles "
+        , paste(sQuote(qName), collapse=" or ")
+        , " was not found.")
+  tcq <- mcols(object)[, qName, drop = FALSE]
+	tcq <- data.frame(lapply(tcq, decode))
+	tcq <- tcq + start(object)
+	cbind(cluster = names(object), tcq)
+})
+
+#' @rdname tagClustersQuantile
+
+setMethod("tagClustersQuantile", "CAGEexp", function (object, samples, q) {
+  validSamples(object, samples)
+  if (length(samples) > 1)
+    stop("Multiple samples not supported for CAGEexp objects(all or just one).")
+  if (is.null(q))
+    stop("A single quantile must be chosen for CAGEexp objects.")
+  if (is.null(samples)) {
+    lapply( sampleList(object)
+          , tagClustersQuantile
+          , object = object
+          , q = q)
+  } else {
+    tagClustersQuantile(tagClustersGR(object, samples), q = q)
+  }
+})
 
 #' @name tagClustersQuantileLow
 #' @rdname tagClustersQuantile
@@ -958,26 +996,8 @@ setMethod("tagClustersQuantileLow", "CAGEset", function (object, samples, q) {
 
 #' @rdname tagClustersQuantile
 
-setMethod("tagClustersQuantileLow", "CAGEexp", function (object, samples, q) {
-  if (length(samples) > 1)
-    stop("Multiple samples not supported for CAGEexp objects(all or just one).")
-  if (is.null(q))
-    stop("A single quantile must be chosen for CAGEexp objects.")
-  if (is.null(samples))
-    return(lapply( sampleList(object)
-                 , tagClustersQuantileLow
-                 , object = object
-                 , q = q))
-  
-  df <- as.data.frame(tagClustersGR(object, samples))
-  qName <- paste0("q_", q)
-  if (! qName %in% names(df))
-    stop( "Low quantile not found! "
-          , "Run 'quantilePositions()' function for desired quantiles first!")
-  df$cluster <- rownames(df)
-  df[[qName]] <- df[[qName]] + df[["start"]]
-  df[,c("cluster", qName)]
-})
+setMethod("tagClustersQuantileLow", "CAGEexp", function (object, samples, q)
+  tagClustersQuantile(object = object, samples = samples, q = q))
 
 
 #' @name tagClustersQuantileUp
@@ -1011,26 +1031,8 @@ setMethod("tagClustersQuantileUp", "CAGEset", function (object, samples, q) {
 
 #' @rdname tagClustersQuantile
 
-setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples, q) {
-  if (length(samples) > 1)
-    stop("Multiple samples not supported for CAGEexp objects(all or just one).")
-  if (is.null(q))
-    stop("A single quantile must be chosen for CAGEexp objects.")
-  if (is.null(samples))
-    return(lapply( sampleList(object)
-                 , tagClustersQuantileUp
-                 , object = object
-                 , q = q))
-    
-  df <- as.data.frame(tagClustersGR(object, samples))
-  qName <- paste0("q_", q)
-  if (! qName %in% names(df))
-    stop( "Up quantile not found! "
-          , "Run 'quantilePositions()' function for desired quantiles first!")
-  df$cluster <- rownames(df)
-  df[[qName]] <- df[[qName]] + df[["start"]]
-  df[,c("cluster", qName)]
-})
+setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples, q)
+  tagClustersQuantile(object = object, samples = samples, q = q))
 
 
 #' @name consensusClustersGR

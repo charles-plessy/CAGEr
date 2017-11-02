@@ -91,12 +91,6 @@ setGeneric( "quantilePositions"
 setMethod( "quantilePositions", "CAGEr"
          , function (object, clusters, qLow, qUp, useMulticore, nrCores) {
 	objName <- deparse(substitute(object))
-	gr2tcq <- function(gr, q) {
-	  tcq <- mcols(gr)[, paste("q", q, sep = "_"), drop = FALSE]
-	  tcq <- data.frame(lapply(tcq, decode))
-	  tcq <- tcq + start(gr)
-	  cbind(cluster = names(gr), tcq)
-	}
 	clusters <- match.arg(clusters)
 	message("\nGetting positions of quantiles within clusters...")
 	if (clusters == "tagClusters") {
@@ -113,8 +107,8 @@ setMethod( "quantilePositions", "CAGEr"
 		  tagClustersGR(object) <- ctss.clusters
 		} else if (class(object) == "CAGEset") {
 		  for (s in names(ctss.clusters)) {
-	  	  tagClustersQuantileLow(object, s) <- gr2tcq(ctss.clusters[[s]], qLow)
-        tagClustersQuantileUp (object, s) <- gr2tcq(ctss.clusters[[s]], qUp)
+	  	  tagClustersQuantileLow(object, s) <- tagClustersQuantile(ctss.clusters[[s]], q = qLow)
+        tagClustersQuantileUp (object, s) <- tagClustersQuantile(ctss.clusters[[s]], q = qUp)
 		  }
 		} else stop("Unsupported CAGEr class.")
 	} else if (clusters == "consensusClusters"){
@@ -134,8 +128,8 @@ setMethod( "quantilePositions", "CAGEr"
           DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
 		} else if (class(object) == "CAGEset") {
 		  for (s in names(cons.clusters.l)) {
-	  	  consensusClustersQuantileLow(object, s) <- gr2tcq(cons.clusters.l[[s]], qLow)
-        consensusClustersQuantileUp (object, s) <- gr2tcq(cons.clusters.l[[s]], qUp)
+	  	  consensusClustersQuantileLow(object, s) <- tagClustersQuantile(cons.clusters.l[[s]], q = qLow)
+        consensusClustersQuantileUp (object, s) <- tagClustersQuantile(cons.clusters.l[[s]], q = qUp)
 		  }
 		} else stop("Unsupported CAGEr class.")
 	}
