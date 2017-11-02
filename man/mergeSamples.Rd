@@ -5,7 +5,7 @@
 \alias{mergeSamples}
 \alias{mergeSamples,CAGEset,numeric-method}
 \alias{mergeSamples,CAGEexp,ANY-method}
-\title{Merging CAGE datasets (samples)}
+\title{Merge CAGE samples}
 \usage{
 mergeSamples(object, mergeIndex, mergedSampleLabels)
 
@@ -16,11 +16,11 @@ mergeSamples(object, mergeIndex, mergedSampleLabels)
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
 
-\item{mergeIndex}{Integer vector specifying which experiments should be merged.  Must be the
-same length as the number of datasets in the CAGEr object.  See Details.}
+\item{mergeIndex}{Integer vector specifying which experiments should be merged.
+(one value per sample, see Details).}
 
-\item{mergedSampleLabels}{Labels for the merged datasets.  Must be the same lenght as the number
-of unique values in \code{mergeIndex}.  See Details.}
+\item{mergedSampleLabels}{Labels for the merged datasets (same length as the
+number of unique values in \code{mergeIndex})}
 }
 \value{
 The slots \code{sampleLabels}, \code{librarySizes} and \code{tagCountMatrix} of the
@@ -29,21 +29,21 @@ and will replace the previous information on individual CAGE datasets.  All furt
 downstream information will be reset.
 }
 \description{
-Merges individual CAGE datasets (experiments, samples) within the CAGEr object
-into specified groups.
+Merges individual CAGE samples (datasets, experiments) within
+the CAGEr object into specified groups.
 }
 \details{
-This function merges CAGE datasets within the CAGEr object at the level of CTSS tag
-counts, \emph{i.e.} tag counts of individual CTSS are summed over a group of datasets that are
-being merged.  After merging, all other slots in the CAGEr object will be reset and any previous
-data for individual experiments will be removed.
+The samples within the CAGEr object are merged by adding the raw tag
+counts of individual CTSS that belong tho the same group.  After merging, all
+other slots in the CAGEr object will be reset and any previous data for
+individual experiments will be removed.
 
-\code{mergeIndex} controls which datasets will be merged.  It is an integer vector that assigns
-a value to each dataset in the CAGEr object in the same order as they are returned by
-\code{sampleLabels(object)}.  Datasets with the same value in the \code{mergeIndex} will be
-merged.  For example, if there are 8 CAGE datasets in the CAGEr object and \code{mergeIndex =
-c(1,1,2,2,3,2,4,4)}, this will merge a) samples 1 and 2 b) samples 3, 4 and 6 c) samples 7 and
-8, and it will leave sample 5 as it is, resulting in 4 final merged datasets.
+\code{mergeIndex} controls which samples will be merged.  It is an integer
+vector that assigns a group identifier to each sample, in the same order as
+they are returned by \code{sampleLabels(object)}.  For example, if there are
+8 CAGE samples in the CAGEr object and \code{mergeIndex = c(1,1,2,2,3,2,4,4)},
+this will merge a) samples 1 and 2, b) samples 3, 4 and 6,  c) samples 7 and
+8, and d) it will leave sample 5 as it is, resulting in 4 final merged datasets.
 
 Labels provided in \code{mergedSampleLabels} will be assigned to merged datasets in the ascending
 order of \code{mergeIndex} values, \emph{i.e.} first label will be assigned to a dataset created
