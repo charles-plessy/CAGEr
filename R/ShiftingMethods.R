@@ -117,6 +117,34 @@ setMethod( "scoreShift", "CAGEset"
 	
 	message("\nCalculating shifting score...")
 	a <- object@CTSScumulativesConsensusClusters
+	
+	# Problem: originally, CTSScumulativesConsensusClusters were in 0-based
+	# coordinates, meaning that the first Rle value was always 0.
+	# Then I (Charles) rewrote many functions for the introduction of the
+	# CAGEexp class and switched to 1-based coordinates (a bit inadvertently
+	# at the beginning).  Most CAGEr functions now expect 1-based coordinates,
+	# but it is not yet the case of scoreShift(), and I am running out of time.
+	# Hence, the ugly hack that follows.
+	
+	# Are we 0-based ?
+	
+	firstIsZero <- function(x) decode(head(x,1) == 0)
+	allFirstIsZero <- function(x) all(sapply(x, firstIsZero))
+	zeroBased <- function(x) all(sapply(x, allFirstIsZero))
+	
+	# If not, ...
+	
+	makeZeroBased <- function(l) {
+	  lapply(l, function(s) {
+	    lapply(s, function(x) {
+	      append(0,x)
+	    })
+	  })
+	}
+	if(!zeroBased(a)) a <- makeZeroBased(a)
+	
+	# -- end of ugly hack ---
+	
 	a <- a[names(a) %in% c(groupX, groupY)]
 	b <- object@consensusClusters
 	cumsum.list <- bplapply(a, function(x) {
