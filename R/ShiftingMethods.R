@@ -96,6 +96,7 @@
 #' head(getShiftingPromoters(exampleCAGEset))
 #'
 #' @importFrom stats p.adjust
+#' @importFrom utils head
 #' @export
 
 setGeneric( "scoreShift"
