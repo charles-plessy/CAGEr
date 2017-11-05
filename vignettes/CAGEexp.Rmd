@@ -859,6 +859,104 @@ ce.coerced
 ```
 
 
+Summary of the CAGEr accessor functions
+---------------------------------------
+
+Originally there was one accessor per slot in _CAGEset_ objects (the original
+_CAGEr_ format), but now that I added the _CAGEexp_ class, that uses different
+underlying formats, the number of accessors increased because a) I provide
+the old ones for backwards compatibility and b) there multiple possible output
+formats.
+
+Before releasing this CAGEr update in Bioconductor, I would like to be sure
+that the number of accessors and the name scheme are good enough.
+
+Please let me know your opinion about the names and scope of the accessors below:
+
+### CTSS data
+
+Name                | Output 
+--------------------|------------------------------------------------------
+CTSScoordinates     | Coordinate table in ad-hoc data.frame format.
+CTSScoordinatesGR   | Coordinate table in GRanges format.
+CTSStagCount        | Raw CTSS counts in ad-hoc data.frame format (with coordinates).
+CTSStagCountDA      | Raw CTSS counts in DelayedArray format wrapping a integer Rle DataFrame.
+CTSStagCountDF      | Raw CTSS counts in integer Rle DataFrame format.
+CTSStagCountDf      | Raw CTSS counts in data.frame format (without coordinates).
+CTSStagCountGR      | Raw CTSS counts in GRanges format (single samples).
+CTSStagCountSE      | RangedSummarizedExperiment containing an assay for the Raw CTSS counts.
+CTSStagCountTable   | Returns CTSStagCount for CAGEsets and CTSStagCountDF for CAGEexps.
+CTSSnormalizedTpm   | Normalised CTSS values in ad-hoc data.frame format (with coordinates).
+CTSSnormalizedTpmDF | Normalised CTSS values in Rle DataFrame format.
+CTSSnormalizedTpmDf | Normalised CTSS values in ad-hoc data.frame format (without coordinates).
+CTSSnormalizedTpmGR | Normalised CTSS values in GRanges format (single samples).
+
+### Cluster data
+
+Name                    | Output 
+------------------------|------------------------------------------------------
+consensusClusters       | Consensus cluster coordinates in ad-hoc data.frame format.
+consensusClustersDESeq2 | Consensus cluster coordinates and expression matrix in DESeq2 format.
+consensusClustersGR     | Consensus cluster coordinates in GRanges format.
+consensusClustersSE     | Consensus cluster coordinates and expression matrix in RangedSummarizedExperiment format.
+consensusClustersTpm    | Consensus cluster coordinates and raw expression matrix.
+tagClusters             | Per-sample list of tag cluster coordinates in ad-hoc data.frame format.
+tagClustersGR           | Per-sample GRangesList of tag cluster coordinates.
+
+### Gene data
+
+Name            | Output 
+----------------|------------------------------------------------------
+GeneExpDESeq2   | Gene expression data in DESeq2 format.
+GeneExpSE       | Gene expression data in SummarizedExperiment format.
+
+Summary of the _CAGEexp_ experiment slots and assays
+----------------------------------------------------
+
+A _CAGEexp_ object can contain the following experiments.
+
+Please let me know your opinion about the names
+
+Name              | Assays                       | Comment
+------------------|------------------------------|---------------------------
+tagCountMatrix    | counts, normalizedTpmMatrix  | RangedSummarizedExperiment
+seqNameTotals     | counts, norm                 | SummarizedExperiment
+consensusClusters | counts, normalized, q_x, q_y | RangedSummarizedExperiment
+geneExpMatrix     | counts                       | SummarizedExperiment  
+
+### CAGEexp assays
+
+Name                | Experiment        | Comment
+--------------------|-------------------|-------------------------------------------------------
+counts              | tagCountMatrix    | Integer Rle DataFrame of CTSS raw counts.
+counts              | seqNameTotals     | Numeric matrix of total counts per chromosome.
+counts              | consensusClusters | Integer matrix of consensus cluster expression counts.
+counts              | geneExpMatrix     | Integer matrix of gene expression counts.
+normalizedTpmMatrix | tagCountMatrix    | Numeric matrix of normalised CTSS expression scores.
+norm                | seqNameTotals     | Numeric matrix of percent total counts per chromosome.
+normalized          | consensusClusters | Numeric matrix of normalised CC expression scores.
+q_x, q_y, q_z, ...  | consensusClusters | Interger Rle DataFrame of relative quantile positions
+
+
+Summary of the CAGEr classes
+----------------------------
+
+The CTSS, CTSS.chr, TagCluster and ConsensusClsuters are mostly used internally
+or type safety and preventing me (Charles) from mixing up inputs.  They
+are visible from the outside.  Should they be used more extensively ?  Can they
+be replaced by more "core" Bioconductor classes ?
+
+Name              | Comment
+------------------|-------------------------------------------------------------------------
+CAGEset           | The original CAGEr class, based on data frames and matrices.
+CAGEexp           | The new CAGEr class, based on GRanges, DataFrames, etc.
+CAGEr             | Union classs for functions that accept both CAGEset and CAGEexp.
+CTSS              | Wraps GRanges and guarantees that width equals 1.
+CTSS.chr          | Same as CTSS but also guaranteers the there is only one chromosome (useful in some loops)
+TagClusters       | Wraps GRanges, represents the fact that each sample has their own tag clusters.
+ConsensusClusters | Wraps GRanges, represents the fact that they are valid for all the samples.
+CAGErCluster      | Union class for functions that accept both TagClusters and ConsensusClusters.
+
 Session info {.unnumbered}
 ==========================
 
