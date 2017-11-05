@@ -43,18 +43,18 @@ Note that strand is not taken into account.
 \examples{
 library(GenomicRanges)
 library(IRanges)
-ctss <- CAGEr:::.CTSS(GRanges(seqnames=Rle("chr1"), IRanges(c(1,3,4,12,14,25,28,30), w=1), strand = "+"))
+ctss <- CAGEr:::.CTSS(GRanges(seqnames=Rle("chr1"), IRanges(c(1,3,4,12,14,25,28,31,35), w=1), strand = "+"))
 score(ctss) <- 1
 ctss.chr <- CAGEr:::.CTSS.chr(ctss)
-clusters <- GRanges(seqnames = Rle("chr1"), ranges = IRanges(c(1,12,25), c(4,14,28)), strand = "+")
+clusters <- GRanges(seqnames = Rle("chr1"), ranges = IRanges(c(1,12,25,31,32), c(4,14,28,31,33)), strand = "+")
 chrom <- "chr1"
 str <- "+"
 CAGEr:::.getCAGEsignalCoverage(ctss.chr, clusters)
 CAGEr:::.getCumsumChr2(clusters, ctss, chrom, str)
-ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEset, "sample1"))
+ctss      <- CTSSnormalizedTpmGR(exampleCAGEset, "sample1")
 ctss      <- ctss[ctss$filteredCTSSidx]
 clusters  <- tagClustersGR(exampleCAGEset, "sample1")
-clusters.cumsum <- CAGEr:::.getCumsum(ctss, clusters)
+clusters.cumsum <- RleList(CAGEr:::.getCumsum(ctss, clusters))
 identical(lapply(exampleCAGEset@CTSScumulativesTagClusters[[1]],decode), lapply(clusters.cumsum, decode))
 # Not identical if not decoded because Rle method is attached to S4Vectors in one case
 # and to IRanges in the other case.
