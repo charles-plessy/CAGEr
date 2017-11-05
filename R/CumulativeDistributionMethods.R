@@ -41,42 +41,36 @@
 #' aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
 #' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "consensusClusters")
 #'            
+#' @importFrom IRanges RleList
 #' @export
 
 setGeneric( "cumulativeCTSSdistribution"
-          , function ( object, clusters
-                     , useMulticore = FALSE, nrCores = NULL) {
-              standardGeneric("cumulativeCTSSdistribution")})
+          , function ( object, clusters = c("tagClusters", "consensusClusters")
+                     , useMulticore = FALSE, nrCores = NULL)
+              standardGeneric("cumulativeCTSSdistribution"))
 
 #' @rdname cumulativeCTSSdistribution
 
-setMethod("cumulativeCTSSdistribution", "CAGEr",
-function (object, clusters, useMulticore = FALSE, nrCores = NULL){
+setMethod( "cumulativeCTSSdistribution", "CAGEr"
+         , function (object, clusters, useMulticore, nrCores) {
   objName <- deparse(substitute(object))
-	message("\nCalculating cumulative sum of CAGE signal along clusters...")
-	samples.cumsum.list <- list()
-	if(clusters == "tagClusters"){	
-		for(s in sampleLabels(object)) {
-			message("\t-> ", s)
-			samples.cumsum.list[[s]] <-
-			  .getCumsum( ctss      = .CTSS(CTSSnormalizedTpmGR(object, s))
-			            , clusters  = tagClustersGR(object, s)
-			            , useMulticore = useMulticore, nrCores = nrCores)
-		}
-		CTSScumulativesTagClusters(object) <-samples.cumsum.list
-	}else if (clusters == "consensusClusters"){
-		for(s in sampleLabels(object)) {
-			message("\t-> ", s)
-		  	samples.cumsum.list[[s]] <-
-			  .getCumsum( ctss      = .CTSS(CTSSnormalizedTpmGR(object, s))
-			            , clusters  = consensusClustersGR(object)
-			            , useMulticore = useMulticore, nrCores = nrCores)
-		}
-		CTSScumulativesCC(object) <-samples.cumsum.list
-		
-	}else{
-		stop("'clusters' parameter must be one of the (\"tagClusters\", \"consensusClusters\")")
-	}
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
+  message("\nCalculating cumulative sum of CAGE signal along clusters...")
+  clusters <- match.arg(clusters)
+  getClusters <- switch( clusters
+                       , tagClusters       = tagClustersGR
+                       , consensusClusters = consensusClustersGR)
+  setClusters <- switch(clusters
+                       , tagClusters       = `CTSScumulativesTagClusters<-`
+                       , consensusClusters = `CTSScumulativesCC<-`)
+  samples.cumsum.list <- lapply(sampleList(object), function(s) {
+		message("\t-> ", s)
+		.getCumsum( ctss         = .CTSS(CTSSnormalizedTpmGR(object, s))
+              , clusters     = getClusters(object, s)
+              , useMulticore = useMulticore, nrCores = nrCores)
+	})
+	if (class(object) == "CAGEexp")
+    samples.cumsum.list <- lapply(samples.cumsum.list, RleList)
+	object <- setClusters(object, samples.cumsum.list)
+  assign(objName, object, envir = parent.frame())
+  invisible(1)
 })
