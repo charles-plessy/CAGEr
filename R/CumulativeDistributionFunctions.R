@@ -30,28 +30,12 @@ NULL
 setGeneric(".getCAGEsignalCoverage", function(ctss.chr, clusters) standardGeneric(".getCAGEsignalCoverage"))
 
 setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr, clusters) {
-  cov <- Rle(rep(0, max(max(end(clusters)), max(end(ctss.chr)))))
+  cov <- Rle(rep(0, max(end(clusters), end(ctss.chr))))
 	cov[start(ctss.chr)] <- score(ctss.chr)
-	#cov.cumsum = Rle(cumsum(cov))
   cluster.cumsums <- Views(cov, start = start(clusters), end = end(clusters))
 	viewApply(cluster.cumsums, cumsum)
 })
 
-# setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr, clusters) {
-#   cov <- rep(0, max(end(clusters)))
-# 	cov[start(ctss.chr)] <- score(ctss.chr)
-# 	cov.cumsum = Rle(cumsum(cov))
-#   cluster.cumsums <- Views(cov.cumsum, start = start(clusters), end = end(clusters))
-# 	viewApply(cluster.cumsums, FUN = function(x) x - x[1])
-# })
-
-# setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr, clusters) {
-#   cov = rep(0, max(end(clusters)) + 1)
-# 	cov[start(ctss.chr) + 1] = score(ctss.chr)
-# 	cov.cumsum = Rle(cumsum(cov))
-#   cluster.cumsums <- Views(cov.cumsum, start = start(clusters) + 1, end = end(clusters) + 1)
-# 	viewApply(cluster.cumsums, FUN = function(x) x - x[1])
-# })
 
 #' @name .getCumsumChr2
 #' @rdname coverage-functions
