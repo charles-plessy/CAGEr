@@ -128,8 +128,8 @@ setMethod( "quantilePositions", "CAGEr"
           DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
 		} else if (class(object) == "CAGEset") {
 		  for (s in names(cons.clusters.l)) {
-	  	  consensusClustersQuantileLow(object, s) <- tagClustersQuantile(cons.clusters.l[[s]], q = qLow)
-        consensusClustersQuantileUp (object, s) <- tagClustersQuantile(cons.clusters.l[[s]], q = qUp)
+	  	  consensusClustersQuantileLow(object, s) <- .getClustersQuantile(cons.clusters.l[[s]], q = qLow)
+        consensusClustersQuantileUp (object, s) <- .getClustersQuantile(cons.clusters.l[[s]], q = qUp)
 		  }
 		} else stop("Unsupported CAGEr class.")
 	}

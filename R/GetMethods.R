@@ -934,13 +934,7 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
 setGeneric("tagClustersQuantile", function(object, samples = NULL, q = NULL)
   standardGeneric("tagClustersQuantile"))
 
-#' @rdname tagClustersQuantile
-
-setMethod("tagClustersQuantile", "TagClusters", function (object, samples, q) {
-  if (is.null(q))
-    stop("Indicate which quantile(s) to extract from this TagClusters object.")
-  if (! is.null(samples))
-    stop(sQuote("samples"), " must be NULL.")
+.getClustersQuantile <- function (object, q) {
   qName <- paste0("q_", q)
   if (! all(qName %in% colnames(mcols(object))))
     stop( "At least one of the quantiles "
@@ -950,6 +944,16 @@ setMethod("tagClustersQuantile", "TagClusters", function (object, samples, q) {
 	tcq <- data.frame(lapply(tcq, decode))
 	tcq <- tcq + start(object) - 1
 	cbind(cluster = names(object), tcq)
+}
+
+#' @rdname tagClustersQuantile
+
+setMethod("tagClustersQuantile", "TagClusters", function (object, samples, q) {
+  if (is.null(q))
+    stop("Indicate which quantile(s) to extract from this TagClusters object.")
+  if (! is.null(samples))
+    stop(sQuote("samples"), " must be NULL.")
+  .getClustersQuantile(object, q)
 })
 
 #' @rdname tagClustersQuantile
