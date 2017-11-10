@@ -12,6 +12,8 @@ NEW FEATURES
       expression data more efficiently than "CAGEset", and uses core
       Bioconductor typse natively.  For backwards compatibility it also support
       many of the original generic functions for "CAGEset" objects.
+    o New "CTSS" and "TagClusters" classes wrapping GRanges objects, for more
+      type safety.
     o New functions for quality controls such as plotAnnot() or hanabiPlot().
       See the CAGEexp vignette for details.
     o Data export as DESeqDataSet object for DESeq2 with the new
@@ -23,12 +25,13 @@ NEW FEATURES
     
 OTHER CHANGES
 
-    o Custom clusters of length 1 are accepted.
     o Example data "exampleCAGEexp", "exampleCAGEexp" and "exampleZv9_annot"
       are now is lazy-loaded.
     o Passes R CMD check without errors or notes.
     o NULL can be passed as genome name, to circumvent the requirement for a
       BSgenome object when actually not needing one.
+    o In CAGEexp objects, expression quantile positions are given relative
+      to the cluster start site.
 
 DOCUMENTATION UPDATES
 
