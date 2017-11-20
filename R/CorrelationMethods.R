@@ -94,8 +94,6 @@ setMethod( "plotCorrelation", "CAGEr"
 	colnames(corr.m) <- samples
 	rownames(corr.m) <- samples
 	
-	#filename <- paste(what, "_", values, "_values_pairwise_correlation.png", sep = "")
-	#png(filename = filename, width = (plotSize + 36) * nr.samples + 0.1*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3))), height = (plotSize + 36) * nr.samples + 0.05*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3))), family = "Helvetica", res = 360)
 	old.par <- par(mfrow = c(nr.samples, nr.samples), mai = c(0.05,0.05,0.05,0.05), omi = c(0.05*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0.1*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360,0,0))
 	on.exit(par(old.par))
 	
@@ -155,9 +153,6 @@ setMethod( "plotCorrelation", "CAGEr"
 			}
 		}
 	}
-	
-	#dev.off()
-	#message("\nFile '", filename, "' has been created in your working directory (", getwd(), ")")
 	
 	return(corr.m)
 })
