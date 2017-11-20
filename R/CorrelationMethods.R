@@ -58,7 +58,8 @@
 #' @export
 
 setGeneric( "plotCorrelation"
-          , function( object, what = "CTSS", values = "raw"
+          , function( object, what = c("CTSS", "consensusClusters")
+                    , values = c("raw", "normalized")
                     , samples = "all", method = "pearson"
                     , tagCountThreshold = 1, applyThresholdBoth = FALSE, plotSize=800)
               standardGeneric("plotCorrelation"))
@@ -66,20 +67,18 @@ setGeneric( "plotCorrelation"
 #' @rdname plotCorrelation
 
 setMethod( "plotCorrelation", "CAGEr"
-         , function (object, what, values, samples, method, tagCountThreshold, applyThresholdBoth, plotSize){
-	if(what == "CTSS"){
-		if(values == "raw"){
-			tag.count <- CTSStagCountDF(object)
-		}else if(values == "normalized"){
-			tag.count <- CTSSnormalizedTpmDF(object)
-		}else{
-			stop("'values' parameter must be one of the (\"raw\", \"normalized\")")
-		}
-	}else if(what == "consensusClusters"){
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth, plotSize) {
+  what   <- match.arg(what)
+  values <- match.arg(values)
+	if (what == "CTSS" & values == "raw")
+		tag.count <- CTSStagCountDF(object)
+  if (what == "CTSS" & values == "normalized")
+		tag.count <- CTSSnormalizedTpmDF(object)
+	if (what == "consensusClusters" & values == "raw")
+		stop("Raw consensus clusters not supported yet.")
+	if (what == "consensusClusters" & values == "normalized")
 		tag.count <- consensusClustersTpm(object)
-	}else{
-		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
-	}
 
 	if(all(samples %in% sampleLabels(object))){
 		tag.count <- tag.count[,samples]
