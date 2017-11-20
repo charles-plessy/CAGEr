@@ -108,7 +108,7 @@ setMethod( "plotCorrelation", "CAGEr"
 				text(0.5, 0.5, samples[i], cex = 0.98/max(sapply(samples, strwidth)))
 				box(lwd = 3)
 		
-			}else if(j > i){
+			}else {
 			
 				x <- tag.count[,samples[j]]
 				y <- tag.count[,samples[i]]
@@ -120,44 +120,34 @@ setMethod( "plotCorrelation", "CAGEr"
 				x <- x[idx]
 				y <- y[idx]
 			
-				pairwise.cor <- cor(x = decode(x), y = decode(y), method = method) # decode() in case of Rle.
-				plot(1, 1, type = "n", bty = "n", xlim = c(0,1), ylim = c(0,1), axes = F)
-				txt <- sprintf("%.2f", pairwise.cor)
-				txt.abs <- sprintf("%.2f", abs(pairwise.cor))
-				text(0.5, 0.5, txt, cex = 1.5 + 0.5/strwidth(txt.abs) * abs(pairwise.cor))
-				box(lwd = 3)
-				corr.m[i,j] <- pairwise.cor
-				corr.m[j,i] <- pairwise.cor
+				if (j > i) {
+					pairwise.cor <- cor(x = decode(x), y = decode(y), method = method) # decode() in case of Rle.
+					plot(1, 1, type = "n", bty = "n", xlim = c(0,1), ylim = c(0,1), axes = F)
+					txt <- sprintf("%.2f", pairwise.cor)
+					txt.abs <- sprintf("%.2f", abs(pairwise.cor))
+					text(0.5, 0.5, txt, cex = 1.5 + 0.5/strwidth(txt.abs) * abs(pairwise.cor))
+					box(lwd = 3)
+					corr.m[i,j] <- pairwise.cor
+					corr.m[j,i] <- pairwise.cor
 			
-			}else{
-			
-				x <- tag.count[,samples[j]]
-				y <- tag.count[,samples[i]]
-				if(applyThresholdBoth){
-					idx <- (x >= tagCountThreshold) & (y >= tagCountThreshold)
 				}else{
-					idx <- (x >= tagCountThreshold) | (y >= tagCountThreshold)
-				}
-				x <- x[idx]
-				y <- y[idx]
-				
-				.mySmoothScatter(x = log10(x+1), y = log10(y+1), xlim = c(0, 3), ylim = c(0,3), nrpoints = 0, nbin = c(plotSize, plotSize), bandwidth = c(3/plotSize * 5, 3/plotSize * 5), transformation = function(x) x^(1/6), axes = F)
-				if(i == nr.samples & j < nr.samples){
-					if((nr.samples <= 3) | ((nr.samples > 3) & (j%%2 == 1))){
-						axis(side = 1, at = seq(0,3), labels = 10^seq(0,3), cex.axis = 0.1*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360/(4*strwidth("1")))
-					}else{
-						axis(side = 1, at = seq(0,3), labels = rep("", 4))
+					.mySmoothScatter(x = log10(x+1), y = log10(y+1), xlim = c(0, 3), ylim = c(0,3), nrpoints = 0, nbin = c(plotSize, plotSize), bandwidth = c(3/plotSize * 5, 3/plotSize * 5), transformation = function(x) x^(1/6), axes = F)
+					if(i == nr.samples & j < nr.samples){
+						if((nr.samples <= 3) | ((nr.samples > 3) & (j%%2 == 1))){
+							axis(side = 1, at = seq(0,3), labels = 10^seq(0,3), cex.axis = 0.1*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360/(4*strwidth("1")))
+						}else{
+							axis(side = 1, at = seq(0,3), labels = rep("", 4))
+						}
 					}
-				}
-				if(j == 1 & i > 1){
-					if((nr.samples <= 3) | ((nr.samples > 3) & ((i - nr.samples)%%2 == 0))){
-						axis(side = 2, at = seq(0,3), labels = 10^seq(0,3), las = 2, cex.axis = 0.1*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360/(4*strwidth("1")))
-					}else{
-						axis(side = 2, at = seq(0,3), labels = rep("", 4))
+					if(j == 1 & i > 1){
+						if((nr.samples <= 3) | ((nr.samples > 3) & ((i - nr.samples)%%2 == 0))){
+							axis(side = 2, at = seq(0,3), labels = 10^seq(0,3), las = 2, cex.axis = 0.1*plotSize*(log2(nr.samples)/log2(3) + (2-1/log2(3)))/360/(4*strwidth("1")))
+						}else{
+							axis(side = 2, at = seq(0,3), labels = rep("", 4))
+						}
 					}
+					box(lwd = 3)
 				}
-				box(lwd = 3)
-				
 #				fit.lm <- lm(y ~ x)
 #				.mySmoothScatter(x = x, y = y, xlim = c(0, 200), ylim = c(0,200), nrpoints = 0, nbin = c(800, 800), bandwidth = c(3, 3), transformation = function(x) x^(1/9), axes = F)
 #				lines(x = c(0,10,100,1000), y = coefficients(fit.lm)[2]*c(0,10,100,1000) + coefficients(fit.lm)[1], col = "red3", lwd = 3)				
