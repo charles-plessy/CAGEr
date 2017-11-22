@@ -198,9 +198,9 @@ input files, sample names, etc. in a `DataFrame` object.
 ce <- DataFrame(inputFiles = list.files( system.file("extdata", package = "CAGEr")
                                        , "ctss$"
                                        , full.names = TRUE))
-ce$inputFilesType = "ctss"
-ce$sampleLabels <- sub( ".chr17.ctss", "", basename(ce$inputFiles))
-rownames(ce) <- ce$sampleLabels
+ce$inputFilesType <- "ctss"
+ce$sampleLabels   <- sub( ".chr17.ctss", "", basename(ce$inputFiles))
+rownames(ce)      <- ce$sampleLabels
 ce
 ```
 
