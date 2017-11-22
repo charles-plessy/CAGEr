@@ -68,6 +68,11 @@ Calculates the pairwise correlation between samples and creates
 a plot matrix showing the correlation coeficients in the upper triangle, the
 sample names in the diagonal, and the catter plots in the lower triangle.
 }
+\details{
+Internally, the data is converted to a \code{data.frame} format,
+so there may be performance issues if there are many samples.  On the other
+hand, this kind of plot does not make much sense for large numbers of samples.
+}
 \examples{
 plotCorrelation(object = exampleCAGEset)
 

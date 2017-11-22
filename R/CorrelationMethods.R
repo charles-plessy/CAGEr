@@ -38,6 +38,10 @@
 #' total size of the resulting png will be \code{length(samples) * plotSize}
 #' in both dimensions.  Ignored in \code{plotCorrelation2}.
 #' 
+#' @details Internally, the data is converted to a \code{data.frame} format,
+#' so there may be performance issues if there are many samples.  On the other
+#' hand, this kind of plot does not make much sense for large numbers of samples.
+#' 
 #' @return Displays the plot and returns a \code{matrix} of pairwise
 #' correlations between selected samples.  The scatterplots of
 #' \code{plotCorrelation} are colored according to the density of points, and
@@ -188,6 +192,10 @@ setMethod( "plotCorrelation2", "CAGEr"
   if (what == "consensusClusters" & values == "normalized")
     tag.count <- assay(consensusClustersSE(object), "normalized")
   
+  # Coerce DataFrame to matrix
+  if (class(tag.count) == "DataFrame")
+    tag.count <- as.matrix(as.data.frame(tag.count))
+  
   # Select samples
   if (all(samples %in% sampleLabels(object))) {
     tag.count <- tag.count[,samples]
@@ -196,18 +204,21 @@ setMethod( "plotCorrelation2", "CAGEr"
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
   nr.samples <- length(samples)
   
-  # Calculate a vector of correlation coefficients
-  corTreshold <- function(x,y) {
+  # Function to apply threshold pairwise
+  applyThreshold <- function(df) {
     if (applyThresholdBoth) {
-      idx <- (x >= tagCountThreshold) & (y >= tagCountThreshold)
+      idx <- (df[,1] >= tagCountThreshold) & (df[,2] >= tagCountThreshold)
     } else {
-      idx <- (x >= tagCountThreshold) | (y >= tagCountThreshold)
+      idx <- (df[,1] >= tagCountThreshold) | (df[,2] >= tagCountThreshold)
     }
-    x <- x[idx]
-    y <- y[idx]
-      
-    # decode() in case of Rle.
-    cor(x = decode(x), y = decode(y), method = method)
+    df[idx,]
+  }
+  
+  # Pre-calculate a vector of correlation coefficients
+  corTreshold <- function(x,y) {
+    df <- data.frame(x, y)
+    df <- applyThreshold(df)
+    cor(x = df$x, y = df$y, method = method)
   }
   
   corr.v <- numeric()
@@ -217,21 +228,10 @@ setMethod( "plotCorrelation2", "CAGEr"
     }
   }
   
-  # Add pseudocounts to null values
-  minNonZero           <- function(x) UseMethod("minNonZero", x)
-  minNonZero.default   <- function(x) min(x[x > 0])
-  minNonZero.DataFrame <- function(x) min(sapply(x, minNonZero.default))
-  
-  addPsCount           <- function(x, p) UseMethod("addPsCount", x)
-  addPsCount.default   <- function(x, p) {
-    x[x == 0] <-x[x == 0] + p
-    x
-  }
-  addPsCount.DataFrame <- function(x, p) {
-    DataFrame(lapply(x, addPsCount.default, p = p))
-  }
-  
-  tag.count <- addPsCount(tag.count, minNonZero(tag.count) / 2)
+  # Add pseudocount to null values so that the plot axes are correctly set.
+  nulls <- tag.count == 0
+  pseudocount      <- min(tag.count[! nulls]) / 2
+  tag.count[nulls] <- tag.count[nulls] + pseudocount
   
   # This closure retreives correlation coefficients one after the other.
   mkPanelCor <- function() {
@@ -242,16 +242,20 @@ setMethod( "plotCorrelation2", "CAGEr"
       txt <- format(c(r, 0.123456789), digits=digits)[1]
       txt <- paste(prefix, txt, sep="")
       if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
-      gmean <- function(x) exp(mean(log(range(x))))
+      gmean <- function(x) {
+        x <- x[x > 0]
+        exp(mean(log(range(x))))
+      }
       text(gmean(x), gmean(y), txt, cex = cex.cor * sqrt(r))
     }
   }
   panel.cor <- mkPanelCor()
 
   pointsUnique <- function(x,y,...) {
-    df <- data.frame(x,y)
+    df <- data.frame(x, y)
     df <- unique(df)
-    df <- df[rowSums(df) > min(df) * 2,] # Remove the (0,0) point
+    df <- applyThreshold(df)
+    df <- df[rowSums(df) > pseudocount * 2,] # Remove the (0,0) point
     points(df, ...)
   }
 
