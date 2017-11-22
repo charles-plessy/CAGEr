@@ -209,7 +209,7 @@ ce
 One way to create a _CAGEexp_ object is to transform the `DataFrame` providing information
 on the individual CAGE datasets (samples), and then add genome information.
 
-```{r create_CAGEexp, echo = FALSE}
+```{r create_CAGEexp}
 ce <- CAGEexp(colData = ce)
 genomeName(ce) <- "BSgenome.Drerio.UCSC.danRer7"
 ```
@@ -320,15 +320,18 @@ plotAnnot(ce, "counts")
 
 ### Correlation between samples
 
-After the data has been read we can start exploring the data by looking at the correlation between
-the samples.  The `plotCorrelation()` function will plot pairwise scatter plots of CAGE tag count
-per TSS and calculate correlation between all possible pairs of samples. A tag count threshold can
-be set, so that only TSSs with tag count above the threshold (either in one or both samples) are
-considered when calculating  correlation. Three different correlation measures are supported:
+After the data has been read we can start exploring the data by looking at the
+correlation between the samples.  The `plotCorrelation2()` function will plot
+pairwise scatter plots of CAGE tag count per TSS and calculate correlation
+between all possible pairs of samples^[The `plotCorrelation()` function does
+the same and colors the scatterplots according to point density, but is much
+slower.].  A tag count threshold can be set, so that only TSSs with tag count
+above the threshold (either in one or both samples) are considered when
+calculating  correlation. Three different correlation measures are supported:
 Pearson's, Spearman's and Kendall's correlation coefficients.
 
 ```{r CorrelationScatterPlots, fig.cap="Correlation of raw CAGE tag counts per TSS"}
-corr.m <- plotCorrelation(ce, samples = "all", method = "pearson")
+corr.m <- plotCorrelation2(ce, samples = "all", method = "pearson")
 ```
 
 
@@ -385,7 +388,7 @@ can use the `plotReverseCumulatives` function:
 plotReverseCumulatives(ce, fitInRange = c(5, 1000), onePlot = TRUE)
 ```
 
-In additiuon to the reverse cumulative plots (Figure \@ref(fig:ReverseCumulatives)), a power-law
+In addition to the reverse cumulative plots (Figure \@ref(fig:ReverseCumulatives)), a power-law
 distribution will be fitted to each reverse cumulative using values in the specified range
 (denoted with dashed lines in Figure \@ref(fig:ReverseCumulatives)) and the value of $\alpha$
 will be reported for each sample (shown in the brackets in the Figure \@ref(fig:ReverseCumulatives)
@@ -451,7 +454,7 @@ refining the final set of tag clusters.
 
 We will perform a simple distance-based clustering using 20 bp as a maximal allowed distance
 between two neighbouring TSSs. Prior to clustering we will filter out low-fidelity TSSs - the
-ones supported by less than 2 normalized tag counts in all of the samples.
+ones supported by less than 1 normalized tag counts in all of the samples.
 
 ```{r}
 clusterCTSS( object = ce
@@ -710,7 +713,7 @@ of the functions.
 Differential expression analysis
 --------------------------------
 
-The expression table for the consensus clusters can be exported to the `r Biocpkg("DESeq2")`
+The raw expression table for the consensus clusters can be exported to the `r Biocpkg("DESeq2")`
 package for differential expression analysis.  For this, the column data needs to contain
 factors that can group the samples.  They can have any name.
 
