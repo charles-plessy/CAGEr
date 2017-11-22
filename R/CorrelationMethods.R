@@ -2,27 +2,25 @@
 
 #' @name plotCorrelation
 #' 
-#' @title Pairwise scatter plots of CAGE signal and correlation
+#' @title Pairwise scatter plots and correlations of CAGE signal
 #' 
-#' @description Creates PNG file with scatter plots of CAGE signal for all
-#' pairs of selected samples and calculates the correlation between them.
+#' @description Calculates the pairwise correlation between samples and creates
+#' a plot matrix showing the correlation coeficients in the upper triangle, the
+#' sample names in the diagonal, and the catter plots in the lower triangle.
 #' 
 #' @param object A \code{\link{CAGEr}} object.
 #' 
-#' @param what Which level should be used for plotting and calculating
-#'   correlation.  Can be either \code{"CTSS"} to use individual TSSs or
+#' @param what The clustering level to be used for plotting and calculating
+#'   correlations.  Can be either \code{"CTSS"} to use individual TSSs or
 #'   \code{"consensusClusters"} to use consensus clusters, \emph{i.e.} entire
 #'   promoters.
 #' 
-#' @param values Specifies which values will be used for plotting and
-#'   calculating correlation.  Can be either \code{"raw"} to use raw tag count
-#'   per TSS or \code{"normalized"} to use normalized CAGE signal.  Used
-#'   only when \code{what = "CTSS"}, otherwise ignored.
+#' @param values Use either \code{"raw"} (default) or \code{"normalized"} CAGE
+#'   signal.
 #' 
-#' @param samples Character vector of sample labels for which the scatter plots
-#'   should be plotted and correlation calculated.  Can be either \code{"all"}
-#'   to plot and calculate pairwise correlations between all samples in a
-#'   CAGEr object, or a subset of valid sample labels as returned by
+#' @param samples Character vector indicating which samples to use.  Can be
+#'   either \code{"all"} to select all samples in a \code{CAGEr} object, or a
+#'   subset of valid sample labels as returned by the
 #'   \code{\link{sampleLabels}} function.
 #' 
 #' @param method A character string indicating which correlation coefficient
@@ -31,19 +29,23 @@
 #' 
 #' @param tagCountThreshold Only TSSs with tag count \code{>= tagCountThreshold}
 #'   in either one (\code{applyThresholdBoth = FALSE}) or both samples
-#'   (\code{applyThresholdBoth = TRUE}) are plotted and used to calculate correlation.
+#'   (\code{applyThresholdBoth = TRUE}) are plotted and used to calculate
+#'   correlation.
 #' 
 #' @param applyThresholdBoth See \code{tagCountThreshold} above.
 #' 
 #' @param plotSize Size of the individual comparison plot in pixels - the
 #' total size of the resulting png will be \code{length(samples) * plotSize}
-#' in both dimensions.
+#' in both dimensions.  Ignored in \code{plotCorrelation2}.
 #' 
-#' @return Creates PNG file named "Pairwise_tag_count_correlation.png" in the
-#'   working directory.  Returns a \code{matrix} of pairwise correlations between
-#'   selected samples.
+#' @return Displays the plot and returns a \code{matrix} of pairwise
+#' correlations between selected samples.  The scatterplots of
+#' \code{plotCorrelation} are colored according to the density of points, and
+#' in \code{plotCorrelation2} they are just black and white, which is much
+#' faster to plot.
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' 
 #' @family CAGEr plot functions
 #' 
@@ -53,7 +55,7 @@
 #' @examples
 #' plotCorrelation(object = exampleCAGEset)
 #' 
-#' plotCorrelation(exampleCAGEexp)
+#' plotCorrelation2(exampleCAGEexp, what = "consensusClusters", value = "normalized")
 #' 
 #' @export
 
@@ -155,6 +157,121 @@ setMethod( "plotCorrelation", "CAGEr"
 	}
 	
 	return(corr.m)
+})
+
+#' @rdname plotCorrelation
+#' @export
+
+setGeneric( "plotCorrelation2"
+          , function( object, what = c("CTSS", "consensusClusters")
+                    , values = c("raw", "normalized")
+                    , samples = "all", method = "pearson"
+                    , tagCountThreshold = 1, applyThresholdBoth = FALSE)
+              standardGeneric("plotCorrelation2"))
+
+#' @importFrom graphics pairs
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "CAGEr"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth) {
+  what   <- match.arg(what)
+  values <- match.arg(values)
+  
+  # Select input data
+  if (what == "CTSS" & values == "raw")
+    tag.count <- CTSStagCountDF(object)
+  if (what == "CTSS" & values == "normalized")
+    tag.count <- CTSSnormalizedTpmDF(object)
+  if (what == "consensusClusters" & values == "raw")
+    tag.count <- assay(consensusClustersSE(object), "counts")
+  if (what == "consensusClusters" & values == "normalized")
+    tag.count <- assay(consensusClustersSE(object), "normalized")
+  
+  # Select samples
+  if (all(samples %in% sampleLabels(object))) {
+    tag.count <- tag.count[,samples]
+  } else if(samples == "all"){
+    samples <- sampleLabels(object)
+  } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
+  nr.samples <- length(samples)
+  
+  # Calculate a vector of correlation coefficients
+  corTreshold <- function(x,y) {
+    if (applyThresholdBoth) {
+      idx <- (x >= tagCountThreshold) & (y >= tagCountThreshold)
+    } else {
+      idx <- (x >= tagCountThreshold) | (y >= tagCountThreshold)
+    }
+    x <- x[idx]
+    y <- y[idx]
+      
+    # decode() in case of Rle.
+    cor(x = decode(x), y = decode(y), method = method)
+  }
+  
+  corr.v <- numeric()
+  for (i in 1:(nr.samples-1)) {
+    for (j in (min(i+1, nr.samples)):nr.samples) {
+      corr.v <- append(corr.v, corTreshold(tag.count[,i], tag.count[,j]))
+    }
+  }
+  
+  # Add pseudocounts to null values
+  minNonZero           <- function(x) UseMethod("minNonZero", x)
+  minNonZero.default   <- function(x) min(x[x > 0])
+  minNonZero.DataFrame <- function(x) min(sapply(x, minNonZero.default))
+  
+  addPsCount           <- function(x, p) UseMethod("addPsCount", x)
+  addPsCount.default   <- function(x, p) {
+    x[x == 0] <-x[x == 0] + p
+    x
+  }
+  addPsCount.DataFrame <- function(x, p) {
+    DataFrame(lapply(x, addPsCount.default, p = p))
+  }
+  
+  tag.count <- addPsCount(tag.count, minNonZero(tag.count) / 2)
+  
+  # This closure retreives correlation coefficients one after the other.
+  mkPanelCor <- function() {
+    i <- 1
+    function(x, y, digits=2, prefix="", cex.cor, ...) {
+      r <- corr.v[i]
+      i <<- i + 1
+      txt <- format(c(r, 0.123456789), digits=digits)[1]
+      txt <- paste(prefix, txt, sep="")
+      if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+      gmean <- function(x) exp(mean(log(range(x))))
+      text(gmean(x), gmean(y), txt, cex = cex.cor * sqrt(r))
+    }
+  }
+  panel.cor <- mkPanelCor()
+
+  pointsUnique <- function(x,y,...) {
+    df <- data.frame(x,y)
+    df <- unique(df)
+    df <- df[rowSums(df) > min(df) * 2,] # Remove the (0,0) point
+    points(df, ...)
+  }
+
+  pairs( tag.count
+       , lower.panel = pointsUnique
+       , upper.panel = panel.cor
+       , pch = "."
+       , cex = 4
+       , log = "xy"
+       , las = 1
+       , xaxp = c(1,10,1)
+       , yaxp = c(1,10,1))
+  
+  # Return a correlation matrix
+  corr.m <- matrix(0, nr.samples, nr.samples)
+  colnames(corr.m) <- samples
+  rownames(corr.m) <- samples
+  corr.m[upper.tri(corr.m)] <- corr.v
+  corr.m[lower.tri(corr.m)] <- t(corr.m)[lower.tri(corr.m)]
+  corr.m
 })
 
 

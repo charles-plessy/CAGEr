@@ -22,6 +22,8 @@ NEW FEATURES
     o New "CAGEscanMolecule" format to load CAGEscan 3.0 data.
     o Multicore parallelisation with BiocParallel instead of parallel.
     o New function sampleList() to help looping on samples with lapply().
+    o New plotCorrelation2() function, faster than plotCorrelation() because
+      it is plain black and white.
     
 OTHER CHANGES
 

@@ -4,33 +4,41 @@
 \name{plotCorrelation}
 \alias{plotCorrelation}
 \alias{plotCorrelation,CAGEr-method}
-\title{Pairwise scatter plots of CAGE signal and correlation}
+\alias{plotCorrelation2}
+\alias{plotCorrelation2,CAGEr-method}
+\title{Pairwise scatter plots and correlations of CAGE signal}
 \usage{
-plotCorrelation(object, what = "CTSS", values = "raw", samples = "all",
+plotCorrelation(object, what = c("CTSS", "consensusClusters"),
+  values = c("raw", "normalized"), samples = "all", method = "pearson",
+  tagCountThreshold = 1, applyThresholdBoth = FALSE, plotSize = 800)
+
+\S4method{plotCorrelation}{CAGEr}(object, what = c("CTSS",
+  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
   method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
   plotSize = 800)
 
-\S4method{plotCorrelation}{CAGEr}(object, what = "CTSS", values = "raw",
-  samples = "all", method = "pearson", tagCountThreshold = 1,
-  applyThresholdBoth = FALSE, plotSize = 800)
+plotCorrelation2(object, what = c("CTSS", "consensusClusters"),
+  values = c("raw", "normalized"), samples = "all", method = "pearson",
+  tagCountThreshold = 1, applyThresholdBoth = FALSE)
+
+\S4method{plotCorrelation2}{CAGEr}(object, what = c("CTSS",
+  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
 
-\item{what}{Which level should be used for plotting and calculating
-correlation.  Can be either \code{"CTSS"} to use individual TSSs or
+\item{what}{The clustering level to be used for plotting and calculating
+correlations.  Can be either \code{"CTSS"} to use individual TSSs or
 \code{"consensusClusters"} to use consensus clusters, \emph{i.e.} entire
 promoters.}
 
-\item{values}{Specifies which values will be used for plotting and
-calculating correlation.  Can be either \code{"raw"} to use raw tag count
-per TSS or \code{"normalized"} to use normalized CAGE signal.  Used
-only when \code{what = "CTSS"}, otherwise ignored.}
+\item{values}{Use either \code{"raw"} (default) or \code{"normalized"} CAGE
+signal.}
 
-\item{samples}{Character vector of sample labels for which the scatter plots
-should be plotted and correlation calculated.  Can be either \code{"all"}
-to plot and calculate pairwise correlations between all samples in a
-CAGEr object, or a subset of valid sample labels as returned by
+\item{samples}{Character vector indicating which samples to use.  Can be
+either \code{"all"} to select all samples in a \code{CAGEr} object, or a
+subset of valid sample labels as returned by the
 \code{\link{sampleLabels}} function.}
 
 \item{method}{A character string indicating which correlation coefficient
@@ -39,27 +47,31 @@ should be computed.  Passed to \code{cor} function.  Can be one of
 
 \item{tagCountThreshold}{Only TSSs with tag count \code{>= tagCountThreshold}
 in either one (\code{applyThresholdBoth = FALSE}) or both samples
-(\code{applyThresholdBoth = TRUE}) are plotted and used to calculate correlation.}
+(\code{applyThresholdBoth = TRUE}) are plotted and used to calculate
+correlation.}
 
 \item{applyThresholdBoth}{See \code{tagCountThreshold} above.}
 
 \item{plotSize}{Size of the individual comparison plot in pixels - the
 total size of the resulting png will be \code{length(samples) * plotSize}
-in both dimensions.}
+in both dimensions.  Ignored in \code{plotCorrelation2}.}
 }
 \value{
-Creates PNG file named "Pairwise_tag_count_correlation.png" in the
-  working directory.  Returns a \code{matrix} of pairwise correlations between
-  selected samples.
+Displays the plot and returns a \code{matrix} of pairwise
+correlations between selected samples.  The scatterplots of
+\code{plotCorrelation} are colored according to the density of points, and
+in \code{plotCorrelation2} they are just black and white, which is much
+faster to plot.
 }
 \description{
-Creates PNG file with scatter plots of CAGE signal for all
-pairs of selected samples and calculates the correlation between them.
+Calculates the pairwise correlation between samples and creates
+a plot matrix showing the correlation coeficients in the upper triangle, the
+sample names in the diagonal, and the catter plots in the lower triangle.
 }
 \examples{
 plotCorrelation(object = exampleCAGEset)
 
-plotCorrelation(exampleCAGEexp)
+plotCorrelation2(exampleCAGEexp, what = "consensusClusters", value = "normalized")
 
 }
 \seealso{
@@ -71,4 +83,6 @@ Other CAGEr plot functions: \code{\link{hanabiPlot}},
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
