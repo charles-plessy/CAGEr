@@ -61,7 +61,9 @@ Displays the plot and returns a \code{matrix} of pairwise
 correlations between selected samples.  The scatterplots of
 \code{plotCorrelation} are colored according to the density of points, and
 in \code{plotCorrelation2} they are just black and white, which is much
-faster to plot.
+faster to plot.  Note that while the scatterplots are on a logarithmic scale
+with pseudocount added to the zero values, the correlation coefficients are
+calculated on untransformed (but thresholded) data.
 }
 \description{
 Calculates the pairwise correlation between samples and creates
@@ -72,6 +74,9 @@ sample names in the diagonal, and the catter plots in the lower triangle.
 Internally, the data is converted to a \code{data.frame} format,
 so there may be performance issues if there are many samples.  On the other
 hand, this kind of plot does not make much sense for large numbers of samples.
+
+In the scatter plots, a pseodo-count equal to half the lowest score is added
+to the null values so that they can appear despite logarithmic scale.
 }
 \examples{
 plotCorrelation(object = exampleCAGEset)

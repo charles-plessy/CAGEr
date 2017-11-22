@@ -320,18 +320,24 @@ plotAnnot(ce, "counts")
 
 ### Correlation between samples
 
-After the data has been read we can start exploring the data by looking at the
+As part of the  basic sanity checks, we can explore the data by looking at the
 correlation between the samples.  The `plotCorrelation2()` function will plot
-pairwise scatter plots of CAGE tag count per TSS and calculate correlation
-between all possible pairs of samples^[The `plotCorrelation()` function does
-the same and colors the scatterplots according to point density, but is much
-slower.].  A tag count threshold can be set, so that only TSSs with tag count
-above the threshold (either in one or both samples) are considered when
-calculating  correlation. Three different correlation measures are supported:
-Pearson's, Spearman's and Kendall's correlation coefficients.
+pairwise scatter plots of expression scores per TSS or consensus cluster and
+calculate correlation coefficients between all possible pairs of
+samples^[Alternatively, the `plotCorrelation()` function does the same and
+colors the scatterplots according to point density, but is much slower.].  A
+threshold can be set, so that only regions with an expression score (`raw`)
+or (`normalized`) above the threshold (either in one or both samples) are
+considered when calculating  correlation.  Three different correlation measures
+are supported: Pearson's, Spearman's and Kendall's correlation coefficients.
+Note that while the scatterplots are on a logarithmic scale with pseudocount
+added to the zero values, the correlation coefficients are calculated on
+untransformed (but thresholded) data.
 
 ```{r CorrelationScatterPlots, fig.cap="Correlation of raw CAGE tag counts per TSS"}
-corr.m <- plotCorrelation2(ce, samples = "all", method = "pearson")
+corr.m <- plotCorrelation2( ce, samples = "all"
+                          , tagCountThreshold = 1, applyThresholdBoth = FALSE
+                          , method = "pearson")
 ```
 
 
