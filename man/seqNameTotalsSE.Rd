@@ -32,6 +32,8 @@ seqNameTotalsSE(exampleCAGEexp)
 
 }
 \seealso{
+summariseChrExpr
+
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSScoordinates}},
   \code{\link{CTSScumulativesTagClusters}},

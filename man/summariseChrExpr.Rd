@@ -27,6 +27,8 @@ summariseChrExpr(exampleCAGEexp)
 
 }
 \seealso{
+seqNameTotals
+
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},

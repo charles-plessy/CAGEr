@@ -1665,6 +1665,7 @@ setMethod( "GeneExpDESeq2", "CAGEexp"
 #' @param object A \code{CAGEexp} object.
 #' 
 #' @family CAGEr accessor methods
+#' @seealso summariseChrExpr
 #' 
 #' @author Charles Plessy
 #' 

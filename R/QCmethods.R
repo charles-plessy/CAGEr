@@ -15,6 +15,7 @@
 #' @author Charles Plessy
 #' 
 #' @family CAGEr object modifiers
+#' @seealso seqNameTotals
 #' 
 #' @examples 
 #' summariseChrExpr(exampleCAGEexp)
