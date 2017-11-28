@@ -5,33 +5,21 @@
 # ARGUMENTS: cumsum.list - list of Rle vectors (IRanges package) with cumulative sums (first number in the vector needs to be a zero) (such as returned by 'get.cumsum' function)
 # RETURNS: list of Rle vectors containing reversed cumulative sums for all elements in the input cumsum list (Rle vectors are shorter by 1 than original vectors because first zero (i.e. here last number) is omitted) 
 
-.safediff <- function(x) {
-  lx <- length(x)
-  if (lx == 1) return(x)
-  diff(x)
-}
-
+.uncumsum <- function(x) c(x[1], diff(x))
+ 
 .reverse.cumsum <- function(cumsum.list, useMulticore = F, nrCores = NULL)
-  bplapply(cumsum.list, function(x) cumsum(rev(.safediff(x)))
+  bplapply(cumsum.list, function(x) cumsum(rev(.uncumsum(x)))
           , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 
 .get.dominant.ctss <- function(v, isCumulative = FALSE){
-	if(all(unique(v) == 0)){
-		idx <- NA
-	}else{
-		if(isCumulative){
-		  raw <- .safediff(v)
-		}else{
-			raw <- v
-		}
-	idx <- which(raw == max(raw))
-	if(length(idx > 1)){
-		idx <- idx[ceiling(length(idx)/2)]
-	}
-	}
-	return(as.integer(idx))
+  if (all(unique(v) == 0)) return(NA)
+  if (isCumulative)
+    v <- .uncumsum(v)
+  idx <- which(v == max(v))
+  if (length(idx > 1))
+    idx <- idx[ceiling(length(idx)/2)]
+  idx
 }
-
 
 .score.promoter.shifting <- function(cum.sum.stages, useMulticore = F, nrCores = NULL) {
   unlist(bplapply(cum.sum.stages, function(x) {
