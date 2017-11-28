@@ -34,7 +34,7 @@ library(BSgenome.Drerio.UCSC.danRer7)
 
 ```{r}
 inputDir <- system.file("extdata", package = "CAGEr")
-pathsToInputFiles <- list.files(inputDir, full.names = TRUE)
+pathsToInputFiles <- list.files(inputDir, pattern = "ctss", full.names = TRUE)
 basename(pathsToInputFiles)
 ```
 
