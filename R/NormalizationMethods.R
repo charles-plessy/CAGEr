@@ -73,11 +73,13 @@
 #' 
 #' @examples 
 #' normalizeTagCount(exampleCAGEset, method = "powerLaw")
+#' normalizeTagCount(exampleCAGEexp, method = "simpleTpm")
 #' 
 #' @export
 
 setGeneric( "normalizeTagCount"
-          , function(object, method = "powerLaw", fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
+          , function( object, method = c("powerLaw", "simpleTpm", "none")
+                    , fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
               standardGeneric("normalizeTagCount"))
 
 #' .normalizeTagCount_switcher
@@ -92,7 +94,9 @@ setGeneric( "normalizeTagCount"
 #' 
 #' @noRd
 
-.normalizeTagCount_switcher <- function(method, object, fitInRange, alpha, T) {
+.normalizeTagCount_switcher <- function( method = c("powerLaw", "simpleTpm", "none")
+                                       , object, fitInRange, alpha, T) {
+  method <- match.arg(method)
   message("\nNormalizing tag count...")
   switch( method
         , powerLaw  = .powerLaw(CTSStagCountTable(object), fitInRange, alpha, T)

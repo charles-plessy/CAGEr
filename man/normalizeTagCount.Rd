@@ -7,14 +7,14 @@
 \alias{normalizeTagCount,CAGEexp-method}
 \title{Normalizing raw CAGE tag count}
 \usage{
-normalizeTagCount(object, method = "powerLaw", fitInRange = c(10, 1000),
-  alpha = 1.25, T = 10^6)
-
-\S4method{normalizeTagCount}{CAGEset}(object, method = "powerLaw",
+normalizeTagCount(object, method = c("powerLaw", "simpleTpm", "none"),
   fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
 
-\S4method{normalizeTagCount}{CAGEexp}(object, method = "powerLaw",
-  fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
+\S4method{normalizeTagCount}{CAGEset}(object, method = c("powerLaw",
+  "simpleTpm", "none"), fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
+
+\S4method{normalizeTagCount}{CAGEexp}(object, method = c("powerLaw",
+  "simpleTpm", "none"), fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEset}} object}
@@ -70,6 +70,7 @@ normalized values are expressed as tags per million (tpm).
 }
 \examples{
 normalizeTagCount(exampleCAGEset, method = "powerLaw")
+normalizeTagCount(exampleCAGEexp, method = "simpleTpm")
 
 }
 \references{
