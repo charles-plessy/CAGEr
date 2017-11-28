@@ -7,7 +7,6 @@ package: CAGEr
 output: 
   BiocStyle::html_document:
     toc: true
-bibliography: CAGEr.bib
 vignette: >
   %\VignetteIndexEntry{The legacy CAGEset class}
   %\VignetteEngine{knitr::rmarkdown}
