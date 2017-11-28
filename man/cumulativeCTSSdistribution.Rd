@@ -4,7 +4,7 @@
 \name{cumulativeCTSSdistribution}
 \alias{cumulativeCTSSdistribution}
 \alias{cumulativeCTSSdistribution,CAGEr-method}
-\title{Calculate cumulative sum of CAGE signal along genomic region}
+\title{Cumulative sums of CAGE counts along genomic regions}
 \usage{
 cumulativeCTSSdistribution(object, clusters = c("tagClusters",
   "consensusClusters"), useMulticore = FALSE, nrCores = NULL)
@@ -30,11 +30,11 @@ For \code{CAGEset} objects, the slot \code{CTSScumulativesTagClusters}
 (when \code{clusters = "consensusClusters"}) of the will be occupied by the
 list containing cumulative sum of the CAGE signal along genomic regions per
 CAGE experiment.  In \code{CAGEexp} objects, cumulative sums are stored
-in the metadata slot.
+in the metadata slot using the \code{RleList} class.
 }
 \description{
-Calculates the cumulative sum of CAGE signal along each tag
-cluster or consensus cluster in every sample within CAGEset object.
+Calculates the cumulative sum of raw CAGE counts along each tag
+cluster or consensus cluster in every sample within a CAGEr object.
 }
 \examples{
 CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
@@ -46,7 +46,8 @@ clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 cumulativeCTSSdistribution(exampleCAGEexp, clusters = "tagClusters")
-aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
+                    , excludeSignalBelowThreshold = FALSE, maxDist = 100)
 cumulativeCTSSdistribution(exampleCAGEexp, clusters = "consensusClusters")
            
 }

@@ -64,9 +64,12 @@
 #' plotReverseCumulatives(exampleCAGEset, fitInRange = c(10,500), onePlot = TRUE)
 #' plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 #' 
-#' plotReverseCumulatives(exampleCAGEexp, fitInRange = c(5,100), onePlot = TRUE)
-#' plotReverseCumulatives(exampleCAGEexp[,4:5], fitInRange = c(5,100), onePlot = TRUE, main = "prim6 replicates")
-#' plotReverseCumulatives(exampleCAGEexp, values = "normalized", fitInRange = c(5,100), onePlot = TRUE)
+#' plotReverseCumulatives( exampleCAGEexp
+#'                       , fitInRange = c(5,100), onePlot = TRUE)
+#' plotReverseCumulatives( exampleCAGEexp, values = "normalized"
+#'                       , fitInRange = c(5,100), onePlot = TRUE)
+#' plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)
+#'                       , onePlot = TRUE, main = "prim6 replicates")
 #' 
 #' @importFrom graphics abline box legend par plot strwidth text
 #' @importFrom stats cor median

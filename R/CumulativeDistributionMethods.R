@@ -2,10 +2,10 @@
 
 #' @name cumulativeCTSSdistribution
 #' 
-#' @title Calculate cumulative sum of CAGE signal along genomic region
+#' @title Cumulative sums of CAGE counts along genomic regions
 #' 
-#' @description Calculates the cumulative sum of CAGE signal along each tag
-#' cluster or consensus cluster in every sample within CAGEset object.
+#' @description Calculates the cumulative sum of raw CAGE counts along each tag
+#' cluster or consensus cluster in every sample within a CAGEr object.
 #' 
 #' @param object A \code{\link{CAGEr}} object
 #' 
@@ -21,7 +21,7 @@
 #' (when \code{clusters = "consensusClusters"}) of the will be occupied by the
 #' list containing cumulative sum of the CAGE signal along genomic regions per
 #' CAGE experiment.  In \code{CAGEexp} objects, cumulative sums are stored
-#' in the metadata slot.
+#' in the metadata slot using the \code{RleList} class.
 #' 
 #' @author Vanja Haberle
 #' 
@@ -38,7 +38,8 @@
 #'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
 #' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "tagClusters")
-#' aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
+#'                     , excludeSignalBelowThreshold = FALSE, maxDist = 100)
 #' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "consensusClusters")
 #'            
 #' @importFrom IRanges RleList

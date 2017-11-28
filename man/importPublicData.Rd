@@ -80,7 +80,9 @@ data(FANTOM5humanSamples)
 head(subset(FANTOM5humanSamples, type == "tissue"))
 
 # import selected samples
-exampleCAGEset <- importPublicData(source="FANTOM5", dataset = "human", sample = c("adipose_tissue__adult__pool1", "adrenal_gland__adult__pool1", "aorta__adult__pool1"))
+exampleCAGEset <- importPublicData(source="FANTOM5", dataset = "human",
+  sample = c("adipose_tissue__adult__pool1", "adrenal_gland__adult__pool1",
+  "aorta__adult__pool1"))
 
 exampleCAGEset
 
@@ -95,7 +97,10 @@ head(subset(FANTOMmouseSamples, dataset == "FANTOMtissueCAGEmouse"))
 head(subset(FANTOMmouseSamples, dataset == "FANTOMtimecourseCAGEmouse"))
 
 # import selected samples from two different mouse datasets
-exampleCAGEset <- importPublicData(source="FANTOM3and4", dataset = c("FANTOMtissueCAGEmouse", "FANTOMtimecourseCAGEmouse"), group = c("brain", "adipogenic_induction"), sample = c("CCL-131_Neuro-2a_treatment_for_6hr_with_MPP+", "DFAT-D1_preadipocytes_2days"))
+exampleCAGEset <- importPublicData(source="FANTOM3and4",
+  dataset = c("FANTOMtissueCAGEmouse", "FANTOMtimecourseCAGEmouse"),
+  group = c("brain", "adipogenic_induction"),
+  sample = c("CCL-131_Neuro-2a_treatment_for_6hr_with_MPP+", "DFAT-D1_preadipocytes_2days"))
 
 exampleCAGEset
 }

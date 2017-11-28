@@ -38,7 +38,9 @@ not supported.
 }
 \examples{
 CTSStoGenes(exampleCAGEexp)
-all(librarySizes(exampleCAGEexp) - colSums(SummarizedExperiment::assay(GeneExpSE(exampleCAGEexp))) == exampleCAGEexp$unannotated)
+all( librarySizes(exampleCAGEexp) -
+     colSums(SummarizedExperiment::assay(GeneExpSE(exampleCAGEexp))) ==
+     exampleCAGEexp$unannotated)
 
 }
 \seealso{

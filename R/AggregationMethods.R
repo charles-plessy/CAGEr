@@ -72,17 +72,23 @@
 #' aggregateTagClusters( exampleCAGEset, tpmThreshold = 50
 #'                     , excludeSignalBelowThreshold = FALSE, maxDist = 100)
 #' head(consensusClusters(exampleCAGEset))
+#' 
 #' aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
 #'   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
 #' head(consensusClusters(exampleCAGEset))
 #' 
 #' consensusClustersGR(exampleCAGEexp)
-#' aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
+#'                     , excludeSignalBelowThreshold = FALSE, maxDist = 100)
 #' consensusClustersGR(exampleCAGEexp)
-#' aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE, maxDist = 100)
+#' 
+#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
+#'                     , excludeSignalBelowThreshold = TRUE, maxDist = 100)
 #' consensusClustersGR(exampleCAGEexp)
-#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50, excludeSignalBelowThreshold = TRUE
-#'                     , maxDist = 100, qLow = 0.1, qUp = 0.9)
+#' 
+#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
+#'                     , excludeSignalBelowThreshold = TRUE, maxDist = 100
+#'                     , qLow = 0.1, qUp = 0.9)
 #' consensusClustersGR(exampleCAGEexp)
 #' 
 #' @export

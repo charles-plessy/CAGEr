@@ -34,7 +34,8 @@ gr
 head(CAGEr:::TCgranges2dataframe(gr))
 # No exact round-trip because start and end were not integer in df.
 identical(df, CAGEr:::TCgranges2dataframe(gr))
-if (! all(df == CAGEr:::TCgranges2dataframe(gr))) stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
+if (! all(df == CAGEr:::TCgranges2dataframe(gr)))
+  stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
 
 tagClustersGR(exampleCAGEexp)
 head(CAGEr:::TCgranges2dataframe(CAGEr:::tagClustersGR(exampleCAGEexp, 1)))
