@@ -65,7 +65,7 @@ setMethod( "cumulativeCTSSdistribution", "CAGEr"
                        , consensusClusters = `CTSScumulativesCC<-`)
   samples.cumsum.list <- lapply(sampleList(object), function(s) {
 		message("\t-> ", s)
-		.getCumsum( ctss         = .CTSS(CTSSnormalizedTpmGR(object, s))
+		.getCumsum( ctss         = CTSSnormalizedTpmGR(object, s)
               , clusters     = getClusters(object, s)
               , useMulticore = useMulticore, nrCores = nrCores)
 	})

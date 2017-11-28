@@ -67,7 +67,7 @@ decode(clusters.cumsum[[1]])
 ctss[queryHits(findOverlaps(ctss, clusters[1]))]
 clusters[1]
 
-ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEexp, "Zf.30p.dome"))
+ctss      <- CTSSnormalizedTpmGR(exampleCAGEexp, "Zf.30p.dome")
 ctss      <- ctss[ctss$filteredCTSSidx]
 clusters  <- tagClustersGR(exampleCAGEexp, "Zf.30p.dome")
 clusters.cumsum <- CAGEr:::.getCumsum(ctss, head(clusters))

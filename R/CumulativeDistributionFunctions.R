@@ -89,7 +89,7 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
 #' clusters[1]
 #' 
-#' ctss      <- CAGEr:::.CTSS(CTSSnormalizedTpmGR(exampleCAGEexp, "Zf.30p.dome"))
+#' ctss      <- CTSSnormalizedTpmGR(exampleCAGEexp, "Zf.30p.dome")
 #' ctss      <- ctss[ctss$filteredCTSSidx]
 #' clusters  <- tagClustersGR(exampleCAGEexp, "Zf.30p.dome")
 #' clusters.cumsum <- CAGEr:::.getCumsum(ctss, head(clusters))
@@ -99,7 +99,7 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 
 setGeneric(".getCumsum", function(ctss, clusters, useMulticore = FALSE, nrCores = NULL) standardGeneric(".getCumsum"))
 
-setMethod(".getCumsum", c("GRanges", "GRanges"), function(ctss, clusters, useMulticore , nrCores) {
+setMethod(".getCumsum", c("CTSS", "GRanges"), function(ctss, clusters, useMulticore , nrCores) {
   getCumSumChrStrand <- function(chrom) {
     plus.cumsum  <- .getCumsumChr2(clusters = clusters, ctss = ctss, chrom = chrom, str = "+")
     minus.cumsum <- .getCumsumChr2(clusters = clusters, ctss = ctss, chrom = chrom, str = "-")
