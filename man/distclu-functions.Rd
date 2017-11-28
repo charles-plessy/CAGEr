@@ -15,7 +15,7 @@
 
 .ctss2clusters(ctss, max.dist = 20, useMulticore = FALSE, nrCores = NULL)
 
-.summarize.clusters(ctss.clustered, max.dist = 20, removeSingletons = FALSE,
+.summarize.clusters(ctss.clustered, removeSingletons = FALSE,
   keepSingletonsAbove = Inf)
 
 .distclu(se, max.dist = 20, removeSingletons = FALSE,

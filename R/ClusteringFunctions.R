@@ -179,9 +179,9 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
 #' CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE)
 #' CAGEr:::.summarize.clusters(clusters, removeSingletons = TRUE, keepSingletonsAbove = 5)
 
-setGeneric(".summarize.clusters", function(ctss.clustered, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf) standardGeneric(".summarize.clusters"))
+setGeneric(".summarize.clusters", function(ctss.clustered, removeSingletons = FALSE, keepSingletonsAbove = Inf) standardGeneric(".summarize.clusters"))
 
-setMethod(".summarize.clusters", "data.table", function(ctss.clustered, max.dist, removeSingletons, keepSingletonsAbove) {
+setMethod(".summarize.clusters", "data.table", function(ctss.clustered, removeSingletons, keepSingletonsAbove) {
 
   find.dominant.idx <- function (x) {
     w <- which(x == max(x))
