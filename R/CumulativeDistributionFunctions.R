@@ -93,9 +93,9 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' ctss      <- ctss[ctss$filteredCTSSidx]
 #' clusters  <- tagClustersGR(exampleCAGEexp, "Zf.30p.dome")
 #' clusters.cumsum <- CAGEr:::.getCumsum(ctss, head(clusters))
-#' decode(clusters.cumsum[[1]])
-#' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
-#' clusters[1]
+#' decode(clusters.cumsum[[3]])
+#' ctss[queryHits(findOverlaps(ctss, clusters[3]))]
+#' clusters[3]
 
 setGeneric(".getCumsum", function(ctss, clusters, useMulticore = FALSE, nrCores = NULL) standardGeneric(".getCumsum"))
 
