@@ -50,15 +50,11 @@ quantiles of CAGE signal along \emph{tag clusters} or
 \emph{consensus clusters} in each sample of a  CAGEr object.
 }
 \details{
-The position of a \dQuote{lower} quantile \code{qLow} is defined as
-a point that divides the cluster into two parts, so that the 5' part contains
-\code{< qLow * 100\%} of the CAGE signal of that region (\code{>= qUp * 100\%}
-for \dQuote{upper} quantiles).  Therefore, when \code{qLow <= qUp}, a lower
-and and uppper quantile define a central region that contains
-\code{>= (qUp - qLow) * 100\%} of the CAGE signal of that cluster.  The
-width of that central part is refered to as "interquantile width", which is
-a more robust measure of the promoter width than the total length of the
-cluster.
+From the 5' end the position, the position of a quantile \emph{q} is
+detemined as the first base in which of the cumulative expression is higher
+or equal to \emph{q\%} of the total CAGE signal of that cluster.  Promoter
+\emph{interquantile width} is defined as the distance (in base pairs)
+between a \dQuote{lower} and an \dQuote{upper} quantile position.
 }
 \examples{
 head(cbind(

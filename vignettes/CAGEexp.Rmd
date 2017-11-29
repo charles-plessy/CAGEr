@@ -504,15 +504,12 @@ to total expression and local level of noise at the promoter. Width of every tag
 calculated as following:
 
  1. Cumulative distribution of CAGE signal along the cluster is calculated.
- 2. Positions of two selected quantiles are determined. At the 5′ end the position of the "lower"
-    quantile `qLow` is determined, which is defined as the point that divides the cluster
-    into two parts, such that the 5′ part contains `< qLow * 100`% of the CAGE signal of that
-    cluster. Accordingly, position of the "upper" quantile `qUp` is determined near the 3′ end,
-    which is defined as the point that divides the cluster into two parts such that the 5′ part
-    contains `>= qUp * 100`% of the CAGE signal of that cluster.
- 3. Promoter width is defined as the distance (in base pairs) between the two quantiles. This
-   _interquantile width_ marks the central part of the cluster that contains `>= (qUp - qLow) *
-    100`% of the CAGE signal.
+ 2. A "lower" (`qLow`) and an "upper" (`qUp`) quantile are selected by the user.
+ 3. From the 5′ end the position, the position of a quantile $q$ is detemined as
+    the first base in which of the cumulative expression is higher or equal to
+    $q\%$ of the total CAGE signal of that cluster.
+ 4. Promoter _interquantile width_ is defined as the distance (in base pairs)
+    between the two quantile positions.
    
 The procedure is schematically shown in Figure \@ref(fig:CumulativeDistribution). 
 

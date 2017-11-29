@@ -34,6 +34,9 @@ OTHER CHANGES
       BSgenome object when actually not needing one.
     o In CAGEexp objects, expression quantile positions are given relative
       to the cluster start site.
+    o For performance reasons, the positions of a quantile Q is now calculated
+      as the position of the first base where cumulative expression is higher
+      or equal to Q% of the total expression of a cluster.
 
 DOCUMENTATION UPDATES
 
