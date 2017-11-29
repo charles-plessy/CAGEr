@@ -24,17 +24,15 @@
 #' .get.quant.pos(cumsums, clusters, c(.1, .9))
 #' }
 
-.get.quant.pos <- function(cumsums, clusters, q = NULL, useMulticore = FALSE, nrCores = NULL) {
-  getQuantilepos <- function(q, cumsum) {
+.get.quant.pos <- function(cumsums, clusters, q) {
+  getQuantilepos <- Vectorize(vectorize.args = "cumsum", function(q, cumsum) {
     cumsum <- decode(cumsum)
     max <- tail(cumsum,1)   # Max is last element since we x is a cumulative sums.
     treshold <- max * q
     which.max(cumsum >= treshold)
-  }
-	cluster.q <- bplapply( cumsums, function(x) sapply(q, getQuantilepos, x)
-	                     , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
-	cluster.q <- as.data.frame(do.call(rbind, cluster.q))
-	colnames(cluster.q) = paste('q_', q, sep = '')
-	mcols(clusters)[,colnames(cluster.q)] <- DataFrame(lapply(cluster.q, Rle))
+  })
+	cluster.q <- lapply(q, getQuantilepos, cumsums)
+	names(cluster.q) = paste('q_', q, sep = '')
+	mcols(clusters)[, names(cluster.q)] <- DataFrame(lapply(cluster.q, Rle))
 	clusters
 }

@@ -94,14 +94,14 @@ setMethod( "quantilePositions", "CAGEr"
 	clusters <- match.arg(clusters)
 	message("\nGetting positions of quantiles within clusters...")
 	if (clusters == "tagClusters") {
-	  ctss.clusters <- lapply(sampleList(object), function(s) {
-	    message("\t-> ", s)
-	    .get.quant.pos( cumsums = CTSScumulativesTagClusters(object, s)
-		                , clusters = tagClustersGR(object, s)
-		                , q = c(qLow, qUp)
-		                , useMulticore = useMulticore
-		                , nrCores = nrCores)
-	  })
+    ctss.clusters <- bplapply(sampleList(object),
+      function(s) {
+        message("\t-> ", s)
+        .get.quant.pos( cumsums  = CTSScumulativesTagClusters(object, s)
+                      , clusters = tagClustersGR(object, s)
+                      , q        = c(qLow, qUp))
+      },
+      BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	  ctss.clusters <- GRangesList(ctss.clusters)
 		if(class(object) == "CAGEexp") {
 		  tagClustersGR(object) <- ctss.clusters
@@ -112,14 +112,14 @@ setMethod( "quantilePositions", "CAGEr"
 		  }
 		} else stop("Unsupported CAGEr class.")
 	} else if (clusters == "consensusClusters"){
-	  cons.clusters.l <- lapply(sampleList(object), function(s) {
-	    message("\t-> ", s)
-	    .get.quant.pos( cumsums = CTSScumulativesCC(object, s)
-		                , clusters = consensusClustersGR(object)
-		                , q = c(qLow, qUp)
-		                , useMulticore = useMulticore
-		                , nrCores = nrCores)
-	  })
+    cons.clusters.l <- bplapply(sampleList(object),
+      function(s) {
+        message("\t-> ", s)
+        .get.quant.pos( cumsums  = CTSScumulativesCC(object, s)
+                      , clusters = consensusClustersGR(object)
+                      , q        = c(qLow, qUp))
+      },
+      BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	  cons.clusters.l <- GRangesList(cons.clusters.l)
 	  
 		if(class(object) == "CAGEexp") {
