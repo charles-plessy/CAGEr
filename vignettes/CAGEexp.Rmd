@@ -513,7 +513,7 @@ calculated as following:
    
 The procedure is schematically shown in Figure \@ref(fig:CumulativeDistribution). 
 
-```{r CumulativeDistribution, echo=FALSE, caption="Cumulative distribution of CAGE signal and definition of interquantile width"}
+```{r CumulativeDistribution, echo=FALSE, fig.align="center", fig.cap="Cumulative distribution of CAGE signal and definition of interquantile width"}
 knitr::include_graphics("images/CumulativeDistributionAndQuantiles.svg")
 ```
 
@@ -644,7 +644,7 @@ In this gene-like representation (Figure \@ref(fig:tagClustersBed)), the orient
 full span of the cluster, filled block marks the interquantile width and a single base-pair thick 
 block denotes the position of the dominant TSS.
 
-```{r tagClustersBed, echo=FALSE, caption="Tag clusters visualization in the genome browser"}
+```{r tagClustersBed, echo=FALSE, fig.align="center", fig.cap="Tag clusters visualization in the genome browser"}
 knitr::include_graphics("images/TagClustersBed.svg")
 ```
 
@@ -672,7 +672,7 @@ applying it only to promoters with normalized CAGE signal $>= 15$ in at least on
 
 Distribution of expression across samples for 8 clusters returned by SOM (4 $\times$ 2 map) can
 be visualized using the `plotExpressionProfiles` function 
-as shown in Figure~\ref{fig:ConsensusClustersExpressionProfiles}:
+as shown in Figure \@ref(fig:ConsensusClustersExpressionProfiles):
 
 ```{r}
 # Not supported yet for CAGEexp objects, sorry.
@@ -680,7 +680,7 @@ as shown in Figure~\ref{fig:ConsensusClustersExpressionProfiles}:
 ```
 
 
-```{r ConsensusClustersExpressionProfiles, echo=FALSE, fig.cap="Expression clusters"}
+```{r ConsensusClustersExpressionProfiles, echo=FALSE, fig.align="center", fig.cap="Expression clusters"}
 knitr::include_graphics("images/ConsensusClustersExpressionProfiles.svg")
 ```
 
@@ -696,7 +696,7 @@ belonging to a specific cluster by typing:
 ```
 
 Consensus clusters and information on their expression profile can be exported to a BED file, which allows visualization of the promoters in the 
-genome browser colored in the color of the expression cluster they belong to (Figure~\@ref{fig:ConsensusClustersBed}):
+genome browser colored in the color of the expression cluster they belong to (Figure \@ref(fig:ConsensusClustersBed):
 
 ```{r}
 # Not supported yet for CAGEexp objects, sorry.
@@ -704,7 +704,7 @@ genome browser colored in the color of the expression cluster they belong to (Fi
 # 		colorByExpressionProfile = TRUE)
 ```
 
-```{r ConsensusClustersBed, echo=FALSE, fig.cap="Consensus clusters colored by expression profile in the genome browser"}
+```{r ConsensusClustersBed, echo=FALSE, fig.align="center", fig.cap="Consensus clusters colored by expression profile in the genome browser"}
 knitr::include_graphics("images/ConsensusClustersBed.svg")
 ```
 
@@ -729,7 +729,7 @@ dds <- consensusClustersDESeq2(ce, ~group)
 Shifting promoters
 ------------------
 
-As shown in Figure~\@ref{fig:tagClustersBed}, TSSs within the same promoter
+As shown in Figure \@ref(fig:tagClustersBed), TSSs within the same promoter
 region can be used differently in different samples.  Thus, although the overall
 transcription level from a promoter does not change between the samples, the
 differential usage of TSSs or _promoter shifting_ may indicate changes in the
@@ -760,7 +760,7 @@ all promoters comparing two specified samples:
 ```
 
 This function will calculate shifting score as illustrated in
-Figure \@ref{fig:ShiftingScore}.  Values of shifting score are in range between
+Figure \@ref(fig:ShiftingScore).  Values of shifting score are in range between
 `-Inf` and `1`.  Positive values can be interpreted as the proportion of
 transcription initiation in the sample with lower expression that is happening
 "outside" (either upstream or downstream) of the region used for transcription
@@ -806,7 +806,7 @@ We can select a subset of promoters with shifting score and/or FDR above specifi
 The `getShiftingPromoters` function returns genomic coordinates, shifting score
 and P-value (FDR) of the promoters, as well as the value of CAGE signal and
 position of the dominant TSS in the two compared (groups of) samples.
-Figure~\@ref{fig:ShiftingPromoter} shows the difference in the CAGE signal
+Figure \@ref(fig:ShiftingPromoter) shows the difference in the CAGE signal
 between the two compared samples for one of the selected high-scoring shifting
 promoters.
 
