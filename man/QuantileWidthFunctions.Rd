@@ -4,8 +4,7 @@
 \alias{.get.quant.pos}
 \title{Get quantile positions}
 \usage{
-.get.quant.pos(cumsums, clusters, q = NULL, useMulticore = FALSE,
-  nrCores = NULL)
+.get.quant.pos(cumsums, clusters, q)
 }
 \arguments{
 \item{cumsums}{Named list of vectors containing cumulative sum for each cluster
