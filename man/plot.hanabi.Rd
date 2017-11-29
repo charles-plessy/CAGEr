@@ -4,7 +4,7 @@
 \alias{plot.hanabi}
 \alias{points.hanabi}
 \alias{lines.hanabi}
-\title{plot.hanabi}
+\title{Plotting Hanabi objects}
 \usage{
 \method{plot}{hanabi}(x, alpha = 0.5, col = "black",
   xlab = "Total counts", ylab = "Unique features", main = "Hanabi plot",
@@ -33,7 +33,8 @@ can be recycled that way).}
 \item{...}{Other parameters passed to the generic plot, points or lines functions.}
 }
 \description{
-Plotting Hanabi objects
+S3 method to plot hanabi objects.  Used by the
+\code{\link{hanabiPlot}} function.
 }
 \seealso{
 Other CAGEr richness functions: \code{\link{hanabiPlot}},

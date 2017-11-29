@@ -143,9 +143,12 @@ setMethod("hanabi", "matrix", function(x, n, step, from) {
            rgb(x[1], x[2], x[3], alpha=alpha))
 }
 
-#' plot.hanabi
+#' @name plot.hanabi
 #' 
-#' Plotting Hanabi objects
+#' @title Plotting Hanabi objects
+#' 
+#' @description S3 method to plot hanabi objects.  Used by the
+#' \code{\link{hanabiPlot}} function.
 #' 
 #' @param x The hanabi object to plot.
 #' @param alpha The alpha transparency of the plot lines.
@@ -163,7 +166,7 @@ setMethod("hanabi", "matrix", function(x, n, step, from) {
 #' 
 #' @importFrom graphics lines
 #' 
-#' @export plot.hanabi
+#' @export
 
 plot.hanabi <-
   function( x
