@@ -13,8 +13,6 @@
 \item{clusters}{GRanges object representing tag clusters or consensus clusters.}
 
 \item{q}{desired quantiles - single value or a vector of values.}
-
-\item{useMulticore, nrCores}{See \code{quantilePositions}.}
 }
 \value{
 Returns the \code{clusters} object with one more metadata column per value

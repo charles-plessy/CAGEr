@@ -11,7 +11,6 @@
 #'        (returned by 'get.cumsum' function).
 #' @param clusters GRanges object representing tag clusters or consensus clusters.
 #' @param q desired quantiles - single value or a vector of values.
-#' @param useMulticore,nrCores See \code{quantilePositions}.
 #' 
 #' @return Returns the \code{clusters} object with one more metadata column per value
 #' in \code{q}, containing Rle integers giving the relative distance of the quantile
