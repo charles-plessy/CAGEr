@@ -9,15 +9,15 @@
 \usage{
 getCTSS(object, sequencingQualityThreshold = 10,
   mappingQualityThreshold = 20, removeFirstG = TRUE,
-  correctSystematicG = TRUE)
+  correctSystematicG = TRUE, useMulticore = FALSE, nrCores = NULL)
 
 \S4method{getCTSS}{CAGEset}(object, sequencingQualityThreshold = 10,
   mappingQualityThreshold = 20, removeFirstG = TRUE,
-  correctSystematicG = TRUE)
+  correctSystematicG = TRUE, useMulticore = FALSE, nrCores = NULL)
 
 \S4method{getCTSS}{CAGEexp}(object, sequencingQualityThreshold = 10,
   mappingQualityThreshold = 20, removeFirstG = TRUE,
-  correctSystematicG = TRUE)
+  correctSystematicG = TRUE, useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEset}} or a A \code{\link{CAGEexp}} object.}
@@ -58,6 +58,12 @@ the G addition for positions with G in the genome.  Used only if
 \code{inputFileType(object) == "bam"} or \code{inputFileType(object) ==
 "bamPairedEnd"}, \emph{i.e} when input files are BAM files of aligned sequenced
 CAGE tags, otherwise ignored.  See Details.}
+
+\item{useMulticore}{Logical, should multicore be used.
+\code{useMulticore = TRUE} has no effect on non-Unix-like platforms.}
+
+\item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}
+(set to \code{NULL} to use all detected cores).}
 }
 \value{
 For \code{\link{CAGEset}} objects, the slots \code{librarySizes}, \code{CTSScoordinates}

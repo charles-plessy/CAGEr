@@ -49,6 +49,12 @@
 #'   \code{inputFileType(object) == "bam"} or \code{inputFileType(object) ==
 #'   "bamPairedEnd"}, \emph{i.e} when input files are BAM files of aligned sequenced
 #'   CAGE tags, otherwise ignored.  See Details.
+#'   
+#' @param useMulticore Logical, should multicore be used.
+#'   \code{useMulticore = TRUE} has no effect on non-Unix-like platforms.
+#'   
+#' @param nrCores Number of cores to use when \code{useMulticore = TRUE}
+#'   (set to \code{NULL} to use all detected cores).
 #' 
 #' @details In the CAGE experimental protocol an additional G nucleotide is often attached
 #' to the 5' end of the tag by the template-free activity of the reverse transcriptase used
@@ -112,7 +118,8 @@
 setGeneric( "getCTSS"
           , function( object
                     , sequencingQualityThreshold = 10, mappingQualityThreshold = 20
-                    , removeFirstG = TRUE, correctSystematicG = TRUE)
+                    , removeFirstG = TRUE, correctSystematicG = TRUE
+                    , useMulticore = FALSE, nrCores = NULL)
 	            standardGeneric("getCTSS"))
 
 checkFilesExist <- function(paths) {
@@ -161,7 +168,8 @@ addCTSScolumn <- function(CTSS.all.samples, CTSS) {
 
 setMethod("getCTSS", "CAGEset", function ( object
                                          , sequencingQualityThreshold, mappingQualityThreshold
-                                         , removeFirstG, correctSystematicG) {
+                                         , removeFirstG, correctSystematicG
+                                         , useMulticore, nrCores) {
   # Initialise values
   objName <- deparse(substitute(object))
   sample.labels <- sampleLabels(object)
@@ -543,7 +551,8 @@ import.CAGEscanMolecule <- function(filepath) {
 setMethod( "getCTSS", "CAGEexp"
          , function ( object
                     , sequencingQualityThreshold, mappingQualityThreshold
-                    , removeFirstG, correctSystematicG) {
+                    , removeFirstG, correctSystematicG
+                    , useMulticore, nrCores) {
 
   objName <- deparse(substitute(object))
   
@@ -553,14 +562,16 @@ setMethod( "getCTSS", "CAGEexp"
   
   # Step 1: Load each file as GRangesList where each GRange is a CTSS data.
   
-  l <- GRangesList()
+  l <- as.list(seq_along(inputFiles(object)))
+
+  l <- bplapply(l, function(i) {
+      message("\nReading in file: ", inputFiles(object)[i], "...")
+      gr <- loadFileIntoGRanges(inputFiles(object)[i], inputFilesType(object)[i])
+      gr <- coerceInBSgenome(gr, genomeName(object))
+      l[[i]] <- sort(gr)
+    }, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
   
-  for (i in seq_along(inputFiles(object))) {
-    message("\nReading in file: ", inputFiles(object)[i], "...")
-    gr <- loadFileIntoGRanges(inputFiles(object)[i], inputFilesType(object)[i])
-    gr <- coerceInBSgenome(gr, genomeName(object))
-    l[[i]] <- sort(gr)
-  }
+  l <-  GRangesList(l)
   
   # Step 2: Create GRanges representing all the nucleotides with CAGE counts in the list.
 

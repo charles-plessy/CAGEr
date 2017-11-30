@@ -24,6 +24,7 @@ NEW FEATURES
     o New function sampleList() to help looping on samples with lapply().
     o New plotCorrelation2() function, faster than plotCorrelation() because
       it is plain black and white.
+    o Multicore loading of CTSS data in CAGEexp object.
     
 OTHER CHANGES
 
