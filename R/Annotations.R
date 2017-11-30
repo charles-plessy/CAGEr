@@ -344,8 +344,7 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
 #' of a CAGEr object.
 #'   
 #' @return \code{annotateConsensusClusters} returns the input object with the same
-#' modifications as above.  An \code{outOfClusters} column is added to the sample metadata
-#' to reflect the number of molecules that do not have their TSS in a consensus cluster.
+#' modifications as above.
 #' 
 #' @examples 
 #' annotateConsensusClusters(exampleCAGEexp, exampleZv9_annot)

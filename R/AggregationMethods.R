@@ -228,7 +228,9 @@ setMethod( ".CCtoSE"
 #' 
 #' @return stores the result as a new \code{\link{RangedSummarizedExperiment}} in the
 #' \code{experiment} slot of the object.  The assays of the new experiment are called
-#' \code{counts} and \code{normalized}.
+#' \code{counts} and \code{normalized}.  An \code{outOfClusters} column is added
+#' to the sample metadata to reflect the number of molecules that do not have
+#' their TSS in a consensus cluster.
 #' 
 #' @author Charles Plessy
 #' 

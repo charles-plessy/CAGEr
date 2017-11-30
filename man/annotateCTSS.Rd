@@ -45,8 +45,7 @@ not supported).}
 }
 
 \code{annotateConsensusClusters} returns the input object with the same
-modifications as above.  An \code{outOfClusters} column is added to the sample metadata
-to reflect the number of molecules that do not have their TSS in a consensus cluster.
+modifications as above.
 }
 \description{
 \code{annotateCTSS} annotates the \emph{CTSS} of a CAGEr object and computes
