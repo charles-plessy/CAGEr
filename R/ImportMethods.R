@@ -60,21 +60,16 @@ function (object, sequencingQualityThreshold = 10, mappingQualityThreshold = 20,
 			message("\t-> Filtering out low quality reads...")
 		
 			qual <- bam[[1]]$qual
-			start <- 1
-			chunksize <- 1e6
-			qa.avg <- vector(mode = "integer")	  
-			repeat {
-				if (start + chunksize <= length(qual)) {
-					end <- start + chunksize
-				} else {
-					end <- length(qual)
-				}
-				qa.avg <- c(qa.avg, as.integer(mean(as(qual[start:end], "IntegerList"))))
-				if (end == length(qual)) {
-					break
-				} else {
-					start <- end + 1
-				}
+		
+			if(length(unique(width(qual)) != 1)){
+				uniq.quals <- unique(width(qual))
+				quals.list <- lapply(as.list(uniq.quals), function(x) {idx <- width(qual) == x; q.m <- as(qual[idx], "matrix"); q.avg <- as.integer(rowMeans(q.m)); return(list(idx, q.avg))})
+				qa.avg <- unlist(lapply(quals.list, function(x) {return(x[[2]])}))
+				idx <- unlist(lapply(quals.list, function(x) {return(which(x[[1]]))}))
+				qa.avg <- qa.avg[order(idx)]
+			}else{
+				qa <- as(qual, "matrix")
+				qa.avg <- as.integer(rowMeans(qa))			
 			}
 		
 			reads.GRanges <- GRanges(seqnames = as.vector(bam[[1]]$rname), IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq)), strand = bam[[1]]$strand, qual = qa.avg, mapq = bam[[1]]$mapq, seq = bam[[1]]$seq, read.length = width(bam[[1]]$seq))	

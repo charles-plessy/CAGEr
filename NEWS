@@ -1,9 +1,3 @@
-CHANGES in version 1.18.1 :
-
-    o getCTSS() can now load data from large BAM files.  Before this update,
-      there were "negative length vectors" errors when filtering out low quality
-      reads from datasets with multiple dozens of millions of sequences.
-
 CHANGES in version 1.18.0 :
 
     o Added Charles Plessy as co-maintainer.
