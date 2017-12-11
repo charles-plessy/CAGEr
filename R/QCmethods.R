@@ -38,7 +38,7 @@ setMethod("summariseChrExpr", "CAGEexp", function(object) {
   seqNameTotalsSE(object) <-
     SummarizedExperiment( assays  = SimpleList( counts = seqNameTotals
                                               , norm   = seqNameTotals.norm)
-                        , rowData = seqinfo(getRefGenome(genomeName(object))))
+                        , rowData = DataFrame(as.data.frame(seqinfo(getRefGenome(genomeName(object))))))
   validObject(object)
   assign(objname, object, envir = parent.frame())
   invisible(1)
