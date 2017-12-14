@@ -7,12 +7,15 @@
 #' of \code{\link[S4Vectors]{Rle}}-encoded expression values, instead of plain
 #' \code{data.frame}s.  With large datasets, this saves considerable amounts of memory.
 #' 
-#' @slot metadata A list that must at least contain \code{genomeName} and
-#' \code{inputFilesType} members.
+#' @slot metadata A list that must at least contain a \code{genomeName} member.
 #' 
 #' @details If \code{genomeName} is \code{NULL}, checks of chromosome names will be
 #' disabled and G-correction will not be possible.  See https://support.bioconductor.org/p/86437/
 #' for an example on how to create a BSgenome package.
+#' 
+#' Sample labels must be \emph{syntactically valid} in the sense of the
+#' \code{\link{make.names}} function, because they will be used as column
+#' names in some tables.
 #' 
 #' @examples 
 #' library("MultiAssayExperiment")
@@ -47,7 +50,7 @@
 #' exampleCAGEexp$l1 <- colSums(CTSStagCountDf(exampleCAGEexp) > 0)
 #' exampleCAGEexp$l1
 #' 
-#' @seealso CAGEset-class
+#' @seealso \code{\link{CAGEset-class}}, \code{\link{make.names}}
 #' 
 #' @rdname CAGEexp-class
 #' @aliases CAGEexp-class
@@ -89,6 +92,12 @@ CAGEexp <- setClass("CAGEexp",
        
     if (is.null(colData(object)$sampleLabels))
       return("Missing sample labels.")
+    
+    if( !(identical(colData(object)$sampleLabels, make.names(colData(object)$sampleLabels))))
+      stop( "Names of samples must be syntactically valid (see "
+          , dQuote("?make.names"), ") because they will be used as column names "
+          , "in some tables.  In brief, avoid minus signs and do not start with "
+          , "numbers.")
     
     if (!(all(nzchar(colData(object)$sampleLabels))) |
         !(all(substr(colData(object)$sampleLabels, start = 1, stop = 1) %in%c(letters, LETTERS))))
@@ -146,11 +155,6 @@ setAs("data.frame", "CAGEexp", function(from){
     stop( "Input data.frame needs to contain at least one column with CAGE tag counts, "
         , "in addition to first three columns specifying chromosome name, genomic position "
         , "and strand of individual TSSs!")
-  
-  if( !(identical(colnames(from), make.names(colnames(from)))))
-    stop( "Names of the columns specifying CAGE tag counts in the input data.frame must "
-        , "be non-empty strings beginning with a letter, as they will be used as sample "
-        , "labels in the resulting CAGEset!")
   
   if(!(is.integer(from[,"pos"])))
     stop( "The 'pos' column in the input data.frame can contain only non-zero integers "

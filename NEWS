@@ -1,4 +1,12 @@
-CHANGES in version 1.21.0 :
+Changes in version 1.21.3 :
+
+    o Enforce syntactically valid sample names in CAGEexp class.
+
+Changes in version 1.21.2 :
+
+    o Use a plain DataFrame as rowData in seqNameTotals slots.
+
+CHANGES in version 1.21.1 :
 
 BACKWARDS-INCOMPATIBLE CHANGES:
 

@@ -18,12 +18,15 @@ of \code{\link[S4Vectors]{Rle}}-encoded expression values, instead of plain
 If \code{genomeName} is \code{NULL}, checks of chromosome names will be
 disabled and G-correction will not be possible.  See https://support.bioconductor.org/p/86437/
 for an example on how to create a BSgenome package.
+
+Sample labels must be \emph{syntactically valid} in the sense of the
+\code{\link{make.names}} function, because they will be used as column
+names in some tables.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{metadata}}{A list that must at least contain \code{genomeName} and
-\code{inputFilesType} members.}
+\item{\code{metadata}}{A list that must at least contain a \code{genomeName} member.}
 }}
 
 \examples{
@@ -61,5 +64,5 @@ exampleCAGEexp$l1
 
 }
 \seealso{
-CAGEset-class
+\code{\link{CAGEset-class}}, \code{\link{make.names}}
 }
