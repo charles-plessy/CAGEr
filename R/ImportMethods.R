@@ -337,8 +337,9 @@ import.bam <- function( filepath
                       , filetype
                       , sequencingQualityThreshold = 10
                       , mappingQualityThreshold = 20) {
-  param <- ScanBamParam( what = c("rname", "strand", "pos", "seq", "qual", "mapq")
-                       , flag = scanBamFlag(isUnmappedQuery = FALSE))
+  param <- ScanBamParam( what       = c("rname", "strand", "pos", "seq", "qual", "mapq")
+                       , flag       = scanBamFlag(isUnmappedQuery = FALSE)
+                       , mapqFilter = mappingQualityThreshold)
   if (filetype == "bamPairedEnd")
     bamFlag(param) <- scanBamFlag( isUnmappedQuery = FALSE
                                  , isProperPair    = TRUE
@@ -372,8 +373,7 @@ import.bam <- function( filepath
                , seq         = bam[[1]]$seq
                , read.length = width(bam[[1]]$seq))	
   gr$mapq[is.na(gr$mapq)] <- Inf
-  gr[(gr$qual >= sequencingQualityThreshold) &
-      gr$mapq >= mappingQualityThreshold]
+  gr[(gr$qual >= sequencingQualityThreshold)]
 }
 
 #' import.bedmolecule
