@@ -184,7 +184,7 @@ setMethod("getCTSS", "CAGEset", function ( object
     for(i in 1:length(inputFiles(object))) {
       message("\nReading in file: ", inputFiles(object)[i], "...")
       reads.GRanges <- import.bam( filepath                   = inputFiles(object)[i]
-                                 , filetype                   = inputFilesType(object)[i]
+                                 , filetype                   = inputFilesType(object)
                                  , sequencingQualityThreshold = sequencingQualityThreshold
                                  , mappingQualityThreshold    = mappingQualityThreshold)
       reads.GRanges <- coerceInBSgenome(reads.GRanges, genomeName(object))
