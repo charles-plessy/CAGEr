@@ -327,7 +327,8 @@ loadFileIntoGRanges <- function( filepath
 #' @importFrom Rsamtools bamFlag<-
 #' @importFrom Rsamtools ScanBamParam
 #' @importFrom Rsamtools scanBamFlag
-#' @importFrom Rsamtools scanBam
+#' @importFrom GenomicAlignments readGAlignments
+#' @importFrom GenomicAlignments qwidth
 #' 
 #' @examples
 #' # TODO: add exmaple file
@@ -337,18 +338,18 @@ import.bam <- function( filepath
                       , filetype
                       , sequencingQualityThreshold = 10
                       , mappingQualityThreshold = 20) {
-  param <- ScanBamParam( what       = c("rname", "strand", "pos", "seq", "qual", "mapq")
+  param <- ScanBamParam( what       = c("seq", "qual")
                        , flag       = scanBamFlag(isUnmappedQuery = FALSE)
                        , mapqFilter = mappingQualityThreshold)
   if (filetype == "bamPairedEnd")
     bamFlag(param) <- scanBamFlag( isUnmappedQuery = FALSE
                                  , isProperPair    = TRUE
                                  , isFirstMateRead = TRUE)
-  bam <- scanBam(filepath, param = param)
+  bam <- readGAlignments(filepath, param = param)
   message("\t-> Filtering out low quality reads...")
   # We need to loop on qualities because there is a hard limit on the length.
   # See <https://support.bioconductor.org/p/97993/>.
-  qual <- bam[[1]]$qual
+  qual <- mcols(bam)$qual
   start <- 1
   chunksize <- 1e6
   qual.avg <- vector(mode = "integer")
@@ -365,15 +366,10 @@ import.bam <- function( filepath
       start <- end + 1
     }
   }
-  gr <- GRanges( seqnames    = as.vector(bam[[1]]$rname)
-               , ranges      = IRanges(start = bam[[1]]$pos, width = width(bam[[1]]$seq))
-               , strand      = bam[[1]]$strand
-               , qual        = qual.avg
-               , mapq        = bam[[1]]$mapq
-               , seq         = bam[[1]]$seq
-               , read.length = width(bam[[1]]$seq))	
-  gr$mapq[is.na(gr$mapq)] <- Inf
-  gr[(gr$qual >= sequencingQualityThreshold)]
+  bam <- bam[qual.avg >= sequencingQualityThreshold]
+  gr <- GRanges(bam)
+  gr$read.length <- qwidth(bam)
+  gr
 }
 
 #' import.bedmolecule

@@ -12,6 +12,7 @@ Imports:
     data.table,
     DelayedArray,
     GenomeInfoDb,
+    GenomicAlignments,
     GenomicRanges (>= 1.23.16),
     ggplot2 (>= 2.2.0),
     gtools,
