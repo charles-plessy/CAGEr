@@ -41,6 +41,14 @@
 #'        
 #' @param from Add one sample size (typically "0") in order to extend the
 #'        plot on the left-hand side.
+#'        
+#' @param useMulticore Logical, should multicore be used.
+#'   \code{useMulticore = TRUE} has no effect on non-Unix-like platforms.  At
+#'   the moment, it also has only effects on lists and list-derived classes
+#'   (data frames but not matrices).
+#'   
+#' @param nrCores Number of cores to use when \code{useMulticore = TRUE}
+#'   (set to \code{NULL} to use all detected cores).
 #' 
 #' @details This function does not take directly CAGEr objects as input,
 #' because hanabi plots can be made from CTSS, clustered or gene-level
@@ -67,18 +75,20 @@ setGeneric( "hanabi"
           , function( x
                     , n    = 20
                     , step = 0.75
-                    , from = NULL)
+                    , from = NULL
+                    , useMulticore = FALSE
+                    , nrCores      = NULL)
               standardGeneric("hanabi"))
 
 #' @rdname hanabi
 
-setMethod("hanabi", "Rle", function(x, n, step, from) {
+setMethod("hanabi", "Rle", function(x, n, step, from, useMulticore, nrCores) {
   hanabi(as.vector(x), n = n, step = step, from = from)
 })
 
 #' @rdname hanabi
 
-setMethod("hanabi", "numeric", function(x, n, step, from) {
+setMethod("hanabi", "numeric", function(x, n, step, from, useMulticore, nrCores) {
   if (any(round(x) != x))
     stop("All scores must be integers.")
   hanabi(as.integer(x))
@@ -86,7 +96,7 @@ setMethod("hanabi", "numeric", function(x, n, step, from) {
 
 #' @rdname hanabi
 
-setMethod("hanabi", "integer", function(x, n, step, from) {
+setMethod("hanabi", "integer", function(x, n, step, from, useMulticore, nrCores) {
   ns <- step ^ (0:n)
   ns <- round(sum(x) * ns)
   if (! is.null(from))
@@ -100,7 +110,7 @@ setMethod("hanabi", "integer", function(x, n, step, from) {
 
 #' @rdname hanabi
 
-setMethod("hanabi", "GRanges", function(x, n, step, from) {
+setMethod("hanabi", "GRanges", function(x, n, step, from, useMulticore, nrCores) {
   if (any(round(score(x)) != score(x)))
     stop("All scores must be integers.")
     hanabi(score(x))
@@ -113,19 +123,23 @@ setMethod("hanabi", "GRanges", function(x, n, step, from) {
 
 #' @rdname hanabi
 
-setMethod("hanabi", "List", function(x, n, step, from) {
-  unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
+setMethod("hanabi", "List", function(x, n, step, from, useMulticore, nrCores) {
+  l <- bplapply( x, hanabi, n = n, step = step, from = from
+               , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+  unlist(SimpleList(l))
 })
 
 #' @rdname hanabi
 
-setMethod("hanabi", "list", function(x, n, step, from) {
-  unlist(SimpleList(lapply(x, hanabi, n = n, step = step, from = from)))
+setMethod("hanabi", "list", function(x, n, step, from, useMulticore, nrCores) {
+  l <- bplapply( x, hanabi, n = n, step = step, from = from
+               , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+  unlist(SimpleList(l))
 })
 
 #' @rdname hanabi
 
-setMethod("hanabi", "matrix", function(x, n, step, from) {
+setMethod("hanabi", "matrix", function(x, n, step, from, useMulticore, nrCores) {
   unlist(SimpleList(apply(x, 2, hanabi, n = n, step = step, from = from)))
 })
 

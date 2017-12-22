@@ -12,21 +12,29 @@
 \alias{hanabi,matrix-method}
 \title{Calcultate richness in preparation for plotting}
 \usage{
-hanabi(x, n = 20, step = 0.75, from = NULL)
+hanabi(x, n = 20, step = 0.75, from = NULL, useMulticore = FALSE,
+  nrCores = NULL)
 
-\S4method{hanabi}{Rle}(x, n = 20, step = 0.75, from = NULL)
+\S4method{hanabi}{Rle}(x, n = 20, step = 0.75, from = NULL,
+  useMulticore = FALSE, nrCores = NULL)
 
-\S4method{hanabi}{numeric}(x, n = 20, step = 0.75, from = NULL)
+\S4method{hanabi}{numeric}(x, n = 20, step = 0.75, from = NULL,
+  useMulticore = FALSE, nrCores = NULL)
 
-\S4method{hanabi}{integer}(x, n = 20, step = 0.75, from = NULL)
+\S4method{hanabi}{integer}(x, n = 20, step = 0.75, from = NULL,
+  useMulticore = FALSE, nrCores = NULL)
 
-\S4method{hanabi}{GRanges}(x, n = 20, step = 0.75, from = NULL)
+\S4method{hanabi}{GRanges}(x, n = 20, step = 0.75, from = NULL,
+  useMulticore = FALSE, nrCores = NULL)
 
-\S4method{hanabi}{List}(x, n = 20, step = 0.75, from = NULL)
+\S4method{hanabi}{List}(x, n = 20, step = 0.75, from = NULL,
+  useMulticore = FALSE, nrCores = NULL)
 
-\S4method{hanabi}{list}(x, n = 20, step = 0.75, from = NULL)
+\S4method{hanabi}{list}(x, n = 20, step = 0.75, from = NULL,
+  useMulticore = FALSE, nrCores = NULL)
 
-\S4method{hanabi}{matrix}(x, n = 20, step = 0.75, from = NULL)
+\S4method{hanabi}{matrix}(x, n = 20, step = 0.75, from = NULL,
+  useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
 \item{x}{An object contained expression counts on which richness scores can
@@ -43,6 +51,14 @@ and multiplying it by the step "n" times.}
 
 \item{from}{Add one sample size (typically "0") in order to extend the
 plot on the left-hand side.}
+
+\item{useMulticore}{Logical, should multicore be used.
+\code{useMulticore = TRUE} has no effect on non-Unix-like platforms.  At
+the moment, it also has only effects on lists and list-derived classes
+(data frames but not matrices).}
+
+\item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}
+(set to \code{NULL} to use all detected cores).}
 }
 \value{
 A list-based object of class "hanabi".
