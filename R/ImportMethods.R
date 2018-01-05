@@ -144,9 +144,9 @@ toCTSSdt <- function(reads.GRanges, sample.label) {
   reads.GRanges.plus  <- reads.GRanges[strand(reads.GRanges) == "+"]
   reads.GRanges.minus <- reads.GRanges[strand(reads.GRanges) == "-"]
   gr2ctssdf <- function(gr, strand)
-    data.frame( chr = as.character(seqnames(gr))
-              , pos = ifelse(strand == "+", start(gr), end(gr))
-              , strand = ifelse(strand == "+", "+", "-")
+    data.frame( chr    = as.character(seqnames(gr))
+              , pos    = if (strand == "+") start(gr) else end(gr)
+              , strand = strand
               , stringsAsFactors = F)
   CTSS.plus <- gr2ctssdf(reads.GRanges.plus, "+")
 	CTSS.minus <-gr2ctssdf(reads.GRanges.minus, "-")
