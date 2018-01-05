@@ -1,3 +1,14 @@
+Changes in version 1.21.4 :
+
+    o Corrected a bug that was crashing CAGEset objects when loading more than
+      one BAM file.
+    o Load BAM as gapped alignment with readGAlignments() instead of
+      scanBam().  Without this correction, TSS position on minus strand is
+      incorrect in case of indels in the read.
+    o Partial support for loading BAM data in CAGEexp objects.
+      (correctSystematicG is not yet implemented)
+    o Added multicore processing in hanabi function.
+
 Changes in version 1.21.3 :
 
     o Enforce syntactically valid sample names in CAGEexp class.
