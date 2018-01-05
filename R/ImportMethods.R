@@ -298,18 +298,60 @@ coerceInBSgenome <- function(gr, genome) {
 #' @family loadFileIntoGRanges
 
 loadFileIntoGRanges <- function( filepath
-                               , filetype = c( "bam"
+                               , filetype = c( "bam", "bamPairedEnd"
                                              , "bed", "bedctss", "bedScore"
-                                             , "CAGEscanMolecule", "ctss")) {
+                                             , "CAGEscanMolecule", "ctss")
+                               , sequencingQualityThreshold
+                               , mappingQualityThreshold
+                               , removeFirstG
+                               , correctSystematicG
+                               , genome) {
   if (missing(filetype)) stop("Please specify the file type.")
   filetype <- match.arg(filetype)
   switch( filetype
-        , bam              = stop("BAM format not supported yet.")
+        , bam              = import.bam.ctss( filepath = filepath
+                                            , filetype = "bam"
+                                            , sequencingQualityThreshold = sequencingQualityThreshold
+                                            , mappingQualityThreshold = mappingQualityThreshold
+                                            , removeFirstG = removeFirstG
+                                            , correctSystematicG = correctSystematicG
+                                            , genome = genome)
+        , bamPairedEnd     = import.bam.ctss( filepath = filepath
+                                            , filetype = "bamPairedEnd"
+                                            , sequencingQualityThreshold = sequencingQualityThreshold
+                                            , mappingQualityThreshold = mappingQualityThreshold
+                                            , removeFirstG = removeFirstG
+                                            , correctSystematicG = correctSystematicG
+                                            , genome = genome)
         , bed              = import.bedmolecule(filepath)
         , bedScore         = import.bedScore(filepath)
         , bedctss          = import.bedCTSS(filepath)
         , CAGEscanMolecule = import.CAGEscanMolecule(filepath)
         , ctss             = import.CTSS(filepath))
+}
+
+#' moleculesGR2CTSS
+#' 
+#' Calculates CTSS positions from a GenomicRanges object where each element
+#' represents a single molecule.
+#' 
+#' @param gr A \code{\link{GRanges}} object.
+#' 
+#' @return Returns a \code{\link{CTSS}} object.
+#' 
+#' @family loadFileIntoGRanges
+#' 
+#' @importFrom S4Vectors Rle
+#' 
+#' @examples
+#' gr <- GRanges("chr1", IRanges(1, 10), c("+", "-"))
+#' moleculesGR2CTSS(gr)
+
+moleculesGR2CTSS <- function(gr) {
+  tb <- table(promoters(gr, 0, 1))
+  gr <- as(names(tb), "GRanges")
+  score(gr) <- Rle(as.integer(tb))
+  .CTSS(gr)
 }
 
 #' import.bam
@@ -321,7 +363,6 @@ loadFileIntoGRanges <- function( filepath
 #' @param sequencingQualityThreshold See getCTSS().
 #' @param mappingQualityThreshold See getCTSS().
 #' 
-#' @seealso loadFileIntoGRanges
 #' @family loadFileIntoGRanges
 #' 
 #' @importFrom Rsamtools bamFlag<-
@@ -372,12 +413,70 @@ import.bam <- function( filepath
   gr
 }
 
+#' bam2CTSS
+#' 
+#' Converts from BAM to CTSS
+#' 
+#' Converts genomic ranges representing SAM/BAM alignments into a CTSS object.
+#' 
+#' @param gr A \code{\link{GRanges}} object returned by \code{\link{import.bam}}.
+#' @param removeFirstG See getCTSS().
+#' @param correctSystematicG See getCTSS().
+#' @param genome See coerceInBSgenome().
+#' 
+#' @return Returns a \code{\link{CTSS}} object.
+#' 
+#' @family loadFileIntoGRanges
+
+bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
+  gr <- coerceInBSgenome(gr, genome)
+  if(removeFirstG == TRUE) {
+    message("\t-> Removing the first base of the reads if 'G' and not aligned to the genome...")
+    gr <- .remove.added.G.CTSS(gr, genome, correctSystematicG = correctSystematicG)
+  }
+  tb <- table(promoters(gr, 0, 1))
+  gr <- as(names(tb), "GRanges")
+  score(gr) <- Rle(unclass(tb))
+  .CTSS(gr)
+} 
+
+#' import.bam.ctss
+#' 
+#' Imports CTSS data from a BAM file.
+#' 
+#' @param filepath The path to the BAM file.
+#' @param filetype bam or bamPairedEnd.
+#' @param sequencingQualityThreshold See getCTSS().
+#' @param mappingQualityThreshold See getCTSS().
+#' @param removeFirstG See getCTSS().
+#' @param correctSystematicG See getCTSS().
+#' @param genome See coerceInBSgenome().
+#' 
+#' @return Returns a \code{\link{CTSS}} object.
+#' 
+#' @family loadFileIntoGRanges
+
+import.bam.ctss <- function( filepath, filetype, sequencingQualityThreshold
+                           , mappingQualityThreshold, removeFirstG
+                           , correctSystematicG, genome) {
+  bam <- import.bam( filepath = filepath
+                   , filetype = filetype
+                   , sequencingQualityThreshold = sequencingQualityThreshold
+                   , mappingQualityThreshold = mappingQualityThreshold)
+  bam2CTSS( gr= bam
+          , removeFirstG = removeFirstG
+          , correctSystematicG = correctSystematicG
+          , genome = genome)
+}
+
 #' import.bedmolecule
 #' 
 #' Imports a BED file where each line counts for one molecule in a
 #' GRanges object where each line represents one nucleotide.
 #' 
 #' @param filepath The path to the BED file.
+#' 
+#' @return Returns a \code{\link{CTSS}} object.
 #' 
 #' @seealso loadFileIntoGRanges
 #' @family loadFileIntoGRanges
@@ -390,11 +489,7 @@ import.bam <- function( filepath
 #' # import.BED(system.file("extdata", "example.bed", package = "CAGEr"))
 
 import.bedmolecule <- function(filepath) {
-  gr <- rtracklayer::import.bed(filepath)
-  tb <- table(promoters(gr, 0, 1))
-  gr <- as(names(tb), "GRanges")
-  score(gr) <- Rle(as.integer(tb))
-  gr
+  moleculesGR2CTSS(rtracklayer::import.bed(filepath))
 }
 
 #' import.bedScore
@@ -406,7 +501,6 @@ import.bedmolecule <- function(filepath) {
 #' 
 #' @return A GRanges object where each line represents one nucleotide.
 #' 
-#' @seealso loadFileIntoGRanges
 #' @family loadFileIntoGRanges
 #' 
 #' @importFrom rtracklayer import.bed
@@ -435,7 +529,6 @@ import.bedScore <- function(filepath) {
 #' 
 #' @param filepath The path to the BED file.
 #' 
-#' @seealso loadFileIntoGRanges
 #' @family loadFileIntoGRanges
 #' 
 #' @importFrom rtracklayer import.bed
@@ -466,7 +559,6 @@ import.bedCTSS <- function(filepath) {
 #' Note that the format of the "CTSS" files handled in this function is not
 #' the same as the FANTOM5 "CTSS" files (which are plain BED).
 #' 
-#' @seealso loadFileIntoGRanges
 #' @family loadFileIntoGRanges
 #' 
 #' @importFrom utils read.table
@@ -551,7 +643,7 @@ setMethod( "getCTSS", "CAGEexp"
                     , useMulticore, nrCores) {
 
   objName <- deparse(substitute(object))
-  
+
   # Step 0: Test existance of each file before spending time loading them.
   
   checkFilesExist(inputFiles(object))
@@ -562,7 +654,13 @@ setMethod( "getCTSS", "CAGEexp"
 
   l <- bplapply(l, function(i) {
       message("\nReading in file: ", inputFiles(object)[i], "...")
-      gr <- loadFileIntoGRanges(inputFiles(object)[i], inputFilesType(object)[i])
+      gr <- loadFileIntoGRanges( filepath                   = inputFiles(object)[i]
+                               , filetype                   = inputFilesType(object)[i]
+                               , sequencingQualityThreshold = sequencingQualityThreshold
+                               , mappingQualityThreshold    = mappingQualityThreshold
+                               , removeFirstG               = removeFirstG
+                               , correctSystematicG         = correctSystematicG
+                               , genome                     = genomeName(object))
       gr <- coerceInBSgenome(gr, genomeName(object))
       l[[i]] <- sort(gr)
     }, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))

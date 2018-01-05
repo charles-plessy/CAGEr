@@ -163,3 +163,44 @@
 }
 
 
+#' .remove.added.G.CTSS
+#' 
+#' Non-exported private helper function
+#' 
+#' @examples 
+#' gr <- GRanges("chr1", IRanges(1, 10), strand = c("+", "+", "-", "-"))
+#' gr$seq <- c("ATTTAAATTT", "GTTTAAATTT", "TTTAAATTTA", "TTTAAATTTC")
+#' gr$read.length <- 10
+#' genome <- genomeName(exampleCAGEset)
+#' .remove.added.G.CTSS(gr, genome)
+#' 
+#' @noRd
+#' @importFrom BSgenome getSeq
+
+.remove.added.G.CTSS <- function(gr, genome, correctSystematicG = FALSE) {
+    if(correctSystematicG == TRUE) stop ("correctSystematicG not supported yet for CAGEexp objects")
+  gr <- promoters(gr, 0, 1)
+  gr$genomeSeq <- getSeq(getRefGenome(genome), gr, as.character = TRUE)
+  
+  grl <- split(gr, strand(gr))
+
+  removeOnPlus <- function(gr) {
+    firstbase <- substr(gr$seq, start = 1, stop = 1)
+    extraG <- firstbase == "G" & gr$genomeSeq != "G"
+    ranges(gr[extraG]) <- shift(ranges(gr[extraG]), 1)
+    gr
+  }
+  
+  grl[["+"]] <- removeOnPlus(grl[["+"]])
+  
+  removeOnMinus <- function(gr) {
+    firstbase <- substr(gr$seq,start = gr$read.length, stop = gr$read.length)
+    extraG <- firstbase == "C" & gr$genomeSeq != "G"
+    ranges(gr[extraG]) <- shift(ranges(gr[extraG]), -1)
+    gr
+  }
+  
+  grl[["-"]] <- removeOnMinus(grl[["-"]])
+
+  .CTSS(unlist(grl))
+}
