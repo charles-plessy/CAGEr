@@ -102,7 +102,8 @@ setGeneric(".cluster.ctss.chr", function(ctss.chr, max.dist) standardGeneric(".c
 setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
   clusters.p <- .cluster.ctss.strand(ranges(ctss.chr[strand(ctss.chr) == "+"]), max.dist)
   clusters.m <- .cluster.ctss.strand(ranges(ctss.chr[strand(ctss.chr) == "-"]), max.dist)
-  clusters.m <- clusters.m + max(0, suppressWarnings(max(clusters.p)))
+  maxIdP <- if (identical(clusters.p, data.table())) 0 else max(clusters.p)
+  clusters.m <- clusters.m + maxIdP
   data.table( rbind(clusters.p, clusters.m)
             , chr    = as.character(seqnames(ctss.chr))
             , pos    = start(ctss.chr)
