@@ -9,6 +9,9 @@ import.bedmolecule(filepath)
 \arguments{
 \item{filepath}{The path to the BED file.}
 }
+\value{
+Returns a \code{\link{CTSS}} object.
+}
 \description{
 Imports a BED file where each line counts for one molecule in a
 GRanges object where each line represents one nucleotide.
@@ -20,8 +23,10 @@ GRanges object where each line represents one nucleotide.
 \seealso{
 loadFileIntoGRanges
 
-Other loadFileIntoGRanges: \code{\link{import.CTSS}},
+Other loadFileIntoGRanges: \code{\link{bam2CTSS}},
+  \code{\link{import.CTSS}}, \code{\link{import.bam.ctss}},
   \code{\link{import.bam}}, \code{\link{import.bedCTSS}},
   \code{\link{import.bedScore}},
-  \code{\link{loadFileIntoGRanges}}
+  \code{\link{loadFileIntoGRanges}},
+  \code{\link{moleculesGR2CTSS}}
 }

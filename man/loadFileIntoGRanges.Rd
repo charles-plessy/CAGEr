@@ -4,13 +4,25 @@
 \alias{loadFileIntoGRanges}
 \title{loadFileIntoGRanges}
 \usage{
-loadFileIntoGRanges(filepath, filetype = c("bam", "bed", "bedctss",
-  "bedScore", "CAGEscanMolecule", "ctss"))
+loadFileIntoGRanges(filepath, filetype = c("bam", "bamPairedEnd", "bed",
+  "bedctss", "bedScore", "CAGEscanMolecule", "ctss"),
+  sequencingQualityThreshold, mappingQualityThreshold, removeFirstG,
+  correctSystematicG, genome)
 }
 \arguments{
 \item{filepath}{The path to the file to load.}
 
 \item{filetype}{The type of the file}
+
+\item{sequencingQualityThreshold}{See getCTSS().}
+
+\item{mappingQualityThreshold}{See getCTSS().}
+
+\item{removeFirstG}{See getCTSS().}
+
+\item{correctSystematicG}{See getCTSS().}
+
+\item{genome}{See coerceInBSgenome().}
 }
 \value{
 A GRanges object, where each range represents a single nucleotide,
@@ -23,8 +35,10 @@ A private (non-exported) function to load from each file format supported by CAG
 \seealso{
 import.CTSS
 
-Other loadFileIntoGRanges: \code{\link{import.CTSS}},
+Other loadFileIntoGRanges: \code{\link{bam2CTSS}},
+  \code{\link{import.CTSS}}, \code{\link{import.bam.ctss}},
   \code{\link{import.bam}}, \code{\link{import.bedCTSS}},
   \code{\link{import.bedScore}},
-  \code{\link{import.bedmolecule}}
+  \code{\link{import.bedmolecule}},
+  \code{\link{moleculesGR2CTSS}}
 }

@@ -4,6 +4,7 @@
 \name{CTSS-class}
 \alias{CTSS-class}
 \alias{.CTSS}
+\alias{CTSS}
 \alias{CTSS.chr-class}
 \alias{.CTSS.chr}
 \alias{ConsensusClusters}

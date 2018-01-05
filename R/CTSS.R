@@ -1,4 +1,5 @@
 #' @name CTSS-class
+#' @aliases CTSS
 #' 
 #' @title Classes for type safety.
 #' 

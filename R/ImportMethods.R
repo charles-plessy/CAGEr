@@ -289,6 +289,11 @@ coerceInBSgenome <- function(gr, genome) {
 #' 
 #' @param filepath The path to the file to load.
 #' @param filetype The type of the file
+#' @param sequencingQualityThreshold See getCTSS().
+#' @param mappingQualityThreshold See getCTSS().
+#' @param removeFirstG See getCTSS().
+#' @param correctSystematicG See getCTSS().
+#' @param genome See coerceInBSgenome().
 #' 
 #' @return A GRanges object, where each range represents a single nucleotide,
 #' and where the score represents the number of CAGE tags starting on that
@@ -344,8 +349,8 @@ loadFileIntoGRanges <- function( filepath
 #' @importFrom S4Vectors Rle
 #' 
 #' @examples
-#' gr <- GRanges("chr1", IRanges(1, 10), c("+", "-"))
-#' moleculesGR2CTSS(gr)
+#' gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-"))
+#' CAGEr:::moleculesGR2CTSS(gr)
 
 moleculesGR2CTSS <- function(gr) {
   tb <- table(promoters(gr, 0, 1))
