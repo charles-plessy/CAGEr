@@ -1,3 +1,10 @@
+Upcoming changes in version 1.21.5 :
+
+    o plotCorrelation2 now can take SummarizedExperiment, DataFrame, data.frame
+      and matrix objects as input.
+    o Corrected the correlation matrix output by plotCorrelation2 (previously
+      the diagonal values were 0 and the other values were swapped).
+
 Changes in version 1.21.4 :
 
     o Corrected a bug that was crashing CAGEset objects when loading more than
