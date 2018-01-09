@@ -387,8 +387,8 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
   corr.m <- matrix(1, nr.samples, nr.samples)
   colnames(corr.m) <- samples
   rownames(corr.m) <- samples
-  corr.m[upper.tri(corr.m)] <- corr.v
-  corr.m[lower.tri(corr.m)] <- t(corr.m)[lower.tri(corr.m)]
+  corr.m[lower.tri(corr.m)] <- corr.v
+  corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
   corr.m
 }
 
