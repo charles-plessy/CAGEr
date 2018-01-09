@@ -5,7 +5,12 @@
 \alias{plotCorrelation}
 \alias{plotCorrelation,CAGEr-method}
 \alias{plotCorrelation2}
-\alias{plotCorrelation2,CAGEr-method}
+\alias{plotCorrelation2,CAGEset-method}
+\alias{plotCorrelation2,CAGEexp-method}
+\alias{plotCorrelation2,SummarizedExperiment-method}
+\alias{plotCorrelation2,DataFrame-method}
+\alias{plotCorrelation2,data.frame-method}
+\alias{plotCorrelation2,matrix-method}
 \title{Pairwise scatter plots and correlations of CAGE signal}
 \usage{
 plotCorrelation(object, what = c("CTSS", "consensusClusters"),
@@ -21,20 +26,43 @@ plotCorrelation2(object, what = c("CTSS", "consensusClusters"),
   values = c("raw", "normalized"), samples = "all", method = "pearson",
   tagCountThreshold = 1, applyThresholdBoth = FALSE)
 
-\S4method{plotCorrelation2}{CAGEr}(object, what = c("CTSS",
+\S4method{plotCorrelation2}{CAGEset}(object, what = c("CTSS",
+  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+
+\S4method{plotCorrelation2}{CAGEexp}(object, what = c("CTSS",
+  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+
+\S4method{plotCorrelation2}{SummarizedExperiment}(object, what = c("CTSS",
+  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+
+\S4method{plotCorrelation2}{DataFrame}(object, what = c("CTSS",
+  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+
+\S4method{plotCorrelation2}{data.frame}(object, what = c("CTSS",
+  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+
+\S4method{plotCorrelation2}{matrix}(object, what = c("CTSS",
   "consensusClusters"), values = c("raw", "normalized"), samples = "all",
   method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
 }
 \arguments{
-\item{object}{A \code{\link{CAGEr}} object.}
+\item{object}{A \code{\link{CAGEr}} object or (only for
+\code{plotCorrelation2}) a \code{\link{SummarizedExperiment}} or an
+expression table as a \code{\link{DataFrame}}, \code{\link{data.frame}} or
+\code{\link{matrix}} object.}
 
 \item{what}{The clustering level to be used for plotting and calculating
 correlations.  Can be either \code{"CTSS"} to use individual TSSs or
 \code{"consensusClusters"} to use consensus clusters, \emph{i.e.} entire
-promoters.}
+promoters.  Ignored for anything else than \code{CAGEr} objects.}
 
 \item{values}{Use either \code{"raw"} (default) or \code{"normalized"} CAGE
-signal.}
+signal.  Ignored for plain expression tables.}
 
 \item{samples}{Character vector indicating which samples to use.  Can be
 either \code{"all"} to select all samples in a \code{CAGEr} object, or a
@@ -71,12 +99,15 @@ a plot matrix showing the correlation coeficients in the upper triangle, the
 sample names in the diagonal, and the catter plots in the lower triangle.
 }
 \details{
-Internally, the data is converted to a \code{data.frame} format,
-so there may be performance issues if there are many samples.  On the other
-hand, this kind of plot does not make much sense for large numbers of samples.
+In the scatter plots, a pseudo-count equal to half the lowest score
+is added to the null values so that they can appear despite logarithmic scale.
 
-In the scatter plots, a pseodo-count equal to half the lowest score is added
-to the null values so that they can appear despite logarithmic scale.
+\code{SummarizedExperiment} objects are expected to contain raw tag counts
+in a \dQuote{counts} assay and the normalized expression scores in a
+\dQuote{normalized} assay.
+
+Avoid using large \code{matrix} objects as they are coerced to
+\code{DataFrame} class without special care for efficiency.
 }
 \examples{
 plotCorrelation(object = exampleCAGEset)

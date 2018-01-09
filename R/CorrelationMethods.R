@@ -8,15 +8,18 @@
 #' a plot matrix showing the correlation coeficients in the upper triangle, the
 #' sample names in the diagonal, and the catter plots in the lower triangle.
 #' 
-#' @param object A \code{\link{CAGEr}} object.
+#' @param object A \code{\link{CAGEr}} object or (only for
+#'   \code{plotCorrelation2}) a \code{\link{SummarizedExperiment}} or an
+#'   expression table as a \code{\link{DataFrame}}, \code{\link{data.frame}} or
+#'   \code{\link{matrix}} object.
 #' 
 #' @param what The clustering level to be used for plotting and calculating
 #'   correlations.  Can be either \code{"CTSS"} to use individual TSSs or
 #'   \code{"consensusClusters"} to use consensus clusters, \emph{i.e.} entire
-#'   promoters.
+#'   promoters.  Ignored for anything else than \code{CAGEr} objects.
 #' 
 #' @param values Use either \code{"raw"} (default) or \code{"normalized"} CAGE
-#'   signal.
+#'   signal.  Ignored for plain expression tables.
 #' 
 #' @param samples Character vector indicating which samples to use.  Can be
 #'   either \code{"all"} to select all samples in a \code{CAGEr} object, or a
@@ -38,12 +41,15 @@
 #' total size of the resulting png will be \code{length(samples) * plotSize}
 #' in both dimensions.  Ignored in \code{plotCorrelation2}.
 #' 
-#' @details Internally, the data is converted to a \code{data.frame} format,
-#' so there may be performance issues if there are many samples.  On the other
-#' hand, this kind of plot does not make much sense for large numbers of samples.
+#' @details In the scatter plots, a pseudo-count equal to half the lowest score
+#' is added to the null values so that they can appear despite logarithmic scale.
 #' 
-#' In the scatter plots, a pseodo-count equal to half the lowest score is added
-#' to the null values so that they can appear despite logarithmic scale.
+#' \code{SummarizedExperiment} objects are expected to contain raw tag counts
+#' in a \dQuote{counts} assay and the normalized expression scores in a
+#' \dQuote{normalized} assay.
+#' 
+#' Avoid using large \code{matrix} objects as they are coerced to
+#' \code{DataFrame} class without special care for efficiency.
 #' 
 #' @return Displays the plot and returns a \code{matrix} of pairwise
 #' correlations between selected samples.  The scatterplots of
@@ -268,6 +274,8 @@ setMethod( "plotCorrelation2", "DataFrame"
                    , tagCountThreshold  = tagCountThreshold
                    , applyThresholdBoth = applyThresholdBoth)
 })
+
+#' @rdname plotCorrelation
 
 setMethod( "plotCorrelation2", "data.frame"
          , function( object, what, values, samples, method
