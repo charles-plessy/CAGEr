@@ -181,62 +181,163 @@ setGeneric( "plotCorrelation2"
 #' @importFrom graphics pairs
 #' @rdname plotCorrelation
 
-setMethod( "plotCorrelation2", "CAGEr"
+setMethod( "plotCorrelation2", "CAGEset"
          , function( object, what, values, samples, method
                    , tagCountThreshold, applyThresholdBoth) {
   what   <- match.arg(what)
   values <- match.arg(values)
-  
-  # Select input data
-  if (what == "CTSS" & values == "raw")
-    tag.count <- CTSStagCountDF(object)
+	if (what == "CTSS" & values == "raw")
+		expr.table <- CTSStagCountDf(object)
   if (what == "CTSS" & values == "normalized")
-    tag.count <- CTSSnormalizedTpmDF(object)
-  if (what == "consensusClusters" & values == "raw")
-    tag.count <- assay(consensusClustersSE(object), "counts")
-  if (what == "consensusClusters" & values == "normalized")
-    tag.count <- assay(consensusClustersSE(object), "normalized")
+		expr.table <- CTSSnormalizedTpmDf(object)
+	if (what == "consensusClusters" & values == "raw")
+		stop("Raw consensus clusters not supported yet.")
+	if (what == "consensusClusters" & values == "normalized")
+		expr.table <- consensusClustersTpm(object)
+ plotCorrelation2( expr.table
+                 , what               = what
+                 , values             = values
+                 , samples            = samples
+                 , method             = method
+                 , tagCountThreshold  = tagCountThreshold
+                 , applyThresholdBoth = applyThresholdBoth)
+})
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "CAGEexp"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth) {
+  what <- match.arg(what)
+  se <- switch( what
+              , CTSS              = CTSStagCountSE(object)
+              , consensusClusters = consensusClustersSE(object)
+              , genes             = GeneExpSE(object)
+              , stop("Unsupported value for ", dQuote("what"), ": ", what))
+  plotCorrelation2( se
+                  , what               = what
+                  , values             = values
+                  , samples            = samples
+                  , method             = method
+                  , tagCountThreshold  = tagCountThreshold
+                  , applyThresholdBoth = applyThresholdBoth)
+})
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "SummarizedExperiment"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth) {
+  values <- match.arg(values)
   
-  # Coerce DataFrame to matrix
-  if (class(tag.count) == "DataFrame")
-    tag.count <- as.matrix(as.data.frame(tag.count))
-  
-  # Select samples
-  if (all(samples %in% sampleLabels(object))) {
-    tag.count <- tag.count[,samples]
-  } else if(samples == "all"){
-    samples <- sampleLabels(object)
-  } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
-  nr.samples <- length(samples)
-  
-  # Function to apply threshold pairwise
-  applyThreshold <- function(df) {
-    if (applyThresholdBoth) {
-      idx <- (df[,1] >= tagCountThreshold) & (df[,2] >= tagCountThreshold)
+  if (values == "raw") {
+    if ("counts" %in% assayNames(object)) {
+      values <- "counts"
     } else {
-      idx <- (df[,1] >= tagCountThreshold) | (df[,2] >= tagCountThreshold)
+      stop( "Could not find a ", dQuote("counts"), " assay for the "
+          , dQuote(what), " clustering level")
     }
-    df[idx,]
+  } else if (values == "normalized") {
+    if ("normalized" %in% assayNames(object)) {
+      values <- "normalized"
+    } else if ("normalizedTpmMatrix" %in% assayNames(object)) {
+      values <- "normalizedTpmMatrix"
+    } else {
+      stop( "Could not find a ", dQuote("normalized"), " assay for the "
+          , dQuote(what), " clustering level")
+    }
   }
   
-  # Pre-calculate a vector of correlation coefficients
-  corTreshold <- function(x,y) {
+  plotCorrelation2( assay(object, values)
+                  , what               = what
+                  , values             = values
+                  , samples            = samples
+                  , method             = method
+                  , tagCountThreshold  = tagCountThreshold
+                  , applyThresholdBoth = applyThresholdBoth)
+})
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "DataFrame"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth) {
+  .plotCorrelation2( object
+                   , samples            = samples
+                   , method             = method
+                   , tagCountThreshold  = tagCountThreshold
+                   , applyThresholdBoth = applyThresholdBoth)
+})
+
+setMethod( "plotCorrelation2", "data.frame"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth) {
+  .plotCorrelation2( object
+                   , samples            = samples
+                   , method             = method
+                   , tagCountThreshold  = tagCountThreshold
+                   , applyThresholdBoth = applyThresholdBoth)
+})
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "matrix"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth) {
+  .plotCorrelation2( as.data.frame(object)
+                   , samples            = samples
+                   , method             = method
+                   , tagCountThreshold  = tagCountThreshold
+                   , applyThresholdBoth = applyThresholdBoth)
+})
+
+
+# Helper function to apply threshold pairwise
+.applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {
+  if (applyThresholdBoth) {
+    idx <- (df[,1] >= tagCountThreshold) & (df[,2] >= tagCountThreshold)
+  } else {
+    idx <- (df[,1] >= tagCountThreshold) | (df[,2] >= tagCountThreshold)
+  }
+  df[idx,]
+}
+
+# Helper function to Pre-calculate a vector of correlation coefficients
+corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth) {
+  corTreshold <- function(x, y, method) {
     df <- data.frame(x, y)
-    df <- applyThreshold(df)
+    df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
     cor(x = df$x, y = df$y, method = method)
   }
-  
+  nr.samples <- ncol(expr.table)
   corr.v <- numeric()
   for (i in 1:(nr.samples-1)) {
     for (j in (min(i+1, nr.samples)):nr.samples) {
-      corr.v <- append(corr.v, corTreshold(tag.count[,i], tag.count[,j]))
+      corr.v <- append(corr.v, corTreshold(expr.table[,i], expr.table[,j], method))
     }
   }
+  corr.v
+}
+
+# The function that runs the actual work of calculating correlations and
+# plotting expression values.
+.plotCorrelation2 <- function( expr.table, samples, method
+                             , tagCountThreshold, applyThresholdBoth) {
+  # Select samples
+  if (all(samples %in% colnames(expr.table))) {
+    expr.table <- expr.table[,samples]
+  } else if(samples == "all"){
+    samples <- colnames(expr.table)
+  } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
+  nr.samples <- length(samples)
+  
+  # Pre-calculate a vector of correlation coefficients
+  corr.v <- corVector(expr.table, method, tagCountThreshold, applyThresholdBoth)
   
   # Add pseudocount to null values so that the plot axes are correctly set.
-  nulls <- tag.count == 0
-  pseudocount      <- min(tag.count[! nulls]) / 2
-  tag.count[nulls] <- tag.count[nulls] + pseudocount
+  pseudocount <- min(sapply(expr.table, function(x) min(x[x>0]))) / 2
+  expr.table  <- DataFrame(lapply( expr.table
+                                 , function(x) {x[x==0] <- pseudocount ; x}))
   
   # This closure retreives correlation coefficients one after the other.
   mkPanelCor <- function() {
@@ -259,12 +360,12 @@ setMethod( "plotCorrelation2", "CAGEr"
   pointsUnique <- function(x,y,...) {
     df <- data.frame(x, y)
     df <- unique(df)
-    df <- applyThreshold(df)
+    df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
     df <- df[rowSums(df) > pseudocount * 2,] # Remove the (0,0) point
     points(df, ...)
   }
 
-  pairs( tag.count
+  pairs( expr.table
        , lower.panel = pointsUnique
        , upper.panel = panel.cor
        , pch = "."
@@ -281,10 +382,9 @@ setMethod( "plotCorrelation2", "CAGEr"
   corr.m[upper.tri(corr.m)] <- corr.v
   corr.m[lower.tri(corr.m)] <- t(corr.m)[lower.tri(corr.m)]
   corr.m
-})
+}
 
-
-# my version of smooth scatter that allows passing range.x argument to grDevices:::.smoothScatterCalcDensity function to calculate 2D kernel smoothed density
+# Vanja's version of smooth scatter that allows passing range.x argument to grDevices:::.smoothScatterCalcDensity function to calculate 2D kernel smoothed density
 
 #' @importFrom grDevices blues9 colorRamp colorRampPalette xy.coords
 #' @importFrom graphics points
