@@ -384,7 +384,7 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
        , yaxp = c(1,10,1))
   
   # Return a correlation matrix
-  corr.m <- matrix(0, nr.samples, nr.samples)
+  corr.m <- matrix(1, nr.samples, nr.samples)
   colnames(corr.m) <- samples
   rownames(corr.m) <- samples
   corr.m[upper.tri(corr.m)] <- corr.v
