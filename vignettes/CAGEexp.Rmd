@@ -326,8 +326,8 @@ pairwise scatter plots of expression scores per TSS or consensus cluster and
 calculate correlation coefficients between all possible pairs of
 samples^[Alternatively, the `plotCorrelation()` function does the same and
 colors the scatterplots according to point density, but is much slower.].  A
-threshold can be set, so that only regions with an expression score (`raw`)
-or (`normalized`) above the threshold (either in one or both samples) are
+threshold can be set, so that only regions with an expression score (raw or
+normalized) above the threshold (either in one or both samples) are
 considered when calculating  correlation.  Three different correlation measures
 are supported: Pearson's, Spearman's and Kendall's correlation coefficients.
 Note that while the scatterplots are on a logarithmic scale with pseudocount
