@@ -14,8 +14,10 @@ setGeneric( ".make.consensus.clusters"
               standardGeneric(".make.consensus.clusters"))
 
 setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minus, tpm.th) {
+  # Filter out TCs with too low score.
   gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpm.th])
   
+  # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)
   mcols(clusters.gr) <- NULL
 	names(clusters.gr) <- NULL
@@ -23,6 +25,7 @@ setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minu
 	suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + plus.minus)
 	clusters.gr <- reduce(trim(clusters.gr))
 	
+	# Annotate TCs with ID of the aggregated cluster they intersect with.
 	gr.list <- endoapply( gr.list
                       , function (gr) {
     o = findOverlaps(clusters.gr, gr)
@@ -31,8 +34,10 @@ setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minu
     gr
   })
 	
+	# Add back the sample name.
 	for (i in seq_along(gr.list)) gr.list[[i]]$sample <- names(gr.list)[[i]]
 	
+	# Return a vector of TCs annotated with a cluster ID and their sample name.
 	unname(unlist(gr.list))
 })
 
