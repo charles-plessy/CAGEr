@@ -215,7 +215,7 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, removeSi
                , tpm.dominant_ctss = Rle(clusters$tpm.dominant_ctss)
   )
   names(gr) <- seq_along(gr)
-  gr
+  sort(gr)
 })
 
 
