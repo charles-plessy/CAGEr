@@ -1,5 +1,6 @@
 Upcoming changes in version 1.21.5 :
 
+    o Tag clusters are sorted before being stored in the CAGEr objects.
     o plotCorrelation2 now can take SummarizedExperiment, DataFrame, data.frame
       and matrix objects as input.
     o Corrected the correlation matrix output by plotCorrelation2 (previously
