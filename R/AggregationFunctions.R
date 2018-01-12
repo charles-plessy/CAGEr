@@ -20,25 +20,24 @@ setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minu
   # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)
   mcols(clusters.gr) <- NULL
-	names(clusters.gr) <- NULL
-  suppressWarnings(start(clusters.gr) <- start(clusters.gr) - plus.minus) # Suppress warnings because we trim later
-	suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + plus.minus)
-	clusters.gr <- reduce(trim(clusters.gr))
-	
-	# Annotate TCs with ID of the aggregated cluster they intersect with.
-	gr.list <- endoapply( gr.list
-                      , function (gr) {
+  names(clusters.gr) <- NULL
+  suppressWarnings(start(clusters.gr) <- start(clusters.gr) - plus.minus) # Suppress warnings
+  suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + plus.minus) # because we trim later
+  clusters.gr <- reduce(trim(clusters.gr))
+  
+  # Annotate TCs with ID of the aggregated cluster they intersect with.
+  gr.list <- endoapply( gr.list, function (gr) {
     o = findOverlaps(clusters.gr, gr)
     gr$consensus.cluster <- queryHits(o)
     gr$sample <- "tbd" # Can not retreive 
     gr
   })
-	
-	# Add back the sample name.
-	for (i in seq_along(gr.list)) gr.list[[i]]$sample <- names(gr.list)[[i]]
-	
-	# Return a vector of TCs annotated with a cluster ID and their sample name.
-	unname(unlist(gr.list))
+  
+  # Add back the sample name.
+  for (i in seq_along(gr.list)) gr.list[[i]]$sample <- names(gr.list)[[i]]
+  
+  # Return a vector of TCs annotated with a cluster ID and their sample name.
+  unname(unlist(gr.list))
 })
 
 #' @name consensusClusterConvertors
