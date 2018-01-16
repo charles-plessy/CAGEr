@@ -4,7 +4,7 @@
 \name{setColors}
 \alias{setColors}
 \alias{setColors,CAGEr-method}
-\title{Setting colors for samples}
+\title{Set colors for samples}
 \usage{
 setColors(object, colors = NULL)
 
@@ -13,36 +13,35 @@ setColors(object, colors = NULL)
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
 
-\item{colors}{A character vector of valid color names.  For a complete list of valid color
-names see the \code{\link{colors}} function.  Alternatively, it can be a
-character vector of colors specified in hexadecimal format (\emph{e.g.}
-"#FF0000" for red).  Number of provided colors must match the number of
-samples in the CAGEset object.  Provided colors are assigned to samples
-according to their ordering in the CAGEr object, \emph{i.e} in the order
-they are returned by \code{\link{sampleLabels}} function.}
+\item{colors}{A character vector of one valid \R color specification per
+sample (see \code{\link{col2rgb}} for details).  Provided colors are
+assigned to samples in the order they are returned by the
+\code{\link{sampleLabels}} function.}
 }
 \value{
-Assigns one color to each sample in the CAGEr object by setting them as a name
-attribute of the \code{sampleLabels} slot.
+Assigns one color to each sample in the CAGEr object and modifies it
+in place.
 }
 \description{
-Assigns one color to each sample in the CAGEr object.  These colors are
-used in various plots and exported tracks to consistently represent corresponding samples.
+Assigns one color to each sample in the CAGEr object.  These
+colors are used in various plots and exported tracks to consistently
+represent corresponding samples.
 }
 \examples{
-
 sampleLabels(exampleCAGEset)
 setColors(exampleCAGEset, colors = c("darkred", "navy", "forestgreen"))
 sampleLabels(exampleCAGEset)
 
+sampleLabels(exampleCAGEexp)
+setColors(exampleCAGEexp, 5)
+sampleLabels(exampleCAGEexp)
+setColors(exampleCAGEexp, c("#ff0000ff", "#CCFF00", "blue", "grey", 1))
 sampleLabels(exampleCAGEexp)
 setColors(exampleCAGEexp, c("red", "darkgreen", "blue", "grey", "black"))
 sampleLabels(exampleCAGEexp)
 
 }
 \seealso{
-\code{\link{sampleLabels}}
-
 Other CAGEr setter methods: \code{\link{genomeName}},
   \code{\link{inputFilesType}}, \code{\link{inputFiles}},
   \code{\link{sampleLabels}}
