@@ -590,7 +590,7 @@ setMethod("setColors", "CAGEr", function (object, colors){
   }else if(all(colors %in% colors())){
   	rgb.col <- col2rgb(colors)
   	names(sample.labels) <- apply(rgb.col, 2, function(x) {rgb(red = x[1], green = x[2], blue = x[3], alpha = 255, maxColorValue = 255)})
-  }else if((unique(substr(colors, start = 1, stop = 1)) == "#") & all(unique(unlist(strsplit(substr(colors, start = 2, stop = sapply(colors, width)), split = ""))) %in% c(seq(0,9,1), "A", "B", "C", "D", "E", "F"))){
+  }else if((unique(substr(colors, start = 1, stop = 1)) == "#") & all(unique(unlist(strsplit(substr(colors, start = 2, stop = sapply(colors, width)), split = ""))) %in% c(0:9, LETTERS[1:6], letters[1:6]))){
   	names(sample.labels) <- colors
   }else{
   	stop("'colors' argument must be a vector of valid color names in R or a vector of hexadecimal specifications (e.g. #008F0AFF). See colors() for a complete list of valid color names.")
