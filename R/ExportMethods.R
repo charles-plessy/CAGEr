@@ -76,13 +76,14 @@
 
 setGeneric( "plotReverseCumulatives"
           , function( object, values = c("raw", "normalized")
-                    , fitInRange = c(10, 1000), onePlot = FALSE, main = NULL)
+                    , fitInRange = c(10, 1000)
+                    , onePlot = FALSE, main = NULL, legend = TRUE)
 	standardGeneric("plotReverseCumulatives"))
 
 #' @rdname plotReverseCumulatives
 
 setMethod( "plotReverseCumulatives", "CAGEr"
-         , function (object, values, fitInRange, onePlot, main) {
+         , function (object, values, fitInRange, onePlot, main, legend) {
 	sample.labels <- sampleLabels(object)
 	values <- match.arg(values)
 	#pdf(file = paste("CTSS_reverse_cumulatives_", values, "_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
@@ -114,11 +115,20 @@ setMethod( "plotReverseCumulatives", "CAGEr"
 		if(!is.null(fitInRange)) {
 			abline(v = fitInRange, lty = "dotted")
 			abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash")
-			legend("topright", legend = paste("(", formatC(-1*fit.slopes, format = "f", digits = 2), ") ", sample.labels, sep = ""), bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
+			main.legend.text <- sprintf("(%.2f) %s", -1 * fit.slopes, sample.labels)
 			legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)
 		} else {
-			legend("topright", legend = sample.labels, bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
+			main.legend.text <- sample.labels
 		}
+		if (isTRUE(legend))
+		  legend( "topright"
+		        , legend    = main.legend.text
+		        , bty       = "n"
+		        , col       = cols
+		        , text.col  = cols
+		        , lwd       = 2
+		        , cex       = 1.3
+		        , y.intersp = 1.2)
 	}else{
 		if(!is.null(fitInRange)) {
 			sapply(sample.labels, function(x) {vals <- as.integer(tag.count[, x]); .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)]); abline(v = fitInRange, lty = "dotted"); abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash"); text(min(fitInRange), 10^6, labels = paste(" alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,1), col = cols[which(sample.labels == x)], cex = 1.3); legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)})
