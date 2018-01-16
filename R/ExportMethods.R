@@ -21,8 +21,7 @@
 #' 
 #' @param fitInRange An integer vector with two values specifying a range of tag
 #' count values to be used for fitting a power-law distribution to reverse
-#' cumulatives.  Used only when \code{values = "raw"}, otherwise ignored.
-#' See Details.
+#' cumulatives.  Ignored is set to \code{NULL}.  See Details.
 #' 
 #' @param onePlot Logical, should all CAGE datasets be plotted in the same
 #' plot (TRUE) or in separate plots (FALSE). 
@@ -91,43 +90,39 @@ setMethod( "plotReverseCumulatives", "CAGEr"
 	on.exit(par(old.par))
 	cols <- names(sample.labels)
 	
-	if(values == "raw"){
-	  tag.count <- CTSStagCountDF(object)
-		fit.coefs.m <- as.matrix(data.frame(lapply(tag.count, function(x) {.fit.power.law.to.reverse.cumulative(values = as.integer(x), val.range = fitInRange)})))
+  tag.count <- switch( values
+                     , raw        = CTSStagCountDF(object)
+                     , normalized = CTSSnormalizedTpmDF(object))
+
+	if(! is.null(fitInRange)) {
+		fit.coefs.m <- as.matrix(data.frame(lapply(tag.count, function(x) {.fit.power.law.to.reverse.cumulative(values = decode(x), val.range = fitInRange)})))
 		fit.slopes <- fit.coefs.m[1,]
 		names(fit.slopes) <- sample.labels
 		reference.slope <- min(median(fit.slopes), -1.05)
-		reference.library.size <- 10^floor(log10(median(librarySizes(object))))
+		reference.library.size <- 10^floor(log10(median(sapply(tag.count, sum))))
 #reference.intercept <- log(reference.library.size/zeta(-1*reference.slope))  # intercept on natural logarithm scale
 		reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
-	}else if(values == "normalized"){
-	  tag.count <- CTSSnormalizedTpmDF(object)
-#		fit.coefs.m <- apply(tag.count, 2, function(x) {.fit.power.law.to.reverse.cumulative(values = x, val.range = fitInRange)})
 	}
 	
 	if(onePlot == TRUE){
 		vals <- tag.count[, 1]		
-		if(values == "raw"){
-			.plotReverseCumulative(values = vals, col = cols[1], title = ifelse(is.null(main), "All samples", main))
-			if(length(sample.labels) > 1){
-				sapply( c(2:length(sample.labels))
-				      , function(x) .plotReverseCumulative(values = tag.count[, sample.labels[x]], col = cols[x], add = TRUE))
-			}
+		.plotReverseCumulative(values = vals, col = cols[1], title = ifelse(is.null(main), "All samples", main))
+		if(length(sample.labels) > 1){
+			sapply( c(2:length(sample.labels))
+			      , function(x) .plotReverseCumulative(values = tag.count[, sample.labels[x]], col = cols[x], add = TRUE))
+		}
+		if(!is.null(fitInRange)) {
 			abline(v = fitInRange, lty = "dotted")
 			abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash")
 			legend("topright", legend = paste("(", formatC(-1*fit.slopes, format = "f", digits = 2), ") ", sample.labels, sep = ""), bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
 			legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)
-		}else if(values == "normalized"){
-			.plotReverseCumulative(values = vals, col = cols[1], title = ifelse(is.null(main), "All samples", main))
-			if(length(sample.labels) > 1){			
-				sapply(c(2:length(sample.labels)), function(x) {vals <- tag.count[, sample.labels[x]]; .plotReverseCumulative(values = vals, col = cols[x], add = TRUE)})
-			}
+		} else {
 			legend("topright", legend = sample.labels, bty = "n", col = cols, text.col = cols, lwd = 2, cex = 1.3, y.intersp = 1.2)
 		}
 	}else{
-		if(values == "raw"){
+		if(!is.null(fitInRange)) {
 			sapply(sample.labels, function(x) {vals <- as.integer(tag.count[, x]); .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)]); abline(v = fitInRange, lty = "dotted"); abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash"); text(min(fitInRange), 10^6, labels = paste(" alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,1), col = cols[which(sample.labels == x)], cex = 1.3); legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)})
-		}else if(values == "normalized"){
+		} else {
 			sapply(sample.labels, function(x) {vals <- tag.count[, x]; .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)])})
 		}
 	}
