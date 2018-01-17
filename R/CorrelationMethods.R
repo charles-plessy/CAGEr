@@ -303,9 +303,9 @@ setMethod( "plotCorrelation2", "matrix"
 # Helper function to apply threshold pairwise
 .applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {
   if (applyThresholdBoth) {
-    idx <- (df[,1] >= tagCountThreshold) & (df[,2] >= tagCountThreshold)
+    idx <- (df[[1]] >= tagCountThreshold) & (df[[2]] >= tagCountThreshold)
   } else {
-    idx <- (df[,1] >= tagCountThreshold) | (df[,2] >= tagCountThreshold)
+    idx <- (df[[1]] >= tagCountThreshold) | (df[[2]] >= tagCountThreshold)
   }
   df[idx,]
 }
@@ -321,7 +321,7 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
   corr.v <- numeric()
   for (i in 1:(nr.samples-1)) {
     for (j in (min(i+1, nr.samples)):nr.samples) {
-      corr.v <- append(corr.v, corTreshold(expr.table[,i], expr.table[,j], method))
+      corr.v <- append(corr.v, corTreshold(expr.table[[i]], expr.table[[j]], method))
     }
   }
   corr.v
