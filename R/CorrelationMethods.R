@@ -184,8 +184,9 @@ setMethod( "plotCorrelation", "CAGEr"
 #' @details \code{plotCorrelation2} speeds up the plotting by a) deduplicating
 #' that data: no point is plot twice at the same coordinates, b) rounding the
 #' data so that indistinguishable positions are plotted only once, c) using a
-#' black square glyph for the points and d) caching some calculations that are
-#' made repeatedly (to determine where to plot the correlation coefficients).
+#' black square glyph for the points, d) caching some calculations that are
+#' made repeatedly (to determine where to plot the correlation coefficients),
+#' and e) preventing coercion of \code{DataFrames} to \code{data.frames}.
 #' 
 #' @importFrom memoise memoise
 #' @export
@@ -353,6 +354,153 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
   corr.v
 }
 
+# Re-implement the pairs function to prevent coercion to data.frame
+pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verInd = 1:nc, 
+    lower.panel = panel, upper.panel = panel, diag.panel = NULL, 
+    text.panel = textPanel, label.pos = 0.5 + has.diag/3, line.main = 3, 
+    cex.labels = NULL, font.labels = 1, row1attop = TRUE, gap = 1, 
+    log = "") 
+{
+    if (doText <- missing(text.panel) || is.function(text.panel)) 
+        textPanel <- function(x = 0.5, y = 0.5, txt, cex, font) text(x, 
+            y, txt, cex = cex, font = font)
+    localAxis <- function(side, x, y, xpd, bg, col = NULL, main, 
+        oma, ...) {
+        xpd <- NA
+        if (side%%2L == 1L && xl[j]) 
+            xpd <- FALSE
+        if (side%%2L == 0L && yl[i]) 
+            xpd <- FALSE
+        if (side%%2L == 1L) 
+            Axis(x, side = side, xpd = xpd, ...)
+        else Axis(y, side = side, xpd = xpd, ...)
+    }
+    localPlot <- function(..., main, oma, font.main, cex.main) plot(...)
+    localLowerPanel <- function(..., main, oma, font.main, cex.main) lower.panel(...)
+    localUpperPanel <- function(..., main, oma, font.main, cex.main) upper.panel(...)
+    localDiagPanel <- function(..., main, oma, font.main, cex.main) diag.panel(...)
+    dots <- list(...)
+    nmdots <- names(dots)
+    # if (!is.matrix(x)) {
+    #     x <- as.data.frame(x)
+    #     for (i in seq_along(names(x))) {
+    #         if (is.factor(x[[i]]) || is.logical(x[[i]])) 
+    #             x[[i]] <- as.numeric(x[[i]])
+    #         if (!is.numeric(unclass(x[[i]]))) 
+    #             stop("non-numeric argument to 'pairs'")
+    #     }
+    # }
+    # else if (!is.numeric(x)) 
+    #     stop("non-numeric argument to 'pairs'")
+    panel <- match.fun(panel)
+    if ((has.lower <- !is.null(lower.panel)) && !missing(lower.panel)) 
+        lower.panel <- match.fun(lower.panel)
+    if ((has.upper <- !is.null(upper.panel)) && !missing(upper.panel)) 
+        upper.panel <- match.fun(upper.panel)
+    if ((has.diag <- !is.null(diag.panel)) && !missing(diag.panel)) 
+        diag.panel <- match.fun(diag.panel)
+    if (row1attop) {
+        tmp <- lower.panel
+        lower.panel <- upper.panel
+        upper.panel <- tmp
+        tmp <- has.lower
+        has.lower <- has.upper
+        has.upper <- tmp
+    }
+    nc <- ncol(x)
+    if (nc < 2L) 
+        stop("only one column in the argument to 'pairs'")
+    if (!all(horInd >= 1L && horInd <= nc)) 
+        stop("invalid argument 'horInd'")
+    if (!all(verInd >= 1L && verInd <= nc)) 
+        stop("invalid argument 'verInd'")
+    if (doText) {
+        if (missing(labels)) {
+            labels <- colnames(x)
+            if (is.null(labels)) 
+                labels <- paste("var", 1L:nc)
+        }
+        else if (is.null(labels)) 
+            doText <- FALSE
+    }
+    oma <- if ("oma" %in% nmdots) 
+        dots$oma
+    main <- if ("main" %in% nmdots) 
+        dots$main
+    if (is.null(oma)) 
+        oma <- c(4, 4, if (!is.null(main)) 6 else 4, 4)
+    opar <- par(mfrow = c(length(horInd), length(verInd)), mar = rep.int(gap/2, 
+        4), oma = oma)
+    on.exit(par(opar))
+    dev.hold()
+    on.exit(dev.flush(), add = TRUE)
+    xl <- yl <- logical(nc)
+    if (is.numeric(log)) 
+        xl[log] <- yl[log] <- TRUE
+    else {
+        xl[] <- grepl("x", log)
+        yl[] <- grepl("y", log)
+    }
+    for (i in if (row1attop) 
+        verInd
+    else rev(verInd)) for (j in horInd) {
+        l <- paste0(ifelse(xl[j], "x", ""), ifelse(yl[i], "y", 
+            ""))
+        localPlot(x[, j], x[, i], xlab = "", ylab = "", axes = FALSE, 
+            type = "n", ..., log = l)
+        if (i == j || (i < j && has.lower) || (i > j && has.upper)) {
+            box()
+            if (i == 1 && (!(j%%2L) || !has.upper || !has.lower)) 
+                localAxis(1L + 2L * row1attop, x[, j], x[, i], 
+                  ...)
+            if (i == nc && (j%%2L || !has.upper || !has.lower)) 
+                localAxis(3L - 2L * row1attop, x[, j], x[, i], 
+                  ...)
+            if (j == 1 && (!(i%%2L) || !has.upper || !has.lower)) 
+                localAxis(2L, x[, j], x[, i], ...)
+            if (j == nc && (i%%2L || !has.upper || !has.lower)) 
+                localAxis(4L, x[, j], x[, i], ...)
+            mfg <- par("mfg")
+            if (i == j) {
+                if (has.diag) 
+                  localDiagPanel(x[, i], ...)
+                if (doText) {
+                  par(usr = c(0, 1, 0, 1))
+                  if (is.null(cex.labels)) {
+                    l.wid <- strwidth(labels, "user")
+                    cex.labels <- max(0.8, min(2, 0.9/max(l.wid)))
+                  }
+                  xlp <- if (xl[i]) 
+                    10^0.5
+                  else 0.5
+                  ylp <- if (yl[j]) 
+                    10^label.pos
+                  else label.pos
+                  text.panel(xlp, ylp, labels[i], cex = cex.labels, 
+                    font = font.labels)
+                }
+            }
+            else if (i < j) 
+                localLowerPanel(x[, j], x[, i], ...)
+            else localUpperPanel(x[, j], x[, i], ...)
+            if (any(par("mfg") != mfg)) 
+                stop("the 'panel' function made a new plot")
+        }
+        else par(new = FALSE)
+    }
+    if (!is.null(main)) {
+        font.main <- if ("font.main" %in% nmdots) 
+            dots$font.main
+        else par("font.main")
+        cex.main <- if ("cex.main" %in% nmdots) 
+            dots$cex.main
+        else par("cex.main")
+        mtext(main, 3, line.main, outer = TRUE, at = 0.5, cex = cex.main, 
+            font = font.main)
+    }
+    invisible(NULL)
+}
+
 # The function that runs the actual work of calculating correlations and
 # plotting expression values.
 .plotCorrelation2 <- function( expr.table, samples, method
@@ -391,17 +539,19 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
   }
   panel.cor <- mkPanelCor()
   
-  uniqueRound <- function(df, digits = 0, log = c("", "xy")) {
+  # uniqueRound returns a data.frame, because compression is maximal in this context.
+  # For benchmarking alternatives, see <https://stackoverflow.com/q/48312424>
+  uniqueRound <- function(x, y, digits = 0, log = c("", "xy")) {
     log <- match.arg(log)
-    if(log == "xy") df <- log1p(df)
-    df <- unique(round(df, digits = digits))
-    if(log == "xy") df <- expm1(df)
-  df
+    if (log == "xy") {x <- log1p(x) ; y <- log1p(y)}
+    u  <- unique(Rle(complex(real = decode(x), imaginary = decode(y))))
+    df <- data.frame(x = Re(u), y = Im(u))
+    if (log == "xy") df <- expm1(df)
+    df
   }
 
   pointsUnique <- function(x,y,...) {
-    df <- data.frame(x, y)
-    df <- uniqueRound(df, digits = digits, log = "xy")
+    df <- uniqueRound(x, y, digits = digits, log = "xy")
     df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
     df <- df[rowSums(df) > pseudocount * 2,] # Remove the (0,0) point
     points(df, ...)
