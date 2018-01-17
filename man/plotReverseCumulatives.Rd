@@ -7,10 +7,11 @@
 \title{Plot reverse cumulative number of CAGE tags per CTSS}
 \usage{
 plotReverseCumulatives(object, values = c("raw", "normalized"),
-  fitInRange = c(10, 1000), onePlot = FALSE, main = NULL)
+  fitInRange = c(10, 1000), onePlot = FALSE, main = NULL, legend = TRUE)
 
 \S4method{plotReverseCumulatives}{CAGEr}(object, values = c("raw",
-  "normalized"), fitInRange = c(10, 1000), onePlot = FALSE, main = NULL)
+  "normalized"), fitInRange = c(10, 1000), onePlot = FALSE, main = NULL,
+  legend = TRUE)
 }
 \arguments{
 \item{object}{A CAGEr object}
@@ -20,13 +21,14 @@ tag counts or \code{"normalized"} for normalized tag count values.}
 
 \item{fitInRange}{An integer vector with two values specifying a range of tag
 count values to be used for fitting a power-law distribution to reverse
-cumulatives.  Used only when \code{values = "raw"}, otherwise ignored.
-See Details.}
+cumulatives.  Ignored is set to \code{NULL}.  See Details.}
 
 \item{onePlot}{Logical, should all CAGE datasets be plotted in the same
 plot (TRUE) or in separate plots (FALSE).}
 
 \item{main}{Main title for the plot.}
+
+\item{legend}{Set to \code{NULL} to prevent the display of the sample legend.}
 }
 \value{
 Plots of reverse cumulative number of CAGE tags per CTSS for each CAGE
@@ -65,7 +67,7 @@ plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 plotReverseCumulatives( exampleCAGEexp
                       , fitInRange = c(5,100), onePlot = TRUE)
 plotReverseCumulatives( exampleCAGEexp, values = "normalized"
-                      , fitInRange = c(5,100), onePlot = TRUE)
+                      , fitInRange = c(200, 2000), onePlot = TRUE)
 plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)
                       , onePlot = TRUE, main = "prim6 replicates")
 

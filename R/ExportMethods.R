@@ -28,6 +28,8 @@
 #' 
 #' @param main Main title for the plot.
 #' 
+#' @param legend Set to \code{NULL} to prevent the display of the sample legend.
+#' 
 #' @details Number of CAGE tags (X-axis) is plotted against the number of TSSs that
 #' are supported by >= of that number of tags (Y-axis) on a log-log scale for each
 #' sample. In addition, a power-law distribution is fitted to each reverse cumulative
@@ -65,7 +67,7 @@
 #' plotReverseCumulatives( exampleCAGEexp
 #'                       , fitInRange = c(5,100), onePlot = TRUE)
 #' plotReverseCumulatives( exampleCAGEexp, values = "normalized"
-#'                       , fitInRange = c(5,100), onePlot = TRUE)
+#'                       , fitInRange = c(200, 2000), onePlot = TRUE)
 #' plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)
 #'                       , onePlot = TRUE, main = "prim6 replicates")
 #' 

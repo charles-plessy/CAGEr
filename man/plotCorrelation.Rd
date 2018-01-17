@@ -24,31 +24,37 @@ plotCorrelation(object, what = c("CTSS", "consensusClusters"),
 
 plotCorrelation2(object, what = c("CTSS", "consensusClusters"),
   values = c("raw", "normalized"), samples = "all", method = "pearson",
-  tagCountThreshold = 1, applyThresholdBoth = FALSE)
+  tagCountThreshold = 1, applyThresholdBoth = FALSE, digits = 3)
 
 \S4method{plotCorrelation2}{CAGEset}(object, what = c("CTSS",
   "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
+  digits = 3)
 
 \S4method{plotCorrelation2}{CAGEexp}(object, what = c("CTSS",
   "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
+  digits = 3)
 
 \S4method{plotCorrelation2}{SummarizedExperiment}(object, what = c("CTSS",
   "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
+  digits = 3)
 
 \S4method{plotCorrelation2}{DataFrame}(object, what = c("CTSS",
   "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
+  digits = 3)
 
 \S4method{plotCorrelation2}{data.frame}(object, what = c("CTSS",
   "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
+  digits = 3)
 
 \S4method{plotCorrelation2}{matrix}(object, what = c("CTSS",
   "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE)
+  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
+  digits = 3)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object or (only for
@@ -83,6 +89,12 @@ correlation.}
 \item{plotSize}{Size of the individual comparison plot in pixels - the
 total size of the resulting png will be \code{length(samples) * plotSize}
 in both dimensions.  Ignored in \code{plotCorrelation2}.}
+
+\item{digits}{The number of digits for the data to be rounded in log scale.
+Ignored in \code{plotCorrelation}.  In \code{plotCorrelation2}, the number
+of points plotted is reduced by rounding the point coordinates and removing
+duplicates.  Chose a value that makes the plot visually indistinguishable
+with non-deduplicated data, by making tests on a subset of the data.}
 }
 \value{
 Displays the plot and returns a \code{matrix} of pairwise
@@ -108,9 +120,14 @@ in a \dQuote{counts} assay and the normalized expression scores in a
 
 Avoid using large \code{matrix} objects as they are coerced to
 \code{DataFrame} class without special care for efficiency.
+
+\code{plotCorrelation2} speeds up the plotting by a) deduplicating
+that data: no point is plot twice at the same coordinates, b) rounding the
+data so that indistinguishable positions are plotted only once, c) using a
+black square glyph for the points and d) caching some calculations that are
+made repeatedly (to determine where to plot the correlation coefficients).
 }
 \examples{
-plotCorrelation(object = exampleCAGEset)
 
 plotCorrelation2(exampleCAGEexp, what = "consensusClusters", value = "normalized")
 
