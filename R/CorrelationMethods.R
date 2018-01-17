@@ -68,7 +68,6 @@
 #' @importFrom S4Vectors decode
 #' 
 #' @examples
-#' plotCorrelation(object = exampleCAGEset)
 #' 
 #' plotCorrelation2(exampleCAGEexp, what = "consensusClusters", value = "normalized")
 #' 
@@ -175,13 +174,28 @@ setMethod( "plotCorrelation", "CAGEr"
 })
 
 #' @rdname plotCorrelation
+#' 
+#' @param digits The number of digits for the data to be rounded in log scale.
+#'   Ignored in \code{plotCorrelation}.  In \code{plotCorrelation2}, the number
+#'   of points plotted is reduced by rounding the point coordinates and removing
+#'   duplicates.  Chose a value that makes the plot visually indistinguishable
+#'   with non-deduplicated data, by making tests on a subset of the data.
+#' 
+#' @details \code{plotCorrelation2} speeds up the plotting by a) deduplicating
+#' that data: no point is plot twice at the same coordinates, b) rounding the
+#' data so that indistinguishable positions are plotted only once, c) using a
+#' black square glyph for the points and d) caching some calculations that are
+#' made repeatedly (to determine where to plot the correlation coefficients).
+#' 
+#' @importFrom memoise memoise
 #' @export
 
 setGeneric( "plotCorrelation2"
           , function( object, what = c("CTSS", "consensusClusters")
                     , values = c("raw", "normalized")
                     , samples = "all", method = "pearson"
-                    , tagCountThreshold = 1, applyThresholdBoth = FALSE)
+                    , tagCountThreshold = 1, applyThresholdBoth = FALSE
+                    , digits = 3)
               standardGeneric("plotCorrelation2"))
 
 #' @importFrom graphics pairs
@@ -189,7 +203,8 @@ setGeneric( "plotCorrelation2"
 
 setMethod( "plotCorrelation2", "CAGEset"
          , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
+                   , tagCountThreshold, applyThresholdBoth
+                   , digits) {
   what   <- match.arg(what)
   values <- match.arg(values)
 	if (what == "CTSS" & values == "raw")
@@ -206,14 +221,16 @@ setMethod( "plotCorrelation2", "CAGEset"
                  , samples            = samples
                  , method             = method
                  , tagCountThreshold  = tagCountThreshold
-                 , applyThresholdBoth = applyThresholdBoth)
+                 , applyThresholdBoth = applyThresholdBoth
+                 , digits             = digits)
 })
 
 #' @rdname plotCorrelation
 
 setMethod( "plotCorrelation2", "CAGEexp"
          , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
+                   , tagCountThreshold, applyThresholdBoth
+                   , digits) {
   what <- match.arg(what)
   se <- switch( what
               , CTSS              = CTSStagCountSE(object)
@@ -226,14 +243,16 @@ setMethod( "plotCorrelation2", "CAGEexp"
                   , samples            = samples
                   , method             = method
                   , tagCountThreshold  = tagCountThreshold
-                  , applyThresholdBoth = applyThresholdBoth)
+                  , applyThresholdBoth = applyThresholdBoth
+                  , digits             = digits)
 })
 
 #' @rdname plotCorrelation
 
 setMethod( "plotCorrelation2", "SummarizedExperiment"
          , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
+                   , tagCountThreshold, applyThresholdBoth
+                   , digits) {
   values <- match.arg(values)
   
   if (values == "raw") {
@@ -260,43 +279,50 @@ setMethod( "plotCorrelation2", "SummarizedExperiment"
                   , samples            = samples
                   , method             = method
                   , tagCountThreshold  = tagCountThreshold
-                  , applyThresholdBoth = applyThresholdBoth)
+                  , applyThresholdBoth = applyThresholdBoth
+                  , digits             = digits)
 })
 
 #' @rdname plotCorrelation
 
 setMethod( "plotCorrelation2", "DataFrame"
          , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
+                   , tagCountThreshold, applyThresholdBoth
+                   , digits) {
   .plotCorrelation2( object
                    , samples            = samples
                    , method             = method
                    , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth)
+                   , applyThresholdBoth = applyThresholdBoth
+                   , digits             = digits)
 })
 
 #' @rdname plotCorrelation
 
 setMethod( "plotCorrelation2", "data.frame"
          , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
+                   , tagCountThreshold, applyThresholdBoth
+                   , digits) {
   .plotCorrelation2( object
                    , samples            = samples
                    , method             = method
                    , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth)
+                   , applyThresholdBoth = applyThresholdBoth
+                   , digits             = digits)
 })
 
 #' @rdname plotCorrelation
 
 setMethod( "plotCorrelation2", "matrix"
          , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
+                   , tagCountThreshold, applyThresholdBoth
+                   , digits) {
   .plotCorrelation2( as.data.frame(object)
                    , samples            = samples
                    , method             = method
                    , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth)
+                   , applyThresholdBoth = applyThresholdBoth
+                   , digits             = digits)
 })
 
 
@@ -330,7 +356,8 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
 # The function that runs the actual work of calculating correlations and
 # plotting expression values.
 .plotCorrelation2 <- function( expr.table, samples, method
-                             , tagCountThreshold, applyThresholdBoth) {
+                             , tagCountThreshold, applyThresholdBoth
+                             , digits) {
   # Select samples
   if (all(samples %in% colnames(expr.table))) {
     expr.table <- expr.table[,samples]
@@ -356,18 +383,25 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
       txt <- format(c(r, 0.123456789), digits=digits)[1]
       txt <- paste(prefix, txt, sep="")
       if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
-      gmean <- function(x) {
-        x <- x[x > 0]
-        exp(mean(log(range(x))))
-      }
+      gmean <- memoise(function(x) {
+        exp(mean(log(c(pseudocount, max(x)))))
+      })
       text(gmean(x), gmean(y), txt, cex = cex.cor * sqrt(r))
     }
   }
   panel.cor <- mkPanelCor()
+  
+  uniqueRound <- function(df, digits = 0, log = c("", "xy")) {
+    log <- match.arg(log)
+    if(log == "xy") df <- log1p(df)
+    df <- unique(round(df, digits = digits))
+    if(log == "xy") df <- expm1(df)
+  df
+  }
 
   pointsUnique <- function(x,y,...) {
     df <- data.frame(x, y)
-    df <- unique(df)
+    df <- uniqueRound(df, digits = digits, log = "xy")
     df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
     df <- df[rowSums(df) > pseudocount * 2,] # Remove the (0,0) point
     points(df, ...)

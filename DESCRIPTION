@@ -18,6 +18,7 @@ Imports:
     gtools,
     IRanges (>= 2.5.27),
     KernSmooth,
+    memoise,
     MultiAssayExperiment,
     plyr,
     Rsamtools,
