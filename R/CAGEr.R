@@ -1,5 +1,4 @@
-#' @include AllClasses.R
-#' @include CAGEexp.R
+#' @include AllClasses.R CAGEexp.R CTSS.R
 #' 
 #' @name CAGEr-class
 #' 
@@ -104,6 +103,11 @@ setMethod("sampleLabels", "CAGEexp", function (object) {
   }
   sl
 })
+
+#' @rdname sampleLabels
+
+setMethod("sampleLabels", "CTSS", function (object)
+  object@metadata$sampleLabels)
 
 #' @description \code{sampleList} is an accessory function for convenience
 #' iteration in functions such as \code{\link{lapply}} or \code{\link{mapply}}.

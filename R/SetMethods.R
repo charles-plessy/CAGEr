@@ -1,4 +1,4 @@
-#' @include CAGEr.R
+#' @include CAGEr.R CTSS.R
 
 ####################################################################
 # Functions for setting internal data in CAGEset and CAGEexp objects
@@ -105,6 +105,12 @@ setMethod("sampleLabels<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
+#' @rdname sampleLabels
+
+setMethod("sampleLabels<-", "CTSS", function (object, value){
+	object@metadata$sampleLabels <- value
+	if (validObject(object)) object
+})
 
 # librarySizes
 #

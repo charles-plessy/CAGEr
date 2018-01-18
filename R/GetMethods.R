@@ -1,4 +1,4 @@
-#' @include AggregationFunctions.R ClusteringFunctions.R CAGEr.R
+#' @include AggregationFunctions.R ClusteringFunctions.R CAGEr.R CTSS.R
 
 ################################################################
 # Functions for retrieving data from CAGEset and CAGEexp objects
@@ -495,10 +495,13 @@ setMethod( "CTSStagCountGR", "CAGEr", function (object, samples) {
   if (! (samples %in% sampleLabels(object) |
        samples %in% seq_along(sampleLabels(object))))
   stop(sQuote("samples"), " must be the name or number of a sample label.")
+  if (is.character(samples)) samples <- which(sampleLabels(object) == samples)
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSStagCountDF(object)[[samples]]
   gr <- gr[score(gr) != 0]
-  .CTSS(gr)
+  gr <- .CTSS(gr)
+  sampleLabels(gr) <- sampleLabels(object)[samples]
+  gr
 })
 
 

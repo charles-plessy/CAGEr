@@ -5,11 +5,13 @@
 \alias{sampleLabels}
 \alias{sampleLabels,CAGEset-method}
 \alias{sampleLabels,CAGEexp-method}
+\alias{sampleLabels,CTSS-method}
 \alias{sampleList}
 \alias{sampleList,CAGEr-method}
 \alias{sampleLabels<-}
 \alias{sampleLabels<-,CAGEset-method}
 \alias{sampleLabels<-,CAGEexp-method}
+\alias{sampleLabels<-,CTSS-method}
 \title{Get and set sample labels}
 \usage{
 sampleLabels(object)
@@ -17,6 +19,8 @@ sampleLabels(object)
 \S4method{sampleLabels}{CAGEset}(object)
 
 \S4method{sampleLabels}{CAGEexp}(object)
+
+\S4method{sampleLabels}{CTSS}(object)
 
 sampleList(object)
 
@@ -27,6 +31,8 @@ sampleLabels(object) <- value
 \S4method{sampleLabels}{CAGEset}(object) <- value
 
 \S4method{sampleLabels}{CAGEexp}(object) <- value
+
+\S4method{sampleLabels}{CTSS}(object) <- value
 }
 \arguments{
 \item{object}{A CAGEr object.}
