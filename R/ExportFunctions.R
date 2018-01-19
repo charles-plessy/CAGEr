@@ -4,24 +4,17 @@
 
 .plotReverseCumulative <- function(values, col = "darkblue", title = "", col.title = "black", add = FALSE) {
   
+  # See benchmarks/sorted-abundance-benchmark.Rmd in the CAGEr's Git repository
+  values <- sort(Rle(values), decreasing = TRUE)
   values <- values[values != 0]
-  
-  # using data.table package
-  num <- nr_tags <- NULL # To keep R CMD check happy
-  v <- data.table(num = 1, nr_tags = decode(values))
-  v <- v[, sum(num), by = nr_tags]
-  setkeyv(v, "nr_tags")
-  
-  # v <- aggregate(values, by = list(values), FUN = length)
-  # colnames(v) <- c('nr_tags', 'V1')
-  
-  x <- sort(c(v$nr_tags - (v$nr_tags - c(0, v$nr_tags[-length(v$nr_tags)]))/2, v$nr_tags + (c(v$nr_tags[-1], v$nr_tags[length(v$nr_tags)]+1) - v$nr_tags)/2))
-  y <- rep(rev(cumsum(rev(v$V1))), each = 2)
+
+  x <- runValue(values)
+  y <- cumsum(runLength(values))
   
   if(add){
-    lines(x, y, col = col, lwd = 2)
+    lines(x, y, col = col, lwd = 2, type = "S")
   }else{
-    plot(x, y, xaxt = 'n', yaxt = 'n', log = "xy", type = "l", lwd = 2, col = col, xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)", main = title, cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = col.title, xlim = c(1, 10^5), ylim = c(1, 10^6))	
+    plot(x, y, xaxt = 'n', yaxt = 'n', log = "xy", type = "s", lwd = 2, col = col, xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)", main = title, cex.axis = 1.8, cex.lab = 1.8, cex.main = 2.5, col.main = col.title, xlim = c(1, 10^5), ylim = c(1, 10^6))	
     
     ticks <- as.integer(sapply(10^(seq(0,6,1)), function(x) {seq(x,10*x-1,x)}))
     
