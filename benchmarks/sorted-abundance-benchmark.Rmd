@@ -1,0 +1,59 @@
+---
+title: "Fastest way to produce sorted abundances"
+author: "Charles Plessy"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+Originally, the `.plotReverseCumulative` function was producing sorted abundances
+using the data.table package, as in the function `f.dt` declared below.  After
+benchmarking it with alternativesk, I switched to the approach implemented in
+`f.Rle` because the data fed to `.plotReverseCumulative` is often already in
+Rle format.
+
+```{r setup, echo=FALSE}
+options(width=120)
+knitr::opts_chunk$set(cache  = TRUE, cache.lazy = FALSE)
+knitr::opts_knit$set(verbose = TRUE)
+```
+
+```{r create_data}
+set.seed(1)
+pois <- rpois(1e7, 0.3)
+nbin <- rnbinom(1e7, mu = 2, size = .1)
+```
+
+```{r declare_functions}
+f.df   <- function(x) as.data.frame(table(x))
+
+f.dt   <- function(x) {
+  v <- data.table::data.table(num = 1, nr_tags = x)
+  v <- v[, sum(num), by = nr_tags]
+  data.table::setkeyv(v, "nr_tags")
+  as.data.frame(v)
+}
+
+f.Rle  <- function(x) {
+  x <- S4Vectors::Rle(sort(x))
+  data.frame(S4Vectors::runValue(x), S4Vectors::runLength(x))
+}
+
+f.rle  <- function(x) {
+  x <- rle(sort(x))
+  data.frame(x$values, x$lengths)
+}
+
+f.aggr <- function(x) {
+  aggregate(x, by = list(x), FUN = length)
+}
+```
+
+```{r benchmark_pois}
+microbenchmark::microbenchmark(f.df(pois), f.dt(pois), f.Rle(pois), f.rle(pois), f.aggr(pois), times = 10)
+```
+
+```{r benchmark_nbin}
+microbenchmark::microbenchmark(f.df(nbin), f.dt(nbin), f.Rle(nbin), f.rle(nbin), f.aggr(nbin), times = 10)
+```
