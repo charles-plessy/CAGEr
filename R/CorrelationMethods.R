@@ -354,6 +354,9 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
   corr.v
 }
 
+#' @importFrom grDevices dev.flush dev.hold
+#' @importFrom graphics Axis mtext
+
 # Re-implement the pairs function to prevent coercion to data.frame
 pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verInd = 1:nc, 
     lower.panel = panel, upper.panel = panel, diag.panel = NULL, 

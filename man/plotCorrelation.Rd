@@ -124,8 +124,9 @@ Avoid using large \code{matrix} objects as they are coerced to
 \code{plotCorrelation2} speeds up the plotting by a) deduplicating
 that data: no point is plot twice at the same coordinates, b) rounding the
 data so that indistinguishable positions are plotted only once, c) using a
-black square glyph for the points and d) caching some calculations that are
-made repeatedly (to determine where to plot the correlation coefficients).
+black square glyph for the points, d) caching some calculations that are
+made repeatedly (to determine where to plot the correlation coefficients),
+and e) preventing coercion of \code{DataFrames} to \code{data.frames}.
 }
 \examples{
 

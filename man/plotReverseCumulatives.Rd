@@ -7,11 +7,15 @@
 \title{Plot reverse cumulative number of CAGE tags per CTSS}
 \usage{
 plotReverseCumulatives(object, values = c("raw", "normalized"),
-  fitInRange = c(10, 1000), onePlot = FALSE, main = NULL, legend = TRUE)
+  fitInRange = c(10, 1000), onePlot = FALSE, main = NULL, legend = TRUE,
+  xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)",
+  xlim = c(1, 1e+05), ylim = c(1, 1e+06))
 
 \S4method{plotReverseCumulatives}{CAGEr}(object, values = c("raw",
   "normalized"), fitInRange = c(10, 1000), onePlot = FALSE, main = NULL,
-  legend = TRUE)
+  legend = TRUE, xlab = "number of CAGE tags",
+  ylab = "number of CTSSs (>= nr tags)", xlim = c(1, 1e+05), ylim = c(1,
+  1e+06))
 }
 \arguments{
 \item{object}{A CAGEr object}
@@ -29,6 +33,10 @@ plot (TRUE) or in separate plots (FALSE).}
 \item{main}{Main title for the plot.}
 
 \item{legend}{Set to \code{NULL} to prevent the display of the sample legend.}
+
+\item{xlab, ylab}{Axis labels passed to \code{\link{plot}}.}
+
+\item{xlim, ylim}{Axis range parameters passed to \code{\link{plot}}.}
 }
 \value{
 Plots of reverse cumulative number of CAGE tags per CTSS for each CAGE
@@ -64,7 +72,7 @@ which all samples will be normalized. For details about normalization see
 plotReverseCumulatives(exampleCAGEset, fitInRange = c(10,500), onePlot = TRUE)
 plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 
-plotReverseCumulatives( exampleCAGEexp
+plotReverseCumulatives( exampleCAGEexp, xlim = c(1, 1e4), ylim = c(1, 1e5)
                       , fitInRange = c(5,100), onePlot = TRUE)
 plotReverseCumulatives( exampleCAGEexp, values = "normalized"
                       , fitInRange = c(200, 2000), onePlot = TRUE)
