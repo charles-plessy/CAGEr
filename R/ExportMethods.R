@@ -30,6 +30,10 @@
 #' 
 #' @param legend Set to \code{NULL} to prevent the display of the sample legend.
 #' 
+#' @param xlab,ylab Axis labels passed to \code{\link{plot}}.
+#' 
+#' @param xlim,ylim Axis range parameters passed to \code{\link{plot}}.
+#' 
 #' @details Number of CAGE tags (X-axis) is plotted against the number of TSSs that
 #' are supported by >= of that number of tags (Y-axis) on a log-log scale for each
 #' sample. In addition, a power-law distribution is fitted to each reverse cumulative
@@ -64,7 +68,7 @@
 #' plotReverseCumulatives(exampleCAGEset, fitInRange = c(10,500), onePlot = TRUE)
 #' plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 #' 
-#' plotReverseCumulatives( exampleCAGEexp
+#' plotReverseCumulatives( exampleCAGEexp, xlim = c(1, 1e4), ylim = c(1, 1e5)
 #'                       , fitInRange = c(5,100), onePlot = TRUE)
 #' plotReverseCumulatives( exampleCAGEexp, values = "normalized"
 #'                       , fitInRange = c(200, 2000), onePlot = TRUE)
@@ -79,13 +83,18 @@
 setGeneric( "plotReverseCumulatives"
           , function( object, values = c("raw", "normalized")
                     , fitInRange = c(10, 1000)
-                    , onePlot = FALSE, main = NULL, legend = TRUE)
+                    , onePlot = FALSE, main = NULL, legend = TRUE
+                    , xlab = "number of CAGE tags"
+                    , ylab = "number of CTSSs (>= nr tags)"
+                    , xlim = c(1, 1e5)
+                    , ylim = c(1, 1e6))
 	standardGeneric("plotReverseCumulatives"))
 
 #' @rdname plotReverseCumulatives
 
 setMethod( "plotReverseCumulatives", "CAGEr"
-         , function (object, values, fitInRange, onePlot, main, legend) {
+         , function ( object, values, fitInRange, onePlot, main, legend
+                    , xlab, ylab, xlim, ylim) {
 	sample.labels <- sampleLabels(object)
 	values <- match.arg(values)
 	#pdf(file = paste("CTSS_reverse_cumulatives_", values, "_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
@@ -108,11 +117,16 @@ setMethod( "plotReverseCumulatives", "CAGEr"
 	}
 	
 	if(onePlot == TRUE){
-		vals <- tag.count[, 1]		
-		.plotReverseCumulative(values = vals, col = cols[1], title = ifelse(is.null(main), "All samples", main))
+		.plotReverseCumulative( values = tag.count[, 1]
+		                      , col    = cols[1]
+		                      , title  = ifelse(is.null(main), "All samples", main)
+		                      , xlab   = xlab, ylab = ylab
+		                      , xlim   = xlim, ylim = ylim)
 		if(length(sample.labels) > 1){
-			sapply( c(2:length(sample.labels))
-			      , function(x) .plotReverseCumulative(values = tag.count[, sample.labels[x]], col = cols[x], add = TRUE))
+			sapply(c(2:length(sample.labels)), function(x)
+			  .plotReverseCumulative( values = tag.count[, sample.labels[x]]
+			                        , col = cols[x]
+			                        , add = TRUE))
 		}
 		if(!is.null(fitInRange)) {
 			abline(v = fitInRange, lty = "dotted")
@@ -133,14 +147,26 @@ setMethod( "plotReverseCumulatives", "CAGEr"
 		        , y.intersp = 1.2)
 	}else{
 		if(!is.null(fitInRange)) {
-			sapply(sample.labels, function(x) {vals <- as.integer(tag.count[, x]); .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)]); abline(v = fitInRange, lty = "dotted"); abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash"); text(min(fitInRange), 10^6, labels = paste(" alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,1), col = cols[which(sample.labels == x)], cex = 1.3); legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)})
+			sapply(sample.labels, function(x) {
+				.plotReverseCumulative( values    = tag.count[, x]
+				                      , col       = cols[which(sample.labels == x)]
+				                      , title     = x
+				                      , col.title = cols[which(sample.labels == x)]
+				                      , xlab      = xlab, ylab = ylab
+				                      , xlim      = xlim, ylim = ylim)
+				abline(v = fitInRange, lty = "dotted"); abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash"); text(min(fitInRange), 10^6, labels = paste(" alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,1), col = cols[which(sample.labels == x)], cex = 1.3); legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)})
 		} else {
-			sapply(sample.labels, function(x) {vals <- tag.count[, x]; .plotReverseCumulative(values = vals, col = cols[which(sample.labels == x)], title = x, col.title = cols[which(sample.labels == x)])})
+			sapply( sample.labels, function(x)
+				.plotReverseCumulative( values    = tag.count[, x]
+				                      , col       = cols[which(sample.labels == x)]
+				                      , title     = x
+				                      , col.title = cols[which(sample.labels == x)]
+				                      , xlab      = xlab, ylab = ylab
+				                      , xlim      = xlim, ylim = ylim)
+			)
 		}
 	}
 	invisible(TRUE)
-	#dev.off()
-	#message("\nFile 'CTSS_reverse_cumulatives_", values, "_all_samples.pdf' has been created in your working directory (", getwd(), ")")
 })
 
 
