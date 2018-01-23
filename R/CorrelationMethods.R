@@ -175,9 +175,10 @@ setMethod( "plotCorrelation", "CAGEr"
 
 #' @rdname plotCorrelation
 #' 
-#' @param digits The number of digits for the data to be rounded in log scale.
-#'   Ignored in \code{plotCorrelation}.  In \code{plotCorrelation2}, the number
-#'   of points plotted is reduced by rounding the point coordinates and removing
+#' @param digits The number of significant digits for the data to be kept in log
+#'   scale.  Ignored in \code{plotCorrelation}.  In \code{plotCorrelation2}, the
+#'   number of points plotted is considerably reduced by rounding the point
+#'   coordinates to a small number of significant digits before removing
 #'   duplicates.  Chose a value that makes the plot visually indistinguishable
 #'   with non-deduplicated data, by making tests on a subset of the data.
 #' 
@@ -542,21 +543,25 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
   }
   panel.cor <- mkPanelCor()
   
-  # uniqueRound returns a data.frame, because compression is maximal in this context.
-  # For benchmarking alternatives, see <https://stackoverflow.com/q/48312424>
-  uniqueRound <- function(x, y, digits = 0, log = c("", "xy")) {
+  # uniqueSignif returns a plain data.frame, because compression is already
+  # maximal in this context.  See benchmarking of alternatives algorithms
+  # in the file "benchmarks/unique-signif.md" in the CAGEr's Git repository.
+  uniqueSignif <- function(x, y, digits = 0, log = c("", "xy")) {
     log <- match.arg(log)
     if (log == "xy") {x <- log1p(x) ; y <- log1p(y)}
-    u  <- unique(Rle(complex(real = decode(x), imaginary = decode(y))))
+    u  <- unique(Rle(complex( real      = decode(signif(x, digits = digits))
+                            , imaginary = decode(signif(y, digits = digits)))))
     df <- data.frame(x = Re(u), y = Im(u))
     if (log == "xy") df <- expm1(df)
     df
   }
 
+  # Thresholds are lowered of a minute amont because the rounding in the log
+  # scale in uniqueSignif adds minute errors to values that were already round.
   pointsUnique <- function(x,y,...) {
-    df <- uniqueRound(x, y, digits = digits, log = "xy")
-    df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
-    df <- df[rowSums(df) > pseudocount * 2,] # Remove the (0,0) point
+    df <- uniqueSignif(x, y, digits = digits, log = "xy")
+    df <- .applyThreshold(df, tagCountThreshold * 0.999, applyThresholdBoth)
+    df <- df[rowSums(df) > pseudocount * 1.999,] # Remove the (0,0) point.
     points(df, ...)
   }
 

@@ -90,9 +90,10 @@ correlation.}
 total size of the resulting png will be \code{length(samples) * plotSize}
 in both dimensions.  Ignored in \code{plotCorrelation2}.}
 
-\item{digits}{The number of digits for the data to be rounded in log scale.
-Ignored in \code{plotCorrelation}.  In \code{plotCorrelation2}, the number
-of points plotted is reduced by rounding the point coordinates and removing
+\item{digits}{The number of significant digits for the data to be kept in log
+scale.  Ignored in \code{plotCorrelation}.  In \code{plotCorrelation2}, the
+number of points plotted is considerably reduced by rounding the point
+coordinates to a small number of significant digits before removing
 duplicates.  Chose a value that makes the plot visually indistinguishable
 with non-deduplicated data, by making tests on a subset of the data.}
 }
