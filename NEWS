@@ -1,16 +1,16 @@
 Upcoming changes in version 1.21.5 :
 
     o Tag clusters are sorted before being stored in the CAGEr objects.
-    o plotCorrelation2 now can take SummarizedExperiment, DataFrame, data.frame
-      and matrix objects as input.
-    o Corrected the correlation matrix output by plotCorrelation2 (previously
-      the diagonal values were 0 and the other values were swapped).
-    o setColors: allow lowercase in color names.
+    o plotCorrelation2: 
+      - new methods for SummarizedExperiment, DataFrame, data.frame and matrix.
+      - Corrected the correlation matrix output (previously the diagonal values
+        were 0 and the other values were swapped).
     o plotReverseCumulatives:
       - fitInRange accepts a value of "NULL" to turn off power law fitting.
       - New "legend" argument to remove legend when set to "FALSE".
       - Axis range and labels can be modified with xlab/ylab and xlim/ylim.
       - Ladders steps start on the values instead of being centered on.
+    o setColors: allow lowercase in color names.
 
 Changes in version 1.21.4 :
 
