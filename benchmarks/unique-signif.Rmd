@@ -1,0 +1,99 @@
+---
+title: "Fastest way to deduplicate pairs after reducing precision"
+author: "Charles Plessy"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+To accelerate plotting and reduce the file size of vector graphics created with
+the `plotCorrelation2` method, points are deduplicated after reducing their
+precision to a smaller number of significant digits.  After benchmarking the
+alternatives below, I chose the approach based on complex numbers, because their
+performance is similar to `data.table` or `dplyr` objects, and because these
+functions are available from standard R installations.
+
+```{r setup, echo=FALSE}
+options(width=120)
+knitr::opts_chunk$set(cache  = TRUE, cache.lazy = FALSE)
+knitr::opts_knit$set(verbose = TRUE)
+```
+
+```{r create_data}
+set.seed(1)
+pois1 <- rpois(1e7, 0.3)
+pois2 <- rpois(1e7, 0.3)
+
+nbin1 <- rnbinom(1e7, mu = 2, size = .1)
+nbin2 <- rnbinom(1e7, mu = 2, size = .1)
+
+# Same with a bit of noise
+x     <- nbin1 * runif(1e7)
+y     <- nbin2 * runif(1e7)
+
+sx    <- signif(x, 2)
+sy    <- signif(y, 2)
+```
+
+`DataFrame` tables are are coerced to `data.frame` objects by the
+`duplicated.DataTable` function, therefore execution times are similar.
+
+```{r declare_functions}
+f.df       <- function(x,y) {
+  df <- unique(data.frame(x = x, y = y))
+  data.frame(df$x, df$y)}
+
+f.tbl <- function(x,y) {
+  tbl <- dplyr::distinct(dplyr::tibble(x = x, y = y))
+  data.frame(tbl$x, tbl$y)}
+
+f.dt       <- function(x,y) {
+  dt <- unique(data.table::data.table(x = x, y = y))
+  data.frame(dt$x, dt$y)}
+
+f.cplx     <- function(x,y) {
+  u <- unique(complex(real=x, im=y))
+  data.frame(Re(u), Im(u))}
+
+f.cplx.Rle <- function(x,y) {
+  u <- unique(S4Vectors::Rle(complex(real=x, im=y)))
+  data.frame(Re(u), Im(u))}
+```
+
+
+```{r benchmark_pois}
+microbenchmark::microbenchmark(
+  f.df       (pois1, pois2),
+  f.dt       (pois1, pois2),
+  f.tbl      (pois1, pois2),
+  f.cplx     (pois1, pois2),
+  f.cplx.Rle (pois1, pois2),  times = 10L)
+```
+
+```{r benchmark_nbin}
+microbenchmark::microbenchmark(
+  f.df       (nbin1, nbin2),
+  f.dt       (nbin1, nbin2),
+  f.tbl      (nbin1, nbin2),
+  f.cplx     (nbin1, nbin2),
+  f.cplx.Rle (nbin1, nbin2),  times = 10L)
+```
+
+```{r benchmark_xy}
+microbenchmark::microbenchmark(
+  f.df       (x, y),
+  f.dt       (x, y),
+  f.tbl      (x, y),
+  f.cplx     (x, y),
+  f.cplx.Rle (x, y),  times = 10L)
+```
+
+```{r benchmark_sxy}
+microbenchmark::microbenchmark(
+  f.df       (sx, sy),
+  f.dt       (sx, sy),
+  f.tbl      (sx, sy),
+  f.cplx     (sx, sy),
+  f.cplx.Rle (sx, sy),  times = 10L)
+```
