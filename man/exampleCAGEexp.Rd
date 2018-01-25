@@ -5,6 +5,9 @@
 \alias{exampleCAGEexp}
 \title{Example CAGEexp object.}
 \format{A \code{\link{CAGEexp}} object.}
+\usage{
+exampleCAGEexp
+}
 \description{
 Lazy-loaded example CAGEexp object, containing most of the CAGEr data
 structures created with the CAGEr modifier functions.
@@ -30,3 +33,4 @@ quantilePositions(exampleCAGEexp, "consensusClusters")
 save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
 }
 }
+\keyword{datasets}

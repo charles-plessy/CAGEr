@@ -529,17 +529,13 @@ ranges2names <- function(rangesA, rangesB) {
 }
 
 
-#' @name exampleZv9_annot
+#' Example zebrafish annotation data
 #' 
-#' @title Example zebrafish annotation data
-#' 
-#' @description  Annotation data for zebrafish's chromosome 17's interval  26000000-54000000
+#' Annotation data for zebrafish's chromosome 17's interval  26000000-54000000
 #' (Zv9/danRer7 genome), to be used in documentation examples.
 #'
-#' @docType data
 #' @author Prepared by Charles Plessy \email{plessy@riken.jp} using archive ENSEMBL data.
 #' @references \url{http://mar2015.archive.ensembl.org/biomart/}
-#' @keywords data
 #' 
 #' @details Data was retreived from ENSEMBL's Biomart server using a query to extract
 #' gene, transcripts and exon coordinates.  For the record, here it is as URL
@@ -612,10 +608,9 @@ ranges2names <- function(rangesA, rangesB) {
 #' seqlevels(gff) <- seqlevelsInUse(gff)
 #' 
 #' save(gff, "data/exampleZv9_annot.RData", compress = "xz")}
-#' 
-#' @examples 
-#' exampleZv9_annot
-NULL
+
+"exampleZv9_annot"
+
 
 #' @name CTSStoGenes
 #' 

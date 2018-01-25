@@ -109,16 +109,12 @@ CAGEexp <- setClass("CAGEexp",
   }
 )
 
-#' @name exampleCAGEexp
+#' Example CAGEexp object.
 #' 
-#' @title Example CAGEexp object.
-#' 
-#' @description Lazy-loaded example CAGEexp object, containing most of the CAGEr data
+#' Lazy-loaded example CAGEexp object, containing most of the CAGEr data
 #' structures created with the CAGEr modifier functions.
 #' 
 #' @format A \code{\link{CAGEexp}} object.
-#' 
-#' @docType data
 #' 
 #' @examples 
 #' # The example commands in the CAGEexp help page were used to create the example
@@ -140,7 +136,9 @@ CAGEexp <- setClass("CAGEexp",
 #' quantilePositions(exampleCAGEexp, "consensusClusters")
 #' save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
 #' }
-NULL
+
+"exampleCAGEexp"
+
 
 #' @name coerce,data.frame,CAGEexp-method
 #' @rdname CAGEexp-class

@@ -4,6 +4,10 @@
 \name{exampleZv9_annot}
 \alias{exampleZv9_annot}
 \title{Example zebrafish annotation data}
+\format{An object of class \code{GRanges} of length 7467.}
+\usage{
+exampleZv9_annot
+}
 \description{
 Annotation data for zebrafish's chromosome 17's interval  26000000-54000000
 (Zv9/danRer7 genome), to be used in documentation examples.
@@ -81,13 +85,10 @@ seqlevels(gff) <- seqlevelsInUse(gff)
 
 save(gff, "data/exampleZv9_annot.RData", compress = "xz")}
 }
-\examples{
-exampleZv9_annot
-}
 \references{
 \url{http://mar2015.archive.ensembl.org/biomart/}
 }
 \author{
 Prepared by Charles Plessy \email{plessy@riken.jp} using archive ENSEMBL data.
 }
-\keyword{data}
+\keyword{datasets}
