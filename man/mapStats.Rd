@@ -5,7 +5,7 @@
 \title{mapStats}
 \usage{
 mapStats(libs, scope = c("all", "annotation", "counts", "mapped", "qc",
-  "steps", "custom"), group = "default", customScope = NULL,
+  "steps", "custom"), group = "default", facet = NULL, customScope = NULL,
   normalise = TRUE)
 }
 \arguments{
@@ -19,6 +19,9 @@ and \dQuote{counts} on the transcript counts.}
 
 \item{group}{A vector of factors defining groups in the data.  By default,
 the \dQuote{group} column of the \dQuote{libs} table.}
+
+\item{facet}{A vector of factors defining facets in the data (in the sense
+of \code{ggplot2}'s \code{\link{facet_wrap}} function).}
 
 \item{customScope}{A function that implements a custom scope.  Use with
 \code{scope = "custom"}.  The function takes a data frame in input

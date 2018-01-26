@@ -8,17 +8,17 @@
 \alias{plotAnnot,CAGEexp-method}
 \title{Plot annotation statistics}
 \usage{
-plotAnnot(x, scope, title, group = "default", customScope = NULL,
-  normalise = TRUE)
+plotAnnot(x, scope, title, group = "default", facet = NULL,
+  customScope = NULL, normalise = TRUE)
 
 \S4method{plotAnnot}{data.frame}(x, scope, title, group = "default",
-  customScope = NULL, normalise = TRUE)
+  facet = NULL, customScope = NULL, normalise = TRUE)
 
 \S4method{plotAnnot}{DataFrame}(x, scope, title, group = "default",
-  customScope = NULL, normalise = TRUE)
+  facet = NULL, customScope = NULL, normalise = TRUE)
 
 \S4method{plotAnnot}{CAGEexp}(x, scope, title, group = "default",
-  customScope = NULL, normalise = TRUE)
+  facet = NULL, customScope = NULL, normalise = TRUE)
 }
 \arguments{
 \item{x}{An object from which can be extracted a table with columns named
@@ -32,6 +32,10 @@ to the \code{mapStats} function.}
 
 \item{group}{A factor to group the samples, or the name of a \code{colData}
 column of a \code{CAGEexp} object.}
+
+\item{facet}{A factor or the name of a \code{colData} column of a
+\code{CAGEexp} object, to facet the samples in the sense of
+\code{ggplot2}'s \code{\link{facet_wrap}} function.}
 
 \item{customScope}{A function passed to the internal function \code{\link{mapStats}}
 for the definition of custom scopes.}
