@@ -28,6 +28,9 @@
 #'   
 #' @param normalise Whether to normalise or not. Default: TRUE.
 #' 
+#' @return Returns invisibly a \code{ggplot2} object of class
+#'         \code{c("gg", "ggplot")}.
+#' 
 #' @family CAGEr annotation functions
 #' @family CAGEr plot functions
 #' 

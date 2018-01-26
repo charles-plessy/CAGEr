@@ -38,6 +38,10 @@ for the definition of custom scopes.}
 
 \item{normalise}{Whether to normalise or not. Default: TRUE.}
 }
+\value{
+Returns invisibly a \code{ggplot2} object of class
+        \code{c("gg", "ggplot")}.
+}
 \description{
 Plot maping statistics of an object containing mapping statistics in
 counts as percentages in stacked barplots.
