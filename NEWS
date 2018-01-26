@@ -1,6 +1,8 @@
 Upcoming changes in version 1.21.5 :
 
     o Tag clusters are sorted before being stored in the CAGEr objects.
+    o plotAnnot:
+      - new "facet" option for running ggplot2::facet_wrap() on the plots.
     o plotCorrelation2: 
       - new methods for SummarizedExperiment, DataFrame, data.frame and matrix.
       - Corrected the correlation matrix output (previously the diagonal values
