@@ -44,7 +44,8 @@ See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-u
 
 The \dQuote{mapped} and \dQuote{counts} scopes assume that transcript counts are available.
 
-See the plotAnnot vignette for details on what the scopes are.
+See the plotAnnot vignette and the \code{\link{mapStatsScopes}}
+help page for details on what the scopes are.
 }
 \examples{
 library(SummarizedExperiment)
