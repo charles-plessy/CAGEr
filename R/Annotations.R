@@ -23,6 +23,10 @@
 #' @param group A factor to group the samples, or the name of a \code{colData}
 #'        column of a \code{CAGEexp} object.
 #' 
+#' @param facet A factor or the name of a \code{colData} column of a
+#'        \code{CAGEexp} object, to facet the samples in the sense of
+#'        \code{ggplot2}'s \code{\link{facet_wrap}} function.
+#' 
 #' @param customScope A function passed to the internal function \code{\link{mapStats}}
 #'   for the definition of custom scopes.
 #'   
@@ -47,23 +51,21 @@
 #' 
 #' @docType methods
 #' @importFrom ggplot2 aes_string coord_flip geom_bar geom_segment geom_point
-#' @importFrom ggplot2 ggplot ggtitle position_stack
+#' @importFrom ggplot2 ggplot ggtitle position_stack facet_wrap
 #' @export
 
-setGeneric("plotAnnot", function( x, scope, title, group = "default"
-                                 , customScope = NULL, normalise = TRUE)
+setGeneric("plotAnnot", function( x, scope, title
+                                , group = "default", facet = NULL
+                                , customScope = NULL, normalise = TRUE)
   standardGeneric("plotAnnot"))
 
 #' @rdname plotAnnot
 
 setMethod("plotAnnot", "data.frame",
-  function( x
-          , scope
-          , title
-          , group = "default"
-          , customScope = NULL
-          , normalise = TRUE) {
-  ggplot( mapStats(x, scope=scope, group=group, customScope = customScope, normalise = normalise)
+  function( x, scope, title, group, facet, customScope, normalise) {
+  p <- ggplot( mapStats( x, scope = scope
+                  , group = group, facet = facet
+                  , customScope = customScope, normalise = normalise)
         , aes_string( x    = "group"
                     , y    = "value"
                     , fill = "variable")
@@ -77,20 +79,28 @@ setMethod("plotAnnot", "data.frame",
               , shape = "|") +
     coord_flip() +
     ggtitle(title)
+  if(! is.null(facet)) {
+    # mapStats always returns the facet in a column named "facet"
+    p + facet_wrap("facet")
+  } else {
+    p
+  }
 })
 
 #' @rdname plotAnnot
 
 setMethod("plotAnnot", "DataFrame",
-  function( x, scope, title, group, customScope, normalise) {
+  function( x, scope, title, group, facet, customScope, normalise) {
   plotAnnot( data.frame(x, check.names = FALSE)
-           , scope=scope, title=title, group=group, customScope=customScope, normalise=normalise)
+           , scope = scope, title = title
+           , group = group, facet = facet
+           , customScope = customScope, normalise = normalise)
 })
 
 #' @rdname plotAnnot
 
 setMethod("plotAnnot", "CAGEexp",
-  function( x, scope, title, group, customScope, normalise) {
+  function( x, scope, title, group, facet, customScope, normalise) {
   if (missing(group)) {
     group <- sampleLabels(x)
   } else {
@@ -102,7 +112,9 @@ setMethod("plotAnnot", "CAGEexp",
   }
   if (missing(title)) title <- paste("CAGEr object", dQuote(deparse(substitute(x))))
   plotAnnot( colData(x)
-           , scope=scope, title=title, group=group, customScope=customScope, normalise=normalise)
+           , scope = scope, title = title
+           , group = group, facet = facet
+           , customScope=customScope, normalise=normalise)
 })
 
 #' mapStats
@@ -124,6 +136,8 @@ setMethod("plotAnnot", "CAGEexp",
 #'        and \dQuote{counts} on the transcript counts.
 #' @param group A vector of factors defining groups in the data.  By default,
 #'        the \dQuote{group} column of the \dQuote{libs} table.
+#' @param facet A vector of factors defining facets in the data (in the sense
+#'        of \code{ggplot2}'s \code{\link{facet_wrap}} function).
 #' @param customScope A function that implements a custom scope.  Use with
 #'        \code{scope = "custom"}.  The function takes a data frame in input
 #'        and returns a named list containing a data frame (\dQuote{libs}),
@@ -161,18 +175,20 @@ mapStats <- function( libs
                                , "steps"
                                , "custom")
                     , group="default"
+                    , facet = NULL
                     , customScope = NULL
                     , normalise = TRUE) {
 
   scope <- match.arg(scope)
   if (identical(group, "default")) {
-      if      ("group" %in% colnames(libs)) {
-      group <- libs$group
-    } else if ("Group" %in% colnames(libs)) {
-      group <- libs$Group
+      if        ("group" %in% colnames(libs)) {
+        group <- libs$group
+      } else if ("Group" %in% colnames(libs)) {
+        group <- libs$Group
     } else
       stop(paste("Missing", dQuote("group"), "column in the data frame."))
   }
+  group.levels <- levels(group) # Backup for later
 
   if (! ("tagdust" %in% colnames(libs))) libs[, "tagdust"] <- 0
   
@@ -196,6 +212,11 @@ mapStats <- function( libs
   doMean <- function (X) tapply(libs[,X] / total, group, mean)
   doSd   <- function (X) tapply(libs[,X] / total, group, sd  )
   
+  if (! is.null(facet)) {
+    if(! facet %in% colnames(libs)) stop("Missing ", dQuote(facet), " column.")
+    group <- paste(group, libs[,facet], sep = "__FACET__")
+  }
+  
   # "simplify" needs to be FALSE so that conversion to data frame works even
   # when the group contains only a single level.
   mapstats          <- data.frame(sapply(columns, doMean, simplify = FALSE))
@@ -215,7 +236,15 @@ mapStats <- function( libs
                                   , transform
                                   , ystart = cumsum(value)
                                   , yend   = cumsum(value) + sd)
-  
+  if (! is.null(facet)) {
+    mapstats$facet <- sub(".*__FACET__", "", mapstats$group)
+    if(!is.null(levels(libs[,facet])))
+      mapstats$facet <- factor(mapstats$facet, levels = levels(libs[,facet]))
+    
+    mapstats$group <- sub("__FACET__.*", "", mapstats$group)
+    if(!is.null(group.levels))
+      mapstats$group <- factor(mapstats$group, levels = group.levels)
+  }
   mapstats
 }
 
