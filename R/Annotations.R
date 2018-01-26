@@ -136,7 +136,8 @@ setMethod("plotAnnot", "CAGEexp",
 #' plus absolute positions for the error bars.  The first column, \code{group}, is
 #' a vector of factors sorted with the \code{gtools::mixedorder} function.
 #' 
-#' @details See the plotAnnot vignette for details on what the scopes are.
+#' @details See the plotAnnot vignette and the \code{\link{mapStatsScopes}}
+#' help page for details on what the scopes are.
 #' 
 #' @author Charles Plessy
 #' 
@@ -161,8 +162,8 @@ mapStats <- function( libs
                                , "custom")
                     , group="default"
                     , customScope = NULL
-                    , normalise = TRUE)
-{
+                    , normalise = TRUE) {
+
   scope <- match.arg(scope)
   if (identical(group, "default")) {
       if      ("group" %in% colnames(libs)) {
@@ -172,79 +173,26 @@ mapStats <- function( libs
     } else
       stop(paste("Missing", dQuote("group"), "column in the data frame."))
   }
+
+  if (! ("tagdust" %in% colnames(libs))) libs[, "tagdust"] <- 0
   
-  totalIs <- function(what) {
-    if (normalise == FALSE) {
-      total <<- 1
-      return()
-    }
-    if (! what %in% colnames(libs))
-      stop( paste(what, "column is missing, see the plotAnnot vignette.")
-           , call. = FALSE)
-    if (is.numeric(libs[, what])) {
-      total <<- libs[, what]
-    } else stop(paste(what, "column is not numeric."), call. = FALSE)
-  }
-    
-  defaultToZero <- function(what)
-    if (! (what %in% colnames(libs)))
-      libs[, what] <<- 0
+  scopeFunction <- switch( scope
+                         , all        = msScope_all
+                         , annotation = msScope_annotation
+                         , counts     = msScope_counts
+                         , custom     = customScope
+                         , mapped     = msScope_mapped
+                         , qc         = msScope_qc
+                         , steps      = msScope_steps
+                         , default    = function() stop("Unknown scope"))
+  stopifnot(is.function(scopeFunction))
+  custom.list <- scopeFunction(libs)
+  libs    <- custom.list$libs
+  columns <- custom.list$columns
+  total   <- custom.list$total
   
-  defaultToZero("tagdust")
-  
-  if (scope == "counts") {
-    totalIs("librarySizes")
-    columns <- c("Promoter", "Exon", "Intron", "Intergenic")
-    libs$Promoter   <- libs$promoter
-    libs$Exon       <- libs$exon
-    libs$Intron     <- libs$intron
-    libs$Intergenic <- libs$librarySizes - libs$promoter - libs$intron - libs$exon
-  } else if (scope == "custom") {
-    stopifnot(is.function(customScope))
-    custom.list <- customScope(libs)
-    libs    <- custom.list$libs
-    columns <- custom.list$columns
-    total   <- custom.list$total
-  } else if (scope == "mapped") {
-    totalIs("mapped")
-    columns <- c( "Promoter", "Exon", "Intron", "Intergenic"
-                , "Duplicates", "Non_proper")
-    libs$Non_proper <- libs$mapped       - libs$properpairs
-    libs$Duplicates <- libs$properpairs  - libs$librarySizes
-    libs$Intergenic <- libs$librarySizes - libs$promoter - libs$intron - libs$exon
-    libs$Intron     <- libs$intron
-    libs$Exon       <- libs$exon
-    libs$Promoter   <- libs$promoter
-  } else if (scope == "qc") {
-    totalIs("extracted")
-    columns <- c( "Tag_dust", "rDNA", "Spikes", "Unmapped"
-                , "Non_proper", "Duplicates", "Counts")
-    libs$Tag_dust     <- libs$extracted   - libs$rdna - libs$spikes - libs$cleaned
-    libs$rDNA         <- libs$rdna
-    libs$Spikes       <- libs$spikes
-    libs$Unmapped     <- libs$cleaned     - libs$mapped
-    libs$Non_proper   <- libs$mapped      - libs$properpairs
-    libs$Duplicates   <- libs$properpairs - libs$librarySizes
-    libs$Counts       <- libs$librarySizes
-   } else if (scope == "steps") {
-    totalIs("extracted")
-    columns <- c("Cleaning", "Mapping", "Deduplication", "Counts")
-    libs$Cleaning      <- libs$extracted   - libs$cleaned
-    libs$Mapping       <- libs$cleaned     - libs$properpairs
-    libs$Deduplication <- libs$properpairs - libs$librarySizes
-    libs$Counts        <- libs$librarySizes
-    if ("total" %in% colnames(libs)) {
-      totalIs("total")
-      libs$Extraction <- with(libs, total - extracted)
-      columns <- c("Extraction", columns)
-    }
-   } else {
-    if (scope == "all")        totalIs("extracted")
-    if (scope == "annotation") totalIs("mapped")
-    columns <- c("promoter","exon","intron","mapped","rdna", "tagdust")
-    libs$mapped <- libs$mapped - libs$promoter - libs$intron - libs$exon
-  }
-  
+  if (normalise == FALSE) total <- 1
+
   doMean <- function (X) tapply(libs[,X] / total, group, mean)
   doSd   <- function (X) tapply(libs[,X] / total, group, sd  )
   
@@ -269,6 +217,140 @@ mapStats <- function( libs
                                   , yend   = cumsum(value) + sd)
   
   mapstats
+}
+
+.checkLibsDataFrame <- function(libs, columns) {
+  if (! all(columns %in% colnames(libs)))
+    stop( "Input data frame needs the following columns:\n"
+        , paste(columns, collapse = " "))
+}
+
+#' @name mapStatsScopes
+#' @aliases mapStatsScopes
+#' 
+#' @title mapStats scopes
+#' 
+#' @description Functions implementing the \code{scope} parameter of the
+#' \code{\link{mapStats}} function.
+#' 
+#' @param libs A data frame containing metadata describing samples in sequence
+#'        libraries.
+#' 
+#' @return Returns a list with three elements: \code{libs} contains a modified
+#' version of the input data frame where columns have been reorganised as needed,
+#' \code{colums} contains the names of the columns to use for plotting and
+#' provides the order of the stacked bars of the \code{plotAnnot} function,
+#' \code{total} indicates the total counts used for normalising the data.
+
+#' @rdname mapStatsScopes
+#' @details The \code{counts} scope reports the number of molecules aligning in
+#' \emph{promoter}, \emph{exon}, \emph{intron} and otherwise \emph{intergenic}
+#' regions.
+
+msScope_counts <- function(libs) {
+  .checkLibsDataFrame(libs, c("promoter", "exon", "intron", "librarySizes"))
+  libs$Promoter   <- libs$promoter
+  libs$Exon       <- libs$exon
+  libs$Intron     <- libs$intron
+  libs$Intergenic <- libs$librarySizes - libs$promoter - libs$intron - libs$exon
+  list( libs    = libs
+      , columns = c("Promoter", "Exon", "Intron", "Intergenic")
+      , total   = libs$librarySizes)
+}
+
+#' @rdname mapStatsScopes
+#' @details The \code{mapped} scope reports the number of molecules aligning in
+#' \emph{promoter}, \emph{exon}, \emph{intron} and otherwise \emph{intergenic},
+#' plus the number of PCR duplicates (mapped tags minus molecule counts), plus
+#' the number of non-properly paired mapped tags.
+
+msScope_mapped <- function(libs) {
+  .checkLibsDataFrame(libs, c( "promoter", "exon", "intron"
+                             , "mapped", "properpairs", "librarySizes"))
+  libs$Non_proper <- libs$mapped       - libs$properpairs
+  libs$Duplicates <- libs$properpairs  - libs$librarySizes
+  libs$Intergenic <- libs$librarySizes - libs$promoter - libs$intron - libs$exon
+  libs$Intron     <- libs$intron
+  libs$Exon       <- libs$exon
+  libs$Promoter   <- libs$promoter
+  list( libs    = libs
+      , columns = c( "Promoter", "Exon", "Intron", "Intergenic"
+                   , "Duplicates", "Non_proper")
+      , total   = libs$mapped)
+}
+
+#' @rdname mapStatsScopes
+#' @details The \code{qc} scope reports the number of tags removed as 
+#' \emph{tag dust}, \emph{rRNA}, \emph{spikes}, plus the \emph{unmapped} tags,
+#' plus the number of non-properly paired mapped tags, plus the number of PCR
+#' duplicates (mapped tags minus molecule counts), plus the number of unique
+#' molecule counts.
+
+msScope_qc <- function(libs) {
+  .checkLibsDataFrame(libs, c("extracted", "rdna", "spikes", "cleaned", "mapped", "properpairs", "librarySizes"))
+  libs$Tag_dust     <- libs$extracted   - libs$rdna - libs$spikes - libs$cleaned
+  libs$rDNA         <- libs$rdna
+  libs$Spikes       <- libs$spikes
+  libs$Unmapped     <- libs$cleaned     - libs$mapped
+  libs$Non_proper   <- libs$mapped      - libs$properpairs
+  libs$Duplicates   <- libs$properpairs - libs$librarySizes
+  libs$Counts       <- libs$librarySizes
+  list( libs    = libs
+      , columns = c( "Tag_dust", "rDNA", "Spikes", "Unmapped"
+                   , "Non_proper", "Duplicates", "Counts")
+      , total   = libs$extracted)
+}
+
+#' @rdname mapStatsScopes
+#' @details The \code{steps} scope reports the number of tags removed by
+#' \emph{cleaning}, \emph{mapping}, and \emph{deduplication}, plus the number
+#' of \emph{unique molecule counts}.
+
+msScope_steps <- function(libs) {
+  .checkLibsDataFrame(libs, c( "extracted", "cleaned", "properpairs"
+                             , "librarySizes", "extracted"))
+  libs$Cleaning      <- libs$extracted   - libs$cleaned
+  libs$Mapping       <- libs$cleaned     - libs$properpairs
+  libs$Deduplication <- libs$properpairs - libs$librarySizes
+  libs$Counts        <- libs$librarySizes
+  total   <- libs$extracted
+  columns <- c("Cleaning", "Mapping", "Deduplication", "Counts")
+  if ("total" %in% colnames(libs)) {
+    total <- libs$total
+    libs$Extraction <- with(libs, total - extracted)
+    columns <- c("Extraction", columns)
+  }
+  list( libs    = libs
+      , columns = columns
+      , total   = total)
+}
+
+#' @rdname mapStatsScopes
+#' @details The legacy \code{all} scope reports the number of tags in promoters,
+#' exons' introns, or mapped elswherer, or removed because they match rRNA or are
+#' likely primer artefacts, normalised by the total nubmer of extracted tags.
+
+msScope_all <- function(libs) {
+  .checkLibsDataFrame(libs, c( "mapped", "promoter", "intron", "exon", "rdna"
+                             , "tagdust", "extracted"))
+  libs$mapped <- libs$mapped - libs$promoter - libs$intron - libs$exon
+  list( libs    = libs
+      , columns = c("promoter", "exon", "intron", "mapped", "rdna", "tagdust")
+      , total   = libs$extracted)
+}
+
+#' @rdname mapStatsScopes
+#' @details The legacy \code{annotation} scope reports the number of tags in promoters,
+#' exons' introns, or mapped elswherer, or removed because they match rRNA or are
+#' likely primer artefacts, normalised by the total nubmer of mapped tags.
+
+msScope_annotation <- function(libs) {
+  .checkLibsDataFrame(libs, c( "mapped", "promoter", "intron", "exon", "rdna"
+                             , "tagdust", "extracted"))
+  libs$mapped <- libs$mapped - libs$promoter - libs$intron - libs$exon
+  list( libs    = libs
+      , columns = c("promoter", "exon", "intron", "mapped", "rdna", "tagdust")
+      , total   = libs$mapped)
 }
 
 
