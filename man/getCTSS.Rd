@@ -24,8 +24,8 @@ getCTSS(object, sequencingQualityThreshold = 10,
 
 \item{sequencingQualityThreshold}{Only CAGE tags with average sequencing quality
 \code{>= sequencingQualityThreshold} and mapping quality \code{>=
-mappingQualityThreshold} are kept. Used only if \code{inputFileType(object)
-== "bam"} or \code{inputFileType(object) == "bamPairedEnd"}, \emph{i.e} when
+  mappingQualityThreshold} are kept. Used only if \code{inputFileType(object)
+  == "bam"} or \code{inputFileType(object) == "bamPairedEnd"}, \emph{i.e} when
 input files are BAM files of aligned sequenced CAGE tags, otherwise ignored.  If
 there are no sequencing quality values in the BAM file (\emph{e.g.} HeliScope
 single molecule sequencer does not return sequencing qualities) all reads will by
@@ -37,7 +37,7 @@ qualities.  If there is no information on mapping quality in the BAM file
 (\emph{e.g.} software used to align CAGE tags to the referent genome does not
 provide mapping quality) the \code{mappingQualityThreshold} parameter is ignored.
 In case of paired-end sequencing BAM file (i.e. \code{inputFileType(object) ==
-"bamPairedEnd"}) only the first mate of the properly paired reads (i.e. the five
+  "bamPairedEnd"}) only the first mate of the properly paired reads (i.e. the five
 prime end read) will be read and subject to specified thresholds.}
 
 \item{mappingQualityThreshold}{See sequencingQualityThreshold.}
@@ -56,7 +56,7 @@ CAGE tags when it is a mismatch, \emph{i.e.} this option can only be used when
 to CAGE tags is estimated from mismatch cases and used to systematically correct
 the G addition for positions with G in the genome.  Used only if
 \code{inputFileType(object) == "bam"} or \code{inputFileType(object) ==
-"bamPairedEnd"}, \emph{i.e} when input files are BAM files of aligned sequenced
+  "bamPairedEnd"}, \emph{i.e} when input files are BAM files of aligned sequenced
 CAGE tags, otherwise ignored.  See Details.}
 
 \item{useMulticore}{Logical, should multicore be used.
@@ -122,8 +122,8 @@ evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
 }
 \seealso{
 \code{\link{CTSScoordinates}}, \code{\link{CTSStagCount}},
-  \code{\link{CTSStagCountTable}}, \code{\link{inputFilesType}},
-   \code{\link{librarySizes}}.
+\code{\link{CTSStagCountTable}}, \code{\link{inputFilesType}},
+\code{\link{librarySizes}}.
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{CustomConsensusClusters}},

@@ -20,15 +20,15 @@ CTSStoGenes(object)
 The input object with the following modifications:
 
 \itemize{
-  \item A new \code{geneExpMatrix} experiment containing gene expression levels as
-    a \code{SummarizedExperiemnt} object with one assay called \code{counts}, which
-    is plain \code{matrix} of integers.  (This plays better than \code{Rle DataFrames}
-    when interfacing with downstream packages like DESeq2, and since the number of
-    genes is limited, a \code{matrix} will not cause problems of performance.)
-  \item New \code{genes} column data added, indicating total number of gene symbols
-    detected per library.
-  \item New \code{unannotated} column data added, indicating for each sample the
-    number of counts that did not overlap with a known gene.
+\item A new \code{geneExpMatrix} experiment containing gene expression levels as
+a \code{SummarizedExperiemnt} object with one assay called \code{counts}, which
+is plain \code{matrix} of integers.  (This plays better than \code{Rle DataFrames}
+when interfacing with downstream packages like DESeq2, and since the number of
+genes is limited, a \code{matrix} will not cause problems of performance.)
+\item New \code{genes} column data added, indicating total number of gene symbols
+detected per library.
+\item New \code{unannotated} column data added, indicating for each sample the
+number of counts that did not overlap with a known gene.
 }
 }
 \description{

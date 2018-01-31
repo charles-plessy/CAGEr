@@ -57,25 +57,25 @@ Returns an object with number of CAGE tags supporting each TSS
 function being called:
 
 \itemize{
-  \item{\code{CTSStagCount}:}
-    {A \code{\link{data.frame}}, containing coordinates and expression values.}
-  \item{\code{CTSStagCountDf}:}
-    {A \code{data.frame}, containing only expression values.}
-  \item{\code{CTSStagCountDF}:}
-    {A \code{\link{DataFrame}} of \code{\link{Rle}} integers.}
-  \item{\code{CTSStagCountDA}:}
-    {A \code{\link{DelayedArray}} wrapping a \code{DataFrame} of \code{Rle} integers.}
-  \item{\code{CTSStagCountSE}:}
-    {A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
-     \code{Rle} integers.}
-  \item{\code{CTSStagCountGR}:}
-    {A \code{CTSS} object (wrapping \code{GRanges}) containing a \code{score}
-    column indicating expression values for a given sample.}
+\item{\code{CTSStagCount}:}
+{A \code{\link{data.frame}}, containing coordinates and expression values.}
+\item{\code{CTSStagCountDf}:}
+{A \code{data.frame}, containing only expression values.}
+\item{\code{CTSStagCountDF}:}
+{A \code{\link{DataFrame}} of \code{\link{Rle}} integers.}
+\item{\code{CTSStagCountDA}:}
+{A \code{\link{DelayedArray}} wrapping a \code{DataFrame} of \code{Rle} integers.}
+\item{\code{CTSStagCountSE}:}
+{A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
+\code{Rle} integers.}
+\item{\code{CTSStagCountGR}:}
+{A \code{CTSS} object (wrapping \code{GRanges}) containing a \code{score}
+column indicating expression values for a given sample.}
 }
 }
 \description{
 Extracts the tag count for all detected TSSs in all CAGE datasets
-             from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
 }
 \examples{
 head(CTSStagCount(exampleCAGEset))

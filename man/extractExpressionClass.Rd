@@ -40,7 +40,7 @@ head(CTSSexprClasses)
 }
 \seealso{
 \code{\link{getExpressionProfiles}}, \code{\link{plotExpressionProfiles}},
-         \code{\link{expressionClasses}}.
+\code{\link{expressionClasses}}.
 }
 \author{
 Vanja Haberle

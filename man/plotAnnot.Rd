@@ -22,9 +22,8 @@ plotAnnot(x, scope, title, group = "default", facet = NULL,
 }
 \arguments{
 \item{x}{An object from which can be extracted a table with columns named
-\code{promoter}, \code{exon}, \code{intron}, \code{mapped},
-\code{extracted}, \code{rdna}, and \code{tagdust}, that will be passed
-to the \code{mapStats} function.}
+\code{promoter}, \code{exon}, \code{intron}, \code{mapped}, \code{extracted}, \code{rdna}, and
+\code{tagdust}, that will be passed to the \code{mapStats} function.}
 
 \item{scope}{The value on which to normalise (see the plotAnnot vignette).}
 
@@ -35,24 +34,23 @@ column of a \code{CAGEexp} object.}
 
 \item{facet}{A factor or the name of a \code{colData} column of a
 \code{CAGEexp} object, to facet the samples in the sense of
-\code{ggplot2}'s \code{\link{facet_wrap}} function.}
+\code{ggplot2}'s \link[ggplot2:facet_wrap]{facet_wrap} function.}
 
-\item{customScope}{A function passed to the internal function \code{\link{mapStats}}
+\item{customScope}{A function passed to the internal function \code{\link[=mapStats]{mapStats()}}
 for the definition of custom scopes.}
 
 \item{normalise}{Whether to normalise or not. Default: TRUE.}
 }
 \value{
-Returns invisibly a \code{ggplot2} object of class
-        \code{c("gg", "ggplot")}.
+Returns invisibly a \code{ggplot2} object of class \code{c("gg", "ggplot")}.
 }
 \description{
 Plot maping statistics of an object containing mapping statistics in
 counts as percentages in stacked barplots.
 
 Stacked barplots with error bars inspired from
-<http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2>.
-See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
+\url{http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2}.
+See \url{http://www.biomedcentral.com/1471-2164/14/665/figure/F1} for example.
 }
 \examples{
 p <- plotAnnot(exampleCAGEexp, 'counts', 'Here is the title')

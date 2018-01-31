@@ -33,15 +33,15 @@ not supported).}
 \code{annotateCTSS} returns the input object with the following modifications:
 
 \itemize{
-  \item The Genomic Ranges of the \code{tagCountMatrix} experiment gains a
-    \code{annotation} metadata column, with levels such as \dQuote{promoter},
-    \dQuote{exon}, \dQuote{intron} and \dQuote{unknown}.  If the annotation
-    has a \code{gene_name} metadata, then a \code{genes} column is also added,
-    with gene symbols from the annotation.
-  \item The sample data get new columns, indicating total counts in each of the
-    annotation levels.   If the annotation has a \code{gene_name} metadata, then
-    a \code{genes} column is added to indicate the number of different gene symbols
-    detected.
+\item The Genomic Ranges of the \code{tagCountMatrix} experiment gains a
+\code{annotation} metadata column, with levels such as \dQuote{promoter},
+\dQuote{exon}, \dQuote{intron} and \dQuote{unknown}.  If the annotation
+has a \code{gene_name} metadata, then a \code{genes} column is also added,
+with gene symbols from the annotation.
+\item The sample data get new columns, indicating total counts in each of the
+annotation levels.   If the annotation has a \code{gene_name} metadata, then
+a \code{genes} column is added to indicate the number of different gene symbols
+detected.
 }
 
 \code{annotateConsensusClusters} returns the input object with the same

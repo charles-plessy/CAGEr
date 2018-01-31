@@ -38,30 +38,32 @@ Functions implementing the \code{scope} parameter of the
 \code{\link{mapStats}} function.
 }
 \details{
-The \code{counts} scope reports the number of molecules aligning in
-\emph{promoter}, \emph{exon}, \emph{intron} and otherwise \emph{intergenic}
+The \strong{\code{counts}} scope reports the number of molecules aligning in
+\emph{promoter}, \emph{exon}, \emph{intron} and otherwise \emph{intergenic}.
 regions.
 
-The \code{mapped} scope reports the number of molecules aligning in
+The \strong{\code{mapped}} scope reports the number of molecules aligning in
 \emph{promoter}, \emph{exon}, \emph{intron} and otherwise \emph{intergenic},
 plus the number of PCR duplicates (mapped tags minus molecule counts), plus
 the number of non-properly paired mapped tags.
 
-The \code{qc} scope reports the number of tags removed as 
+The \strong{\code{qc}} scope reports the number of tags removed as
 \emph{tag dust}, \emph{rRNA}, \emph{spikes}, plus the \emph{unmapped} tags,
 plus the number of non-properly paired mapped tags, plus the number of PCR
 duplicates (mapped tags minus molecule counts), plus the number of unique
 molecule counts.
 
-The \code{steps} scope reports the number of tags removed by
+The \strong{\code{steps}} scope reports the number of tags removed by
 \emph{cleaning}, \emph{mapping}, and \emph{deduplication}, plus the number
 of \emph{unique molecule counts}.
 
-The legacy \code{all} scope reports the number of tags in promoters,
-exons' introns, or mapped elswherer, or removed because they match rRNA or are
-likely primer artefacts, normalised by the total nubmer of extracted tags.
+The legacy \strong{\code{all}} scope reports the number of tags in
+\emph{promoters}, \emph{exons}, \emph{introns}, or \emph{mapped} elswhere, or removed because
+they match rRNA or are likely primer artefacts, normalised by the total
+nubmer of extracted tags.
 
-The legacy \code{annotation} scope reports the number of tags in promoters,
-exons' introns, or mapped elswherer, or removed because they match rRNA or are
-likely primer artefacts, normalised by the total nubmer of mapped tags.
+The legacy \strong{\code{annotation}} scope reports the number of tags in
+\emph{promoters}, \emph{exons}, \emph{introns}, or \emph{mapped} elswhere, or removed because
+they match rRNA or are likely primer artefacts, normalised by the total
+nubmer of mapped tags.
 }

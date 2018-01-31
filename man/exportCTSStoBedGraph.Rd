@@ -32,7 +32,7 @@ visualised as custom tracks in the UCSC Genome Browser.  If \code{format="bedGra
 otherwise two files per CAGE dataset will be created, one for plus strand and one for minus
 strand CTSSs, and they will be named according to the labels of individual datasets.  All
 bedGraph files contain headers with track description and can be directly uploaded as custom
-tracks to the UCSC Genome Browser. 
+tracks to the UCSC Genome Browser.
 
 When \code{format="bigWig"}, two binary BigWig files per CAGE dataset are created, one for
 plus strand and one for minus strand CTSSs. Since BigWig files cannot contain headers with

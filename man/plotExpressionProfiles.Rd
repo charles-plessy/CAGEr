@@ -40,7 +40,7 @@ plotExpressionProfiles(object = exampleCAGEset, what = "CTSS")
 }
 \seealso{
 \code{\link{getExpressionProfiles}}, \code{\link{expressionClasses}},
-         \code{\link{extractExpressionClass}}.
+\code{\link{extractExpressionClass}}.
 
 Other CAGEr plot functions: \code{\link{hanabiPlot}},
   \code{\link{plotAnnot}}, \code{\link{plotCorrelation}},

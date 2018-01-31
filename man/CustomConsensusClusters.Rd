@@ -32,7 +32,7 @@ to the sample metadata to reflect the number of molecules that do not have
 their TSS in a consensus cluster.
 }
 \description{
-Intersects custom consensus clusters with the CTSS data in a 
+Intersects custom consensus clusters with the CTSS data in a
 \code{\link{CAGEexp}} object, and stores the result as a expression matrices
 (raw and normalised tag counts).
 }

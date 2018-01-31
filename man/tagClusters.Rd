@@ -47,7 +47,7 @@ If \code{samples = NULL}, a list of all the clusters for each sample is returned
 \item{returnInterquantileWidth}{Should the interquantile width for each tag cluster be returned.}
 
 \item{qLow, qUp}{Position of which quantile should be used as a left (lower) or right (upper)
-boundary (for \code{qLow} and \code{qUp} respectively) when calculating interquantile width. 
+boundary (for \code{qLow} and \code{qUp} respectively) when calculating interquantile width.
 Default value \code{NULL} results in using the start coordinate of the cluster.  Used only
 when \code{returnInterquantileWidth = TRUE}, otherwise ignored.}
 

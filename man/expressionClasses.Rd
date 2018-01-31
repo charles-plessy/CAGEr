@@ -40,5 +40,5 @@ exprClasses
 }
 \seealso{
 \code{\link{getExpressionProfiles}} \code{\link{plotExpressionProfiles}}
-         \code{\link{extractExpressionClass}}
+\code{\link{extractExpressionClass}}
 }

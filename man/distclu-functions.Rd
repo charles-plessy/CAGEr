@@ -47,7 +47,7 @@ their expression in each sample.}
 }
 \value{
 \code{.cluster.ctss.strand} returns an \code{\link{data.table}} object containing
- arbitrary cluster IDs (as integers) for each CTSS.
+arbitrary cluster IDs (as integers) for each CTSS.
 
 \code{.cluster.ctss.chr} returns a \code{\link{data.table}} object representing the
 chromosome coordinates (\code{chr}, \code{pos}, \code{strand}) of each CTSS, with their

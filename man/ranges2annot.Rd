@@ -20,8 +20,8 @@ be not primary products (for instance \sQuote{snoRNA}) are discarded.}
 }
 \value{
 A Run-length-encoded (Rle) factor of same length as the GRanges object,
-        indicating if the interval is promoter, exon, intron or unknown, or
-        just promoter, gene, unknown if the \code{type} metadata is absent.
+indicating if the interval is promoter, exon, intron or unknown, or
+just promoter, gene, unknown if the \code{type} metadata is absent.
 }
 \description{
 Assigns region types such as \emph{promoter}, \emph{exon}

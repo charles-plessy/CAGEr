@@ -12,28 +12,26 @@
 #' See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
 #' 
 #' @param x An object from which can be extracted a table with columns named
-#'   \code{promoter}, \code{exon}, \code{intron}, \code{mapped},
-#'   \code{extracted}, \code{rdna}, and \code{tagdust}, that will be passed
-#'   to the \code{mapStats} function.
+#'        `promoter`, `exon`, `intron`, `mapped`, `extracted`, `rdna`, and
+#'        `tagdust`, that will be passed to the `mapStats` function.
 #'   
 #' @param scope The value on which to normalise (see the plotAnnot vignette).
 #' 
 #' @param title The title of the plot.
 #' 
-#' @param group A factor to group the samples, or the name of a \code{colData}
-#'        column of a \code{CAGEexp} object.
+#' @param group A factor to group the samples, or the name of a `colData`
+#'        column of a `CAGEexp` object.
 #' 
-#' @param facet A factor or the name of a \code{colData} column of a
-#'        \code{CAGEexp} object, to facet the samples in the sense of
-#'        \code{ggplot2}'s \code{\link{facet_wrap}} function.
+#' @param facet A factor or the name of a `colData` column of a
+#'        `CAGEexp` object, to facet the samples in the sense of
+#'        `ggplot2`'s [facet_wrap][ggplot2::facet_wrap()] function.
 #' 
-#' @param customScope A function passed to the internal function \code{\link{mapStats}}
+#' @param customScope A function passed to the internal function [mapStats()]
 #'   for the definition of custom scopes.
 #'   
 #' @param normalise Whether to normalise or not. Default: TRUE.
 #' 
-#' @return Returns invisibly a \code{ggplot2} object of class
-#'         \code{c("gg", "ggplot")}.
+#' @return Returns invisibly a `ggplot2` object of class `c("gg", "ggplot")`.
 #' 
 #' @family CAGEr annotation functions
 #' @family CAGEr plot functions
@@ -259,21 +257,21 @@ mapStats <- function( libs
 #' 
 #' @title mapStats scopes
 #' 
-#' @description Functions implementing the \code{scope} parameter of the
-#' \code{\link{mapStats}} function.
+#' @description Functions implementing the `scope` parameter of the
+#' `\link{mapStats}` function.
 #' 
 #' @param libs A data frame containing metadata describing samples in sequence
 #'        libraries.
 #' 
-#' @return Returns a list with three elements: \code{libs} contains a modified
+#' @return Returns a list with three elements: `libs` contains a modified
 #' version of the input data frame where columns have been reorganised as needed,
-#' \code{colums} contains the names of the columns to use for plotting and
-#' provides the order of the stacked bars of the \code{plotAnnot} function,
-#' \code{total} indicates the total counts used for normalising the data.
+#' `colums` contains the names of the columns to use for plotting and
+#' provides the order of the stacked bars of the `plotAnnot` function,
+#' `total` indicates the total counts used for normalising the data.
 
 #' @rdname mapStatsScopes
-#' @details The \code{counts} scope reports the number of molecules aligning in
-#' \emph{promoter}, \emph{exon}, \emph{intron} and otherwise \emph{intergenic}
+#' @details The **`counts`** scope reports the number of molecules aligning in
+#' _promoter_, _exon_, _intron_ and otherwise _intergenic_.
 #' regions.
 
 msScope_counts <- function(libs) {
@@ -288,8 +286,8 @@ msScope_counts <- function(libs) {
 }
 
 #' @rdname mapStatsScopes
-#' @details The \code{mapped} scope reports the number of molecules aligning in
-#' \emph{promoter}, \emph{exon}, \emph{intron} and otherwise \emph{intergenic},
+#' @details The **`mapped`** scope reports the number of molecules aligning in
+#' _promoter_, _exon_, _intron_ and otherwise _intergenic_,
 #' plus the number of PCR duplicates (mapped tags minus molecule counts), plus
 #' the number of non-properly paired mapped tags.
 
@@ -309,8 +307,8 @@ msScope_mapped <- function(libs) {
 }
 
 #' @rdname mapStatsScopes
-#' @details The \code{qc} scope reports the number of tags removed as 
-#' \emph{tag dust}, \emph{rRNA}, \emph{spikes}, plus the \emph{unmapped} tags,
+#' @details The **`qc`** scope reports the number of tags removed as 
+#' _tag dust_, _rRNA_, _spikes_, plus the _unmapped_ tags,
 #' plus the number of non-properly paired mapped tags, plus the number of PCR
 #' duplicates (mapped tags minus molecule counts), plus the number of unique
 #' molecule counts.
@@ -331,9 +329,9 @@ msScope_qc <- function(libs) {
 }
 
 #' @rdname mapStatsScopes
-#' @details The \code{steps} scope reports the number of tags removed by
-#' \emph{cleaning}, \emph{mapping}, and \emph{deduplication}, plus the number
-#' of \emph{unique molecule counts}.
+#' @details The **`steps`** scope reports the number of tags removed by
+#' _cleaning_, _mapping_, and _deduplication_, plus the number
+#' of _unique molecule counts_.
 
 msScope_steps <- function(libs) {
   .checkLibsDataFrame(libs, c( "extracted", "cleaned", "properpairs"
@@ -355,9 +353,10 @@ msScope_steps <- function(libs) {
 }
 
 #' @rdname mapStatsScopes
-#' @details The legacy \code{all} scope reports the number of tags in promoters,
-#' exons' introns, or mapped elswherer, or removed because they match rRNA or are
-#' likely primer artefacts, normalised by the total nubmer of extracted tags.
+#' @details The legacy **`all`** scope reports the number of tags in
+#' _promoters_, _exons_, _introns_, or _mapped_ elswhere, or removed because
+#' they match rRNA or are likely primer artefacts, normalised by the total
+#' nubmer of extracted tags.
 
 msScope_all <- function(libs) {
   .checkLibsDataFrame(libs, c( "mapped", "promoter", "intron", "exon", "rdna"
@@ -369,9 +368,10 @@ msScope_all <- function(libs) {
 }
 
 #' @rdname mapStatsScopes
-#' @details The legacy \code{annotation} scope reports the number of tags in promoters,
-#' exons' introns, or mapped elswherer, or removed because they match rRNA or are
-#' likely primer artefacts, normalised by the total nubmer of mapped tags.
+#' @details The legacy **`annotation`** scope reports the number of tags in
+#' _promoters_, _exons_, _introns_, or _mapped_ elswhere, or removed because
+#' they match rRNA or are likely primer artefacts, normalised by the total
+#' nubmer of mapped tags.
 
 msScope_annotation <- function(libs) {
   .checkLibsDataFrame(libs, c( "mapped", "promoter", "intron", "exon", "rdna"
