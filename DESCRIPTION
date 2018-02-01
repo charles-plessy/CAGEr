@@ -26,6 +26,7 @@ Imports:
     rtracklayer,
     S4Vectors,
     som,
+    stringdist,
     SummarizedExperiment,
     utils,
     vegan,

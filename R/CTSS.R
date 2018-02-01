@@ -3,9 +3,14 @@
 #' 
 #' @title Classes for type safety.
 #' 
-#' @description  The \code{CTSS} class represents CAGE transcription start sites (CTSS) at
-#' single-nucleotide resolution, using GRanges as base class.  It is used internally by CAGEr
-#' for type safety.
+#' @description The `CTSS` class represents CAGE transcription start sites
+#' (CTSS) at single-nucleotide resolution, using `GRanges` as base class.  It is
+#' used internally by _CAGEr_ for type safety.
+#' 
+#' @details The `genomeName` element of the `metadata` slot is used to store the
+#' name of the _BSgenome_ package used when constructing the `CAGEr` object.
+#' Be careful that calling the `CTSS` constructor twice in a row will erase
+#' the fist metadata (because the `GRanges` constructor does so).
 #' 
 #' @rdname CTSS-class
 #' 
@@ -15,7 +20,9 @@
 #' @author Charles Plessy
 #' 
 #' @examples 
-#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEexp))
+#' ctss <- CAGEr:::.CTSS( CTSScoordinatesGR(exampleCAGEexp)
+#'                      , bsgenomeName = genomeName(exampleCAGEexp))
+#' genomeName(ctss)
 #' 
 #' @export
 
@@ -29,6 +36,13 @@
     if (! identical(start(object), end(object)))
     return("Not a CTSS: start and end positions differ.")
 )
+
+setMethod("initialize", "CTSS", function(.Object, ..., bsgenomeName = NULL) {
+  .Object <- callNextMethod(.Object, ...)
+  if (! is.null(bsgenomeName))
+    metadata(.Object)$genomeName <- bsgenomeName
+  .Object
+})
 
 #' @name CTSS.chr-class
 #' 

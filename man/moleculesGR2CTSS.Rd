@@ -4,10 +4,12 @@
 \alias{moleculesGR2CTSS}
 \title{moleculesGR2CTSS}
 \usage{
-moleculesGR2CTSS(gr)
+moleculesGR2CTSS(gr, genome)
 }
 \arguments{
 \item{gr}{A \code{\link{GRanges}} object.}
+
+\item{genome}{See \code{\link[=coerceInBSgenome]{coerceInBSgenome()}}.}
 }
 \value{
 Returns a \code{\link{CTSS}} object.
@@ -18,7 +20,7 @@ represents a single molecule.
 }
 \examples{
 gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-"))
-CAGEr:::moleculesGR2CTSS(gr)
+CAGEr:::moleculesGR2CTSS(gr, genome = "BSgenome.species.provider.gname")
 }
 \seealso{
 Other loadFileIntoGRanges: \code{\link{bam2CTSS}},

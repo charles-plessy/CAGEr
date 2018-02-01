@@ -4,10 +4,12 @@
 \alias{import.bedmolecule}
 \title{import.bedmolecule}
 \usage{
-import.bedmolecule(filepath)
+import.bedmolecule(filepath, genome)
 }
 \arguments{
 \item{filepath}{The path to the BED file.}
+
+\item{genome}{See coerceInBSgenome().}
 }
 \value{
 Returns a \code{\link{CTSS}} object.

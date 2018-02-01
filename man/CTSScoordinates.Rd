@@ -49,9 +49,9 @@ CTSStagCountSE(object) <- value
 \code{CTSScoordinates} returns a \code{data.frame} with genomic coordinates of all
 TSSs. \code{pos} column contains 1-based coordinate of the TSS.
 
-\code{CTSScoordinatesGR} returns the coordinates as genomic ranges.  A
-\code{filteredCTSSidx} column metadata will be present if \code{\link{clusterCTSS}}
-was ran earlier.
+\code{CTSScoordinatesGR} returns the coordinates as a \code{\link[=CTSS]{CTSS()}} object
+wrapping genomic ranges.  A \code{filteredCTSSidx} column metadata will be present
+if \code{\link[=clusterCTSS]{clusterCTSS()}} was ran earlier.
 }
 \description{
 Extracts the genomic coordinates of all detected TSSs

@@ -14,7 +14,7 @@
 #' 
 #' @return Returns a name of a BSgenome package used as a referent genome.
 #' 
-#' @details \code{\link{CAGEexp}} objects constructed with \code{NULL} in place
+#' @details \code{\link{CAGEexp}} objects constructed with `NULL` in place
 #' of the genome name can not run some commands that need access to genomic data,
 #' such as BigWig export or G-correction.
 #' 
@@ -27,27 +27,19 @@
 #' 
 #' @export
 
-setGeneric(
-name="genomeName",
-def=function(object){
-	standardGeneric("genomeName")
-})
+setGeneric("genomeName", function(object) standardGeneric("genomeName"))
 
 #' @rdname genomeName
 
-setMethod("genomeName",
-signature(object = "CAGEset"),
-function (object){
-	object@genomeName
-})
+setMethod("genomeName", "CAGEset", function (object)	object@genomeName)
 
 #' @rdname genomeName
 
-setMethod("genomeName",
-signature(object = "CAGEexp"),
-function (object){
- metadata(object)$genomeName
-})
+setMethod("genomeName", "CAGEexp", function (object) metadata(object)$genomeName)
+
+#' @rdname genomeName
+
+setMethod("genomeName", "CTSS", function (object) metadata(object)$genomeName)
 
 
 #' @name inputFiles
@@ -275,9 +267,9 @@ function (object){
 #' @name CTSScoordinatesGR
 #' @rdname CTSScoordinates
 #' 
-#' @return \code{CTSScoordinatesGR} returns the coordinates as genomic ranges.  A
-#' \code{filteredCTSSidx} column metadata will be present if \code{\link{clusterCTSS}}
-#' was ran earlier.
+#' @return `CTSScoordinatesGR` returns the coordinates as a [CTSS()] object
+#' wrapping genomic ranges.  A `filteredCTSSidx` column metadata will be present
+#' if [clusterCTSS()] was ran earlier.
 #' 
 #' @seealso \code{\link{clusterCTSS}}
 #' 
@@ -291,17 +283,11 @@ function (object){
 #' 
 #' @export
 
-setGeneric(
-name="CTSScoordinatesGR",
-def=function(object){
-	standardGeneric("CTSScoordinatesGR")
-})
+setGeneric("CTSScoordinatesGR", function(object) standardGeneric("CTSScoordinatesGR"))
 
 #' @rdname CTSScoordinates
 
-setMethod("CTSScoordinatesGR",
-signature(object = "CAGEset"),
-function (object){
+setMethod( "CTSScoordinatesGR", "CAGEset", function (object){
   ctssCoord <- object@CTSScoordinates
   ctssCoord <- GRanges(ctssCoord$chr, IRanges(ctssCoord$pos, ctssCoord$pos), ctssCoord$strand)
   genome(ctssCoord) <- object@genomeName
@@ -313,16 +299,13 @@ function (object){
     } else {
       warning("Skipping expression classes: not same length as CTSS.")
     }
-  ctssCoord
+  .CTSS(ctssCoord, bsgenomeName = genomeName(object))
 })
 
 #' @rdname CTSScoordinates
 
-setMethod("CTSScoordinatesGR",
-signature(object = "CAGEexp"),
-function (object){
-  rowRanges(CTSStagCountSE(object))
-})
+setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
+  rowRanges(CTSStagCountSE(object)))
 
 
 #' @name CTSStagCount
@@ -499,7 +482,7 @@ setMethod( "CTSStagCountGR", "CAGEr", function (object, samples) {
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSStagCountDF(object)[[samples]]
   gr <- gr[score(gr) != 0]
-  gr <- .CTSS(gr)
+  gr <- .CTSS(gr, bsgenomeName = genomeName(object))
   sampleLabels(gr) <- sampleLabels(object)[samples]
   gr
 })
@@ -718,7 +701,7 @@ setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, samples) {
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSSnormalizedTpmDF(object)[[samples]]
   gr <- gr[score(gr) != 0]
-  .CTSS(gr)
+  .CTSS(gr, bsgenomeName = genomeName(object))
 })
 
 #' @name CTSSclusteringMethod

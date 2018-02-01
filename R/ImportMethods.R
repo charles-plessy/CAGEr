@@ -328,7 +328,7 @@ loadFileIntoGRanges <- function( filepath
                                             , removeFirstG = removeFirstG
                                             , correctSystematicG = correctSystematicG
                                             , genome = genome)
-        , bed              = import.bedmolecule(filepath)
+        , bed              = import.bedmolecule(filepath, genome = genome)
         , bedScore         = import.bedScore(filepath)
         , bedctss          = import.bedCTSS(filepath)
         , CAGEscanMolecule = import.CAGEscanMolecule(filepath)
@@ -341,6 +341,7 @@ loadFileIntoGRanges <- function( filepath
 #' represents a single molecule.
 #' 
 #' @param gr A \code{\link{GRanges}} object.
+#' @param genome See [coerceInBSgenome()].
 #' 
 #' @return Returns a \code{\link{CTSS}} object.
 #' 
@@ -350,13 +351,13 @@ loadFileIntoGRanges <- function( filepath
 #' 
 #' @examples
 #' gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-"))
-#' CAGEr:::moleculesGR2CTSS(gr)
+#' CAGEr:::moleculesGR2CTSS(gr, genome = "BSgenome.species.provider.gname")
 
-moleculesGR2CTSS <- function(gr) {
+moleculesGR2CTSS <- function(gr, genome) {
   tb <- table(promoters(gr, 0, 1))
   gr <- as(names(tb), "GRanges")
   score(gr) <- Rle(as.integer(tb))
-  .CTSS(gr)
+  .CTSS(gr, bsgenomeName = genome)
 }
 
 #' import.bam
@@ -431,6 +432,7 @@ import.bam <- function( filepath
 #' 
 #' @return Returns a \code{\link{CTSS}} object.
 #' 
+#' @importFrom GenomeInfoDb bsgenomeName
 #' @family loadFileIntoGRanges
 
 bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
@@ -442,7 +444,7 @@ bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
   tb <- table(promoters(gr, 0, 1))
   gr <- as(names(tb), "GRanges")
   score(gr) <- Rle(unclass(tb))
-  .CTSS(gr)
+  .CTSS(gr, bsgenomeName = genome)
 } 
 
 #' import.bam.ctss
@@ -480,6 +482,7 @@ import.bam.ctss <- function( filepath, filetype, sequencingQualityThreshold
 #' GRanges object where each line represents one nucleotide.
 #' 
 #' @param filepath The path to the BED file.
+#' @param genome See coerceInBSgenome().
 #' 
 #' @return Returns a \code{\link{CTSS}} object.
 #' 
@@ -493,8 +496,8 @@ import.bam.ctss <- function( filepath, filetype, sequencingQualityThreshold
 #' # TODO: add exmaple file
 #' # import.BED(system.file("extdata", "example.bed", package = "CAGEr"))
 
-import.bedmolecule <- function(filepath) {
-  moleculesGR2CTSS(rtracklayer::import.bed(filepath))
+import.bedmolecule <- function(filepath, genome) {
+  moleculesGR2CTSS(rtracklayer::import.bed(filepath), genome)
 }
 
 #' import.bedScore

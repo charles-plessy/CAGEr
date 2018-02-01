@@ -5,9 +5,11 @@
 \alias{genomeName}
 \alias{genomeName,CAGEset-method}
 \alias{genomeName,CAGEexp-method}
+\alias{genomeName,CTSS-method}
 \alias{genomeName<-}
 \alias{genomeName<-,CAGEset-method}
 \alias{genomeName<-,CAGEexp-method}
+\alias{genomeName<-,CTSS-method}
 \title{Extracting genome name from CAGEr objects}
 \usage{
 genomeName(object)
@@ -16,11 +18,15 @@ genomeName(object)
 
 \S4method{genomeName}{CAGEexp}(object)
 
+\S4method{genomeName}{CTSS}(object)
+
 genomeName(object) <- value
 
 \S4method{genomeName}{CAGEset}(object) <- value
 
 \S4method{genomeName}{CAGEexp}(object) <- value
+
+\S4method{genomeName}{CTSS}(object) <- value
 }
 \arguments{
 \item{object}{A CAGEset or CAGEexp object.}

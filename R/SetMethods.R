@@ -27,6 +27,13 @@ setMethod("genomeName<-", "CAGEexp", function (object, value){
 	if (validObject(object)) object
 })
 
+#' @rdname genomeName
+
+setMethod("genomeName<-", "CTSS", function (object, value) {
+  metadata(object)$genomeName <- value
+	if (validObject(object)) object
+})
+
 
 #' @name inputFiles<-
 #' @rdname inputFiles
