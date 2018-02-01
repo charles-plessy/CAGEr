@@ -60,7 +60,7 @@
 #' downstream shift of TSSs), a more general assessment of differential TSS usage can be
 #' obtained by performing a two-sample Kolmogorov-Smirnov test on cumulative sums of CAGE
 #' signal along the consensus cluster.  In that case, cumulative sums in both samples are
-#' scaled to range [0,1] and are considered to be empirical cumulative distribution functions
+#' scaled to range `[0,1]` and are considered to be empirical cumulative distribution functions
 #' (ECDF) reflecting sampling of TSS positions during transcription initiation.
 #' Kolmogorov-Smirnov test is performed to assess whether the two underlying probability
 #' distributions differ.  To obtain P-value (\emph{i.e.} the level at which the
