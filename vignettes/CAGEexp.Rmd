@@ -197,27 +197,25 @@ developmental stages are included in this package in the `extdata` subdirectory.
 The files contain TSSs from a part of chromosome 17 (26,000,000-46,000,000), and
 there are two files for one of the developmental stages (two independent
 replicas). The data in files is organized in four tab-separated columns as
-described above in section \@ref(input-formats).  First we have provide
-information about input files, sample names, etc. in a `DataFrame` object.
+described above in section \@ref(input-formats).
 
 ```{r specify_input_files}
-ce <- DataFrame(inputFiles = list.files( system.file("extdata", package = "CAGEr")
-                                       , "ctss$"
-                                       , full.names = TRUE))
-ce$inputFilesType <- "ctss"
-ce$sampleLabels   <- sub( ".chr17.ctss", "", basename(ce$inputFiles))
-rownames(ce)      <- ce$sampleLabels
-ce
+inputFiles = list.files( system.file("extdata", package = "CAGEr")
+                       , "ctss$"
+                       , full.names = TRUE)
 ```
 
 ### Creating the object
 
-One way to create a _CAGEexp_ object is to transform the `DataFrame` providing information
-on the individual CAGE datasets (samples), and then add genome information.
+The _CAGEexp_ object is crated with the `CAGEexp` contstructor, that requries
+information on file path an type, sample names and reference genome name.
 
 ```{r create_CAGEexp}
-ce <- CAGEexp(colData = ce)
-genomeName(ce) <- "BSgenome.Drerio.UCSC.danRer7"
+ce <- CAGEexp( genomeName     = "BSgenome.Drerio.UCSC.danRer7"
+             , inputFiles     = inputFiles
+             , inputFilesType = "ctss"
+             , sampleLabels   = sub( ".chr17.ctss", "", basename(inputFiles))
+)
 ```
 
 To display the created object type:

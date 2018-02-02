@@ -36,12 +36,25 @@ pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
                                , "ctss$"
                                , full.names = TRUE)
 sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
+
+# The CAGEexp object can be created using specific constructor commands
+                              
+exampleCAGEexp <-
+  CAGEexp( genomeName     = "BSgenome.Drerio.UCSC.danRer7"
+         , inputFiles     = pathsToInputFiles
+         , inputFilesType = "ctss"
+         , sampleLabels   = sub( ".chr17.ctss", "", basename(pathsToInputFiles)))
+         
+# Alternatively, it can be created just like another MultiAssayExperiment.
+# This is useful when providing pre-existing colData with many columns.
+
 exampleCAGEexp <-
   CAGEexp( metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7")
          , colData  = DataFrame( inputFiles     = pathsToInputFiles
                                , sampleLabels   = sampleLabels
                                , inputFilesType = "ctss"
                                , row.names      = sampleLabels))
+
 
 # Expression data is loaded by the getCTSS() function, that also calculates
 # library sizes and store them in the object's column data.

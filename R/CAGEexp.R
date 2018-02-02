@@ -24,12 +24,25 @@
 #'                                , "ctss$"
 #'                                , full.names = TRUE)
 #' sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
+#' 
+#' # The CAGEexp object can be created using specific constructor commands
+#'                               
+#' exampleCAGEexp <-
+#'   CAGEexp( genomeName     = "BSgenome.Drerio.UCSC.danRer7"
+#'          , inputFiles     = pathsToInputFiles
+#'          , inputFilesType = "ctss"
+#'          , sampleLabels   = sub( ".chr17.ctss", "", basename(pathsToInputFiles)))
+#'          
+#' # Alternatively, it can be created just like another MultiAssayExperiment.
+#' # This is useful when providing pre-existing colData with many columns.
+#' 
 #' exampleCAGEexp <-
 #'   CAGEexp( metadata = list(genomeName = "BSgenome.Drerio.UCSC.danRer7")
 #'          , colData  = DataFrame( inputFiles     = pathsToInputFiles
 #'                                , sampleLabels   = sampleLabels
 #'                                , inputFilesType = "ctss"
 #'                                , row.names      = sampleLabels))
+#' 
 #' 
 #' # Expression data is loaded by the getCTSS() function, that also calculates
 #' # library sizes and store them in the object's column data.
@@ -108,6 +121,30 @@ CAGEexp <- setClass("CAGEexp",
       return("Duplicated sample labels are not allowed!")
   }
 )
+
+setMethod( "initialize", "CAGEexp"
+         , function( .Object
+                   , ...
+                   , metadata       = list()
+                   , colData        = S4Vectors::DataFrame()
+                   , genomeName     = NULL
+                   , inputFiles     = NULL
+                   , inputFilesType = NULL
+                   , sampleLabels   = NULL) {
+  if (missing(colData)) {
+    if (missing(inputFiles)) stop ("Please provide input files paths.")
+    colData <- S4Vectors::DataFrame(inputFiles = inputFiles)
+  }
+  if (! missing(inputFiles))     colData$inputFiles     <- inputFiles
+  if (! missing(inputFilesType)) colData$inputFilesType <- inputFilesType
+  if (! missing(sampleLabels))   colData$sampleLabels   <- sampleLabels
+  if (! missing(sampleLabels))   rownames(colData)      <- sampleLabels
+  if (! missing(genomeName))     metadata$genomeName    <- genomeName
+  callNextMethod( .Object
+                , metadata = metadata
+                , colData  = colData
+                , ...)
+})
 
 #' Example CAGEexp object.
 #' 
