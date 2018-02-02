@@ -99,9 +99,9 @@ setMethod( "quantilePositions", "CAGEr"
       },
       BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	  ctss.clusters <- GRangesList(ctss.clusters)
-		if(class(object) == "CAGEexp") {
+		if(inherits(object, "CAGEexp")) {
 		  tagClustersGR(object) <- ctss.clusters
-		} else if (class(object) == "CAGEset") {
+		} else if (inherits(object,  "CAGEset")) {
 		  for (s in names(ctss.clusters)) {
 	  	  tagClustersQuantileLow(object, s) <- tagClustersQuantile(ctss.clusters[[s]], q = qLow)
         tagClustersQuantileUp (object, s) <- tagClustersQuantile(ctss.clusters[[s]], q = qUp)
@@ -118,11 +118,11 @@ setMethod( "quantilePositions", "CAGEr"
       BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	  cons.clusters.l <- GRangesList(cons.clusters.l)
 	  
-		if(class(object) == "CAGEexp") {
+		if(inherits(object, "CAGEexp")) {
       for (qName in paste("q", c(qLow, qUp), sep = "_")) {
         assays(consensusClustersSE(object))[[qName]] <-
           DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
-		} else if (class(object) == "CAGEset") {
+		} else if (inherits(object, "CAGEset")) {
 		  for (s in names(cons.clusters.l)) {
 	  	  consensusClustersQuantileLow(object, s) <- .getClustersQuantile(cons.clusters.l[[s]], q = qLow)
         consensusClustersQuantileUp (object, s) <- .getClustersQuantile(cons.clusters.l[[s]], q = qUp)

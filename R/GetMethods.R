@@ -804,9 +804,9 @@ setMethod("tagClusters", "CAGEr", function (object, samples, returnInterquantile
     return(tc.list)
   }
   
-  if (class(object) == "CAGEset") {
+  if (inherits(object, "CAGEset")) {
     tc <- object@tagClusters[[samples]]
-  } else if (class(object) == "CAGEexp") {
+  } else if (inherits(object, "CAGEexp")) {
     tc <- TCgranges2dataframe(metadata(object)$tagClusters[[samples]])
   } else {
     stop("Unsupported CAGEr class.")
@@ -1201,9 +1201,9 @@ setMethod( "consensusClusters", "CAGEr"
          , function (object, sample, returnInterquantileWidth, qLow, qUp) {
     
     # Get CCs specifically for each class
-    if (class(object) == "CAGEset") {
+    if (inherits(object, "CAGEset")) {
       cc <- object@consensusClusters
-    } else if (class(object) == "CAGEexp") {
+    } else if (inherits(object, "CAGEexp")) {
       cc <- rowRanges(consensusClustersSE(object))
       cc$consensus.cluster <- names(cc)
       cc <- CCgranges2dataframe(cc)
@@ -1214,7 +1214,7 @@ setMethod( "consensusClusters", "CAGEr"
       return(cc)
     
     # No support for per-sample output for CAGEexp objects 
-    if(class(object) == "CAGEexp")
+    if(inherits(object, "CAGEexp"))
       stop( sQuote("sample"), " option not supported for CAGEexp objects.  Use "
           , sQuote("consensusClustersGR()"), " instead.")
         

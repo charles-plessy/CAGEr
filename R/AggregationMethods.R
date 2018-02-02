@@ -118,7 +118,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
                          , thresholdIsTpm  = TRUE)
   } else filter <- TRUE
 	
-	if (class(object) == "CAGEset") {
+	if (inherits(object, "CAGEset")) {
 	  filteredSE <- CTSStagCountSE(object)[filter,]
 	  .getTotalTagCountSample <- function(x) {
       ctss.s        <- .CTSS(rowRanges(filteredSE))
@@ -135,7 +135,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
 	  consensusClusters(object) <- CCgranges2dataframe(consensus.clusters)
 	}
 	
-	if (class(object) == "CAGEexp") {
+	if (inherits(object, "CAGEexp")) {
     CTSScoordinatesGR(object)$cluster <-
       ranges2names(CTSScoordinatesGR(object), consensus.clusters)
     se <- CTSStagCountSE(object)[filter & decode(filteredCTSSidx(object)), ]

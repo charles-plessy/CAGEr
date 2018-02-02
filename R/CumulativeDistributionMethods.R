@@ -72,7 +72,7 @@ setMethod( "cumulativeCTSSdistribution", "CAGEr"
               , clusters     = getClusters(object, s)
               , useMulticore = useMulticore, nrCores = nrCores)
 	})
-	if (class(object) == "CAGEexp")
+	if (inherits(object, "CAGEexp"))
     samples.cumsum.list <- lapply(samples.cumsum.list, RleList)
 	object <- setClusters(object, samples.cumsum.list)
   assign(objName, object, envir = parent.frame())
