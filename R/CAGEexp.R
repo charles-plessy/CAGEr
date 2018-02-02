@@ -120,6 +120,7 @@ CAGEexp <- setClass("CAGEexp",
 #' # The example commands in the CAGEexp help page were used to create the example
 #' # CAGEexp object used below.
 #' \dontrun{
+#' exampleCAGEexp$l1 <- NULL
 #' exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
 #' CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object
 #' exampleCAGEexp$librarySizes <- sapply(CTSStagCountDF(exampleCAGEexp), sum) # Repair metadata

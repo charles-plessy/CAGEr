@@ -4,7 +4,7 @@
 \alias{import.bedmolecule}
 \title{import.bedmolecule}
 \usage{
-import.bedmolecule(filepath, genome)
+import.bedmolecule(filepath)
 }
 \arguments{
 \item{filepath}{The path to the BED file.}
@@ -23,8 +23,6 @@ GRanges object where each line represents one nucleotide.
 # import.BED(system.file("extdata", "example.bed", package = "CAGEr"))
 }
 \seealso{
-loadFileIntoGRanges
-
 Other loadFileIntoGRanges: \code{\link{bam2CTSS}},
   \code{\link{import.CTSS}}, \code{\link{import.bam.ctss}},
   \code{\link{import.bam}}, \code{\link{import.bedCTSS}},

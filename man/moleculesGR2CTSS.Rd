@@ -4,15 +4,13 @@
 \alias{moleculesGR2CTSS}
 \title{moleculesGR2CTSS}
 \usage{
-moleculesGR2CTSS(gr, genome)
+moleculesGR2CTSS(gr)
 }
 \arguments{
-\item{gr}{A \code{\link{GRanges}} object.}
-
-\item{genome}{See \code{\link[=coerceInBSgenome]{coerceInBSgenome()}}.}
+\item{gr}{A \link{GRanges} object.}
 }
 \value{
-Returns a \code{\link{CTSS}} object.
+Returns a \link{GRanges} object.
 }
 \description{
 Calculates CTSS positions from a GenomicRanges object where each element

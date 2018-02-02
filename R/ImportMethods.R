@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEr.R CAGEexp.R ClusteringMethods.R GetMethods.R SetMethods.R
+#' @include AllClasses.R CAGEr.R CAGEexp.R ClusteringMethods.R CTSS.R GetMethods.R SetMethods.R
 
 #' @name getCTSS
 #' 
@@ -328,7 +328,7 @@ loadFileIntoGRanges <- function( filepath
                                             , removeFirstG = removeFirstG
                                             , correctSystematicG = correctSystematicG
                                             , genome = genome)
-        , bed              = import.bedmolecule(filepath, genome = genome)
+        , bed              = import.bedmolecule(filepath)
         , bedScore         = import.bedScore(filepath)
         , bedctss          = import.bedCTSS(filepath)
         , CAGEscanMolecule = import.CAGEscanMolecule(filepath)
@@ -340,10 +340,9 @@ loadFileIntoGRanges <- function( filepath
 #' Calculates CTSS positions from a GenomicRanges object where each element
 #' represents a single molecule.
 #' 
-#' @param gr A \code{\link{GRanges}} object.
-#' @param genome See [coerceInBSgenome()].
+#' @param gr A [GRanges] object.
 #' 
-#' @return Returns a \code{\link{CTSS}} object.
+#' @return Returns a [GRanges] object.
 #' 
 #' @family loadFileIntoGRanges
 #' 
@@ -353,11 +352,11 @@ loadFileIntoGRanges <- function( filepath
 #' gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-"))
 #' CAGEr:::moleculesGR2CTSS(gr, genome = "BSgenome.species.provider.gname")
 
-moleculesGR2CTSS <- function(gr, genome) {
+moleculesGR2CTSS <- function(gr) {
   tb <- table(promoters(gr, 0, 1))
   gr <- as(names(tb), "GRanges")
   score(gr) <- Rle(as.integer(tb))
-  .CTSS(gr, bsgenomeName = genome)
+  gr
 }
 
 #' import.bam
@@ -444,7 +443,7 @@ bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
   tb <- table(promoters(gr, 0, 1))
   gr <- as(names(tb), "GRanges")
   score(gr) <- Rle(unclass(tb))
-  .CTSS(gr, bsgenomeName = genome)
+  gr
 } 
 
 #' import.bam.ctss
@@ -486,7 +485,6 @@ import.bam.ctss <- function( filepath, filetype, sequencingQualityThreshold
 #' 
 #' @return Returns a \code{\link{CTSS}} object.
 #' 
-#' @seealso loadFileIntoGRanges
 #' @family loadFileIntoGRanges
 #' 
 #' @importFrom rtracklayer import.bed
@@ -496,8 +494,8 @@ import.bam.ctss <- function( filepath, filetype, sequencingQualityThreshold
 #' # TODO: add exmaple file
 #' # import.BED(system.file("extdata", "example.bed", package = "CAGEr"))
 
-import.bedmolecule <- function(filepath, genome) {
-  moleculesGR2CTSS(rtracklayer::import.bed(filepath), genome)
+import.bedmolecule <- function(filepath) {
+  moleculesGR2CTSS(rtracklayer::import.bed(filepath))
 }
 
 #' import.bedScore
@@ -692,6 +690,8 @@ setMethod( "getCTSS", "CAGEexp"
   
   for (i in seq_along(l))
     assay[,i] <- expandRange(rowRanges, l[[i]])
+  
+  rowRanges <- .CTSS(rowRanges, bsgenomeName = genomeName(object))
   
   colnames(assay) <- sampleLabels(object)
   
