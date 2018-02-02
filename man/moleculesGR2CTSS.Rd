@@ -18,7 +18,7 @@ represents a single molecule.
 }
 \examples{
 gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-"))
-CAGEr:::moleculesGR2CTSS(gr, genome = "BSgenome.species.provider.gname")
+CAGEr:::moleculesGR2CTSS(gr)
 }
 \seealso{
 Other loadFileIntoGRanges: \code{\link{bam2CTSS}},

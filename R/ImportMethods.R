@@ -350,7 +350,7 @@ loadFileIntoGRanges <- function( filepath
 #' 
 #' @examples
 #' gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-"))
-#' CAGEr:::moleculesGR2CTSS(gr, genome = "BSgenome.species.provider.gname")
+#' CAGEr:::moleculesGR2CTSS(gr)
 
 moleculesGR2CTSS <- function(gr) {
   tb <- table(promoters(gr, 0, 1))
