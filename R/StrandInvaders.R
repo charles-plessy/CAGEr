@@ -59,11 +59,14 @@
 #' # not constructed using a protocol based using the template-switching method.
 #' "BSgenome.Drerio.UCSC.danRer7"
 #' 
-#' removeStrandInvaders(exampleCAGEset)
+#' removeStrandInvaders(exampleCAGEexp)
 #' 
 #' @importFrom BSgenome getSeq
 #' @importFrom stringdist stringdist
 #' @importFrom stringi stri_sub
+NULL
+
+#' @rdname strandInvaders
 #' @export
 
 setGeneric( "findStrandInvaders"
@@ -77,9 +80,15 @@ setGeneric( "removeStrandInvaders"
           , function( object, distance = 1, barcode = NULL, linker = "TATAGGG")
               standardGeneric("removeStrandInvaders"))
 
+#' @rdname strandInvaders
+#' @export
+
 setMethod( "findStrandInvaders", "CAGEexp"
          , function (object, distance, barcode, linker)
   findStrandInvaders(CTSScoordinatesGR(object), distance, barcode, linker))
+
+#' @rdname strandInvaders
+#' @export
 
 setMethod( "removeStrandInvaders", "CAGEexp"
          , function (object, distance, barcode, linker) {
@@ -93,6 +102,9 @@ setMethod( "removeStrandInvaders", "CAGEexp"
   assign(objName, object, envir = parent.frame())
   invisible(1)
 })
+
+#' @rdname strandInvaders
+#' @export
 
 setMethod( "findStrandInvaders", "CTSS"
          , function (object, distance, barcode, linker) {
@@ -110,6 +122,9 @@ setMethod( "findStrandInvaders", "CTSS"
   }
   strandInvaders
 })
+
+#' @rdname strandInvaders
+#' @export
 
 setMethod( "removeStrandInvaders", "CTSS"
          , function (object, distance, barcode, linker)

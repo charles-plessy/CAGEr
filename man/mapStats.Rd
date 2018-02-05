@@ -2,53 +2,46 @@
 % Please edit documentation in R/Annotations.R
 \name{mapStats}
 \alias{mapStats}
-\title{mapStats}
+\title{Process mapping statistics}
 \usage{
 mapStats(libs, scope = c("all", "annotation", "counts", "mapped", "qc",
   "steps", "custom"), group = "default", facet = NULL, customScope = NULL,
   normalise = TRUE)
 }
 \arguments{
-\item{libs}{A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
-\code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}.}
+\item{libs}{A data frame with containing columns required by the \code{scope}
+chosen.}
 
-\item{scope}{The value on which to normalise. \dQuote{all} and \dQuote{qc}
-normalise on the number of extracted tags, \dQuote{annotation} on the
-number of aligned tags, \dQuote{mapped} on the number of aligned tags
-and \dQuote{counts} on the transcript counts.}
+\item{scope}{The name of a \dQuote{scope}, that defines which data is plotted
+and how it is normalised.  See \code{\link[=mapStatsScopes]{mapStatsScopes()}} for details on each
+scope.}
 
 \item{group}{A vector of factors defining groups in the data.  By default,
 the \dQuote{group} column of the \dQuote{libs} table.}
 
 \item{facet}{A vector of factors defining facets in the data (in the sense
-of \code{ggplot2}'s \code{\link{facet_wrap}} function).}
+of \code{ggplot2}'s \link[ggplot2:facet_wrap]{facet_wrap} function).}
 
 \item{customScope}{A function that implements a custom scope.  Use with
-\code{scope = "custom"}.  The function takes a data frame in input
-and returns a named list containing a data frame (\dQuote{libs}),
-a character vector of columns to be plotted (\dQuote{columns}), and
-a numeric vector of totals for the normalisation (\dQuote{total}).}
+\code{scope = "custom"}.  See \code{mapStatsScopes} for details}
 
-\item{normalise}{Whether to normalise or not. Default: TRUE.}
+\item{normalise}{Whether to normalise or not. Default: \code{TRUE}.}
 }
 \value{
-Returns a data frame with mean and standard deviation of normalised mapping statistics,
-plus absolute positions for the error bars.  The first column, \code{group}, is
-a vector of factors sorted with the \code{gtools::mixedorder} function.
+Returns a data frame with mean and standard deviation of normalised
+mapping statistics, plus absolute positions for the error bars.  The first
+column, \code{group}, is a vector of factors sorted with the \code{\link[gtools:mixedorder]{gtools::mixedorder()}}
+function.  The facet column, if any, is always called \code{facet}.
 }
 \description{
-Process mapping statistics
+Using a data frame containing mapping statistics in counts,
+transform the data in percentages that can be used for stacked barplots.
 }
 \details{
-Using a data frame containing mapping statistics in counts, transform the data in
-percentages that can be used for stacked barplots.
-
-See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2 about stacked barplot.
-
-The \dQuote{mapped} and \dQuote{counts} scopes assume that transcript counts are available.
-
-See the plotAnnot vignette and the \code{\link{mapStatsScopes}}
+See the plotAnnot vignette and the \code{\link[=mapStatsScopes]{mapStatsScopes()}}
 help page for details on what the scopes are.
+
+See \url{http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2} about stacked barplot.
 }
 \examples{
 library(SummarizedExperiment)
@@ -57,7 +50,7 @@ CAGEr:::mapStats(as.data.frame(colData(exampleCAGEexp)), "counts", c("A", "A", "
 
 }
 \seealso{
-plotAnnot
+\link{plotAnnot}, \link{mapStatsScopes}
 }
 \author{
 Charles Plessy

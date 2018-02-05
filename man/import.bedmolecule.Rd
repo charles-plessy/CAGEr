@@ -8,8 +8,6 @@ import.bedmolecule(filepath)
 }
 \arguments{
 \item{filepath}{The path to the BED file.}
-
-\item{genome}{See coerceInBSgenome().}
 }
 \value{
 Returns a \code{\link{CTSS}} object.

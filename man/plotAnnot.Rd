@@ -47,7 +47,8 @@ Returns invisibly a \code{ggplot2} object of class \code{c("gg", "ggplot")}.
 \description{
 Plot maping statistics of an object containing mapping statistics in
 counts as percentages in stacked barplots.
-
+}
+\details{
 Stacked barplots with error bars inspired from
 \url{http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2}.
 See \url{http://www.biomedcentral.com/1471-2164/14/665/figure/F1} for example.
@@ -63,6 +64,8 @@ plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
 
 }
 \seealso{
+\code{\link[=mapStats]{mapStats()}} for a list of \emph{scopes}.
+
 Other CAGEr annotation functions: \code{\link{annotateCTSS}},
   \code{\link{ranges2annot}}, \code{\link{ranges2genes}},
   \code{\link{ranges2names}}

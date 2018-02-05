@@ -481,7 +481,6 @@ import.bam.ctss <- function( filepath, filetype, sequencingQualityThreshold
 #' GRanges object where each line represents one nucleotide.
 #' 
 #' @param filepath The path to the BED file.
-#' @param genome See coerceInBSgenome().
 #' 
 #' @return Returns a \code{\link{CTSS}} object.
 #' 

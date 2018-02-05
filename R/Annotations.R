@@ -7,32 +7,27 @@
 #' @description Plot maping statistics of an object containing mapping statistics in
 #' counts as percentages in stacked barplots.
 #' 
-#' Stacked barplots with error bars inspired from
-#' <http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2>.
-#' See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
-#' 
 #' @param x An object from which can be extracted a table with columns named
 #'        `promoter`, `exon`, `intron`, `mapped`, `extracted`, `rdna`, and
 #'        `tagdust`, that will be passed to the `mapStats` function.
-#'   
 #' @param scope The value on which to normalise (see the plotAnnot vignette).
-#' 
 #' @param title The title of the plot.
-#' 
 #' @param group A factor to group the samples, or the name of a `colData`
 #'        column of a `CAGEexp` object.
-#' 
 #' @param facet A factor or the name of a `colData` column of a
 #'        `CAGEexp` object, to facet the samples in the sense of
 #'        `ggplot2`'s [facet_wrap][ggplot2::facet_wrap()] function.
-#' 
 #' @param customScope A function passed to the internal function [mapStats()]
-#'   for the definition of custom scopes.
-#'   
+#'         for the definition of custom scopes.
 #' @param normalise Whether to normalise or not. Default: TRUE.
 #' 
 #' @return Returns invisibly a `ggplot2` object of class `c("gg", "ggplot")`.
 #' 
+#' @details Stacked barplots with error bars inspired from
+#' <http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2>.
+#' See <http://www.biomedcentral.com/1471-2164/14/665/figure/F1> for example.
+#' 
+#' @seealso [mapStats()] for a list of _scopes_.
 #' @family CAGEr annotation functions
 #' @family CAGEr plot functions
 #' 
@@ -115,45 +110,39 @@ setMethod("plotAnnot", "CAGEexp",
            , customScope=customScope, normalise=normalise)
 })
 
-#' mapStats
+#' @name mapStats
 #' 
-#' Process mapping statistics
+#' @title Process mapping statistics
 #' 
-#' Using a data frame containing mapping statistics in counts, transform the data in
-#' percentages that can be used for stacked barplots.
+#' @description Using a data frame containing mapping statistics in counts,
+#' transform the data in percentages that can be used for stacked barplots.
 #' 
-#' See http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2 about stacked barplot.
-#' 
-#' The \dQuote{mapped} and \dQuote{counts} scopes assume that transcript counts are available.
-#' 
-#' @param libs A data frame with columns named \code{promoter}, \code{exon}, \code{intron}
-#'        \code{mapped}, \code{extracted}, \code{rdna}, and \code{tagdust}.
-#' @param scope The value on which to normalise. \dQuote{all} and \dQuote{qc}
-#'        normalise on the number of extracted tags, \dQuote{annotation} on the
-#'        number of aligned tags, \dQuote{mapped} on the number of aligned tags
-#'        and \dQuote{counts} on the transcript counts.
+#' @param libs A data frame with containing columns required by the `scope`
+#'        chosen.
+#' @param scope The name of a \dQuote{scope}, that defines which data is plotted
+#'        and how it is normalised.  See [mapStatsScopes()] for details on each
+#'        scope.
 #' @param group A vector of factors defining groups in the data.  By default,
 #'        the \dQuote{group} column of the \dQuote{libs} table.
 #' @param facet A vector of factors defining facets in the data (in the sense
-#'        of \code{ggplot2}'s \code{\link{facet_wrap}} function).
+#'        of `ggplot2`'s [facet_wrap][ggplot2::facet_wrap()] function).
 #' @param customScope A function that implements a custom scope.  Use with
-#'        \code{scope = "custom"}.  The function takes a data frame in input
-#'        and returns a named list containing a data frame (\dQuote{libs}),
-#'        a character vector of columns to be plotted (\dQuote{columns}), and
-#'        a numeric vector of totals for the normalisation (\dQuote{total}).
-#' @param normalise Whether to normalise or not. Default: TRUE.
+#'        `scope = "custom"`.  See `mapStatsScopes` for details
+#' @param normalise Whether to normalise or not. Default: `TRUE`.
 #'
-#' @return
-#' Returns a data frame with mean and standard deviation of normalised mapping statistics,
-#' plus absolute positions for the error bars.  The first column, \code{group}, is
-#' a vector of factors sorted with the \code{gtools::mixedorder} function.
+#' @return Returns a data frame with mean and standard deviation of normalised
+#' mapping statistics, plus absolute positions for the error bars.  The first
+#' column, `group`, is a vector of factors sorted with the [gtools::mixedorder()]
+#' function.  The facet column, if any, is always called `facet`.
 #' 
-#' @details See the plotAnnot vignette and the \code{\link{mapStatsScopes}}
+#' @details See the plotAnnot vignette and the [mapStatsScopes()]
 #' help page for details on what the scopes are.
+#' 
+#' See <http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2> about stacked barplot.
 #' 
 #' @author Charles Plessy
 #' 
-#' @seealso plotAnnot
+#' @seealso [plotAnnot], [mapStatsScopes]
 #' 
 #' @examples
 #' library(SummarizedExperiment)
