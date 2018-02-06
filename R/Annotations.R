@@ -748,12 +748,12 @@ setMethod("CTSStoGenes", "CAGEset", function (object)
 
 #' @rdname CTSStoGenes
 
-setMethod("CTSStoGenes", signature(object = "CAGEexp"), function (object) {
+setMethod("CTSStoGenes", "CAGEexp", function (object) {
   objName <- deparse(substitute(object))
   if (is.null(CTSScoordinatesGR(object)$genes))
     stop(objName, " is not annotated, see ", dQuote("annotateCTSS()"), ".")
   genes <- rowsum(CTSStagCountDf(object), as.factor(CTSScoordinatesGR(object)$genes))
-  object$unannotated <- genes[1,]
+  object$unannotated <- unname(unlist(genes[1,]))
   genes <- genes[-1,]
   GeneExpSE(object) <- SummarizedExperiment( assays  = SimpleList(counts = as.matrix(genes))
                                            , rowData = DataFrame(symbol = rownames(genes)))
