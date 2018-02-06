@@ -348,7 +348,7 @@ setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
 #' CTSStagCountDA(exampleCAGEset)
 #' 
 #' head(CTSStagCount(exampleCAGEexp))
-#' head(CTSStagCountDf(exampleCAGEset))
+#' head(CTSStagCountDf(exampleCAGEexp))
 #' CTSStagCountDF(exampleCAGEset)
 #' CTSStagCountDA(exampleCAGEset)
 #' 
