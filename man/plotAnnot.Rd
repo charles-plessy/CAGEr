@@ -9,23 +9,25 @@
 \title{Plot annotation statistics}
 \usage{
 plotAnnot(x, scope, title, group = "default", facet = NULL,
-  customScope = NULL, normalise = TRUE)
+  normalise = TRUE)
 
 \S4method{plotAnnot}{data.frame}(x, scope, title, group = "default",
-  facet = NULL, customScope = NULL, normalise = TRUE)
+  facet = NULL, normalise = TRUE)
 
 \S4method{plotAnnot}{DataFrame}(x, scope, title, group = "default",
-  facet = NULL, customScope = NULL, normalise = TRUE)
+  facet = NULL, normalise = TRUE)
 
 \S4method{plotAnnot}{CAGEexp}(x, scope, title, group = "default",
-  facet = NULL, customScope = NULL, normalise = TRUE)
+  facet = NULL, normalise = TRUE)
 }
 \arguments{
 \item{x}{An object from which can be extracted a table with columns named
 \code{promoter}, \code{exon}, \code{intron}, \code{mapped}, \code{extracted}, \code{rdna}, and
 \code{tagdust}, that will be passed to the \code{mapStats} function.}
 
-\item{scope}{The value on which to normalise (see the plotAnnot vignette).}
+\item{scope}{The name of a \dQuote{scope}, that defines which data is plotted
+and how it is normalised, or a function implementing that scope.
+See \code{\link[=mapStatsScopes]{mapStatsScopes()}} for details on each scope.}
 
 \item{title}{The title of the plot.}
 
@@ -35,9 +37,6 @@ column of a \code{CAGEexp} object.}
 \item{facet}{A factor or the name of a \code{colData} column of a
 \code{CAGEexp} object, to facet the samples in the sense of
 \code{ggplot2}'s \link[ggplot2:facet_wrap]{facet_wrap} function.}
-
-\item{customScope}{A function passed to the internal function \code{\link[=mapStats]{mapStats()}}
-for the definition of custom scopes.}
 
 \item{normalise}{Whether to normalise or not. Default: TRUE.}
 }
@@ -61,6 +60,7 @@ ggplot2::theme_set(ggplot2::theme_bw()) ; p
 plotAnnot(exampleCAGEexp, 'counts', 'Same, non-normalised', normalise = FALSE)
 exampleCAGEexp$myGroups <- c("A", "A", "B", "B", "C")
 plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
+plotAnnot(exampleCAGEexp, CAGEr:::msScope_counts , group = "myGroups")
 
 }
 \seealso{

@@ -10,15 +10,15 @@
 #' @param x An object from which can be extracted a table with columns named
 #'        `promoter`, `exon`, `intron`, `mapped`, `extracted`, `rdna`, and
 #'        `tagdust`, that will be passed to the `mapStats` function.
-#' @param scope The value on which to normalise (see the plotAnnot vignette).
+#' @param scope The name of a \dQuote{scope}, that defines which data is plotted
+#'        and how it is normalised, or a function implementing that scope.
+#'        See [mapStatsScopes()] for details on each scope.
 #' @param title The title of the plot.
 #' @param group A factor to group the samples, or the name of a `colData`
 #'        column of a `CAGEexp` object.
 #' @param facet A factor or the name of a `colData` column of a
 #'        `CAGEexp` object, to facet the samples in the sense of
 #'        `ggplot2`'s [facet_wrap][ggplot2::facet_wrap()] function.
-#' @param customScope A function passed to the internal function [mapStats()]
-#'         for the definition of custom scopes.
 #' @param normalise Whether to normalise or not. Default: TRUE.
 #' 
 #' @return Returns invisibly a `ggplot2` object of class `c("gg", "ggplot")`.
@@ -41,6 +41,7 @@
 #' plotAnnot(exampleCAGEexp, 'counts', 'Same, non-normalised', normalise = FALSE)
 #' exampleCAGEexp$myGroups <- c("A", "A", "B", "B", "C")
 #' plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
+#' plotAnnot(exampleCAGEexp, CAGEr:::msScope_counts , group = "myGroups")
 #' 
 #' @docType methods
 #' @importFrom ggplot2 aes_string coord_flip geom_bar geom_segment geom_point
@@ -49,16 +50,15 @@
 
 setGeneric("plotAnnot", function( x, scope, title
                                 , group = "default", facet = NULL
-                                , customScope = NULL, normalise = TRUE)
+                                , normalise = TRUE)
   standardGeneric("plotAnnot"))
 
 #' @rdname plotAnnot
 
 setMethod("plotAnnot", "data.frame",
-  function( x, scope, title, group, facet, customScope, normalise) {
+  function( x, scope, title, group, facet, normalise) {
   p <- ggplot( mapStats( x, scope = scope
-                  , group = group, facet = facet
-                  , customScope = customScope, normalise = normalise)
+                       , group = group, facet = facet, normalise = normalise)
         , aes_string( x    = "group"
                     , y    = "value"
                     , fill = "variable")
@@ -83,17 +83,16 @@ setMethod("plotAnnot", "data.frame",
 #' @rdname plotAnnot
 
 setMethod("plotAnnot", "DataFrame",
-  function( x, scope, title, group, facet, customScope, normalise) {
+  function( x, scope, title, group, facet, normalise) {
   plotAnnot( data.frame(x, check.names = FALSE)
            , scope = scope, title = title
-           , group = group, facet = facet
-           , customScope = customScope, normalise = normalise)
+           , group = group, facet = facet, normalise = normalise)
 })
 
 #' @rdname plotAnnot
 
 setMethod("plotAnnot", "CAGEexp",
-  function( x, scope, title, group, facet, customScope, normalise) {
+  function( x, scope, title, group, facet, normalise) {
   if (missing(group)) {
     group <- sampleLabels(x)
   } else {
@@ -106,8 +105,7 @@ setMethod("plotAnnot", "CAGEexp",
   if (missing(title)) title <- paste("CAGEr object", dQuote(deparse(substitute(x))))
   plotAnnot( colData(x)
            , scope = scope, title = title
-           , group = group, facet = facet
-           , customScope=customScope, normalise=normalise)
+           , group = group, facet = facet, normalise = normalise)
 })
 
 #' @name mapStats
@@ -120,14 +118,12 @@ setMethod("plotAnnot", "CAGEexp",
 #' @param libs A data frame with containing columns required by the `scope`
 #'        chosen.
 #' @param scope The name of a \dQuote{scope}, that defines which data is plotted
-#'        and how it is normalised.  See [mapStatsScopes()] for details on each
-#'        scope.
+#'        and how it is normalised, or a function that implements a custom scope.
+#'        See [mapStatsScopes()] for details on each scope.
 #' @param group A vector of factors defining groups in the data.  By default,
 #'        the \dQuote{group} column of the \dQuote{libs} table.
 #' @param facet A vector of factors defining facets in the data (in the sense
 #'        of `ggplot2`'s [facet_wrap][ggplot2::facet_wrap()] function).
-#' @param customScope A function that implements a custom scope.  Use with
-#'        `scope = "custom"`.  See `mapStatsScopes` for details
 #' @param normalise Whether to normalise or not. Default: `TRUE`.
 #'
 #' @return Returns a data frame with mean and standard deviation of normalised
@@ -154,19 +150,11 @@ setMethod("plotAnnot", "CAGEexp",
 #' @importFrom reshape melt
 
 mapStats <- function( libs
-                    , scope = c( "all"
-                               , "annotation"
-                               , "counts"
-                               , "mapped"
-                               , "qc"
-                               , "steps"
-                               , "custom")
+                    , scope
                     , group="default"
                     , facet = NULL
-                    , customScope = NULL
                     , normalise = TRUE) {
-
-  scope <- match.arg(scope)
+  
   if (identical(group, "default")) {
       if        ("group" %in% colnames(libs)) {
         group <- libs$group
@@ -179,17 +167,16 @@ mapStats <- function( libs
 
   if (! ("tagdust" %in% colnames(libs))) libs[, "tagdust"] <- 0
   
-  scopeFunction <- switch( scope
-                         , all        = msScope_all
-                         , annotation = msScope_annotation
-                         , counts     = msScope_counts
-                         , custom     = customScope
-                         , mapped     = msScope_mapped
-                         , qc         = msScope_qc
-                         , steps      = msScope_steps
-                         , default    = function() stop("Unknown scope"))
-  stopifnot(is.function(scopeFunction))
-  custom.list <- scopeFunction(libs)
+  if (! is.function(scope))
+    scope <- switch( scope
+                   , all        = msScope_all
+                   , annotation = msScope_annotation
+                   , counts     = msScope_counts
+                   , mapped     = msScope_mapped
+                   , qc         = msScope_qc
+                   , steps      = msScope_steps
+                   , function(libs) stop("Unknown scope", call. = FALSE))
+  custom.list <- scope(libs)
   libs    <- custom.list$libs
   columns <- custom.list$columns
   total   <- custom.list$total

@@ -4,26 +4,21 @@
 \alias{mapStats}
 \title{Process mapping statistics}
 \usage{
-mapStats(libs, scope = c("all", "annotation", "counts", "mapped", "qc",
-  "steps", "custom"), group = "default", facet = NULL, customScope = NULL,
-  normalise = TRUE)
+mapStats(libs, scope, group = "default", facet = NULL, normalise = TRUE)
 }
 \arguments{
 \item{libs}{A data frame with containing columns required by the \code{scope}
 chosen.}
 
 \item{scope}{The name of a \dQuote{scope}, that defines which data is plotted
-and how it is normalised.  See \code{\link[=mapStatsScopes]{mapStatsScopes()}} for details on each
-scope.}
+and how it is normalised, or a function that implements a custom scope.
+See \code{\link[=mapStatsScopes]{mapStatsScopes()}} for details on each scope.}
 
 \item{group}{A vector of factors defining groups in the data.  By default,
 the \dQuote{group} column of the \dQuote{libs} table.}
 
 \item{facet}{A vector of factors defining facets in the data (in the sense
 of \code{ggplot2}'s \link[ggplot2:facet_wrap]{facet_wrap} function).}
-
-\item{customScope}{A function that implements a custom scope.  Use with
-\code{scope = "custom"}.  See \code{mapStatsScopes} for details}
 
 \item{normalise}{Whether to normalise or not. Default: \code{TRUE}.}
 }
