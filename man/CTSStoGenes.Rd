@@ -14,14 +14,14 @@ CTSStoGenes(object)
 \S4method{CTSStoGenes}{CAGEexp}(object)
 }
 \arguments{
-\item{object}{A CAGEexp object that was annotated with the \code{annotateCTSS} function.}
+\item{object}{A \code{CAGEexp} object that was annotated with the \code{\link[=annotateCTSS]{annotateCTSS()}}
+function.}
 }
 \value{
 The input object with the following modifications:
-
 \itemize{
 \item A new \code{geneExpMatrix} experiment containing gene expression levels as
-a \code{SummarizedExperiemnt} object with one assay called \code{counts}, which
+a \code{\link{SummarizedExperiment}} object with one assay called \code{counts}, which
 is plain \code{matrix} of integers.  (This plays better than \code{Rle DataFrames}
 when interfacing with downstream packages like DESeq2, and since the number of
 genes is limited, a \code{matrix} will not cause problems of performance.)
@@ -32,9 +32,8 @@ number of counts that did not overlap with a known gene.
 }
 }
 \description{
-Add a gene expression table in the \code{GeneExpSE} experiment slot
-of an annotated \code{\link{CAGEexp}} object.  \code{\link{CAGEset}} objects are
-not supported.
+Add a gene expression table in the \code{GeneExpSE} experiment slot of an
+annotated \code{\link{CAGEexp}} object.  \code{\link{CAGEset}} objects are not supported.
 }
 \examples{
 CTSStoGenes(exampleCAGEexp)
@@ -44,7 +43,7 @@ all( librarySizes(exampleCAGEexp) -
 
 }
 \seealso{
-\code{\link{annotateCTSS}}.
+\code{\link[=annotateCTSS]{annotateCTSS()}}.
 
 Other CAGEr object modifiers: \code{\link{CustomConsensusClusters}},
   \code{\link{aggregateTagClusters}},

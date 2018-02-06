@@ -702,33 +702,29 @@ ranges2names <- function(rangesA, rangesB) {
 "exampleZv9_annot"
 
 
-#' @name CTSStoGenes
+#' Make a gene expression table.
 #' 
-#' @title Make a gene expression table.
+#' Add a gene expression table in the `GeneExpSE` experiment slot of an
+#' annotated [`CAGEexp`] object.  [`CAGEset`] objects are not supported.
 #' 
-#' @description Add a gene expression table in the \code{GeneExpSE} experiment slot
-#' of an annotated \code{\link{CAGEexp}} object.  \code{\link{CAGEset}} objects are
-#' not supported.
-#' 
-#' @param object A CAGEexp object that was annotated with the \code{annotateCTSS} function.
+#' @param object A `CAGEexp` object that was annotated with the [annotateCTSS()]
+#'        function.
 #' 
 #' @return The input object with the following modifications:
 #' 
-#' \itemize{
-#'   \item A new \code{geneExpMatrix} experiment containing gene expression levels as
-#'     a \code{SummarizedExperiemnt} object with one assay called \code{counts}, which
-#'     is plain \code{matrix} of integers.  (This plays better than \code{Rle DataFrames}
-#'     when interfacing with downstream packages like DESeq2, and since the number of
-#'     genes is limited, a \code{matrix} will not cause problems of performance.)
-#'   \item New \code{genes} column data added, indicating total number of gene symbols
-#'     detected per library.
-#'   \item New \code{unannotated} column data added, indicating for each sample the
+#'  * A new `geneExpMatrix` experiment containing gene expression levels as
+#'    a [`SummarizedExperiment`] object with one assay called `counts`, which
+#'    is plain `matrix` of integers.  (This plays better than `Rle DataFrames`
+#'    when interfacing with downstream packages like DESeq2, and since the number of
+#'    genes is limited, a `matrix` will not cause problems of performance.)
+#'  * New `genes` column data added, indicating total number of gene symbols
+#'    detected per library.
+#'  * New `unannotated` column data added, indicating for each sample the
 #'     number of counts that did not overlap with a known gene.
-#' }
 #' 
 #' @author Charles Plessy
 #' 
-#' @seealso \code{\link{annotateCTSS}}.
+#' @seealso [annotateCTSS()].
 #' 
 #' @family CAGEr object modifiers
 #' @family CAGEr gene expression analysis functions
@@ -739,7 +735,6 @@ ranges2names <- function(rangesA, rangesB) {
 #'      colSums(SummarizedExperiment::assay(GeneExpSE(exampleCAGEexp))) ==
 #'      exampleCAGEexp$unannotated)
 #' 
-#' @docType methods
 #' @importFrom SummarizedExperiment assay
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @export
