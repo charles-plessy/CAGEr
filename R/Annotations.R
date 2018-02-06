@@ -163,7 +163,12 @@ mapStats <- function( libs
     } else
       stop(paste("Missing", dQuote("group"), "column in the data frame."))
   }
-  group.levels <- levels(group) # Backup for later
+  
+  # Backup levels for later.  Coerce to factor if it was not.  This way,
+  # numerical ordering is preserved despite the conversion to characters
+  # when facetting
+  group.levels <- levels(factor(group))
+  facet.levels <- levels(factor(libs[,facet]))
 
   if (! ("tagdust" %in% colnames(libs))) libs[, "tagdust"] <- 0
   
@@ -212,12 +217,10 @@ mapStats <- function( libs
                                   , yend   = cumsum(value) + sd)
   if (! is.null(facet)) {
     mapstats$facet <- sub(".*__FACET__", "", mapstats$group)
-    if(!is.null(levels(libs[,facet])))
-      mapstats$facet <- factor(mapstats$facet, levels = levels(libs[,facet]))
+    mapstats$facet <- factor(mapstats$facet, levels = facet.levels)
     
     mapstats$group <- sub("__FACET__.*", "", mapstats$group)
-    if(!is.null(group.levels))
-      mapstats$group <- factor(mapstats$group, levels = group.levels)
+    mapstats$group <- factor(mapstats$group, levels = group.levels)
   }
   mapstats
 }
