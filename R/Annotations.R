@@ -168,7 +168,8 @@ mapStats <- function( libs
   # numerical ordering is preserved despite the conversion to characters
   # when facetting
   group.levels <- levels(factor(group))
-  facet.levels <- levels(factor(libs[,facet]))
+  if (!is.null(facet))
+    facet.levels <- levels(factor(libs[,facet]))
 
   if (! ("tagdust" %in% colnames(libs))) libs[, "tagdust"] <- 0
   
