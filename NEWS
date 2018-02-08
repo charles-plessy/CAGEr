@@ -1,8 +1,14 @@
-Upcoming changes in version 1.21.5 :
+Changes in version 1.21.5 :
 
+    o Simplified CAGEexp constructor, similar to the one for CAGEset objects.
+    o New removeStrandInvaders() function to count and remove strand-invasion
+      artefacts (see Tang et al., 2013, doi:10.1093/nar/gks112).
     o Tag clusters are sorted before being stored in the CAGEr objects.
     o plotAnnot:
       - new "facet" option for running ggplot2::facet_wrap() on the plots.
+      - better documentation for the "scopes" of the plot.
+      - removed "customScope" argument: pass a function directly to "scope"
+        argument instead.
     o plotCorrelation2: 
       - new methods for SummarizedExperiment, DataFrame, data.frame and matrix.
       - Corrected the correlation matrix output (previously the diagonal values
