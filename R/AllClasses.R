@@ -291,20 +291,39 @@ setAs("data.frame", "CAGEset",
 #' 
 #' myCAGEset <- mergeCAGEsets(myCAGEset1, myCAGEset2)
 #' 
+#' 
+#' ce1 <- CAGEexp(genomeName = "BSgenome.Drerio.UCSC.danRer7",
+#' inputFiles = pathsToInputFiles[1:2], inputFilesType = "ctss", sampleLabels =
+#' c("sample1", "sample2"))
+#' getCTSS(ce1)
+#' 
+#' ce2 <- CAGEexp(genomeName = "BSgenome.Drerio.UCSC.danRer7",
+#' inputFiles = pathsToInputFiles[3], inputFilesType = "ctss", sampleLabels =
+#' "sample3")
+#' 
+#' getCTSS(ce2)
+#' 
+#' ce <- mergeCAGEsets(ce1, ce2)
+#' 
 #' @export
 
-setGeneric("mergeCAGEsets", function(cs1, cs2) standardGeneric("mergeCAGEsets"))
+setGeneric( "mergeCAGEsets"
+          , function(cs1, cs2) {
+            
+  if (genomeName(cs1) != genomeName(cs2))
+    stop("Cannot merge two CAGEsets with data from different genomes!")
+  
+  if(any(sampleLabels(cs1) %in% sampleLabels(cs2)))
+    stop("Cannot merge two CAGEsets that share same sample labels!")
+  
+  standardGeneric("mergeCAGEsets")
+})
+
+#' @rdname mergeCAGEsets
 
 setMethod("mergeCAGEsets", 
 signature(cs1 = "CAGEset", cs2 = "CAGEset"),
 function (cs1, cs2){
-
-    if(cs1@genomeName != cs2@genomeName){
-        stop("Cannot merge two CAGEsets with data from different genomes!")
-    }
-    if(any(cs1@sampleLabels %in% cs2@sampleLabels)){
-        stop("Cannot merge two CAGEsets that share same sample labels!")
-    }
     
     ctss1 <- CTSStagCount(cs1)
     ctss2 <- CTSStagCount(cs2)
@@ -325,7 +344,59 @@ function (cs1, cs2){
     myCAGEset@CTSScoordinates <- ctss[,c("chr", "pos", "strand")]
     myCAGEset@tagCountMatrix <- ctss[,4:ncol(ctss),drop=FALSE]
 
-    return(myCAGEset)
+    myCAGEset
+})
+
+#' @rdname mergeCAGEsets
+
+setMethod( "mergeCAGEsets"
+         , signature(cs1 = "CAGEexp", cs2 = "CAGEexp")
+         , function (cs1, cs2) {
+           
+  # First, make a new CTSS SummarizedExperiment.
     
-}
-)
+  getListsOfCTSS <- function(object) {
+    lapply(sampleList(object), function(name) {
+      ctss <- CTSScoordinatesGR(object)
+      mcols(ctss) <- NULL
+      score(ctss) <- CTSStagCountDF(object)[[name]]
+      ctss[score(ctss) != 0]
+    })}
+  
+  l <- GRangesList(c(getListsOfCTSS(cs1), getListsOfCTSS(cs2)))
+  
+  # Code duplicated from getCTSS
+    
+  rowRanges <- sort(unique(unlist(l)))
+  mcols(rowRanges) <- NULL
+
+  assay <- DataFrame(V1 = Rle(rep(0L, length(rowRanges))))
+  
+  expandRange <- function(global, local) {
+    x <- Rle(rep(0L, length(global)))
+    x[global %in% local] <- score(local)
+    x
+  }
+  
+  for (i in seq_along(l))
+    assay[,i] <- expandRange(rowRanges, l[[i]])
+  
+  colnames(assay) <- names(l)
+  
+  se <- SummarizedExperiment( rowRanges = rowRanges
+                            , assays    = SimpleList(counts = assay))
+
+  # Second, merge column metadata
+  
+  df1 <- colData(cs1)
+  df2 <- colData(cs2)
+  
+  commonCols <- intersect(colnames(df1), colnames(df2))
+  df <- rbind(df1[,commonCols], df2[,commonCols])
+  
+  # Then construct a new CAGEexp object
+  
+  ce <- CAGEexp(colData = df)
+  CTSStagCountSE(ce) <- se
+  ce
+})
