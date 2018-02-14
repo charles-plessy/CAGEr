@@ -7,6 +7,7 @@
 \alias{CTSS}
 \alias{CTSS.chr-class}
 \alias{.CTSS.chr}
+\alias{CTSS.chr}
 \alias{ConsensusClusters}
 \alias{.ConsensusClusters}
 \alias{TagClusters}
@@ -14,17 +15,18 @@
 \title{Classes for type safety.}
 \description{
 The \code{CTSS} class represents CAGE transcription start sites
-(CTSS) at single-nucleotide resolution, using \code{GRanges} as base class.  It is
+(CTSS) at single-nucleotide resolution, using \code{GPos} as base class.  It is
 used internally by \emph{CAGEr} for type safety.
 }
 \details{
 The \code{genomeName} element of the \code{metadata} slot is used to store the
 name of the \emph{BSgenome} package used when constructing the \code{CAGEr} object.
 Be careful that calling the \code{CTSS} constructor twice in a row will erase
-the fist metadata (because the \code{GRanges} constructor does so).
+the fist metadata (because the \code{GPos} constructor does so).
 
-The \code{CTSS.chr} class represents a \code{CTSS} object that is guaranteed to be
-only on a single chromosome.  It is used internally by CAGEr for type safety.
+The \code{CTSS.chr} class represents a \link{CTSS} object that is guaranteed
+to be only on a single chromosome.  It is used internally by \emph{CAGEr} for type
+safety.
 
 The \code{ConsensusClusters} class represents consensus clusters.
 It is used internally by CAGEr for type safety.
@@ -37,7 +39,7 @@ ctss <- CAGEr:::.CTSS( CTSScoordinatesGR(exampleCAGEexp)
                      , bsgenomeName = genomeName(exampleCAGEexp))
 genomeName(ctss)
 
-ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))
+ctss.chr <- as(CTSScoordinatesGR(exampleCAGEexp), "CTSS.chr")
 }
 \author{
 Charles Plessy

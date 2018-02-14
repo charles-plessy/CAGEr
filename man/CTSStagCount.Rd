@@ -16,7 +16,7 @@
 \alias{CTSStagCountGR}
 \alias{CTSStagCountGR,CAGEr-method}
 \alias{CTSStagCountSE}
-\title{Extract raw CAGE TSSs expression tables from CAGEr objects}
+\title{Extract raw CAGE TSSs expression tables from \code{\link{CAGEr}} objects}
 \usage{
 CTSStagCount(object)
 
@@ -47,7 +47,7 @@ CTSStagCountGR(object, samples)
 CTSStagCountSE(object)
 }
 \arguments{
-\item{object}{A CAGEset or CAGEexp object.}
+\item{object}{A \code{CAGEr} object.}
 
 \item{samples}{(For \code{CTSStagCountGR}.) Name(s) or number(s) identifying sample(s).}
 }
@@ -55,22 +55,14 @@ CTSStagCountSE(object)
 Returns an object with number of CAGE tags supporting each TSS
 (rows) in every CAGE dataset (columns).  The class of the object depends on the
 function being called:
-
 \itemize{
-\item{\code{CTSStagCount}:}
-{A \code{\link{data.frame}}, containing coordinates and expression values.}
-\item{\code{CTSStagCountDf}:}
-{A \code{data.frame}, containing only expression values.}
-\item{\code{CTSStagCountDF}:}
-{A \code{\link{DataFrame}} of \code{\link{Rle}} integers.}
-\item{\code{CTSStagCountDA}:}
-{A \code{\link{DelayedArray}} wrapping a \code{DataFrame} of \code{Rle} integers.}
-\item{\code{CTSStagCountSE}:}
-{A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
-\code{Rle} integers.}
-\item{\code{CTSStagCountGR}:}
-{A \code{CTSS} object (wrapping \code{GRanges}) containing a \code{score}
-column indicating expression values for a given sample.}
+\item \code{CTSStagCount}:   A \code{\link{data.frame}}, containing coordinates and expression values.
+\item \code{CTSStagCountDf}: A `data.frame``, containing only expression values.
+\item \code{CTSStagCountDF}: A \code{\link{DataFrame}} of \code{\link{Rle}} integers.
+\item \code{CTSStagCountDA}: A \code{\link{DelayedArray}} wrapping a \code{DataFrame} of \code{Rle} integers.
+\item \code{CTSStagCountSE}: A \code{\link{RangedSummarizedExperiment}}\code{containing a}DataFrame\code{of}Rle` integers.
+\item \code{CTSStagCountGR}: A \code{CTSS} object (wrapping \code{GRanges}) containing a \code{score}
+column indicating expression values for a given sample.
 }
 }
 \description{
@@ -84,13 +76,13 @@ CTSStagCountDF(exampleCAGEset)
 CTSStagCountDA(exampleCAGEset)
 
 head(CTSStagCount(exampleCAGEexp))
-head(CTSStagCountDf(exampleCAGEset))
+head(CTSStagCountDf(exampleCAGEexp))
 CTSStagCountDF(exampleCAGEset)
 CTSStagCountDA(exampleCAGEset)
 
 }
 \seealso{
-\code{\link{getCTSS}}
+\code{\link[=getCTSS]{getCTSS()}}
 
 Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSScoordinates}},

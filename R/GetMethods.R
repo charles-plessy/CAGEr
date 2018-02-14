@@ -216,18 +216,18 @@ function (object){
 
 #' @name CTSScoordinates
 #' 
-#' @title Extracting genomic coordinates of TSSs from CAGEr object
+#' @title Genomic coordinates of TSSs from a `CAGEr` object
 #' 
 #' @description Extracts the genomic coordinates of all detected TSSs
-#' from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#' from [CAGEset] and [CAGEexp] objects.
 #' 
-#' @param object A CAGEset or CAGEexp object.
+#' @param object A `CAGEset` or `CAGEexp` object.
 #' 
-#' @return \code{CTSScoordinates} returns a \code{data.frame} with genomic coordinates of all
-#' TSSs. \code{pos} column contains 1-based coordinate of the TSS.
+#' @return [CTSScoordinates()] returns a `data.frame` with genomic coordinates
+#' of all TSSs.  The `pos` column contains 1-based coordinate of the TSS.
 #' 
 #' @seealso
-#' \code{\link{getCTSS}}
+#' [`getCTSS`]
 #' 
 #' @examples
 #' CTSS <- CTSScoordinates(exampleCAGEset)
@@ -237,25 +237,16 @@ function (object){
 #' @family CAGEr accessor methods
 #' @export
 
-setGeneric(
-name="CTSScoordinates",
-def=function(object){
-	standardGeneric("CTSScoordinates")
-})
+setGeneric("CTSScoordinates", function(object) standardGeneric("CTSScoordinates"))
 
 #' @rdname CTSScoordinates
 
-setMethod("CTSScoordinates",
-signature(object = "CAGEset"),
-function (object){
-	object@CTSScoordinates
-})
+setMethod("CTSScoordinates", "CAGEset", function (object)
+  object@CTSScoordinates)
 
 #' @rdname CTSScoordinates
 
-setMethod("CTSScoordinates",
-signature(object = "CAGEexp"),
-function (object){
+setMethod("CTSScoordinates", "CAGEexp", function (object) {
   gr <- rowRanges(experiments(object)$tagCountMatrix)
   data.frame( chr = as.character(seqnames(gr))
             , pos = start(gr)
@@ -271,7 +262,7 @@ function (object){
 #' wrapping genomic ranges.  A `filteredCTSSidx` column metadata will be present
 #' if [clusterCTSS()] was ran earlier.
 #' 
-#' @seealso \code{\link{clusterCTSS}}
+#' @seealso [`clusterCTSS`]
 #' 
 #' @author Charles Plessy
 #' 
@@ -311,36 +302,28 @@ setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
 
 #' @name CTSStagCount
 #' 
-#' @title Extract raw CAGE TSSs expression tables from CAGEr objects
+#' @title Extract raw CAGE TSSs expression tables from [`CAGEr`] objects
 #' 
 #' @description Extracts the tag count for all detected TSSs in all CAGE datasets
-#'              from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+#'              from [`CAGEset`] and [`CAGEexp`] objects.
 #' 
-#' @param object A CAGEset or CAGEexp object.
-#' @param samples (For \code{CTSStagCountGR}.) Name(s) or number(s) identifying sample(s).
+#' @param object A `CAGEr` object.
+#' @param samples (For `CTSStagCountGR`.) Name(s) or number(s) identifying sample(s).
 #'  
 #' @return Returns an object with number of CAGE tags supporting each TSS
 #' (rows) in every CAGE dataset (columns).  The class of the object depends on the
 #' function being called:
 #' 
-#' \itemize{
-#'   \item{\code{CTSStagCount}:}
-#'     {A \code{\link{data.frame}}, containing coordinates and expression values.}
-#'   \item{\code{CTSStagCountDf}:}
-#'     {A \code{data.frame}, containing only expression values.}
-#'   \item{\code{CTSStagCountDF}:}
-#'     {A \code{\link{DataFrame}} of \code{\link{Rle}} integers.}
-#'   \item{\code{CTSStagCountDA}:}
-#'     {A \code{\link{DelayedArray}} wrapping a \code{DataFrame} of \code{Rle} integers.}
-#'   \item{\code{CTSStagCountSE}:}
-#'     {A \code{\link{RangedSummarizedExperiment}} containing a \code{DataFrame} of
-#'      \code{Rle} integers.}
-#'   \item{\code{CTSStagCountGR}:}
-#'     {A \code{CTSS} object (wrapping \code{GRanges}) containing a \code{score}
-#'     column indicating expression values for a given sample.}
-#' }
+#' * `CTSStagCount`:   A [`data.frame`], containing coordinates and expression values.
+#' * `CTSStagCountDf`: A `data.frame``, containing only expression values.
+#' * `CTSStagCountDF`: A [`DataFrame`] of [`Rle`] integers.
+#' * `CTSStagCountDA`: A [`DelayedArray`] wrapping a `DataFrame` of `Rle` integers.
+#' * `CTSStagCountSE`: A [`RangedSummarizedExperiment`]` containing a `DataFrame`
+#'    of `Rle` integers.
+#' * `CTSStagCountGR`: A `CTSS` object (wrapping `GRanges`) containing a `score`
+#'     column indicating expression values for a given sample.
 #' 
-#' @seealso \code{\link{getCTSS}}
+#' @seealso [getCTSS()]
 #' 
 #' @examples
 #' head(CTSStagCount(exampleCAGEset))
@@ -360,28 +343,18 @@ setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
 #' @family CAGEr CTSS methods
 #' @export
 
-setGeneric(
-name="CTSStagCount",
-def=function(object){
-	standardGeneric("CTSStagCount")
-})
+setGeneric("CTSStagCount", function(object) standardGeneric("CTSStagCount"))
 
 #' @rdname CTSStagCount
 
-setMethod("CTSStagCount",
-signature(object = "CAGEset"),
-function (object){
-	cbind(object@CTSScoordinates, object@tagCountMatrix)
-})
+setMethod("CTSStagCount", "CAGEset", function (object)
+	cbind(object@CTSScoordinates, object@tagCountMatrix))
 
 #' @rdname CTSStagCount
 
-setMethod("CTSStagCount",
-signature(object = "CAGEexp"),
-function (object){
+setMethod( "CTSStagCount", "CAGEexp", function (object)
   cbind( CTSScoordinates(object)
-       , as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer)))
-})
+       , as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer))))
 
 
 #' @name CTSStagCountDf
@@ -389,27 +362,16 @@ function (object){
 #' 
 #' @export
 
-setGeneric(
-name="CTSStagCountDf",
-def=function(object){
-	standardGeneric("CTSStagCountDf")
-})
+setGeneric("CTSStagCountDf", function(object) standardGeneric("CTSStagCountDf"))
 
 #' @rdname CTSStagCount
 
-setMethod("CTSStagCountDf",
-signature(object = "CAGEset"),
-function (object){
-	object@tagCountMatrix
-})
+setMethod("CTSStagCountDf", "CAGEset", function (object) 	object@tagCountMatrix)
 
 #' @rdname CTSStagCount
 
-setMethod("CTSStagCountDf",
-signature(object = "CAGEexp"),
-function (object){
-  as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer))
-})
+setMethod("CTSStagCountDf", "CAGEexp", function (object) 
+  as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer)))
 
 
 #' @name CTSStagCountDF
@@ -417,17 +379,11 @@ function (object){
 #'  
 #' @export
 
-setGeneric(
-name="CTSStagCountDF",
-def=function(object){
-	standardGeneric("CTSStagCountDF")
-})
+setGeneric("CTSStagCountDF", function(object) standardGeneric("CTSStagCountDF"))
 
 #' @rdname CTSStagCount
 
-setMethod("CTSStagCountDF",
-signature(object = "CAGEset"),
-function (object){
+setMethod("CTSStagCountDF", "CAGEset", function (object) {
 	DF <- object@tagCountMatrix
 	DF <- lapply(DF, as.integer)
 	DF <- lapply(DF, Rle)
@@ -436,11 +392,8 @@ function (object){
 
 #' @rdname CTSStagCount
 
-setMethod("CTSStagCountDF",
-signature(object = "CAGEexp"),
-function (object){
-  assay(CTSStagCountSE(object))
-})
+setMethod("CTSStagCountDF", "CAGEexp", function (object)
+  assay(CTSStagCountSE(object)))
 
 
 #' @name CTSStagCountDA
@@ -449,21 +402,12 @@ function (object){
 #' @import DelayedArray DelayedArray
 #' @export
 
-setGeneric(
-name="CTSStagCountDA",
-def=function(object){
-	standardGeneric("CTSStagCountDA")
-})
+setGeneric("CTSStagCountDA", function(object) tandardGeneric("CTSStagCountDA"))
 
 #' @rdname CTSStagCount
 
-setMethod("CTSStagCountDA",
-signature(object = "CAGEr"),
-function (object){
-  DelayedArray(CTSStagCountDF(object))
-})
-
-#' @rdname CTSStagCount
+setMethod("CTSStagCountDA", signature(object = "CAGEr"), function (object)
+  DelayedArray(CTSStagCountDF(object)))
 
 
 #' @name CTSStagCountGR

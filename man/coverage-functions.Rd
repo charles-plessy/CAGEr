@@ -14,9 +14,9 @@
 .getCumsum(ctss, clusters, useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
-\item{ctss.chr}{A CTSS.chr object (guaranteed to have only one chromosome).}
+\item{ctss.chr}{A `CTSS.chr`` object (guaranteed to have only one chromosome).}
 
-\item{clusters}{GRanges as per \code{tagClustersGR}.}
+\item{clusters}{GRanges as per \code{\link[=tagClustersGR]{tagClustersGR()}}.}
 
 \item{ctss}{GRanges as per \code{CTSScoordinatesGR}, with the score of one sample.}
 
@@ -27,7 +27,7 @@
 \item{useMulticore, nrCores}{See clusterCTSS.}
 }
 \value{
-\code{.getCumsum} returns a list of Rle vectors (IRanges package) containing cumulative
+\code{.getCumsum} returns a list of \code{Rle} vectors (IRanges package) containing cumulative
 sum for each cluster (length of list is equal to number of clusters and names of the list
 components corespond to the name of the corresponding cluster) v.
 }
@@ -35,7 +35,7 @@ components corespond to the name of the corresponding cluster) v.
 \code{.getCumsum} calculates cumulative sums of tpm along the clusters.
 }
 \details{
-\code{.getCAGEsignalCoverage} does...
+`.getCAGEsignalCoverage`` does...
 Note that strand is not taken into account.
 
 \code{.getCumsumChr2}
@@ -43,9 +43,9 @@ Note that strand is not taken into account.
 \examples{
 library(GenomicRanges)
 library(IRanges)
-ctss <- CAGEr:::.CTSS(GRanges( seqnames=Rle("chr1")
+ctss <- CAGEr:::.CTSS(GPos(GRanges( seqnames=Rle("chr1")
                              , IRanges(c(1,3,4,12,14,25,28,31,35), w=1)
-                             , strand = "+"))
+                             , strand = "+")))
 score(ctss) <- 1
 ctss.chr <- CAGEr:::.CTSS.chr(ctss)
 clusters <- GRanges( seqnames = Rle("chr1")

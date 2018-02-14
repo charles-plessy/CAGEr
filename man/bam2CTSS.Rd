@@ -25,11 +25,11 @@ Converts from BAM to CTSS
 Converts genomic ranges representing SAM/BAM alignments into a CTSS object.
 }
 \seealso{
-Other loadFileIntoGRanges: \code{\link{import.CTSS}},
+Other loadFileIntoGPos: \code{\link{import.CTSS}},
   \code{\link{import.bam.ctss}}, \code{\link{import.bam}},
   \code{\link{import.bedCTSS}},
   \code{\link{import.bedScore}},
   \code{\link{import.bedmolecule}},
-  \code{\link{loadFileIntoGRanges}},
+  \code{\link{loadFileIntoGPos}},
   \code{\link{moleculesGR2CTSS}}
 }

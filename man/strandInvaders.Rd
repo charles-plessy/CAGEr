@@ -30,7 +30,7 @@ removeStrandInvaders(object, distance = 1, barcode = NULL,
   linker = "TATAGGG")
 }
 \arguments{
-\item{object}{A \code{CAGEr} object object containing CTSS data and the name
+\item{object}{A \code{\link{CAGEexp}} object object containing CTSS data and the name
 of a reference genome.}
 
 \item{distance}{The maximal edit distance between the genome and linker
@@ -49,7 +49,7 @@ oligonucleotide, that will be matched with the genome sequence
 \code{findStrandInvaders} returns a logical-\link{Rle} vector indicating the
 position of the strand invaders in the input ranges.  With \link{CTSS} objects as
 input \code{removeStrandInvaders} returns the object after removing the CTSS
-positions identified as strand invaders.  In the cage of \code{CAGEexp} object,
+positions identified as strand invaders.  In the case of \code{CAGEexp} objects,
 the input object is modified in place.  Its sample metadata is also
 updated by creating a new \code{strandInvaders} column that indicates the number
 of molecule counts removed.  This value is subtracted from the \code{counts} colum
@@ -78,13 +78,14 @@ is provided to incorporate this information.
 # not constructed using a protocol based using the template-switching method.
 "BSgenome.Drerio.UCSC.danRer7"
 
+findStrandInvaders(exampleCAGEexp)
 removeStrandInvaders(exampleCAGEexp)
 
 }
 \references{
-Tang \emph{et al.}, \emph{Suppression of artifacts and barcode bias in
+Tang \emph{et al.}, \dQuote{Suppression of artifacts and barcode bias in
 high-throughput transcriptome analyses utilizing template switching.}
-Nucleic Acids Res. \strong{2013} Feb 1;41(3):e44.
-PubMed: \href{https://pubmed.gov/23180801}{23180801},
-DOI: \href{https://doi.org/10.1093/nar/gks1128}{doi.org/10.1093/nar/gks112}
+\emph{Nucleic Acids Res.} \strong{2013} Feb 1;41(3):e44.
+PubMed ID: \href{https://pubmed.gov/23180801}{23180801},
+DOI: \href{https://doi.org/10.1093/nar/gks1128}{10.1093/nar/gks112}
 }

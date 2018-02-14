@@ -17,14 +17,14 @@ Calculates CTSS positions from a GenomicRanges object where each element
 represents a single molecule.
 }
 \examples{
-gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-"))
+gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-", "+"))
 CAGEr:::moleculesGR2CTSS(gr)
 }
 \seealso{
-Other loadFileIntoGRanges: \code{\link{bam2CTSS}},
+Other loadFileIntoGPos: \code{\link{bam2CTSS}},
   \code{\link{import.CTSS}}, \code{\link{import.bam.ctss}},
   \code{\link{import.bam}}, \code{\link{import.bedCTSS}},
   \code{\link{import.bedScore}},
   \code{\link{import.bedmolecule}},
-  \code{\link{loadFileIntoGRanges}}
+  \code{\link{loadFileIntoGPos}}
 }

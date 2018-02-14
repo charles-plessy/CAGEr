@@ -21,10 +21,10 @@ counting the number of CAGE transcription start sites (CTSS).
 # import.BED(system.file("extdata", "example.bed", package = "CAGEr"))
 }
 \seealso{
-Other loadFileIntoGRanges: \code{\link{bam2CTSS}},
+Other loadFileIntoGPos: \code{\link{bam2CTSS}},
   \code{\link{import.CTSS}}, \code{\link{import.bam.ctss}},
   \code{\link{import.bam}}, \code{\link{import.bedScore}},
   \code{\link{import.bedmolecule}},
-  \code{\link{loadFileIntoGRanges}},
+  \code{\link{loadFileIntoGPos}},
   \code{\link{moleculesGR2CTSS}}
 }

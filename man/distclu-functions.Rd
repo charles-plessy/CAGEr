@@ -9,7 +9,7 @@
 \alias{.distclu}
 \title{Private functions for distance clustering.}
 \usage{
-.cluster.ctss.strand(ctss.iranges.chr, max.dist)
+.cluster.ctss.strand(ctss.ipos.chr, max.dist)
 
 .cluster.ctss.chr(ctss.chr, max.dist)
 
@@ -22,9 +22,9 @@
   keepSingletonsAbove = Inf, useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
-\item{ctss.iranges.chr}{A IRanges object.}
+\item{ctss.ipos.chr}{A IPos object.}
 
-\item{max.dist}{See \code{\link{clusterCTSS}}.}
+\item{max.dist}{See \code{\link[=clusterCTSS]{clusterCTSS()}}.}
 
 \item{ctss.chr}{A CTSS.chr object.}
 
@@ -46,7 +46,7 @@ their score is aboove threshold (default = \code{Inf}).}
 their expression in each sample.}
 }
 \value{
-\code{.cluster.ctss.strand} returns an \code{\link{data.table}} object containing
+\code{.cluster.ctss.strand} returns an \link{data.table} object containing
 arbitrary cluster IDs (as integers) for each CTSS.
 
 \code{.cluster.ctss.chr} returns a \code{\link{data.table}} object representing the
@@ -62,16 +62,16 @@ the \code{score} of each CTSS.
 \code{.distclu} returns GRanges describing the clusters.
 }
 \description{
-The flow of data is that a \code{GRanges} object of CTSSes is progressively
-deconstructed, and data to form the clusters is progressively integrated in a
-\code{\link{data.table}} object, which is finally converted to GRanges at the end.  Doing
-the whole clustering with GRanges is more elegant, but looping on a GRangesList was just
-too slow.  Maybe the operation on the \code{data.table} is more efficient because it is
-vectorised.
+The flow of data is that a \link{CTSS} object of CTSSes is
+progressively deconstructed, and data to form the clusters is progressively
+integrated in a \link{data.table} object, which is finally converted to \link{GRanges}
+at the end.  Doing the whole clustering with \code{GRanges} is more elegant, but
+looping on a \code{GRangesList} was just too slow.  Maybe the operation on the
+\code{data.table} is more efficient because it is vectorised.
 
-\code{.cluster.ctss.strand} does the strandless distance clustering of strandless
-CTSS positions from a single chromosome.  Input does not need to be sorted, but \emph{pay
-attention that the output is sorted}.
+\code{.cluster.ctss.strand} does the strandless distance clustering
+of strandless CTSS positions from a single chromosome.  Input does not need
+to be sorted, but \emph{pay attention that the output is sorted}.
 
 \code{.cluster.ctss.chr} does the stranded distance clustering of CTSS on a
 single chromosome, by dispatching both strands to \code{.cluster.ctss.strand} and merging
@@ -92,19 +92,19 @@ library(IRanges)
 library(GenomicRanges)
 
 #.cluster.ctss.strand
-ctss.iranges.chr <- IRanges(c(1,3,4,12,14,25,28), w=1)
-CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 5)
+ctss.ipos.chr <- IPos(c(1,3,4,12,14,25,28))
+CAGEr:::.cluster.ctss.strand(ctss.ipos.chr, 5)
 
 ctss.chr <- CTSScoordinatesGR(exampleCAGEexp)
 ctss.chr <- ctss.chr[strand(ctss.chr) == "+"]
-ctss.iranges.chr <- ranges(ctss.chr)
+ctss.ipos.chr <- ranges(ctss.chr)
 # Same result if not sorted
 identical(
-  CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 20),
-  CAGEr:::.cluster.ctss.strand(ctss.iranges.chr[sample(seq_along(ctss.iranges.chr))], 20)
+  CAGEr:::.cluster.ctss.strand(ctss.ipos.chr, 20),
+  CAGEr:::.cluster.ctss.strand(ctss.ipos.chr[sample(seq_along(ctss.ipos.chr))], 20)
 )
 # Returns an emtpy data.table object if given an empty IRanges object.
-identical(CAGEr:::.cluster.ctss.strand(IRanges(), 20), data.table::data.table())
+identical(CAGEr:::.cluster.ctss.strand(IPos(), 20), data.table::data.table())
 
 #.cluster.ctss.chr
 ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))

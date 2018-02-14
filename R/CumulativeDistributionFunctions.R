@@ -20,10 +20,10 @@ NULL
 #' @name .getCAGEsignalCoverage
 #' @rdname coverage-functions
 #' 
-#' @details \code{.getCAGEsignalCoverage} does...
+#' @details `.getCAGEsignalCoverage`` does...
 #' Note that strand is not taken into account.
 #' 
-#' @param ctss.chr A CTSS.chr object (guaranteed to have only one chromosome).
+#' @param ctss.chr A `CTSS.chr`` object (guaranteed to have only one chromosome).
 #' 
 #' @importFrom IRanges Views
 #' @importFrom IRanges viewApply
@@ -44,7 +44,7 @@ setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr,
 #' @name .getCumsumChr2
 #' @rdname coverage-functions
 #' 
-#' @details \code{.getCumsumChr2}
+#' @details `.getCumsumChr2`
 #' 
 #' @param chrom a chromosome name
 #' @param str a strand name
@@ -68,11 +68,11 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' @name .getCumsum
 #' @rdname coverage-functions
 #' 
-#' @description \code{.getCumsum} calculates cumulative sums of tpm along the clusters.
+#' @description `.getCumsum` calculates cumulative sums of tpm along the clusters.
 #' 
-#' @param ctss GRanges as per \code{CTSScoordinatesGR}, with the score of one sample.
+#' @param ctss GRanges as per `CTSScoordinatesGR`, with the score of one sample.
 #' 
-#' @return \code{.getCumsum} returns a list of Rle vectors (IRanges package) containing cumulative
+#' @return `.getCumsum` returns a list of `Rle` vectors (IRanges package) containing cumulative
 #' sum for each cluster (length of list is equal to number of clusters and names of the list
 #' components corespond to the name of the corresponding cluster) v.
 #'

@@ -10,7 +10,7 @@ import.CAGEscanMolecule(filepath)
 \item{filepath}{The path to the \dQuote{molecule} file.}
 }
 \description{
-Imports a CAGEscan \dQuote{molecule} file in a GRanges object
+Imports a CAGEscan \dQuote{molecule} file in a \code{\link{GRanges}} object
 }
 \examples{
 # TODO import.CAGEscanMolecule(system.file("extdata", "example.molecule.txt", package = "CAGEr"))

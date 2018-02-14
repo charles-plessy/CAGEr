@@ -241,12 +241,12 @@ getCTSS(ce)
 ce
 ```
 
-This function reads in the data from the provided files in the order they were specified in the
-`inputFiles` argument.  It creates a single set of all TSSs detected across all input datasets
-(union of TSSs) and a table with counts of CAGE tags supporting each TSS in every dataset.  (Note
-that in case when a _CAGEexp_ object is created by coercion from a data frame there is no need to
-call the above function to read in the data, as the data will be loaded into _CAGEexp_ during
-coercion).
+This function reads the provided files in the order they were specified in the
+`inputFiles` argument.  It creates a single set of all TSSs detected across all
+input datasets (union of TSSs) and a table with counts of CAGE tags supporting
+each TSS in every dataset.  (Note that in case when a _CAGEr_ object is
+created by coercion from an existing expression table there is no need to call
+`getCTSS()`).
 
 Genomic coordinates of all TSSs and numbers of supporting CAGE tags in every input
 sample can be retrieved using the `CTSStagCountSE()` function. `CTSScoordinatesGR()` accesses

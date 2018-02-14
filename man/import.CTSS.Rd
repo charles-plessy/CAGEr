@@ -13,17 +13,17 @@ Note that the format of the "CTSS" files handled in this function is not
 the same as the FANTOM5 "CTSS" files (which are plain BED).}
 }
 \description{
-Imports a "CTSS" file in a GRanges object
+Imports a "CTSS" file in a \link{GPos} object
 }
 \examples{
 CAGEr:::import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))
 }
 \seealso{
-Other loadFileIntoGRanges: \code{\link{bam2CTSS}},
+Other loadFileIntoGPos: \code{\link{bam2CTSS}},
   \code{\link{import.bam.ctss}}, \code{\link{import.bam}},
   \code{\link{import.bedCTSS}},
   \code{\link{import.bedScore}},
   \code{\link{import.bedmolecule}},
-  \code{\link{loadFileIntoGRanges}},
+  \code{\link{loadFileIntoGPos}},
   \code{\link{moleculesGR2CTSS}}
 }

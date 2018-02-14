@@ -23,17 +23,17 @@ import.bam.ctss(filepath, filetype, sequencingQualityThreshold,
 \item{genome}{See coerceInBSgenome().}
 }
 \value{
-Returns a \code{\link{CTSS}} object.
+Returns a \link{CTSS} object.
 }
 \description{
 Imports CTSS data from a BAM file.
 }
 \seealso{
-Other loadFileIntoGRanges: \code{\link{bam2CTSS}},
+Other loadFileIntoGPos: \code{\link{bam2CTSS}},
   \code{\link{import.CTSS}}, \code{\link{import.bam}},
   \code{\link{import.bedCTSS}},
   \code{\link{import.bedScore}},
   \code{\link{import.bedmolecule}},
-  \code{\link{loadFileIntoGRanges}},
+  \code{\link{loadFileIntoGPos}},
   \code{\link{moleculesGR2CTSS}}
 }

@@ -21,7 +21,7 @@
 #' depending on how the barcode sequences were chosen.  A `barcode` parameter
 #' is provided to incorporate this information.
 #' 
-#' @param object A `CAGEr` object object containing CTSS data and the name
+#' @param object A [`CAGEexp`] object object containing CTSS data and the name
 #'        of a reference genome.
 #'        
 #' @param distance The maximal edit distance between the genome and linker
@@ -39,7 +39,7 @@
 #' @return `findStrandInvaders` returns a logical-[Rle] vector indicating the
 #' position of the strand invaders in the input ranges.  With [CTSS] objects as
 #' input `removeStrandInvaders` returns the object after removing the CTSS
-#' positions identified as strand invaders.  In the cage of `CAGEexp` object,
+#' positions identified as strand invaders.  In the case of `CAGEexp` objects,
 #' the input object is modified in place.  Its sample metadata is also
 #' updated by creating a new `strandInvaders` column that indicates the number
 #' of molecule counts removed.  This value is subtracted from the `counts` colum
@@ -48,17 +48,18 @@
 # @family CAGEr object modifiers
 # @family CAGEr TSS functions
 #' 
-#' @references Tang _et al._, _Suppression of artifacts and barcode bias in
-#' high-throughput transcriptome analyses utilizing template switching._
-#' Nucleic Acids Res. **2013** Feb 1;41(3):e44.
-#' PubMed: [23180801](https://pubmed.gov/23180801),
-#' DOI: [doi.org/10.1093/nar/gks112](https://doi.org/10.1093/nar/gks1128)
+#' @references Tang _et al._, \dQuote{Suppression of artifacts and barcode bias in
+#' high-throughput transcriptome analyses utilizing template switching.}
+#' _Nucleic Acids Res._ **2013** Feb 1;41(3):e44.
+#' PubMed ID: [23180801](https://pubmed.gov/23180801),
+#' DOI: [10.1093/nar/gks112](https://doi.org/10.1093/nar/gks1128)
 #' 
 #' @examples 
 #' # Note that these examples do not do much on the example data since it was
 #' # not constructed using a protocol based using the template-switching method.
 #' "BSgenome.Drerio.UCSC.danRer7"
 #' 
+#' findStrandInvaders(exampleCAGEexp)
 #' removeStrandInvaders(exampleCAGEexp)
 #' 
 #' @importFrom BSgenome getSeq

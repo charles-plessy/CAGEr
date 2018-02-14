@@ -14,7 +14,7 @@
 \alias{CTSStagCountSE<-}
 \alias{CTSStagCountSE<-,CAGEset-method}
 \alias{CTSStagCountSE<-,CAGEexp-method}
-\title{Extracting genomic coordinates of TSSs from CAGEr object}
+\title{Genomic coordinates of TSSs from a \code{CAGEr} object}
 \usage{
 CTSScoordinates(object)
 
@@ -41,13 +41,13 @@ CTSStagCountSE(object) <- value
 \S4method{CTSStagCountSE}{CAGEexp}(object) <- value
 }
 \arguments{
-\item{object}{A CAGEset or CAGEexp object.}
+\item{object}{A \code{CAGEset} or \code{CAGEexp} object.}
 
 \item{value}{Coordinates to update, in a format according to the function name.}
 }
 \value{
-\code{CTSScoordinates} returns a \code{data.frame} with genomic coordinates of all
-TSSs. \code{pos} column contains 1-based coordinate of the TSS.
+\code{\link[=CTSScoordinates]{CTSScoordinates()}} returns a \code{data.frame} with genomic coordinates
+of all TSSs.  The \code{pos} column contains 1-based coordinate of the TSS.
 
 \code{CTSScoordinatesGR} returns the coordinates as a \code{\link[=CTSS]{CTSS()}} object
 wrapping genomic ranges.  A \code{filteredCTSSidx} column metadata will be present
@@ -55,7 +55,7 @@ if \code{\link[=clusterCTSS]{clusterCTSS()}} was ran earlier.
 }
 \description{
 Extracts the genomic coordinates of all detected TSSs
-from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+from \link{CAGEset} and \link{CAGEexp} objects.
 }
 \examples{
 CTSS <- CTSScoordinates(exampleCAGEset)
