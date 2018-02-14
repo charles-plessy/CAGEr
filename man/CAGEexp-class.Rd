@@ -7,21 +7,20 @@
 \alias{coerce,data.frame,CAGEexp-method}
 \title{CAGEr class to hold all data and metadata about one CAGE experiment.}
 \description{
-The \code{CAGEr} class is a \code{\link[MultiAssayExperiment]{MultiAssayExperiment}}
-object containing all data and metadata about a set of CAGE libraries.  It
-is a replacement for the \code{\link{CAGEset}} class.  The main difference
-is that the expression data is stored in \code{\link[S4Vectors]{DataFrame}} objects
-of \code{\link[S4Vectors]{Rle}}-encoded expression values, instead of plain
+The \code{\link{CAGEr}} class is a \code{\link{MultiAssayExperiment}} object containing all data
+and metadata about a set of CAGE libraries.  It is a replacement for the
+\code{\link{CAGEset}} class.  The main difference is that the expression data is stored
+in \code{\link{DataFrame}} objects of \code{\link{Rle}}-encoded expression values, instead of plain
 \code{data.frame}s.  With large datasets, this saves considerable amounts of memory.
 }
 \details{
 If \code{genomeName} is \code{NULL}, checks of chromosome names will be
-disabled and G-correction will not be possible.  See https://support.bioconductor.org/p/86437/
-for an example on how to create a BSgenome package.
+disabled and G-correction will not be possible.  See
+\url{https://support.bioconductor.org/p/86437/} for an example on how to create a
+\emph{BSgenome} package.
 
-Sample labels must be \emph{syntactically valid} in the sense of the
-\code{\link{make.names}} function, because they will be used as column
-names in some tables.
+Sample labels must be \emph{syntactically valid} in the sense of the \code{\link[=make.names]{make.names()}}
+function, because they will be used as column names in some tables.
 }
 \section{Slots}{
 
@@ -77,5 +76,5 @@ exampleCAGEexp$l1
 
 }
 \seealso{
-\code{\link{CAGEset-class}}, \code{\link{make.names}}
+\code{\linkS4class{CAGEset}}, \code{\link{make.names}}
 }

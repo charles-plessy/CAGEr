@@ -1,28 +1,49 @@
 #' @include AllClasses.R CAGEexp.R CTSS.R
+NULL
+
+#' Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for
+#' precise mapping of transcription start sites and promoterome mining
 #' 
-#' @name CAGEr-class
+#' The _CAGEr_ package performs identification of transcription start sites and
+#' frequency of their usage from input CAGE sequencing data, normalization of
+#' raw CAGE tag count, clustering of TSSs into tag clusters (TC) and their
+#' aggregation across multiple CAGE experiments to construct the promoterome.
+#' It manipulates multiple CAGE experiments at once, performs expression
+#' profiling across experiments both at level of individual TSSs and clusters of
+#' TSSs, exports several different types of track files for visualization in the
+#' UCSC Genome Browser, performs analysis of promoter width and detects
+#' differential usage of TSSs (promoter shifting) between samples.  Multicore
+#' option for parallel processing is supported on Unix-like platforms.
 #' 
-#' @title CAGEr objects
+#' @author Vanja Haberle
 #' 
-#' @description The CAGEr package provides two classes of objects to load, contain
-#' and process CAGE data:
-#' \itemize{
-#'   \item The \code{\link{CAGEset}} class is the original object format in CAGEr,
-#'   as when published in Haberle V, Forrest ARR, Hayashizaki Y, Carninci P and
-#'   Lenhard B (2015). \dQuote{CAGEr: precise TSS data retrieval and high-resolution
-#'   promoterome mining for integrative analyses.} \emph{Nucleic Acids Research},
-#'   43, pp. e51., \href{http://nar.oxfordjournals.org/content/43/8/e51}{http://nar.oxfordjournals.org/content/43/8/e51}. 
+#' @docType package
+#' @name CAGEr-package
+NULL
+ 
+#' CAGEr objects
+#' 
+#' The _CAGEr_ package provides two classes of objects to load, contain and
+#' process CAGE data:
+#' 
+#' * The [`CAGEset`] class is the original object format in _CAGEr_, as when
+#'   published in Haberle _et al._, 2015. 
 #'   
-#'   \item The \code{\link{CAGEexp}} class is a new class format in 2017, which
-#'   is based on the \code{\link{MultiAssayExperiment}} class.  In comparison with
-#'   \code{CAGEset}, objects, \code{CAGEexp} objects benefit from a a more efficient
-#'   data storage, using \code{DataFrame}s of run-length-encoded (\code{Rle})
-#'   integers, allowing for the loading and use of much larger transcriptome datasets.
-#' }
-#' Most CAGEr functions support both classes interchangabely, and the \code{CAGEr}
+#' * The [`CAGEexp`] class is a new class format in 2017, which is based on the
+#'   [`MultiAssayExperiment`] class.  In comparison with `CAGEset`, objects,
+#'   `CAGEexp` objects benefit from a a more efficient data storage, using
+#'   `DataFrame`s of run-length-encoded (`Rle`) integers, allowing for the
+#'   loading and use of much larger transcriptome datasets.
+#'  
+#' Most _CAGEr_ functions support both classes interchangabely, and the `CAGEr`
 #' class was created for methods that support both classes identically.
 #' 
-#' @docType class
+#' @references Haberle V, Forrest ARR, Hayashizaki Y, Carninci P and Lenhard B
+#' (**2015**). \dQuote{CAGEr: precise TSS data retrieval and high-resolution
+#' promoterome mining for integrative analyses.} _Nucleic Acids Research_,
+#' 43, pp. e51., <http://nar.oxfordjournals.org/content/43/8/e51>
+#' 
+#' @aliases CAGEr
 #' @import methods
 #' @import BiocGenerics
 #' @exportClass CAGEr

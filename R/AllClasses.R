@@ -246,18 +246,56 @@ setAs("data.frame", "CAGEset",
 ######################
 # Merge two CAGEsets
 
-#' mergeCAGEsets
-#' @noRd
+#' Merge two CAGEr objects into one
+#' 
+#' Merges two [`CAGEr`] objects into one by combining the CTSS genomic
+#' coordinates and raw tag counts.  The resulting object will contain a union
+#' of TSS positions present in the two input objects and raw tag counts for
+#' those TSSs in all samples from both input objects.
+#' 
+#' @param cs1 A `CAGEr` object
+#' @param cs2 A `CAGEr` object
+#' 
+#' @return Note that merging discards all other information present in the
+#' two `CAGEr` objects, that is, the merged object will not contain any
+#' normalised tag counts, CTSS clusters, quantile positions, etc., so these
+#' have to be calculated again by calling the appropriate functions on the
+#' merged object.  Also, it is only possible to merge two objects that contain
+#' TSS information for the same reference genome and do not share any sample
+#' names.
+#' 
+#' @return Returns a `CAGEset` or `CAGEexp` object, which contains a union of
+#' TSS positions present in the two input objects and raw tag counts for those
+#' TSSs in all samples from both input objects.
+#' 
+#' @author Vanja Haberle
+#' 
+#' @seealso [`CAGEset`], [`CAGEexp`]
+#' 
+#' @examples 
+#' library(BSgenome.Drerio.UCSC.danRer7)
+#' 
+#' pathsToInputFiles <- system.file("extdata", c("Zf.unfertilized.egg.chr17.ctss",
+#'   "Zf.30p.dome.chr17.ctss", "Zf.prim6.rep1.chr17.ctss"), package="CAGEr")
+#'   
+#' myCAGEset1 <- new("CAGEset", genomeName = "BSgenome.Drerio.UCSC.danRer7",
+#' inputFiles = pathsToInputFiles[1:2], inputFilesType = "ctss", sampleLabels =
+#' c("sample1", "sample2"))
+#' getCTSS(myCAGEset1)
+#' 
+#' myCAGEset2 <- new("CAGEset", genomeName = "BSgenome.Drerio.UCSC.danRer7",
+#' inputFiles = pathsToInputFiles[3], inputFilesType = "ctss", sampleLabels =
+#' "sample3")
+#' 
+#' getCTSS(myCAGEset2)
+#' 
+#' myCAGEset <- mergeCAGEsets(myCAGEset1, myCAGEset2)
+#' 
 #' @export
 
-setGeneric(
-name="mergeCAGEsets",
-def=function(cs1, cs2){
-    standardGeneric("mergeCAGEsets")
-}
-)
+setGeneric("mergeCAGEsets", function(cs1, cs2) standardGeneric("mergeCAGEsets"))
 
-setMethod("mergeCAGEsets",
+setMethod("mergeCAGEsets", 
 signature(cs1 = "CAGEset", cs2 = "CAGEset"),
 function (cs1, cs2){
 
@@ -291,7 +329,3 @@ function (cs1, cs2){
     
 }
 )
-
-
-
-

@@ -1,21 +1,20 @@
 #' CAGEr class to hold all data and metadata about one CAGE experiment.
 #' 
-#' The \code{CAGEr} class is a \code{\link[MultiAssayExperiment]{MultiAssayExperiment}}
-#' object containing all data and metadata about a set of CAGE libraries.  It
-#' is a replacement for the \code{\link{CAGEset}} class.  The main difference
-#' is that the expression data is stored in \code{\link[S4Vectors]{DataFrame}} objects
-#' of \code{\link[S4Vectors]{Rle}}-encoded expression values, instead of plain
-#' \code{data.frame}s.  With large datasets, this saves considerable amounts of memory.
+#' The [`CAGEr`] class is a [`MultiAssayExperiment`] object containing all data
+#' and metadata about a set of CAGE libraries.  It is a replacement for the
+#' [`CAGEset`] class.  The main difference is that the expression data is stored
+#' in [`DataFrame`] objects of [`Rle`]-encoded expression values, instead of plain
+#' `data.frame`s.  With large datasets, this saves considerable amounts of memory.
 #' 
-#' @slot metadata A list that must at least contain a \code{genomeName} member.
+#' @slot metadata A list that must at least contain a `genomeName` member.
 #' 
-#' @details If \code{genomeName} is \code{NULL}, checks of chromosome names will be
-#' disabled and G-correction will not be possible.  See https://support.bioconductor.org/p/86437/
-#' for an example on how to create a BSgenome package.
+#' @details If `genomeName` is `NULL`, checks of chromosome names will be
+#' disabled and G-correction will not be possible.  See
+#' <https://support.bioconductor.org/p/86437/> for an example on how to create a
+#' _BSgenome_ package.
 #' 
-#' Sample labels must be \emph{syntactically valid} in the sense of the
-#' \code{\link{make.names}} function, because they will be used as column
-#' names in some tables.
+#' Sample labels must be _syntactically valid_ in the sense of the [make.names()]
+#' function, because they will be used as column names in some tables.
 #' 
 #' @examples 
 #' library("MultiAssayExperiment")
@@ -63,7 +62,7 @@
 #' exampleCAGEexp$l1 <- colSums(CTSStagCountDf(exampleCAGEexp) > 0)
 #' exampleCAGEexp$l1
 #' 
-#' @seealso \code{\link{CAGEset-class}}, \code{\link{make.names}}
+#' @seealso [`CAGEset-class`], [`make.names`]
 #' 
 #' @rdname CAGEexp-class
 #' @aliases CAGEexp-class
@@ -151,7 +150,7 @@ setMethod( "initialize", "CAGEexp"
 #' Lazy-loaded example CAGEexp object, containing most of the CAGEr data
 #' structures created with the CAGEr modifier functions.
 #' 
-#' @format A \code{\link{CAGEexp}} object.
+#' @format A [CAGEexp] object.
 #' 
 #' @examples 
 #' # The example commands in the CAGEexp help page were used to create the example
