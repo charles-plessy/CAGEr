@@ -283,7 +283,7 @@ coerceInBSgenome <- function(gr, genome) {
   gr
 }
 
-#' loadFileIntoGRanges
+#' loadFileIntoGPos
 #' 
 #' A private (non-exported) function to load from each file format supported by CAGEr
 #' 
@@ -295,14 +295,13 @@ coerceInBSgenome <- function(gr, genome) {
 #' @param correctSystematicG See getCTSS().
 #' @param genome See coerceInBSgenome().
 #' 
-#' @return A GRanges object, where each range represents a single nucleotide,
-#' and where the score represents the number of CAGE tags starting on that
-#' nucleotide.
+#' @return A [GPos()] object where the score represents the number of CAGE tags
+#' starting on that nucleotide.
 #' 
 #' @seealso import.CTSS
-#' @family loadFileIntoGRanges
+#' @family loadFileIntoGPos
 
-loadFileIntoGRanges <- function( filepath
+loadFileIntoGPos    <- function( filepath
                                , filetype = c( "bam", "bamPairedEnd"
                                              , "bed", "bedctss", "bedScore"
                                              , "CAGEscanMolecule", "ctss")
@@ -344,19 +343,19 @@ loadFileIntoGRanges <- function( filepath
 #' 
 #' @return Returns a [GRanges] object.
 #' 
-#' @family loadFileIntoGRanges
+#' @family loadFileIntoGPos
 #' 
 #' @importFrom S4Vectors Rle
 #' 
 #' @examples
-#' gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-"))
+#' gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-", "+"))
 #' CAGEr:::moleculesGR2CTSS(gr)
 
 moleculesGR2CTSS <- function(gr) {
   tb <- table(promoters(gr, 0, 1))
-  gr <- as(names(tb), "GRanges")
-  score(gr) <- Rle(as.integer(tb))
-  gr
+  gp <- as(names(tb), "GPos")
+  score(gp) <- Rle(as.integer(tb))
+  gp
 }
 
 #' import.bam
@@ -368,7 +367,7 @@ moleculesGR2CTSS <- function(gr) {
 #' @param sequencingQualityThreshold See getCTSS().
 #' @param mappingQualityThreshold See getCTSS().
 #' 
-#' @family loadFileIntoGRanges
+#' @family loadFileIntoGPos
 #' 
 #' @importFrom Rsamtools bamFlag<-
 #' @importFrom Rsamtools ScanBamParam
@@ -432,7 +431,7 @@ import.bam <- function( filepath
 #' @return Returns a \code{\link{CTSS}} object.
 #' 
 #' @importFrom GenomeInfoDb bsgenomeName
-#' @family loadFileIntoGRanges
+#' @family loadFileIntoGPos
 
 bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
   gr <- coerceInBSgenome(gr, genome)
@@ -441,9 +440,9 @@ bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
     gr <- .remove.added.G.CTSS(gr, genome, correctSystematicG = correctSystematicG)
   }
   tb <- table(promoters(gr, 0, 1))
-  gr <- as(names(tb), "GRanges")
-  score(gr) <- Rle(unclass(tb))
-  gr
+  gp <- as(names(tb), "GPos")
+  score(gp) <- Rle(unclass(tb))
+  gp
 } 
 
 #' import.bam.ctss
@@ -458,9 +457,9 @@ bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
 #' @param correctSystematicG See getCTSS().
 #' @param genome See coerceInBSgenome().
 #' 
-#' @return Returns a \code{\link{CTSS}} object.
+#' @return Returns a [CTSS] object.
 #' 
-#' @family loadFileIntoGRanges
+#' @family loadFileIntoGPos
 
 import.bam.ctss <- function( filepath, filetype, sequencingQualityThreshold
                            , mappingQualityThreshold, removeFirstG
@@ -484,7 +483,7 @@ import.bam.ctss <- function( filepath, filetype, sequencingQualityThreshold
 #' 
 #' @return Returns a \code{\link{CTSS}} object.
 #' 
-#' @family loadFileIntoGRanges
+#' @family loadFileIntoGPos
 #' 
 #' @importFrom rtracklayer import.bed
 #' @importFrom S4Vectors Rle
@@ -506,7 +505,7 @@ import.bedmolecule <- function(filepath) {
 #' 
 #' @return A GRanges object where each line represents one nucleotide.
 #' 
-#' @family loadFileIntoGRanges
+#' @family loadFileIntoGPos
 #' 
 #' @importFrom rtracklayer import.bed
 #' @importFrom S4Vectors Rle
@@ -520,9 +519,9 @@ import.bedScore <- function(filepath) {
   df <- data.frame( p = as.character(promoters(gr, 0, 1))
                   , s = score(gr))
   df <- rowsum(df$s, df$p)
-  gr <- as(rownames(df), "GRanges")
-  score(gr) <- Rle(as.integer(df[,1]))
-  gr
+  gp <- as(rownames(df), "GPos")
+  score(gp) <- Rle(as.integer(df[,1]))
+  gp
 }
 
 #' import.bedCTSS
@@ -534,7 +533,7 @@ import.bedScore <- function(filepath) {
 #' 
 #' @param filepath The path to the BED file.
 #' 
-#' @family loadFileIntoGRanges
+#' @family loadFileIntoGPos
 #' 
 #' @importFrom rtracklayer import.bed
 #' @importFrom GenomeInfoDb sortSeqlevels
@@ -552,19 +551,19 @@ import.bedCTSS <- function(filepath) {
     stop("Input must not contain overlapping ranges.")
   seqlevels(gr) <- sortSeqlevels(seqlevels(gr))
   mcols(gr) <- DataFrame(score = Rle(as.integer(score(gr))))
-  gr
+  as(gr, "GPos")
 }
 
 #' import.CTSS
 #' 
-#' Imports a "CTSS" file in a GRanges object
+#' Imports a "CTSS" file in a [GPos] object
 #' 
 #' @param filepath The path to the "CTSS" file.
 #' 
 #' Note that the format of the "CTSS" files handled in this function is not
 #' the same as the FANTOM5 "CTSS" files (which are plain BED).
 #' 
-#' @family loadFileIntoGRanges
+#' @family loadFileIntoGPos
 #' 
 #' @importFrom utils read.table
 #' 
@@ -577,10 +576,11 @@ import.CTSS <- function(filepath) {
                       , sep = "\t"
                       , col.names  = c("chr",       "pos",     "strand",    "score")
                       , colClasses = c("character", "integer", "character", "integer"))
-  GRanges( seqnames = CTSS$chr
-           , ranges   = IRanges(CTSS$pos, width = 1)
-           , strand   = CTSS$strand
-           , score    = CTSS$score)
+  gp <- GPos(GRanges( seqnames = CTSS$chr
+                    , ranges   = IRanges(CTSS$pos, width = 1)
+                    , strand   = CTSS$strand))
+  score(gp) <- CTSS$score
+  gp
 }
 
 #' parseCAGEscanBlocksToGrangeTSS
@@ -615,12 +615,12 @@ parseCAGEscanBlocksToGrangeTSS <- function (blocks) {
   snd    <- as.integer(unlist(lapply(blocks, `[[`, 3)))
   strand <- ifelse(fst < snd, "+", "-")
   start  <- pmin(fst, snd)
-  GRanges(chr, IRanges(start, width = 1), strand)
+  GPos(GRanges(chr, IRanges(start, width = 1), strand))
 }
 
 #' import.CAGEscanMolecule
 #' 
-#' Imports a CAGEscan \dQuote{molecule} file in a GRanges object
+#' Imports a CAGEscan \dQuote{molecule} file in a [`GRanges`] object
 #' 
 #' @param filepath The path to the \dQuote{molecule} file.
 #' 
@@ -659,7 +659,7 @@ setMethod( "getCTSS", "CAGEexp"
 
   l <- bplapply(l, function(i) {
       message("\nReading in file: ", inputFiles(object)[i], "...")
-      gr <- loadFileIntoGRanges( filepath                   = inputFiles(object)[i]
+      gr <-    loadFileIntoGPos( filepath                   = inputFiles(object)[i]
                                , filetype                   = inputFilesType(object)[i]
                                , sequencingQualityThreshold = sequencingQualityThreshold
                                , mappingQualityThreshold    = mappingQualityThreshold
@@ -672,7 +672,7 @@ setMethod( "getCTSS", "CAGEexp"
   
   l <-  GRangesList(l)
   
-  # Step 2: Create GRanges representing all the nucleotides with CAGE counts in the list.
+  # Step 2: Create GPos representing all the nucleotides with CAGE counts in the list.
 
   rowRanges <- sort(unique(unlist(l)))
   mcols(rowRanges) <- NULL

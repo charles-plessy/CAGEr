@@ -8,15 +8,15 @@
 #' 
 #' @title Private functions for distance clustering.
 #' 
-#' @param max.dist See \code{\link{clusterCTSS}}.
+#' @param max.dist See [clusterCTSS()].
 #' @param useMulticore,nrCores See clusterCTSS.
 #' 
-#' @description The flow of data is that a \code{GRanges} object of CTSSes is progressively
-#' deconstructed, and data to form the clusters is progressively integrated in a
-#' \code{\link{data.table}} object, which is finally converted to GRanges at the end.  Doing
-#' the whole clustering with GRanges is more elegant, but looping on a GRangesList was just
-#' too slow.  Maybe the operation on the \code{data.table} is more efficient because it is
-#' vectorised.
+#' @description The flow of data is that a [CTSS] object of CTSSes is
+#' progressively deconstructed, and data to form the clusters is progressively
+#' integrated in a [data.table] object, which is finally converted to [GRanges]
+#' at the end.  Doing the whole clustering with `GRanges` is more elegant, but
+#' looping on a `GRangesList` was just too slow.  Maybe the operation on the
+#' `data.table` is more efficient because it is vectorised.
 #' 
 #' @examples
 #' # Get example data
@@ -27,16 +27,17 @@ NULL
 #' @name .cluster.ctss.strand
 #' @rdname distclu-functions
 #' 
-#' @description \code{.cluster.ctss.strand} does the strandless distance clustering of strandless
-#' CTSS positions from a single chromosome.  Input does not need to be sorted, but \emph{pay
-#' attention that the output is sorted}.
+#' @description `.cluster.ctss.strand` does the strandless distance clustering
+#' of strandless CTSS positions from a single chromosome.  Input does not need
+#' to be sorted, but _pay attention that the output is sorted_.
 #' 
-#' @param ctss.iranges.chr A IRanges object.
+#' @param ctss.ipos.chr A IPos object.
 #' 
-#' @return \code{.cluster.ctss.strand} returns an \code{\link{data.table}} object containing
-#'  arbitrary cluster IDs (as integers) for each CTSS.
+#' @return `.cluster.ctss.strand` returns an [data.table] object containing
+#' arbitrary cluster IDs (as integers) for each CTSS.
 #'  
 #' @importFrom data.table data.table
+#' @importFrom IRanges IPos
 #' @importFrom S4Vectors queryHits
 #' @importFrom S4Vectors runLength
 #' @importFrom S4Vectors runValue
@@ -45,31 +46,31 @@ NULL
 #' @examples
 #' 
 #' #.cluster.ctss.strand
-#' ctss.iranges.chr <- IRanges(c(1,3,4,12,14,25,28), w=1)
-#' CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 5)
+#' ctss.ipos.chr <- IPos(c(1,3,4,12,14,25,28))
+#' CAGEr:::.cluster.ctss.strand(ctss.ipos.chr, 5)
 #' 
 #' ctss.chr <- CTSScoordinatesGR(exampleCAGEexp)
 #' ctss.chr <- ctss.chr[strand(ctss.chr) == "+"]
-#' ctss.iranges.chr <- ranges(ctss.chr)
+#' ctss.ipos.chr <- ranges(ctss.chr)
 #' # Same result if not sorted
 #' identical(
-#'   CAGEr:::.cluster.ctss.strand(ctss.iranges.chr, 20),
-#'   CAGEr:::.cluster.ctss.strand(ctss.iranges.chr[sample(seq_along(ctss.iranges.chr))], 20)
+#'   CAGEr:::.cluster.ctss.strand(ctss.ipos.chr, 20),
+#'   CAGEr:::.cluster.ctss.strand(ctss.ipos.chr[sample(seq_along(ctss.ipos.chr))], 20)
 #' )
 #' # Returns an emtpy data.table object if given an empty IRanges object.
-#' identical(CAGEr:::.cluster.ctss.strand(IRanges(), 20), data.table::data.table())
+#' identical(CAGEr:::.cluster.ctss.strand(IPos(), 20), data.table::data.table())
 
-setGeneric(".cluster.ctss.strand", function(ctss.iranges.chr, max.dist) standardGeneric(".cluster.ctss.strand"))
+setGeneric(".cluster.ctss.strand", function(ctss.ipos.chr, max.dist) standardGeneric(".cluster.ctss.strand"))
 
-setMethod(".cluster.ctss.strand", "IRanges", function(ctss.iranges.chr, max.dist) {
-  if (identical(ctss.iranges.chr, IRanges())) return(data.table())
-  v <- Rle(rep(TRUE, max(start(ctss.iranges.chr)) + max.dist))
-  v[start(ctss.iranges.chr) + max.dist] <- FALSE
+setMethod(".cluster.ctss.strand", "IPos", function(ctss.ipos.chr, max.dist) {
+  if (identical(ctss.ipos.chr, IPos())) return(data.table())
+  v <- Rle(rep(TRUE, max(start(ctss.ipos.chr)) + max.dist))
+  v[start(ctss.ipos.chr) + max.dist] <- FALSE
   longRuns <- which(runLength(v) >= max.dist & runValue(v))
   c.starts <- cumsum(runLength(v))[longRuns] - max.dist
   c.ends <- c(cumsum(runLength(v))[(longRuns - 1)[-1]], length(v)) - max.dist
   clusters <- IRanges(start = c.starts, end = c.ends)
-  o <- findOverlaps(clusters, ctss.iranges.chr)
+  o <- findOverlaps(clusters, ctss.ipos.chr)
   data.table(id = queryHits(o))
 })
 

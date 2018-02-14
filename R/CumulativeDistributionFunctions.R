@@ -1,13 +1,13 @@
 #' @name coverage-functions
-#' @title Private functions behind \code{cumulativeCTSSdistribution}
-#' @param clusters GRanges as per \code{tagClustersGR}.
+#' @title Private functions behind `cumulativeCTSSdistribution`
+#' @param clusters GRanges as per [tagClustersGR()].
 #' @param useMulticore,nrCores See clusterCTSS.
 #' @examples 
 #' library(GenomicRanges)
 #' library(IRanges)
-#' ctss <- CAGEr:::.CTSS(GRanges( seqnames=Rle("chr1")
+#' ctss <- CAGEr:::.CTSS(GPos(GRanges( seqnames=Rle("chr1")
 #'                              , IRanges(c(1,3,4,12,14,25,28,31,35), w=1)
-#'                              , strand = "+"))
+#'                              , strand = "+")))
 #' score(ctss) <- 1
 #' ctss.chr <- CAGEr:::.CTSS.chr(ctss)
 #' clusters <- GRanges( seqnames = Rle("chr1")

@@ -289,8 +289,9 @@ setGeneric("CTSScoordinatesGR", function(object) standardGeneric("CTSScoordinate
 
 setMethod( "CTSScoordinatesGR", "CAGEset", function (object){
   ctssCoord <- object@CTSScoordinates
-  ctssCoord <- GRanges(ctssCoord$chr, IRanges(ctssCoord$pos, ctssCoord$pos), ctssCoord$strand)
-  genome(ctssCoord) <- object@genomeName
+  ctssCoord <- GPos(GRanges( ctssCoord$chr
+                           , IRanges(ctssCoord$pos, width = 1)
+                           , ctssCoord$strand))
   if(!identical(object@filteredCTSSidx, logical()))
     ctssCoord$filteredCTSSidx <- object@filteredCTSSidx
   if(!identical(CTSSexpressionClasses(object), character()))
