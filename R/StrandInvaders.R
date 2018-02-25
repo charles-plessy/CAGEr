@@ -110,7 +110,7 @@ setMethod( "removeStrandInvaders", "CAGEexp"
 setMethod( "findStrandInvaders", "CTSS"
          , function (object, distance, barcode, linker) {
   upstreamSeq <- getSeq( getRefGenome(genomeName(object))
-                       , promoters(GRanges(object), nchar(linker), 0)
+                       , suppressWarnings(trim(promoters(GRanges(object), nchar(linker), 0)))
                        , as.character = TRUE)
   strandInvaders <- Rle(stringdist(upstreamSeq, linker) <= distance)
   # Only remove if at least 2 of the last 3 nucleotides are guanosines,
