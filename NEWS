@@ -1,6 +1,6 @@
-Upcoming Changes in version 1.21.6 :
+Changes in version 1.21.6 :
 
-    o (experimental) mergeCAGEsets accepts CAGEexp objects as input.
+    o mergeCAGEsets accepts CAGEexp objects as input.
     o CTSSes are now represented by GPos objects, which are more compact in
       memory and on display, while still inheriting from GRanges.
 
