@@ -994,7 +994,8 @@ setGeneric( "consensusClustersGR"
 
 setMethod( "consensusClustersGR", "CAGEset"
          , function (object, sample, returnInterquantileWidth, qLow, qUp) {
-  if (is.null(sample)) return(CCdataframe2granges(object@consensusClusters))
+  if (! is.null(sample))
+    stop(dQuote("sample"), " argument is not supported for CAGEset objects.")
   CCdataframe2granges(object@consensusClusters)
 })
 
