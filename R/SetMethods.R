@@ -405,6 +405,25 @@ setMethod( "consensusClustersSE<-"
   if (validObject(object)) object
 })
 
+#' @name consensusClustersGR<-
+#' @rdname consensusClusters-set
+#' @export
+
+setGeneric("consensusClustersGR<-", function(object, value) standardGeneric("consensusClustersGR<-"))
+
+#' @rdname consensusClusters-set
+
+setMethod("consensusClustersGR<-", "CAGEset", function (object, value){
+	stop("Not implemented for the CAGEset class.")
+})
+
+#' @rdname consensusClusters-set
+
+setMethod("consensusClustersGR<-", "CAGEexp", function (object, value){
+  if (! is(value, "GRanges")) stop("Value must be a GRanges object.")
+  rowRanges(object@ExperimentList$consensusClusters) <- value
+  if (validObject(object)) object
+})
 
 
 #' @name consensusClustersQuantileLow<-
@@ -459,26 +478,6 @@ setMethod("CTSScumulativesCC<-", "CAGEset", function (object, value){
 
 setMethod("CTSScumulativesCC<-", "CAGEexp", function (object, value){
 	metadata(object)$CTSScumulativesConsensusClusters <- value
-  if (validObject(object)) object
-})
-
-#' @name consensusClustersGR<-
-#' @rdname consensusClusters-set
-#' @export
-
-setGeneric("consensusClustersGR<-", function(object, value) standardGeneric("consensusClustersGR<-"))
-
-#' @rdname consensusClusters-set
-
-setMethod("consensusClustersGR<-", "CAGEset", function (object, value){
-	stop("Not implemented for the CAGEset class.")
-})
-
-#' @rdname consensusClusters-set
-
-setMethod("consensusClustersGR<-", "CAGEexp", function (object, value){
-  if (! is(value, "GRanges")) stop("Value must be a GRanges object.")
-  rowRanges(object@ExperimentList$consensusClusters) <- value
   if (validObject(object)) object
 })
 
