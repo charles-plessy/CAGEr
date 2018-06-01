@@ -7,21 +7,21 @@
 #' @description Calculates the cumulative sum of raw CAGE counts along each tag
 #' cluster or consensus cluster in every sample within a CAGEr object.
 #' 
-#' @param object A \code{\link{CAGEr}} object
+#' @param object A [`CAGEr`] object
 #' 
-#' @param clusters \code{"tagClusters"} or \code{"consensusClusters"}.
+#' @param clusters `tagClusters` or `consensusClusters`.
 #'        
 #' @param useMulticore Logical, should multicore be used.
-#'        \code{useMulticore = TRUE} has no effect on non-Unix-like platforms.
-#' @param nrCores Number of cores to use when \code{useMulticore = TRUE}
-#'        (set to \code{NULL} to use all detected cores).
+#'        `useMulticore = TRUE` has no effect on non-Unix-like platforms.
+#' @param nrCores Number of cores to use when `useMulticore = TRUE`
+#'        (set to `NULL` to use all detected cores).
 #' 
-#' @return For \code{CAGEset} objects, the slot \code{CTSScumulativesTagClusters}
-#' (when \code{clusters = "tagClusters"}) or' \code{CTSScumulativesConsensusClusters}
-#' (when \code{clusters = "consensusClusters"}) of the will be occupied by the
+#' @return For `CAGEset` objects, the slot `CTSScumulativesTagClusters`
+#' (when `clusters = "tagClusters"`) or `CTSScumulativesConsensusClusters`
+#' (when `clusters = "consensusClusters"`) of the will be occupied by the
 #' list containing cumulative sum of the CAGE signal along genomic regions per
-#' CAGE experiment.  In \code{CAGEexp} objects, cumulative sums are stored
-#' in the metadata slot using the \code{RleList} class.
+#' CAGE experiment.  In `CAGEexp` objects, cumulative sums are stored
+#' in the metadata slot using the `RleList` class.
 #' 
 #' @author Vanja Haberle
 #' 

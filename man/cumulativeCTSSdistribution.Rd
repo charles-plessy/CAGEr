@@ -16,7 +16,7 @@ cumulativeCTSSdistribution(object, clusters = c("tagClusters",
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object}
 
-\item{clusters}{\code{"tagClusters"} or \code{"consensusClusters"}.}
+\item{clusters}{\code{tagClusters} or \code{consensusClusters}.}
 
 \item{useMulticore}{Logical, should multicore be used.
 \code{useMulticore = TRUE} has no effect on non-Unix-like platforms.}
@@ -26,7 +26,7 @@ cumulativeCTSSdistribution(object, clusters = c("tagClusters",
 }
 \value{
 For \code{CAGEset} objects, the slot \code{CTSScumulativesTagClusters}
-(when \code{clusters = "tagClusters"}) or' \code{CTSScumulativesConsensusClusters}
+(when \code{clusters = "tagClusters"}) or \code{CTSScumulativesConsensusClusters}
 (when \code{clusters = "consensusClusters"}) of the will be occupied by the
 list containing cumulative sum of the CAGE signal along genomic regions per
 CAGE experiment.  In \code{CAGEexp} objects, cumulative sums are stored
