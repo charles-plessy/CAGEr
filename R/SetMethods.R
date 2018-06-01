@@ -390,18 +390,22 @@ setMethod("consensusClustersSE<-", "CAGEset", function (object, value){
 
 #' @rdname consensusClusters-set
 
-setMethod("consensusClustersSE<-", c("CAGEexp", "RangedSummarizedExperiment"), function (object, value){
+setMethod( "consensusClustersSE<-"
+         , c("CAGEexp", "RangedSummarizedExperiment")
+         , function (object, value) {
   if (! all(colnames(value) == sampleLabels(object)))
-    stop ("The CTSS data must match the CAGEexp object, with samples in the same order.")
+    stop ("The expression data must match the CAGEexp object, with samples in the same order.")
   sampleMapSE <-
     listToMap(list(consensusClusters = data.frame( primary = sampleLabels(object)
-                                              , colname = colnames(value))))
+                                                 , colname = colnames(value))))
   sampleMap(object) <-
     rbind( sampleMap(object)[sampleMap(object)$assay != "consensusClusters",]
          , sampleMapSE)
   experiments(object)$consensusClusters <- value
   if (validObject(object)) object
 })
+
+
 
 #' @name consensusClustersQuantileLow<-
 #' @rdname consensusClustersQuantile
@@ -478,34 +482,6 @@ setMethod("consensusClustersGR<-", "CAGEexp", function (object, value){
   if (validObject(object)) object
 })
 
-
-#' @name consensusClustersSE<-
-#' @rdname consensusClusters-set
-
-setGeneric("consensusClustersSE<-", function(object, value) standardGeneric("consensusClustersSE<-"))
-
-#' @rdname consensusClusters-set
-
-setMethod("consensusClustersSE<-", "CAGEset", function (object, value){
-	stop("Not implemented for the CAGEset class.")
-})
-
-#' @rdname consensusClusters-set
-
-setMethod( "consensusClustersSE<-"
-         , c("CAGEexp", "RangedSummarizedExperiment")
-         , function (object, value) {
-  if (! all(colnames(value) == sampleLabels(object)))
-    stop ("The expression data must match the CAGEexp object, with samples in the same order.")
-  sampleMapSE <-
-    listToMap(list(consensusClusters = data.frame( primary = sampleLabels(object)
-                                                 , colname = colnames(value))))
-  sampleMap(object) <-
-    rbind( sampleMap(object)[sampleMap(object)$assay != "consensusClusters",]
-         , sampleMapSE)
-  experiments(object)$consensusClusters <- value
-  if (validObject(object)) object
-})
 
 # GeneExpSE
 # 
