@@ -343,38 +343,52 @@ setMethod("tagClustersGR<-", c("CAGEexp", "missing", "GRangesList"), function (o
 })
 
 #' @name consensusClusters<-
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 #' 
+#' @title Set consensus clusters from CAGEr objects
+#' 
+#' @description Set the information on consensus clusters in a [`CAGEr`]
+#'              object.
+#' 
+#' @param object A [`CAGEr`] object.
 #' @param value A \code{data.frame} of consensus clusters
+#' 
+#' @details These setter methods are mostly for internal use, but are exported
+#' in case they may be useful to advanced users.
+#' 
+#' @author Vanja Haberle
+#' @author Charles Plessy
+#' 
+#' @export
 
 setGeneric("consensusClusters<-", function(object, value) standardGeneric("consensusClusters<-"))
 
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 
 setMethod("consensusClusters<-", "CAGEset", function (object, value){
 	object@consensusClusters <- value
   if (validObject(object)) object
 })
 
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 
 setMethod("consensusClusters<-", "CAGEexp", function (object, value){
   stop("Not supported for CAGEexp.")
 })
 
 #' @name consensusClustersSE<-
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 #' @export
 
 setGeneric("consensusClustersSE<-", function(object, value) standardGeneric("consensusClustersSE<-"))
 
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 
 setMethod("consensusClustersSE<-", "CAGEset", function (object, value){
 	stop("Not implemented for the CAGEset class.")
 })
 
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 
 setMethod("consensusClustersSE<-", c("CAGEexp", "RangedSummarizedExperiment"), function (object, value){
   if (! all(colnames(value) == sampleLabels(object)))
@@ -445,18 +459,18 @@ setMethod("CTSScumulativesCC<-", "CAGEexp", function (object, value){
 })
 
 #' @name consensusClustersGR<-
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 #' @export
 
 setGeneric("consensusClustersGR<-", function(object, value) standardGeneric("consensusClustersGR<-"))
 
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 
 setMethod("consensusClustersGR<-", "CAGEset", function (object, value){
 	stop("Not implemented for the CAGEset class.")
 })
 
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 
 setMethod("consensusClustersGR<-", "CAGEexp", function (object, value){
   if (! is(value, "GRanges")) stop("Value must be a GRanges object.")
@@ -466,17 +480,17 @@ setMethod("consensusClustersGR<-", "CAGEexp", function (object, value){
 
 
 #' @name consensusClustersSE<-
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 
 setGeneric("consensusClustersSE<-", function(object, value) standardGeneric("consensusClustersSE<-"))
 
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 
 setMethod("consensusClustersSE<-", "CAGEset", function (object, value){
 	stop("Not implemented for the CAGEset class.")
 })
 
-#' @rdname consensusClusters
+#' @rdname consensusClusters-set
 
 setMethod( "consensusClustersSE<-"
          , c("CAGEexp", "RangedSummarizedExperiment")

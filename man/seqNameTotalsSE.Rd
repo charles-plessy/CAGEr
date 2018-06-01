@@ -40,10 +40,11 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{CTSSnormalizedTpm}},
   \code{\link{CTSStagCountTable}},
   \code{\link{CTSStagCount}}, \code{\link{GeneExpDESeq2}},
-  \code{\link{GeneExpSE}}, \code{\link{genomeName}},
-  \code{\link{inputFilesType}}, \code{\link{inputFiles}},
-  \code{\link{librarySizes}}, \code{\link{sampleLabels}},
-  \code{\link{tagClusters}}
+  \code{\link{GeneExpSE}},
+  \code{\link{consensusClustersGR}},
+  \code{\link{genomeName}}, \code{\link{inputFilesType}},
+  \code{\link{inputFiles}}, \code{\link{librarySizes}},
+  \code{\link{sampleLabels}}, \code{\link{tagClusters}}
 }
 \author{
 Charles Plessy

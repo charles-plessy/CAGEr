@@ -977,6 +977,9 @@ setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples, q)
 
 #' @name consensusClustersGR
 #' @rdname consensusClusters
+#' @return `consensusClustersGR` returns a [`ConsensusClusters`] object, which
+#' is a [`GRanges`] wrapper containing similar information as the data frame
+#' returned by `consensusClustersGR`.
 #' @export
 
 setGeneric( "consensusClustersGR"
@@ -1023,6 +1026,8 @@ setMethod( "consensusClustersGR", "CAGEexp"
 
 #' @name consensusClustersSE
 #' @rdname consensusClusters
+#' @return `consensusClustersSE` returns the [`SummarizedExperiment`] stored
+#' in the `consensusClusters` experiment slot of the CAGEexp object.
 #' @export
 
 setGeneric("consensusClustersSE", function(object) standardGeneric("consensusClustersSE"))
@@ -1084,38 +1089,39 @@ setMethod( "consensusClustersDESeq2", "CAGEexp"
 
 #' @name consensusClusters
 #' 
-#' @title Get or set consensus clusters from CAGEr objects
+#' @title Get consensus clusters from CAGEr objects
 #' 
-#' @description Extracts the information on consensus clusters from a CAGEr object.
+#' @description Extracts the information on consensus clusters from a [`CAGEr`]
+#'              object.
 #' 
-#' @param object A \code{\link{CAGEr}} object.
+#' @param object A [`CAGEr`] object.
 #' 
-#' @param sample Optional. Label of the CAGE dataset (experiment, sample) for which to extract
-#' sample-specific information on consensus clusters.
+#' @param sample Optional. Label of the CAGE dataset (experiment, sample) for
+#'        which to extract sample-specific information on consensus clusters.
 #' 
-#' @param returnInterquantileWidth Should the interquantile width of consensus clusters in
-#' specified sample be returned.  Used only when \code{sample} argument is specified, otherwise
-#' ignored.
+#' @param returnInterquantileWidth Should the interquantile width of consensus
+#'        clusters in specified sample be returned.  Used only when `sample`
+#'        argument is specified, otherwise ignored.
 #' 
-#' @param qLow Position of which quantile should be used as a left (lower) boundary when
-#' calculating interquantile width.  Used only when \code{sample} argument is specified and
-#' \code{returnInterquantileWidth = TRUE}, otherwise ignored.
+#' @param qLow,qUp Position of which quantile should be used as a left (lower)
+#'        or right (upper) boundary when calculating interquantile width.  Used
+#'        only when `sample` argument is specified and
+#'        `returnInterquantileWidth = TRUE`, otherwise ignored.
 #' 
-#' @param qUp Position of which quantile should be used as a right (upper) boundary when
-#' calculating interquantile width.  Used only when \code{sample} argument is specified and
-#' \code{returnInterquantileWidth = TRUE}, otherwise ignored.
-#' 
-#' @return Returns a \code{data.frame} with information on consensus clusters, including genomic
-#' coordinates.  When \code{sample} argument is NOT specified, total CAGE signal across all CAGE
-#' datasets (samples) is returned in the \code{tpm} column.  When \code{sample} argument is
-#' specified, the \code{tpm} column contains CAGE signal of consensus clusters in that specific
-#' sample.  When \code{returnInterquantileWidth = TRUE}, additional sample-specific information
-#' is returned, including position of the dominant TSS, and interquantile width of the consensus
-#' clusters in the specified sample.
+#' @return `consensusClusters` returns a `data.frame` with information on
+#' consensus clusters, including genomic coordinates.  When `sample` argument is
+#' NOT specified, total CAGE signal across all CAGE datasets (samples) is
+#' returned in the `tpm` column.  When `sample` argument is specified, the `tpm`
+#' column contains CAGE signal of consensus clusters in that specific sample.
+#' When `returnInterquantileWidth = TRUE`, additional sample-specific information
+#' is returned, including position of the dominant TSS, and interquantile width
+#' of the consensus clusters in the specified sample.
 #' 
 #' @author Vanja Haberle
 #' 
-#' @family CAGEr accessor functions
+#' @seealso [`consensusClusters<-()`]
+#' 
+#' @family CAGEr accessor methods
 #' @family CAGEr clusters functions
 #' 
 #' @examples
