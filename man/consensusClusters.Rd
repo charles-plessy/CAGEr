@@ -51,7 +51,11 @@ only when \code{sample} argument is specified and
 \value{
 \code{consensusClustersGR} returns a \code{\link{ConsensusClusters}} object, which
 is a \code{\link{GRanges}} wrapper containing similar information as the data frame
-returned by \code{consensusClustersGR}.
+returned by \code{consensusClustersGR}.  The \code{score} columns indicates the
+normalised expression value of each cluster, either across all samples
+(\code{sample = NULL}), or for the selected sample.  The \code{tpm} column provides
+the same information for compatibility with \code{CAGEset} objects but may be
+removed in the future.
 
 \code{consensusClustersSE} returns the \code{\link{SummarizedExperiment}} stored
 in the \code{consensusClusters} experiment slot of the CAGEexp object.

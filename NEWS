@@ -1,3 +1,11 @@
+Changes in version 1.23.1 :
+
+BUG FIXES
+
+    o consensusClustersGR: Report expression score of the selected sample
+      (instead of silently ignoring the "sample" argument and reporting
+      expression sum on all the samples).
+
 Changes in version 1.22.0 :
 
 BACKWARDS-INCOMPATIBLE CHANGES:
