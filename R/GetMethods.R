@@ -979,7 +979,12 @@ setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples, q)
 #' @rdname consensusClusters
 #' @return `consensusClustersGR` returns a [`ConsensusClusters`] object, which
 #' is a [`GRanges`] wrapper containing similar information as the data frame
-#' returned by `consensusClustersGR`.
+#' returned by `consensusClustersGR`.  The `score` columns indicates the
+#' normalised expression value of each cluster, either across all samples
+#' (`sample = NULL`), or for the selected sample.  The `tpm` column provides
+#' the same information for compatibility with `CAGEset` objects but may be
+#' removed in the future.
+#' 
 #' @export
 
 setGeneric( "consensusClustersGR"
@@ -994,9 +999,19 @@ setGeneric( "consensusClustersGR"
 
 setMethod( "consensusClustersGR", "CAGEset"
          , function (object, sample, returnInterquantileWidth, qLow, qUp) {
+           
+  if (returnInterquantileWidth)
+    stop( dQuote("returnInterquantileWidth")
+        ," argument is not supported for CAGEset objects.")
+  if (!is.null(qLow))
+    stop(dQuote("qLow"), " argument is not supported for CAGEset objects.")
+  if (!is.null(qUp))
+    stop(dQuote("qUp"), " argument is not supported for CAGEset objects.")
+           
+  gr <- CCdataframe2granges(object@consensusClusters)
   if (! is.null(sample))
-    stop(dQuote("sample"), " argument is not supported for CAGEset objects.")
-  CCdataframe2granges(object@consensusClusters)
+    gr$tpm <- gr$score <- consensusClustersTpm(object)[,sample]
+  gr
 })
 
 #' @rdname consensusClusters
@@ -1010,16 +1025,21 @@ setMethod( "consensusClustersGR", "CAGEexp"
   if(is.null(experiments(object)$consensusClusters))
     stop("No consensus clusters found.  See ", sQuote("?aggregateTagClusters"), " on how to create them.")
   cc <- .ConsensusClusters(rowRanges(consensusClustersSE(object)))
-  if (!is.null(qLow))
-    mcols(cc)[[paste0("q_", qLow)]] <- consensusClustersQuantile(object, sample, qLow)
-  if (!is.null(qUp))
-    mcols(cc)[[paste0("q_", qUp)]]  <- consensusClustersQuantile(object, sample, qUp)
-  if (returnInterquantileWidth == TRUE) {
-    if (is.null(qLow) | is.null(qUp))
-      stop( "Set ", sQuote("qLow"), " and ", sQuote("qUp")
-          , " to specify the quantile positions used to calculate width.")
-    mcols(cc)[["interquantile_width"]] = mcols(cc)[[paste0("q_", qUp )]] -
-                                         mcols(cc)[[paste0("q_", qLow)]] + 1
+  if(!is.null(sample)) {
+    if (!is.null(qLow))
+      mcols(cc)[[paste0("q_", qLow)]] <-
+        consensusClustersQuantile(object, sample, qLow)
+    if (!is.null(qUp))
+      mcols(cc)[[paste0("q_", qUp)]]  <-
+        consensusClustersQuantile(object, sample, qUp)
+    if (returnInterquantileWidth == TRUE) {
+      if (is.null(qLow) | is.null(qUp))
+        stop( "Set ", sQuote("qLow"), " and ", sQuote("qUp")
+            , " to specify the quantile positions used to calculate width.")
+      mcols(cc)[["interquantile_width"]] = mcols(cc)[[paste0("q_", qUp )]] -
+                                           mcols(cc)[[paste0("q_", qLow)]] + 1
+    }
+    cc$tpm <- cc$score <- consensusClustersTpm(object)[,sample]
   }
   cc
 })
