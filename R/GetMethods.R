@@ -1189,34 +1189,32 @@ setMethod( "consensusClusters", "CAGEr"
     if(inherits(object, "CAGEexp"))
       stop( sQuote("sample"), " option not supported for CAGEexp objects.  Use "
           , sQuote("consensusClustersGR()"), " instead.")
-        
-    cc.s <- cbind(cluster = as.integer(rownames(consensusClustersTpm(object))), tpm = consensusClustersTpm(object)[,sample])
+           
+    # Set score to expression levels in the selected sample
+    cc$tpm <- consensusClustersTpm(object)[,sample]
     
-    # Return only samples expressed in a given sample
     if(! returnInterquantileWidth) {
-      cc <- merge( cc[,-which(colnames(cc) == "tpm")], cc.s
-                 , by.x = 1, by.y = 1, all.x = T, all.y = F)
-      cc <- subset(cc, cc$tpm>0)
-      
-    # If interquantile width requested, check consistensy with other options.
-    } else if (is.null(qLow) | is.null(qUp)) {
-      stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")
-      
-    # Return only samples expressed in a given sample, with interquantile width
+      # Return only clusters expressed in a given sample
+      return(cc[cc$tpm > 0,])
     } else {
-      cc.cumsum <- CTSScumulativesCC(object)[[sample]]
-      a <- lapply(cc.cumsum, function(x) {.get.dominant.ctss(as.numeric(x), isCumulative = T)})
-      b <- data.frame(consensus.cluster = as.integer(names(a)), dominant_ctss = unlist(a))
-      #cc <- merge(b, cc.s, by.x = 1, by.y = 1, all.x = T, all.y = F)
+      # If interquantile width requested, check consistensy with other options.
+      if (is.null(qLow) | is.null(qUp))
+        stop("No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")
       
-      cc <- merge(cc[,-which(colnames(cc) == "tpm")], b, by.x = 1, by.y = 1, all.x = F, all.y = T)
+      # Get dominant TSS position.
+      cc.cumsum <- CTSScumulativesCC(object)[[sample]]
+      cc$dominant_ctss <- sapply(cc.cumsum, .get.dominant.ctss, isCumulative = T)
       cc$dominant_ctss <- cc$start + cc$dominant_ctss
       
-      cc <- merge(cc, cc.s, by.x = 1, by.y = 1, all.x = T, all.y = F)
+      # Return only clusters expressed in a given sample
+      cc <- cc[cc$tpm > 0,]
       
+      # Get dominant TSS expression score
       ctss <- CTSSnormalizedTpm(object)[,c("chr", "pos", "strand", sample)]
-      cc <- merge(cc, ctss, by.x = c("chr", "strand", "dominant_ctss"), by.y = c("chr", "strand", "pos"), all.x = T, all.y = F)
-      colnames(cc)[ncol(cc)] <- "tpm.dominant_ctss"
+      pick <- match( paste(  cc$chr,   cc$dominant_ctss,   cc$strand)
+                   , paste(ctss$chr, ctss$pos + 1,       ctss$strand))
+      
+      cc$tpm.dominant_ctss <- ctss[[sample]][pick]
       cc <- cc[,c("consensus.cluster", "chr", "start", "end", "strand", "dominant_ctss", "tpm", "tpm.dominant_ctss")]
       
       cc.w <- merge(consensusClustersQuantileLow(object, sample), consensusClustersQuantileUp(object, sample))
@@ -1226,6 +1224,7 @@ setMethod( "consensusClusters", "CAGEr"
     }
   return(cc)
 })
+
 
 #' @name consensusClustersQuantile
 #' @title Quantile metadata stored in CAGEr objects.
