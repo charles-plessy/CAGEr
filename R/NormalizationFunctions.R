@@ -124,7 +124,7 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 setGeneric(".simpleTpm", function(tag.counts) {
   standardGeneric(".simpleTpm")})
 
-setMethod(".simpleTpm", "integer", function (tag.counts) {
+setMethod(".simpleTpm", "numeric", function (tag.counts) {
   tag.counts / sum(tag.counts) * 10^6
 })
 
