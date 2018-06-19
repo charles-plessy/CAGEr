@@ -6,6 +6,10 @@ BUG FIXES
       (instead of silently ignoring the "sample" argument and reporting
       expression sum on all the samples).
 
+Changes in version 1.22.2 :
+
+    o normalizeTagCount works again on CAGEset objects.
+
 Changes in version 1.22.0 :
 
 BACKWARDS-INCOMPATIBLE CHANGES:
