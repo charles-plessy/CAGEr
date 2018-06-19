@@ -38,9 +38,9 @@ the referent distribution.  Used only when \code{method = "powerLaw"}, otherwise
 ignored.  See Details.}
 }
 \value{
-The slot \code{normalizedTpmMatrix} of the provided \code{\link{CAGEset}}
-object will be occupied by normalized CAGE signal values per CTSS across all experiments,
-or with the raw tag counts (in case \code{method = "none"}).
+The slot \code{normalizedTpmMatrix} of the provided \code{\link{CAGEset}} object
+will be occupied by normalized CAGE signal values per CTSS across all
+experiments, or with the raw tag counts (in case \code{method = "none"}).
 }
 \description{
 Normalizes raw CAGE tag count per CTSS in all experiments to a same
@@ -60,7 +60,7 @@ together with \code{alpha} determines the value of \code{beta}).  Thus, by speci
 parameters \code{alpha} and \code{T} a desired referent power-law distribution can be
 selected.  However, real CAGE datasets deviate from the power-law in the areas of very
 low and very high number of tags, so it is advisable to discard these areas before
-fitting a power-law distribution.  \code{fitInRange} parameter allows to specify a
+fitting a power-law distribution. \code{fitInRange} parameter allows to specify a
 range of values (lower and upper limit of the number of CAGE tags) that will be used to
 fit a power-law.  Plotting reverse cumulatives using \code{\link{plotReverseCumulatives}}
 function can help in choosing the best range of values.  After fitting a power-law
@@ -69,14 +69,16 @@ referent distribution specified by \code{alpha} and \code{T}. When \code{T = 10^
 normalized values are expressed as tags per million (tpm).
 }
 \examples{
+normalizeTagCount(exampleCAGEset, method = "simpleTpm")
 normalizeTagCount(exampleCAGEset, method = "powerLaw")
 normalizeTagCount(exampleCAGEexp, method = "simpleTpm")
+normalizeTagCount(exampleCAGEexp, method = "powerLaw")
 
 }
 \references{
-Balwierz \emph{et al}. (2009) Methods for analyzing deep sequencing expression data:
+Balwierz \emph{et al.} (2009) Methods for analyzing deep sequencing expression data:
 constructing the human and mouse promoterome with deepCAGE data, \emph{Genome Biology}
-\bold{10}(7):R79.
+\strong{10}(7):R79.
 }
 \seealso{
 \code{\link{plotReverseCumulatives}}, \code{\link{CTSSnormalizedTpm}}
