@@ -1,51 +1,8 @@
-Changes in version 1.21.6 :
+Changes in version 1.22.2 :
 
-    o mergeCAGEsets accepts CAGEexp objects as input.
-    o CTSSes are now represented by GPos objects, which are more compact in
-      memory and on display, while still inheriting from GRanges.
+    o normalizeTagCount works again on CAGEset objects.
 
-Changes in version 1.21.5 :
-
-    o Simplified CAGEexp constructor, similar to the one for CAGEset objects.
-    o New removeStrandInvaders() function to count and remove strand-invasion
-      artefacts (see Tang et al., 2013, doi:10.1093/nar/gks112).
-    o Tag clusters are sorted before being stored in the CAGEr objects.
-    o plotAnnot:
-      - new "facet" option for running ggplot2::facet_wrap() on the plots.
-      - better documentation for the "scopes" of the plot.
-      - removed "customScope" argument: pass a function directly to "scope"
-        argument instead.
-    o plotCorrelation2: 
-      - new methods for SummarizedExperiment, DataFrame, data.frame and matrix.
-      - Corrected the correlation matrix output (previously the diagonal values
-        were 0 and the other values were swapped).
-    o plotReverseCumulatives:
-      - fitInRange accepts a value of "NULL" to turn off power law fitting.
-      - New "legend" argument to remove legend when set to "FALSE".
-      - Axis range and labels can be modified with xlab/ylab and xlim/ylim.
-      - Ladders steps start on the values instead of being centered on.
-    o setColors: allow lowercase in color names.
-
-Changes in version 1.21.4 :
-
-    o Corrected a bug that was crashing CAGEset objects when loading more than
-      one BAM file.
-    o Load BAM as gapped alignment with readGAlignments() instead of
-      scanBam().  Without this correction, TSS position on minus strand is
-      incorrect in case of indels in the read.
-    o Partial support for loading BAM data in CAGEexp objects.
-      (correctSystematicG is not yet implemented)
-    o Added multicore processing in hanabi function.
-
-Changes in version 1.21.3 :
-
-    o Enforce syntactically valid sample names in CAGEexp class.
-
-Changes in version 1.21.2 :
-
-    o Use a plain DataFrame as rowData in seqNameTotals slots.
-
-CHANGES in version 1.21.1 :
+Changes in version 1.22.0 :
 
 BACKWARDS-INCOMPATIBLE CHANGES:
 
@@ -58,26 +15,29 @@ NEW FEATURES
     o New "CAGEexp" class extending the MultiAssayExperiment class.  It stores
       expression data more efficiently than "CAGEset", and uses core
       Bioconductor typse natively.  For backwards compatibility it also support
-      many of the original generic functions for "CAGEset" objects.
-    o New "CTSS" and "TagClusters" classes wrapping GRanges objects, for more
-      type safety.
+      many of the original generic functions for "CAGEset" objects.  Sample
+      names in CAGEexp objects must by syntactically valid.  Some methods
+      are not yet available for CAGEexp object (see the vignette).  Conversely
+      some new functions will not be available for CAGEset objects.
+    o New "CTSS" and "TagClusters" classes wrapping GPos and GRanges objects,
+      for more type safety.
     o New functions for quality controls such as plotAnnot() or hanabiPlot().
       See the CAGEexp vignette for details.
+    o New removeStrandInvaders() function to count and remove strand-invasion
+      artefacts (see Tang et al., 2013, doi:10.1093/nar/gks112).
     o Data export as DESeqDataSet object for DESeq2 with the new
-      "consensusClustersDESeq2" and "GeneExpDESeq2" functions.
+      consensusClustersDESeq2() and GeneExpDESeq2() functions.
     o New "bedctss" format to load the FANTOM5 and FANTOM6 CAGE data.
-    o New "CAGEscanMolecule" format to load CAGEscan 3.0 data.
     o Multicore parallelisation with BiocParallel instead of parallel.
     o New function sampleList() to help looping on samples with lapply().
     o New plotCorrelation2() function, faster than plotCorrelation() because
       it is plain black and white.
-    o Multicore loading of CTSS data in CAGEexp object.
+    o Multicore loading of CTSS data in CAGEexp objects.
     
 OTHER CHANGES
 
     o Example data "exampleCAGEexp", "exampleCAGEexp" and "exampleZv9_annot"
       are now is lazy-loaded.
-    o Passes R CMD check without errors or notes.
     o NULL can be passed as genome name, to circumvent the requirement for a
       BSgenome object when actually not needing one.
     o In CAGEexp objects, expression quantile positions are given relative
@@ -85,11 +45,25 @@ OTHER CHANGES
     o For performance reasons, the positions of a quantile Q is now calculated
       as the position of the first base where cumulative expression is higher
       or equal to Q% of the total expression of a cluster.
+    o plotReverseCumulatives():
+      - fitInRange accepts a value of "NULL" to turn off power law fitting.
+      - New "legend" argument to remove legend when set to "FALSE".
+      - Axis range and labels can be modified with xlab/ylab and xlim/ylim.
+      - Ladders steps start on the values instead of being centered on.
+    o setColors(): allow lowercase in color names.
+
+BUG FIXES
+
+    o Corrected a bug that was crashing CAGEset objects when loading more than
+      one BAM file.
+    o Load BAM as gapped alignment with readGAlignments() instead of
+      scanBam().  Without this correction, TSS position on minus strand is
+      incorrect in case of indels in the read.
 
 DOCUMENTATION UPDATES
 
     o Roxygen is used to generate the manual pages.
-    o A new vignette describes the "CAGEexp" class.
+    o A new HTML vignette describes the "CAGEexp" class.
 
 CHANGES in version 1.18.1 :
 
