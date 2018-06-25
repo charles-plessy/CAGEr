@@ -151,25 +151,36 @@ setMethod( "clusterCTSS", "CAGEset"
 	         "clusterCTSS() needs normalized values to create its output tables, that ",
 	         "include TPM expression columns.")
 	
+	getCTSSdataSE <- function() {
 	if(threshold > 0){
 		nr.pass.threshold <- apply(data, 1, function(x) {sum(x >= threshold)})
-		idx <- nr.pass.threshold >= min(nrPassThreshold, length(sample.labels))
-		gc()
-		data <- CTSStagCountSE(object)[idx,]
-		gc()
+		idx <<- nr.pass.threshold >= min(nrPassThreshold, length(sample.labels))
+		data <<- CTSStagCountSE(object)[idx,]
 	}else{
-		data <- CTSStagCountSE(object)
-		idx <- rep(TRUE, nrow(data))
-
-	}
+		data <<- CTSStagCountSE(object)
+		idx <<- rep(TRUE, nrow(data))
+	}}
 	
+	getCTSSdatadf <- function() {
+	if(threshold > 0){
+		nr.pass.threshold <- apply(data, 1, function(x) {sum(x >= threshold)})
+		idx <<- nr.pass.threshold >= min(nrPassThreshold, length(sample.labels))
+		data <<- cbind(CTSScoordinates(object)[idx,], object@normalizedTpmMatrix[idx,,drop=F])
+	}else{
+		data <<- cbind(CTSScoordinates(object), object@normalizedTpmMatrix)
+		idx <<- rep(TRUE, nrow(data))
+	}}
+		
 	message("Clustering...")
 	method <- match.arg(method)
 	if(method == "distclu"){
+	  getCTSSdataSE()
 		ctss.cluster.list <- .distclu(se = data, max.dist = maxDist, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, useMulticore = useMulticore, nrCores = nrCores)
 	}else if (method == "paraclu"){
+	  getCTSSdatadf()
 		ctss.cluster.list <- .paraclu(data = data, sample.labels = sample.labels, minStability = minStability, maxLength = maxLength, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, reduceToNonoverlapping = reduceToNonoverlapping, useMulticore = useMulticore, nrCores = nrCores)
 	}else if(method == "custom"){
+	  getCTSSdatadf()
 		if(length(customClusters)==0){
 			stop("'customClusters' must be given when method = \"custom\"")
 		}
@@ -178,7 +189,10 @@ setMethod( "clusterCTSS", "CAGEset"
 	
 	object@filteredCTSSidx <- idx
 	object@clusteringMethod <- method
-	object@tagClusters <- lapply(ctss.cluster.list, TCgranges2dataframe)
+	if (method == "distclu") {
+	  ctss.cluster.list <- lapply(ctss.cluster.list, TCgranges2dataframe)
+	}
+	object@tagClusters <- ctss.cluster.list
 	assign(objName, object, envir = parent.frame())
 	invisible(1)
 })
