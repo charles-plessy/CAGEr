@@ -1,8 +1,12 @@
-Changes in version 1.22.2 :
+Changes in version 1.22.3:
+
+    o clusterCTSS(method = "paraclu") works again on CAGEset objects.
+
+Changes in version 1.22.2:
 
     o normalizeTagCount works again on CAGEset objects.
 
-Changes in version 1.22.0 :
+Changes in version 1.22.0:
 
 BACKWARDS-INCOMPATIBLE CHANGES:
 
