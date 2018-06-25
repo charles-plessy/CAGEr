@@ -32,86 +32,85 @@ clusterCTSS(object, threshold = 1, nrPassThreshold = 1,
 in \code{< nrPassThreshold} experiments.}
 
 \item{thresholdIsTpm}{Logical indicating if \code{threshold} is expressed in
-raw tag counts (FALSE) or normalized signal (TRUE).}
+raw tag counts (\code{FALSE}) or normalized signal (\code{TRUE}).}
 
 \item{method}{Method to be used for clustering: \code{"distclu"},
 \code{"paraclu"} or \code{"custom"}.  See Details.}
 
-\item{maxDist}{Maximal distance between two neighbouring CTSSs for them to be part of the
-same cluster.  Used only when \code{method = "distclu"}, otherwise ignored.}
+\item{maxDist}{Maximal distance between two neighbouring CTSSs for them to be
+part of the same cluster.  Used only when \code{method = "distclu"},
+otherwise ignored.}
 
 \item{removeSingletons}{Logical indicating if tag clusters containing only
 one CTSS be removed.  Ignored when \code{method = "custom"}.}
 
-\item{keepSingletonsAbove}{Controls which singleton tag clusters will be removed.
-When \code{removeSingletons = TRUE}, only singletons with signal
-\code{< keepSingletonsAbove} will be removed.  Useful to prevent removing highly
-supported singleton tag clusters.  Default value \code{Inf} results in removing all
-singleton TCs when \code{removeSingletons = TRUE}.  Ignored when
-\code{removeSingletons = FALSE} or \code{method = "custom"}.}
+\item{keepSingletonsAbove}{Controls which singleton tag clusters will be
+removed.  When \code{removeSingletons = TRUE}, only singletons with signal
+\code{< keepSingletonsAbove} will be removed.  Useful to prevent removing
+highly supported singleton tag clusters.  Default value \code{Inf} results
+in removing all singleton TCs when \code{removeSingletons = TRUE}.  Ignored
+when \code{method = "custom"}.}
 
-\item{minStability}{Minimal stability of the cluster, where stability is defined as ratio
-between maximal and minimal density value for which this cluster is maximal scoring.
-For definition of stability refer to Frith \emph{et al}., Genome Research, 2007.
-Clusters with stability \code{< minStability} will be discarded.  Used only when
-\code{method = "paraclu"}, otherwise ignored.}
+\item{minStability}{Minimal stability of the cluster, where stability is
+defined as ratio between maximal and minimal density value for which
+this cluster is maximal scoring.  For definition of stability refer to
+Frith \emph{et al.}, Genome Research, 2007.  Clusters with stability
+\code{< minStability} will be discarded.  Used only when \code{method = "paraclu"}.}
 
 \item{maxLength}{Maximal length of cluster in base-pairs.  Clusters with length
 \code{> maxLength} will be discarded.  Ignored when \code{method = "custom"}.}
 
-\item{reduceToNonoverlapping}{Logical, should smaller clusters contained within bigger
-cluster be removed to make a final set of tag clusters non-overlapping. Used only
-when \code{method = "paraclu"}.  See Details.}
+\item{reduceToNonoverlapping}{Logical, should smaller clusters contained
+within bigger cluster be removed to make a final set of tag clusters
+non-overlapping. Used only \code{method = "paraclu"}.}
 
 \item{customClusters}{Genomic coordinates of predefined regions to be used to
-segment the CTSSs.  The format is either a \code{\link{GRanges}}
-object or a \code{data.frame} with the following columns: \code{chr}
-(chromosome name), \code{start} (0-based start coordinate), \code{end}
-(end coordinate), \code{strand} (either \code{"+"}, or \code{"-"}).
-Used only when \code{method = "custom"}.}
+segment the CTSSs.  The format is either a \code{\link{GRanges}} object or a
+\code{\link{data.frame}} with the following columns: \code{chr} (chromosome name),
+\code{start} (0-based start coordinate), \code{end} (end coordinate), \code{strand}
+(either \code{"+"}, or \code{"-"}).  Used only when \code{method = "custom"}.}
 
 \item{useMulticore}{Logical, should multicore be used.  \code{useMulticore = TRUE}
 has no effect on non-Unix-like platforms.}
 
-\item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}.  Default value
-\code{NULL} uses all detected cores.}
+\item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}.  Default
+value \code{NULL} uses all detected cores.}
 }
 \value{
 The slots \code{clusteringMethod}, \code{filteredCTSSidx} and \code{tagClusters} of
-the provided \code{\link{CAGEset}} object will be occupied by the information on method used
-for clustering, CTSSs included in the clusters and list of tag clusters per CAGE experiment,
-respectively.  To retrieve tag clusters for individual CAGE dataset use
-\code{\link{tagClusters}} function.
+the provided \code{\link{CAGEset}} object will be occupied by the information on method
+used for clustering, CTSSs included in the clusters and list of tag clusters
+per CAGE experiment, respectively.  To retrieve tag clusters for individual
+CAGE dataset use the \code{\link[=tagClusters]{tagClusters()}} function.
 
-In \code{\link{CAGEexp}} objects, the results will be stored as a
-\code{\link{GRangesList}} of \code{\link{TagClusters}} objects in the metadata
-slot \code{tagClusters}.  The \code{TagClusters} object will contain a
-\code{filteredCTSSidx} column if appropriate.  The clustering method name
-is saved in the metadata slot of the \code{GRangesList}.
+In \code{\link{CAGEexp}} objects, the results will be stored as a \code{GRangesList} of
+\code{\link{TagClusters}} objects in the metadata slot \code{tagClusters}.  The
+\code{TagClusters} objects will contain a \code{filteredCTSSidx} column if appropriate.
+The clustering method name is saved in the metadata slot of the \code{GRangesList}.
 }
 \description{
 Clusters individual CAGE transcription start sites (CTSSs) along
-the genome into tag clusters (TCs) using specified \emph{ab initio} method, or assigns
-them to predefined genomic regions.
+the genome into tag clusters (TCs) using specified \emph{ab initio} method, or
+assigns them to predefined genomic regions.
 }
 \details{
-Two \emph{ab initio} methods for clustering TSSs along the genome are supported:
-\code{"distclu"} and \code{"paraclu"}.  \code{"distclu"} is an implementation of simple
-distance-based clustering of data attached to sequences, where two neighbouring TSSs are
+The \code{"distclu"} method is an implementation of simple distance-based
+clustering of data attached to sequences, where two neighbouring TSSs are
 joined together if they are closer than some specified distance (see
-\code{\link{distclu-functions}} for implementation details.  \code{"paraclu"} is an
-implementation of Paraclu algorithm for parametric clustering of data attached to
-sequences developed by M. Frith (Frith \emph{et al.}, Genome Research, 2007,
-\href{http://cbrc3.cbrc.jp/~martin/paraclu/}{http://cbrc3.cbrc.jp/~martin/paraclu/}).
-Since Paraclu finds #' clusters within clusters (unlike distclu), additional
-parameters (\code{removeSingletons}, \code{keepSingletonsAbove},
-\code{minStability}, \code{maxLength} and \code{reduceToNonoverlapping}) can
-be specified to simplify the output by discarding too small (singletons) or
-too big clusters, and to reduce the clusters to a final set of non-overlapping
-clusters.  Clustering is done for every CAGE dataset within the CAGEr object
-separately, resulting in a different set of tag clusters for every CAGE dataset. TCs from
-different datasets can further be aggregated into a single referent set of consensus
-clusters by calling the \code{\link{aggregateTagClusters}} function.
+\code{\link{distclu-functions}} for implementation details.
+
+\code{"paraclu"} is an implementation of Paraclu algorithm for parametric
+clustering of data attached to sequences (Frith \emph{et al.}, Genome Research,
+2007).  Since Paraclu finds clusters within clusters (unlike distclu),
+additional parameters (\code{removeSingletons}, \code{keepSingletonsAbove},
+\code{minStability}, \code{maxLength} and \code{reduceToNonoverlapping}) can be specified to
+simplify the output by discarding too small (singletons) or too big clusters,
+and to reduce the clusters to a final set of non-overlapping clusters.
+
+Clustering is done for every CAGE dataset within the CAGEr object separately,
+resulting in a different set of tag clusters for every CAGE dataset. TCs from
+different datasets can further be aggregated into a single referent set of
+consensus clusters by calling the \code{\link{aggregateTagClusters}} function.
 }
 \examples{
 head(tagClusters(exampleCAGEset, "sample1"))
@@ -127,13 +126,12 @@ tagClustersGR(exampleCAGEexp, "Zf.30p.dome")
 
 }
 \references{
-Frith \emph{et al.} (2007) A code for transcription initiation in mammalian
-genomes, \emph{Genome Research} \bold{18}(1):1-12,
+Frith \emph{et al.} (2007) A code for transcription initiation in
+mammalian genomes, \emph{Genome Research} \strong{18}(1):1-12,
 (\href{http://www.cbrc.jp/paraclu/}{http://www.cbrc.jp/paraclu/}).
 }
 \seealso{
-\code{\link{tagClusters}}, \code{\link{aggregateTagClusters}} and
-\code{\link{CTSSclusteringMethod}}.
+\code{\link{tagClusters}}, \code{\link{aggregateTagClusters}} and \code{\link{CTSSclusteringMethod}}.
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{CustomConsensusClusters}},
