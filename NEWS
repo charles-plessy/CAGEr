@@ -1,3 +1,10 @@
+Upcoming changes:
+
+BUG FIXES
+
+    o Repaired paraclu support for CAGEset objects.
+    o normalizeTagCount works again on CAGEset objects.
+
 Changes in version 1.23.1 :
 
 BUG FIXES
