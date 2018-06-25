@@ -189,7 +189,7 @@ setMethod( "clusterCTSS", "CAGEexp"
                    , reduceToNonoverlapping, customClusters, useMulticore, nrCores) {
 
   objName <- deparse(substitute(object))
-  assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
+  assay <- ifelse(isTRUE(thresholdIsTpm), "normalizedTpmMatrix", "counts")
   data <- CTSStagCountSE(object)
 
   if (! "normalizedTpmMatrix" %in% names(assays(data)))
