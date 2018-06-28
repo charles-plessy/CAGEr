@@ -210,15 +210,15 @@ setMethod( ".CCtoSE"
 #' @title Expression levels of consensus cluster
 #' 
 #' @description Intersects custom consensus clusters with the CTSS data in a 
-#' \code{\link{CAGEexp}} object, and stores the result as a expression matrices
+#' [`CAGEexp`] object, and stores the result as a expression matrices
 #' (raw and normalised tag counts).
 #' 
-#' @param object A \code{CAGEexp} object
+#' @param object A `CAGEexp` object
 #' 
-#' @param clusters Consensus clusters in \code{\link{GRanges}} format.
+#' @param clusters Consensus clusters in [`GRanges`] format.
 #' 
-#' @param threshold,nrPassThreshold Only CTSSs with signal \code{>= threshold} in
-#'        \code{>= nrPassThreshold} experiments will be used for clustering and will
+#' @param threshold,nrPassThreshold Only CTSSs with signal `>= threshold` in
+#'        `>= nrPassThreshold` experiments will be used for clustering and will
 #'        contribute towards total signal of the cluster.
 #' 
 #' @param thresholdIsTpm Logical, is threshold raw tag count value (FALSE) or
@@ -228,9 +228,9 @@ setMethod( ".CCtoSE"
 #' genome can only be attributed to a single cluster.  This is enforced by the
 #' [.ConsensusCluster()] constructor.
 #' 
-#' @return stores the result as a new \code{\link{RangedSummarizedExperiment}} in the
-#' \code{experiment} slot of the object.  The assays of the new experiment are called
-#' \code{counts} and \code{normalized}.  An \code{outOfClusters} column is added
+#' @return stores the result as a new [`RangedSummarizedExperiment`] in the
+#' `experiment` slot of the object.  The assays of the new experiment are called
+#' `counts` and `normalized`.  An `outOfClusters` column is added
 #' to the sample metadata to reflect the number of molecules that do not have
 #' their TSS in a consensus cluster.
 #' 

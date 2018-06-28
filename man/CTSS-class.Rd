@@ -17,6 +17,9 @@
 The \code{CTSS} class represents CAGE transcription start sites
 (CTSS) at single-nucleotide resolution, using \code{GPos} as base class.  It is
 used internally by \emph{CAGEr} for type safety.
+
+The \code{ConsensusClusters} class represents consensus clusters.
+It is used internally by CAGEr for type safety.
 }
 \details{
 The \code{genomeName} element of the \code{metadata} slot is used to store the
@@ -28,8 +31,8 @@ The \code{CTSS.chr} class represents a \link{CTSS} object that is guaranteed
 to be only on a single chromosome.  It is used internally by \emph{CAGEr} for type
 safety.
 
-The \code{ConsensusClusters} class represents consensus clusters.
-It is used internally by CAGEr for type safety.
+Consensus clusters must not overlap, so that a single TSS in the
+genome can only be attributed to a single cluster.
 
 The \code{TagClusters} class represents tag clusters.
 It is used internally by CAGEr for type safety.
