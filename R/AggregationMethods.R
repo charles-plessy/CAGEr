@@ -224,7 +224,9 @@ setMethod( ".CCtoSE"
 #' @param thresholdIsTpm Logical, is threshold raw tag count value (FALSE) or
 #'        normalized signal (TRUE).
 #'        
-#' @details By \emph{consensus} it is meant that the clusters do not overlap.
+#' @details Consensus clusters must not overlap, so that a single base of the
+#' genome can only be attributed to a single cluster.  This is enforced by the
+#' [.ConsensusCluster()] constructor.
 #' 
 #' @return stores the result as a new \code{\link{RangedSummarizedExperiment}} in the
 #' \code{experiment} slot of the object.  The assays of the new experiment are called
@@ -258,6 +260,8 @@ setMethod( "CustomConsensusClusters", c("CAGEexp", "GRanges")
          , function (object, clusters
                     , threshold, nrPassThreshold, thresholdIsTpm  = TRUE) {
   objname <- deparse(substitute(object))
+  
+  clusters <- .ConsensusClusters(clusters)
   
   filter <- .filterCtss( object
                        , threshold       = threshold

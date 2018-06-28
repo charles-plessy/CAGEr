@@ -67,10 +67,18 @@ setMethod("initialize", "CTSS", function(.Object, ..., bsgenomeName = NULL) {
 #' 
 #' @rdname CTSS-class
 #' 
-#' @details The \code{ConsensusClusters} class represents consensus clusters.
+#' @description  The \code{ConsensusClusters} class represents consensus clusters.
 #' It is used internally by CAGEr for type safety.
+#' 
+#' @details Consensus clusters must not overlap, so that a single TSS in the
+#' genome can only be attributed to a single cluster.
 
-.ConsensusClusters <- setClass( "ConsensusClusters", contains = "GRanges")
+.ConsensusClusters <-
+  setClass( "ConsensusClusters"
+          , contains = "GRanges"
+          , validity = function(object)
+            if (length(reduce(object, min.gapwidth=0L)) < length(object))
+              return("Consensus clusters must not overlap with each other."))
 
 #' @name TagClusters
 #' 

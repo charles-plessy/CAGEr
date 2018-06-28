@@ -1024,7 +1024,7 @@ setMethod( "consensusClustersGR", "CAGEexp"
          , function (object, sample, returnInterquantileWidth, qLow, qUp) {
   if(is.null(experiments(object)$consensusClusters))
     stop("No consensus clusters found.  See ", sQuote("?aggregateTagClusters"), " on how to create them.")
-  cc <- .ConsensusClusters(rowRanges(consensusClustersSE(object)))
+  cc <- rowRanges(consensusClustersSE(object))
   if(!is.null(sample)) {
     if (!is.null(qLow))
       mcols(cc)[[paste0("q_", qLow)]] <-
