@@ -412,8 +412,6 @@ setMethod("annotateCTSS", "CAGEset", function (object, ranges){
 
 setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
   objName <- deparse(substitute(object))
-  if(is.null(experiments(object)$tagCountMatrix))
-    stop(objName, " does not contain CTSS expression data, see ", dQuote("getCTSS()"), ".")
   
   CTSScoordinatesGR(object)$genes      <- ranges2genes(CTSScoordinatesGR(object), ranges)
   CTSScoordinatesGR(object)$annotation <- ranges2annot(CTSScoordinatesGR(object), ranges)
