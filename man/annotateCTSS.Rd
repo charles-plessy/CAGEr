@@ -23,23 +23,22 @@ annotateConsensusClusters(object, ranges)
 \S4method{annotateConsensusClusters}{CAGEexp,GRanges}(object, ranges)
 }
 \arguments{
-\item{object}{A \code{\link{CAGEexp}} object (\code{\link{CAGEset}}s are
-not supported).}
+\item{object}{\code{CAGEexp} object (\code{CAGEset}s are not supported).}
 
 \item{ranges}{A \code{\link{GRanges}} object, optionally containing \code{gene_name},
 \code{type} and \code{transcript_type} metadata.}
 }
 \value{
-\code{annotateCTSS} returns the input object with the following modifications:
-
+\code{annotateCTSS} returns the input object with the following
+modifications:
 \itemize{
-\item The Genomic Ranges of the \code{tagCountMatrix} experiment gains a
-\code{annotation} metadata column, with levels such as \dQuote{promoter},
-\dQuote{exon}, \dQuote{intron} and \dQuote{unknown}.  If the annotation
-has a \code{gene_name} metadata, then a \code{genes} column is also added,
-with gene symbols from the annotation.
-\item The sample data get new columns, indicating total counts in each of the
-annotation levels.   If the annotation has a \code{gene_name} metadata, then
+\item The Genomic Ranges of the \code{tagCountMatrix} experiment gains an
+\code{annotation} metadata column, with levels such as \code{promoter},
+\code{exon}, \code{intron} and \code{unknown}.  If the annotation has a \code{gene_name}
+metadata, then a \code{genes} column is also added, with gene symbols from
+the annotation.
+\item The sample metadata gets new columns, indicating total counts in each of
+the annotation levels.  If the annotation has a \code{gene_name} metadata, then
 a \code{genes} column is added to indicate the number of different gene symbols
 detected.
 }
@@ -48,8 +47,8 @@ detected.
 modifications as above.
 }
 \description{
-\code{annotateCTSS} annotates the \emph{CTSS} of a CAGEr object and computes
-annotation statistics.
+\code{annotateCTSS} annotates the \emph{CTSS} of a \code{\link{CAGEexp}} object and
+computes annotation statistics.
 
 \code{annotateConsensusClusters} annotates the \emph{consensus clusters}
 of a CAGEr object.
@@ -64,7 +63,7 @@ consensusClustersGR(exampleCAGEexp)
 
 }
 \seealso{
-The \code{\link{exampleZv9_annot}} example data.
+\code{\link{CTSStoGenes}}, and the \code{\link{exampleZv9_annot}} example data.
 
 Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
   \code{\link{CustomConsensusClusters}},

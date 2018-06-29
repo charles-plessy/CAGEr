@@ -367,30 +367,28 @@ msScope_annotation <- function(libs) {
 #' 
 #' @title Annotate and compute summary statistics
 #' 
-#' @description \code{annotateCTSS} annotates the \emph{CTSS} of a CAGEr object and computes
-#' annotation statistics.
+#' @description `annotateCTSS` annotates the _CTSS_ of a [`CAGEexp`] object and
+#' computes annotation statistics.
 #' 
-#' @param object A \code{\link{CAGEexp}} object (\code{\link{CAGEset}}s are
-#'   not supported).
+#' @param object `CAGEexp` object (`CAGEset`s are not supported).
 #'   
-#' @param ranges A \code{\link{GRanges}} object, optionally containing \code{gene_name},
-#'   \code{type} and \code{transcript_type} metadata.
+#' @param ranges A [`GRanges`] object, optionally containing `gene_name`,
+#'   `type` and `transcript_type` metadata.
 #'   
-#' @return \code{annotateCTSS} returns the input object with the following modifications:
+#' @return `annotateCTSS` returns the input object with the following
+#'   modifications:
 #' 
-#' \itemize{
-#'   \item The Genomic Ranges of the \code{tagCountMatrix} experiment gains a
-#'     \code{annotation} metadata column, with levels such as \dQuote{promoter},
-#'     \dQuote{exon}, \dQuote{intron} and \dQuote{unknown}.  If the annotation
-#'     has a \code{gene_name} metadata, then a \code{genes} column is also added,
-#'     with gene symbols from the annotation.
-#'   \item The sample data get new columns, indicating total counts in each of the
-#'     annotation levels.   If the annotation has a \code{gene_name} metadata, then
-#'     a \code{genes} column is added to indicate the number of different gene symbols
+#'  * The Genomic Ranges of the `tagCountMatrix` experiment gains an
+#'    `annotation` metadata column, with levels such as `promoter`,
+#'     `exon`, `intron` and `unknown`.  If the annotation has a `gene_name`
+#'     metadata, then a `genes` column is also added, with gene symbols from
+#'     the annotation.
+#'  * The sample metadata gets new columns, indicating total counts in each of
+#'    the annotation levels.  If the annotation has a `gene_name` metadata, then
+#'     a `genes` column is added to indicate the number of different gene symbols
 #'     detected.
-#' }
 #' 
-#' @seealso The \code{\link{exampleZv9_annot}} example data.
+#' @seealso [`CTSStoGenes`], and the [`exampleZv9_annot`] example data.
 #' @family CAGEr object modifiers
 #' @family CAGEr annotation functions
 #' 
