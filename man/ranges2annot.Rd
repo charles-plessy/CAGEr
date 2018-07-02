@@ -2,30 +2,31 @@
 % Please edit documentation in R/Annotations.R
 \name{ranges2annot}
 \alias{ranges2annot}
-\title{hierarchical annotation of CTSSes}
+\title{Hierarchical annotation of CTSSes}
 \usage{
 ranges2annot(ranges, annot)
 }
 \arguments{
-\item{ranges}{The CTSS (GRanges) object, for example extracted from a
-RangedSummarizedExperiment object with the \code{rowRanges}
+\item{ranges}{A \code{\link{CTSS}} object, for example extracted from a
+\code{RangedSummarizedExperiment} object with the \code{\link{rowRanges}}
 command.}
 
-\item{annot}{A \code{\link{GRanges}} from which promoter positions will
-be inferred.  Typically GENCODE.  If the \code{type} metadata is present,
-it should contain \sQuote{gene}, \sQuote{exon} and \sQuote{transcript} among
-its values.  Otherwise, all entries are considered transcripts.
-If the \code{transcript_type} metadata is available, the entries may
-be not primary products (for instance \sQuote{snoRNA}) are discarded.}
+\item{annot}{A \code{\link{GRanges}} from which promoter positions will be inferred.
+Typically GENCODE.  If the \code{type} metadata is present, it should
+contain \code{gene}, \code{exon} and \code{transcript} among its values.  Otherwise,
+all entries are considered transcripts. If the \code{transcript_type}
+metadata is available, the entries that may not be primary products
+(for instance \sQuote{snoRNA}) are discarded.}
 }
 \value{
-A Run-length-encoded (Rle) factor of same length as the GRanges object,
-indicating if the interval is promoter, exon, intron or unknown, or
-just promoter, gene, unknown if the \code{type} metadata is absent.
+A Run-length-encoded (\code{\link{Rle}}) factor of same length as the \code{CTSS}
+object, indicating if the interval is \code{promoter}, \code{exon}, \code{intron} or
+\code{unknown}, or just \code{promoter}, \code{gene}, \code{unknown} if the \code{type}
+metadata is absent.
 }
 \description{
-Assigns region types such as \emph{promoter}, \emph{exon}
-or \emph{unknown} to CTSSes.
+Assigns region types such as \code{promoter}, \code{exon} or \code{unknown}
+to CTSSes.
 }
 \details{
 Only the biotypes that are likely to have a promoter will be filtered

@@ -430,10 +430,10 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
 #' 
 #' @rdname annotateCTSS
 #' 
-#' @description \code{annotateConsensusClusters} annotates the \emph{consensus clusters}
+#' @description `annotateConsensusClusters` annotates the _consensus clusters_
 #' of a CAGEr object.
 #'   
-#' @return \code{annotateConsensusClusters} returns the input object with the same
+#' @return `annotateConsensusClusters` returns the input object with the same
 #' modifications as above.
 #' 
 #' @examples 
@@ -467,32 +467,33 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 
 #' @name ranges2annot
 #' 
-#' @title hierarchical annotation of CTSSes
+#' @title Hierarchical annotation of CTSSes
 #' 
-#' @description Assigns region types such as \emph{promoter}, \emph{exon}
-#' or \emph{unknown} to CTSSes.
+#' @description Assigns region types such as `promoter`, `exon` or `unknown`
+#'              to CTSSes.
 #' 
-#' @param ranges The CTSS (GRanges) object, for example extracted from a
-#'        RangedSummarizedExperiment object with the \code{rowRanges}
+#' @param ranges A [`CTSS`] object, for example extracted from a
+#'        `RangedSummarizedExperiment` object with the [`rowRanges`]
 #'        command.
 #' 
-#' @param annot A \code{\link{GRanges}} from which promoter positions will
-#'        be inferred.  Typically GENCODE.  If the \code{type} metadata is present,
-#'        it should contain \sQuote{gene}, \sQuote{exon} and \sQuote{transcript} among
-#'        its values.  Otherwise, all entries are considered transcripts.
-#'        If the \code{transcript_type} metadata is available, the entries may
-#'        be not primary products (for instance \sQuote{snoRNA}) are discarded.
+#' @param annot A [`GRanges`] from which promoter positions will be inferred.
+#'        Typically GENCODE.  If the `type` metadata is present, it should
+#'        contain `gene`, `exon` and `transcript` among its values.  Otherwise,
+#'        all entries are considered transcripts. If the `transcript_type`
+#'        metadata is available, the entries that may not be primary products
+#'        (for instance \sQuote{snoRNA}) are discarded.
 #' 
-#' @return A Run-length-encoded (Rle) factor of same length as the GRanges object,
-#'         indicating if the interval is promoter, exon, intron or unknown, or
-#'         just promoter, gene, unknown if the \code{type} metadata is absent.
+#' @return A Run-length-encoded ([`Rle`]) factor of same length as the `CTSS`
+#'         object, indicating if the interval is `promoter`, `exon`, `intron` or
+#'         `unknown`, or just `promoter`, `gene`, `unknown` if the `type`
+#'         metadata is absent.
 #' 
 #' @details Only the biotypes that are likely to have a promoter will be filtered
 #' in.  This is currently hardcoded in the function; see its source code.  Example
 #' of biotypes without a promoter: VDJ segments, etc.
 #'         
 #' @family CAGEr annotation functions
-#' @seealso \code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
+#' @seealso [`CTSScoordinatesGR`], [`exampleZv9_annot`]
 #' 
 #' @author Charles Plessy
 #' 
