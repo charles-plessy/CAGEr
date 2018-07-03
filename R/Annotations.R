@@ -488,9 +488,14 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #'         `unknown`, or just `promoter`, `gene`, `unknown` if the `type`
 #'         metadata is absent.
 #' 
-#' @details Only the biotypes that are likely to have a promoter will be filtered
-#' in.  This is currently hardcoded in the function; see its source code.  Example
-#' of biotypes without a promoter: VDJ segments, etc.
+#' @details Only the biotypes that are likely to have a pol II promoter will be
+#' filtered in.  This is currently hardcoded in the function; see its source
+#' code.  Example of biotypes without a pol II promoter: VDJ segments, miRNA,
+#' but also snoRNA, etc.  Thus, the _Intergenic_ category displayed in output of
+#' the [`plotAnnot`] may include counts overlaping with real exons of discarded
+#' transcribed regions: be careful that large percentages do not necessarly
+#' suggest abundance of novel promoters.
+#' 
 #'         
 #' @family CAGEr annotation functions
 #' @seealso [`CTSScoordinatesGR`], [`exampleZv9_annot`]
@@ -499,6 +504,14 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' 
 #' @examples
 #' CAGEr:::ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
+#' 
+#' ctss <- .CTSS(GPos(GRanges("chr1", IPos(c(1,100,200,1500)), "+")))
+#' gr1   <- GRanges("chr1", IRanges(c(650, 650, 1400), 2000), "+")
+#' ranges2annot(ctss, gr1)
+#' gr2 <- gr1
+#' gr2$type            <- c("transcript",     "exon",           "transcript")
+#' gr2$transcript_type <- c("protein_coding", "protein_coding", "miRNA")
+#' ranges2annot(ctss, gr2)
 #' 
 #' @importFrom GenomicRanges findOverlaps promoters
 #' @importFrom S4Vectors Rle
