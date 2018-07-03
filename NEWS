@@ -5,6 +5,11 @@ BUG FIXES
     o Repaired paraclu support for CAGEset objects.
     o normalizeTagCount works again on CAGEset objects.
 
+NEW FEATURES
+
+    o plotAnnot "group" arguments accepts formulas such as "~ a + b" to indicate
+      metadata column names to be pasted together to form a new group factor.
+
 Changes in version 1.23.1 :
 
 BUG FIXES

@@ -11,6 +11,7 @@ Imports:
     BSgenome,
     data.table,
     DelayedArray,
+    formula.tools,
     GenomeInfoDb,
     GenomicAlignments,
     GenomicRanges (>= 1.23.16),

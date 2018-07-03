@@ -15,7 +15,8 @@
 #'        See [mapStatsScopes()] for details on each scope.
 #' @param title The title of the plot.
 #' @param group A factor to group the samples, or the name of a `colData`
-#'        column of a `CAGEexp` object.
+#'        column of a `CAGEexp` object, or a formula giving the names of columns
+#'        to be pasted together.
 #' @param facet A factor or the name of a `colData` column of a
 #'        `CAGEexp` object, to facet the samples in the sense of
 #'        `ggplot2`'s [facet_wrap][ggplot2::facet_wrap()] function.
@@ -41,6 +42,8 @@
 #' plotAnnot(exampleCAGEexp, 'counts', 'Same, non-normalised', normalise = FALSE)
 #' exampleCAGEexp$myGroups <- c("A", "A", "B", "B", "C")
 #' plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
+#' plotAnnot(exampleCAGEexp, 'counts', group = ~myGroups)
+#' plotAnnot(exampleCAGEexp, 'counts', group = ~sampleLabels + myGroups)
 #' plotAnnot(exampleCAGEexp, CAGEr:::msScope_counts , group = "myGroups")
 #' 
 #' @docType methods
@@ -90,17 +93,26 @@ setMethod("plotAnnot", "DataFrame",
 })
 
 #' @rdname plotAnnot
+#' @importFrom formula.tools rhs lhs
 
 setMethod("plotAnnot", "CAGEexp",
   function( x, scope, title, group, facet, normalise) {
   if (missing(group)) {
     group <- sampleLabels(x)
+  } else if (length(group) == 1) {
+    if (! exists(group, data.frame(colData(x))))
+      stop("Could not find group ", dQuote(group), ".")
+    group <- colData(x)[[group]]
+  } else if (is(group, "formula")) {
+    if(!is.null(lhs(group)))
+      stop("Formula must start with a tilde.")
+    vars <- rhs.vars(group)
+    for (var in vars)
+      if(! var %in% colnames(colData(x)))
+        stop("Column ", dQuote(var), " not found in sample metadata table.")
+    group <- apply(colData(x)[vars], 1, paste, collapse = " ")
   } else {
-    if (length(group) == 1) {
-      if (exists(group, data.frame(colData(x)))) {
-        group <- colData(x)[[group]]
-      }
-    }
+    stop("Could not find group ", dQuote(group), ".")
   }
   if (missing(title)) title <- paste("CAGEr object", dQuote(deparse(substitute(x))))
   plotAnnot( colData(x)

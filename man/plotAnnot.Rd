@@ -32,7 +32,8 @@ See \code{\link[=mapStatsScopes]{mapStatsScopes()}} for details on each scope.}
 \item{title}{The title of the plot.}
 
 \item{group}{A factor to group the samples, or the name of a \code{colData}
-column of a \code{CAGEexp} object.}
+column of a \code{CAGEexp} object, or a formula giving the names of columns
+to be pasted together.}
 
 \item{facet}{A factor or the name of a \code{colData} column of a
 \code{CAGEexp} object, to facet the samples in the sense of
@@ -60,6 +61,8 @@ ggplot2::theme_set(ggplot2::theme_bw()) ; p
 plotAnnot(exampleCAGEexp, 'counts', 'Same, non-normalised', normalise = FALSE)
 exampleCAGEexp$myGroups <- c("A", "A", "B", "B", "C")
 plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
+plotAnnot(exampleCAGEexp, 'counts', group = ~myGroups)
+plotAnnot(exampleCAGEexp, 'counts', group = ~sampleLabels + myGroups)
 plotAnnot(exampleCAGEexp, CAGEr:::msScope_counts , group = "myGroups")
 
 }
