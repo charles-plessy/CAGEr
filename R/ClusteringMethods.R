@@ -250,18 +250,19 @@ setMethod( "clusterCTSS", "CAGEexp"
 #' @name .clusterAggregateAndSum
 #' @rdname clusterAggregateAndSum
 #' 
-#' @param clusters Clusters to be aggregated.  \code{data.frame}, or
-#' \code{ConsensusClusters}, which will be coerced to \code{data.frame}.
+#' @param clusters Clusters to be aggregated.  `data.frame`, or
+#' `ConsensusClusters`, which will be coerced to `data.frame`.
 #' 
 #' @param key Name of the column containing the factor used to aggregate
 #' the clusters.
 #' 
 #' @title Aggregate identical clusters and sum their scores.
 #' 
-#' @description Private function using  \code{data.table} objects to preform grouping
-#' operations at a high performance.  These functions use \emph{non-standard evaluation}
-#' in a context that raises warnings in \code{R CMD check}.  By separating these functions
-#' from the rest of the code, I hope to make the workarounds easier to manage.
+#' @description Private function using `data.table` objects to preform grouping
+#' operations at a high performance.  These functions use _non-standard
+#' evaluation_ in a context that raises warnings in `R CMD check`.  By
+#' separating these functions from the rest of the code, I hope to make the
+#' workarounds easier to manage.
 
 setGeneric(".clusterAggregateAndSum", function (clusters, key) standardGeneric(".clusterAggregateAndSum"))
 
