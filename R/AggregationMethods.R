@@ -4,60 +4,62 @@
 #' 
 #' @title Aggregate TCs across all samples
 #' 
-#' @description Aggregates tag clusters (TCs) across all CAGE datasets within the CAGEr object
-#' to create a referent set of consensus clusters.
+#' @description Aggregates tag clusters (TCs) across all CAGE datasets within
+#' the CAGEr object to create a referent set of consensus clusters.
 #' 
-#' @param object A \code{\link{CAGEr}} object
+#' @param object A [`CAGEr`] object
 #' 
-#' @param tpmThreshold Ignore tag clusters with normalized signal \code{< tpmThreshold} when
-#'        constructing the consensus clusters.
+#' @param tpmThreshold Ignore tag clusters with normalized signal `< tpmThreshold`
+#'        when constructing the consensus clusters.
 #' 
-#' @param excludeSignalBelowThreshold When \code{TRUE} the tag clusters with normalized signal
-#'        \code{< tpmThreshold} will not contribute to the total CAGE signal of a consensus.
-#'        cluster.  When set to \code{FALSE} all TCs that overlap consensus cluster will
-#'        contribute to the total signal, regardless whether they pass the threshold for
-#'        constructing the clusters or not.
+#' @param excludeSignalBelowThreshold When `TRUE` the tag clusters with
+#'        normalized signal `< tpmThreshold` will not contribute to the total
+#'        CAGE signal of a consensus cluster.  When set to `FALSE` all TCs that
+#'        overlap consensus clusters will contribute to the total signal,
+#'        regardless whether they pass the threshold for constructing the
+#'        clusters or not.
 #'        
 #' @param qLow,qUp Set which "lower" (or "upper") quantile should be used as 5'
-#'        (or 3') boundary of the tag cluster.  If \code{qLow = NULL} or \code{qUp = NULL},
-#'        the start (or end) position of the TC is used.
+#'        (or 3') boundary of the tag cluster.  If `NULL` the start (for `qLow`)
+#'        or end (for `qUp`) position of the TC is used.
 #' 
-#' @param maxDist Maximal length of the gap (in base-pairs) between two tag clusters for them to
-#'        be part of the same consensus clusters.
+#' @param maxDist Maximal length of the gap (in base-pairs) between two tag
+#'        clusters for them to be part of the same consensus clusters.
 #'        
-#' @param useMulticore Logical, should multicore be used.  \code{useMulticore = TRUE} is
-#'        supported only on Unix-like platforms.
+#' @param useMulticore Logical, should multicore be used (supported only on
+#'        Unix-like platforms).
 #' 
-#' @param nrCores Number of cores to use when \code{useMulticore = TRUE}.  Default value
-#'        \code{NULL} uses all detected cores.
+#' @param nrCores Number of cores to use when `useMulticore = TRUE`.  Default
+#'        (`NULL`) uses all detected cores.
 #' 
-#' @details Since the tag clusters (TCs) returned by the \code{\link{clusterCTSS}} function
-#' are constructed separately for every CAGE sample within the CAGEr object, they can differ
-#' between samples in both their number, genomic coordinates, position  of dominant TSS and
-#' overall signal.  To be able to compare all samples at the level of clusters of TSSs, TCs
-#' from all CAGE datasets are aggregated into a single set of consensus clusters.
-#' First, TCs with signal \code{>= tpmThreshold} from all CAGE datasets are selected, and their
-#' 5' and 3' boundaries are determined based on provided \code{qLow} and \code{qUp} parameter
-#' (or the start and end coordinates, if \code{qLow = NULL} and \code{qUp = NULL}.
-#' Finally, the defined set of TCs from all CAGE datasets is reduced to a non-overlapping set
-#' of consensus clusters by merging overlapping TCs and TCs \code{<= maxDist} base-pairs apart.
-#' Consensus clusters represent a referent set of promoters that can be further used for
-#' expression profiling or detecting "shifting" (differentially used) promoters between different
-#' CAGE samples.
+#' @details Since the tag clusters (TCs) returned by the [`clusterCTSS`]
+#' function are constructed separately for every CAGE sample within the CAGEr
+#' object, they can differ between samples in both their number, genomic
+#' coordinates, position of dominant TSS and #' overall signal.  To be able to
+#' compare all samples at the level of clusters of TSSs, TCs from all CAGE
+#' datasets are aggregated into a single set of consensus clusters.  First, TCs
+#' with signal `>= tpmThreshold` from all CAGE datasets are selected, and their
+#' 5' and 3' boundaries are determined based on provided `qLow` and `qUp`
+#' parameter (or the start and end coordinates, if they are set to `NULL`).
+#' Finally, the defined set of TCs from all CAGE datasets is reduced to a
+#' non-overlapping set of consensus clusters by merging overlapping TCs and TCs
+#' `<= maxDist` base-pairs apart.  Consensus clusters represent a referent set
+#' of promoters that can be further used for expression profiling or detecting
+#'  "shifting" (differentially used) promoters between different CAGE samples.
 #' 
-#' @return For \code{\link{CAGEset}} objects, the \code{consensusClusters} slot will be
-#' populated with a data frame indicating the cluster name, chromosome, start and end
-#' coordinates, the strand, and the normalised expression score of the cluster.  This
-#' table is returned by the \code{\link{consensusClusters}} function.
+#' @return For [`CAGEset`] objects, the `consensusClusters` slot will be
+#' populated with a data frame indicating the cluster name, chromosome, start
+#' and end coordinates, the strand, and the normalised expression score of the
+#' cluster.  This table is returned by the [`consensusClusters`] function.
 #' 
-#' For \code{\link{CAGEexp}} objects, the experiment \code{consensusClusters}
-#' will be occupied by a \code{\link{RangedSummarizedExperiment}} containing the cluster
-#' coodinates as row ranges, and their expression levels in the \code{counts} and \code{normalized}
-#' assays.  These genomic ranges are returned by the \code{\link{consensusClustersGR}} function.
-#' The CTSS ranges of the \code{tagCountMatrix} experiment will gain a
-#' \code{cluster} column indicating which cluster they belong to.  Lastly, the number of
-#' CTSS outside clusters will be documented in the \code{outOfClusters} column data.
-#' This table is returned by the \code{\link{consensusClusters}} function.
+#' For [`CAGEexp`] objects, the experiment `consensusClusters` will be occupied
+#' by a [`RangedSummarizedExperiment`] containing the cluster coodinates as row
+#' ranges, and their expression levels in the `counts` and `normalized` assays.
+#' These genomic ranges are returned by the [`consensusClustersGR`] function.
+#' The CTSS ranges of the `tagCountMatrix` experiment will gain a `cluster`
+#' column indicating which cluster they belong to.  Lastly, the number of
+#' CTSS outside clusters will be documented in the `outOfClusters` column data.
+#' This table is returned by the [`consensusClusters`] function.
 #' 
 #' @author Vanja Haberle
 #' @author Charles Plessy
