@@ -93,7 +93,7 @@ setMethod("plotAnnot", "DataFrame",
 })
 
 #' @rdname plotAnnot
-#' @importFrom formula.tools rhs lhs
+#' @importFrom formula.tools lhs rhs.vars
 
 setMethod("plotAnnot", "CAGEexp",
   function( x, scope, title, group, facet, normalise) {
