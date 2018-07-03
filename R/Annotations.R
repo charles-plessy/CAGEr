@@ -517,7 +517,7 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' @examples
 #' CAGEr:::ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 #' 
-#' ctss <- .CTSS(GPos(GRanges("chr1", IPos(c(1,100,200,1500)), "+")))
+#' ctss <- CAGEr:::.CTSS(GPos(GRanges("chr1", IPos(c(1,100,200,1500)), "+")))
 #' gr1   <- GRanges("chr1", IRanges(c(650, 650, 1400), 2000), "+")
 #' ranges2annot(ctss, gr1)
 #' gr2 <- gr1
