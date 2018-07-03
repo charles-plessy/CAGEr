@@ -5,7 +5,7 @@
 \alias{.clusterAggregateAndSum}
 \alias{.clusterAggregateAndSum,data.table-method}
 \alias{.clusterAggregateAndSum,data.frame-method}
-\alias{.clusterAggregateAndSum,ConsensusClusters-method}
+\alias{.clusterAggregateAndSum,GRanges-method}
 \title{Aggregate identical clusters and sum their scores.}
 \usage{
 .clusterAggregateAndSum(clusters, key)
@@ -14,18 +14,19 @@
 
 \S4method{.clusterAggregateAndSum}{data.frame}(clusters, key)
 
-\S4method{.clusterAggregateAndSum}{ConsensusClusters}(clusters, key)
+\S4method{.clusterAggregateAndSum}{GRanges}(clusters, key)
 }
 \arguments{
 \item{clusters}{Clusters to be aggregated.  \code{data.frame}, or
-\code{ConsensusClusters}, which will be coerced to \code{data.frame}.}
+\code{GRanges}, which will be coerced to \code{data.frame}.}
 
 \item{key}{Name of the column containing the factor used to aggregate
 the clusters.}
 }
 \description{
-Private function using  \code{data.table} objects to preform grouping
-operations at a high performance.  These functions use \emph{non-standard evaluation}
-in a context that raises warnings in \code{R CMD check}.  By separating these functions
-from the rest of the code, I hope to make the workarounds easier to manage.
+Private function using \code{data.table} objects to preform grouping
+operations at a high performance.  These functions use \emph{non-standard
+evaluation} in a context that raises warnings in \code{R CMD check}.  By
+separating these functions from the rest of the code, I hope to make the
+workarounds easier to manage.
 }

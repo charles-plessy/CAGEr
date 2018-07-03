@@ -116,8 +116,7 @@ setMethod( "quantilePositions", "CAGEr"
                       , q        = c(qLow, qUp))
       },
       BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
-	  cons.clusters.l <- GRangesList(cons.clusters.l)
-	  
+    
 		if(inherits(object, "CAGEexp")) {
       for (qName in paste("q", c(qLow, qUp), sep = "_")) {
         assays(consensusClustersSE(object))[[qName]] <-

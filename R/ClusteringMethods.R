@@ -251,7 +251,7 @@ setMethod( "clusterCTSS", "CAGEexp"
 #' @rdname clusterAggregateAndSum
 #' 
 #' @param clusters Clusters to be aggregated.  `data.frame`, or
-#' `ConsensusClusters`, which will be coerced to `data.frame`.
+#' `GRanges`, which will be coerced to `data.frame`.
 #' 
 #' @param key Name of the column containing the factor used to aggregate
 #' the clusters.
@@ -291,7 +291,7 @@ setMethod(".clusterAggregateAndSum", "data.frame", function (clusters, key) {
 
 #' @rdname clusterAggregateAndSum
 
-setMethod(".clusterAggregateAndSum", "ConsensusClusters", function (clusters, key) {
+setMethod(".clusterAggregateAndSum", "GRanges", function (clusters, key) {
   CCdataframe2granges(.clusterAggregateAndSum(CCgranges2dataframe(clusters), key))
 })
 

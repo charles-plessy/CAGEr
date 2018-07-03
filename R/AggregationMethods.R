@@ -169,10 +169,10 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   consensus.clusters <- .make.consensus.clusters( TC.list = TC.list
                                                 , plus.minus = round(maxDist/2)
                                                 , tpm.th = tpmThreshold)
-  consensus.clusters <- .ConsensusClusters(consensus.clusters)
-	consensus.clusters <- .clusterAggregateAndSum(consensus.clusters, "consensus.cluster")
-	names(consensus.clusters) <- as.character(consensus.clusters)
-	consensus.clusters
+  consensus.clusters <- .clusterAggregateAndSum(consensus.clusters, "consensus.cluster")
+  consensus.clusters <- GRanges(consensus.clusters)
+  names(consensus.clusters) <- as.character(consensus.clusters)
+  .ConsensusClusters(consensus.clusters)
 })
 
 
