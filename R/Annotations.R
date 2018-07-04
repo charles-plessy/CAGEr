@@ -40,7 +40,7 @@
 #' p + ggplot2::theme_bw()
 #' ggplot2::theme_set(ggplot2::theme_bw()) ; p
 #' plotAnnot(exampleCAGEexp, 'counts', 'Same, non-normalised', normalise = FALSE)
-#' exampleCAGEexp$myGroups <- c("A", "A", "B", "B", "C")
+#' exampleCAGEexp$myGroups <- factor(c("A", "A", "B", "B", "C"))
 #' plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
 #' plotAnnot(exampleCAGEexp, 'counts', group = ~myGroups)
 #' plotAnnot(exampleCAGEexp, 'counts', group = ~sampleLabels + myGroups)
@@ -110,7 +110,7 @@ setMethod("plotAnnot", "CAGEexp",
     for (var in vars)
       if(! var %in% colnames(colData(x)))
         stop("Column ", dQuote(var), " not found in sample metadata table.")
-    group <- apply(colData(x)[vars], 1, paste, collapse = " ")
+    group <- do.call(paste, colData(x)[vars])
   } else {
     stop("Could not find group ", dQuote(group), ".")
   }

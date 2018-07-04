@@ -59,7 +59,7 @@ print(p)
 p + ggplot2::theme_bw()
 ggplot2::theme_set(ggplot2::theme_bw()) ; p
 plotAnnot(exampleCAGEexp, 'counts', 'Same, non-normalised', normalise = FALSE)
-exampleCAGEexp$myGroups <- c("A", "A", "B", "B", "C")
+exampleCAGEexp$myGroups <- factor(c("A", "A", "B", "B", "C"))
 plotAnnot(exampleCAGEexp, 'counts', group = "myGroups")
 plotAnnot(exampleCAGEexp, 'counts', group = ~myGroups)
 plotAnnot(exampleCAGEexp, 'counts', group = ~sampleLabels + myGroups)
