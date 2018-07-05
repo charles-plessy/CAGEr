@@ -1,4 +1,4 @@
-Upcoming changes:
+Changes in version 1.23.2:
 
 BUG FIXES
 
@@ -7,10 +7,10 @@ BUG FIXES
 
 NEW FEATURES
 
-    o plotAnnot "group" arguments accepts formulas such as "~ a + b" to indicate
+    o plotAnnot "group" argument accepts formulas such as "~ a + b" to indicate
       metadata column names to be pasted together to form a new group factor.
 
-Changes in version 1.23.1 :
+Changes in version 1.23.1:
 
 BUG FIXES
 
@@ -18,11 +18,7 @@ BUG FIXES
       (instead of silently ignoring the "sample" argument and reporting
       expression sum on all the samples).
 
-Changes in version 1.22.2 :
-
-    o normalizeTagCount works again on CAGEset objects.
-
-Changes in version 1.22.0 :
+Changes in version 1.22.0:
 
 BACKWARDS-INCOMPATIBLE CHANGES:
 
