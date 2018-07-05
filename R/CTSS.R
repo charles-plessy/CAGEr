@@ -64,6 +64,7 @@ setMethod("initialize", "CTSS", function(.Object, ..., bsgenomeName = NULL) {
 
 
 #' @name ConsensusClusters
+#' @aliases .ConsensusClusters
 #' 
 #' @rdname CTSS-class
 #' 

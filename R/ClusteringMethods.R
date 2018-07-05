@@ -149,6 +149,8 @@ setMethod( "clusterCTSS", "CAGEset"
 	         "clusterCTSS() needs normalized values to create its output tables, that ",
 	         "include TPM expression columns.")
 	
+	idx <- NULL # Initialise to keep R CMD check happy.
+	
 	getCTSSdataSE <- function() {
 	if(threshold > 0){
 		nr.pass.threshold <- apply(data, 1, function(x) {sum(x >= threshold)})

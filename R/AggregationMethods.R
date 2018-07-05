@@ -228,7 +228,7 @@ setMethod( ".CCtoSE"
 #'        
 #' @details Consensus clusters must not overlap, so that a single base of the
 #' genome can only be attributed to a single cluster.  This is enforced by the
-#' [.ConsensusCluster()] constructor.
+#' [`.ConsensusClusters`] constructor.
 #' 
 #' @return stores the result as a new [`RangedSummarizedExperiment`] in the
 #' `experiment` slot of the object.  The assays of the new experiment are called

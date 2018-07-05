@@ -39,7 +39,7 @@ Intersects custom consensus clusters with the CTSS data in a
 \details{
 Consensus clusters must not overlap, so that a single base of the
 genome can only be attributed to a single cluster.  This is enforced by the
-\code{\link[=.ConsensusCluster]{.ConsensusCluster()}} constructor.
+\code{\link{.ConsensusClusters}} constructor.
 }
 \examples{
 
