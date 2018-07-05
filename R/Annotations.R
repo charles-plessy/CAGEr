@@ -517,13 +517,16 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' @examples
 #' CAGEr:::ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 #' 
-#' ctss <- CAGEr:::.CTSS(GPos(GRanges("chr1", IPos(c(1,100,200,1500)), "+")))
-#' gr1   <- GRanges("chr1", IRanges(c(650, 650, 1400), 2000), "+")
-#' ranges2annot(ctss, gr1)
+#' ctss <- GenomicRanges::GRanges("chr1", IRanges::IPos(c(1,100,200,1500)), "+")
+#' ctss <- GenomicRanges::GPos(ctss)
+#' ctss <- CAGEr:::.CTSS(ctss)
+#' gr1   <- GenomicRanges::GRanges( "chr1"
+#'                                , IRanges::IRanges(c(650, 650, 1400), 2000), "+")
+#' CAGEr:::ranges2annot(ctss, gr1)
 #' gr2 <- gr1
 #' gr2$type            <- c("transcript",     "exon",           "transcript")
 #' gr2$transcript_type <- c("protein_coding", "protein_coding", "miRNA")
-#' ranges2annot(ctss, gr2)
+#' CAGEr:::ranges2annot(ctss, gr2)
 #' 
 #' @importFrom GenomicRanges findOverlaps promoters
 #' @importFrom S4Vectors Rle
