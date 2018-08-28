@@ -7,28 +7,29 @@
 \title{Plot reverse cumulative number of CAGE tags per CTSS}
 \usage{
 plotReverseCumulatives(object, values = c("raw", "normalized"),
-  fitInRange = c(10, 1000), onePlot = FALSE, main = NULL, legend = TRUE,
-  xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)",
-  xlim = c(1, 1e+05), ylim = c(1, 1e+06))
+  fitInRange = c(10, 1000), onePlot = FALSE, main = NULL,
+  legend = TRUE, xlab = "number of CAGE tags",
+  ylab = "number of CTSSs (>= nr tags)", xlim = c(1, 1e+05),
+  ylim = c(1, 1e+06))
 
 \S4method{plotReverseCumulatives}{CAGEr}(object, values = c("raw",
-  "normalized"), fitInRange = c(10, 1000), onePlot = FALSE, main = NULL,
-  legend = TRUE, xlab = "number of CAGE tags",
-  ylab = "number of CTSSs (>= nr tags)", xlim = c(1, 1e+05), ylim = c(1,
-  1e+06))
+  "normalized"), fitInRange = c(10, 1000), onePlot = FALSE,
+  main = NULL, legend = TRUE, xlab = "number of CAGE tags",
+  ylab = "number of CTSSs (>= nr tags)", xlim = c(1, 1e+05),
+  ylim = c(1, 1e+06))
 }
 \arguments{
 \item{object}{A CAGEr object}
 
-\item{values}{Which values should be plotted: \code{"raw"} (default) for raw CAGE
-tag counts or \code{"normalized"} for normalized tag count values.}
+\item{values}{Which values should be plotted: \code{raw} (default) for raw CAGE
+tag counts or \code{normalized} for normalized tag count values.}
 
 \item{fitInRange}{An integer vector with two values specifying a range of tag
 count values to be used for fitting a power-law distribution to reverse
 cumulatives.  Ignored is set to \code{NULL}.  See Details.}
 
 \item{onePlot}{Logical, should all CAGE datasets be plotted in the same
-plot (TRUE) or in separate plots (FALSE).}
+plot (\code{TRUE}) or in separate plots (\code{FALSE}).}
 
 \item{main}{Main title for the plot.}
 
@@ -83,7 +84,7 @@ plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)
 \references{
 Balwierz \emph{et al}. (2009) Methods for analyzing deep sequencing
 expression data: constructing the human and mouse promoterome with deepCAGE data,
-\emph{Genome Biology} \bold{10}(7):R79.
+\emph{Genome Biology} \strong{10}(7):R79.
 }
 \seealso{
 \code{\link{normalizeTagCount}}
@@ -96,3 +97,4 @@ Other CAGEr plot functions: \code{\link{hanabiPlot}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr plot functions}

@@ -9,59 +9,59 @@
 #' @title Plot reverse cumulative number of CAGE tags per CTSS
 #' 
 #' @description Plots the reverse cumulative distribution of the number of CAGE
-#' tags per CTSS for all CAGE datasets present in the \code{\link{CAGEr}} object.
+#' tags per CTSS for all CAGE datasets present in the [`CAGEr`] object.
 #' The plots should be used as help in choosing the parameters for power-law
 #' normalization: the range of values to fit the power-law and the slope of the
-#' referent power-law distribution (Balwierz \emph{et al}., Genome Biology 2009).
+#' referent power-law distribution (Balwierz _et al_., Genome Biology 2009).
 #' 
 #' @param object A CAGEr object
 #' 
-#' @param values Which values should be plotted: \code{"raw"} (default) for raw CAGE
-#' tag counts or \code{"normalized"} for normalized tag count values.
+#' @param values Which values should be plotted: `raw` (default) for raw CAGE
+#' tag counts or `normalized` for normalized tag count values.
 #' 
 #' @param fitInRange An integer vector with two values specifying a range of tag
 #' count values to be used for fitting a power-law distribution to reverse
-#' cumulatives.  Ignored is set to \code{NULL}.  See Details.
+#' cumulatives.  Ignored is set to `NULL`.  See Details.
 #' 
 #' @param onePlot Logical, should all CAGE datasets be plotted in the same
-#' plot (TRUE) or in separate plots (FALSE). 
+#' plot (`TRUE`) or in separate plots (`FALSE`). 
 #' 
 #' @param main Main title for the plot.
 #' 
-#' @param legend Set to \code{NULL} to prevent the display of the sample legend.
+#' @param legend Set to `NULL` to prevent the display of the sample legend.
 #' 
-#' @param xlab,ylab Axis labels passed to \code{\link{plot}}.
+#' @param xlab,ylab Axis labels passed to [`plot`].
 #' 
-#' @param xlim,ylim Axis range parameters passed to \code{\link{plot}}.
+#' @param xlim,ylim Axis range parameters passed to [`plot`].
 #' 
 #' @details Number of CAGE tags (X-axis) is plotted against the number of TSSs that
 #' are supported by >= of that number of tags (Y-axis) on a log-log scale for each
 #' sample. In addition, a power-law distribution is fitted to each reverse cumulative
-#' using the values in the range specified by \code{fitInRange} parameter. The fitted
-#' distribution is defined by \code{y = -1 * alpha * x + beta} on the log-log scale,
-#' and the value of \code{alpha} for each sample is shown on the plot. In addition,
+#' using the values in the range specified by `fitInRange` parameter. The fitted
+#' distribution is defined by `y = -1 * alpha * x + beta` on the log-log scale,
+#' and the value of `alpha` for each sample is shown on the plot. In addition,
 #' a suggested referent power-law distribution to which all samples should be
 #' normalized is drawn on the plot and corresponding parameters (slope alpha and total
 #' number of tags T) are denoted on the plot.  Referent distribution is chosen so
 #' that its slope (alpha) is the median of slopes fitted to individual samples and
 #' its total number of tags (T) is the power of 10 nearest to the median number of tags
 #' of individual samples.  Resulting plots are helpful in deciding whether power-law
-#' normalization is appropriate for given samples and reported \code{alpha} values aid
-#' in choosing optimal \code{alpha} value for referent power-law distribution to
+#' normalization is appropriate for given samples and reported `alpha` values aid
+#' in choosing optimal `alpha` value for referent power-law distribution to
 #' which all samples will be normalized. For details about normalization see
-#' \code{\link{normalizeTagCount}} function.
+#' [`normalizeTagCount`] function.
 #' 
 #' @return Plots of reverse cumulative number of CAGE tags per CTSS for each CAGE
 #' dataset within CAGEr object.  Alpha values of fitted power-laws and suggested
-#' referent power-law distribution are reported on the plot in case \code{values = "raw"}.
+#' referent power-law distribution are reported on the plot in case `values = "raw"`.
 #' 
-#' @references Balwierz \emph{et al}. (2009) Methods for analyzing deep sequencing
+#' @references Balwierz _et al_. (2009) Methods for analyzing deep sequencing
 #' expression data: constructing the human and mouse promoterome with deepCAGE data,
-#' \emph{Genome Biology} \bold{10}(7):R79. 
+#' _Genome Biology_ **10**(7):R79. 
 #' 
 #' @author Vanja Haberle
 #' 
-#' @seealso \code{\link{normalizeTagCount}}
+#' @seealso [`normalizeTagCount`]
 #' @family CAGEr plot functions
 #' 
 #' @examples 
