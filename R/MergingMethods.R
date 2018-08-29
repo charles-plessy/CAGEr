@@ -111,9 +111,9 @@ setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSample
   tag.count.DF.new <- DataFrame(do.call(list, tag.count.DF.new))
   colnames(tag.count.DF.new) <- mergedSampleLabels
 
-  lib.sizes.new <- tapply(librarySizes(object), mergeIndex, sum)
-  
-  inputFilesType.new <- tapply(inputFilesType(object), mergeIndex, function(X) paste(unique(X)))
+  # Use c() to force tapply to return a plain vector (not an array)
+  lib.sizes.new <- c(tapply(librarySizes(object), mergeIndex, sum))
+  inputFilesType.new <- c(tapply(inputFilesType(object), mergeIndex, function(X) paste(unique(X))))
   
   new.CAGE.exp <- DataFrame( inputFiles     = paste(mergedSampleLabels, "_merged", sep = "")
                            , inputFilesType = inputFilesType.new
