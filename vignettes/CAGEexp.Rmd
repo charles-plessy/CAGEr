@@ -1128,8 +1128,9 @@ _FANTOM3and4CAGE_ has to be installed and loaded.  This package is available
 from Bioconductor and can be installed by calling:
 
 ```
-source("http://bioconductor.org/biocLite.R")
-biocLite("FANTOM3and4CAGE")
+if (!requireNamespace("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+BiocManager::install("FANTOM3and4CAGE")
 ```
 
 For the list of available datasets with group and sample labels for specific human or mouse samples load the data package and get list of samples:
