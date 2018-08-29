@@ -2,6 +2,13 @@ Changes in version 1.23.2:
 
 BUG FIXES
 
+    o Prevent mergeSamples from producing colData that makes other functions
+      crashing later when coercing to data.frame.
+
+Changes in version 1.23.2:
+
+BUG FIXES
+
     o Repaired paraclu support for CAGEset objects.
     o normalizeTagCount works again on CAGEset objects.
 
