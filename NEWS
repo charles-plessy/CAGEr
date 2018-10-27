@@ -1,27 +1,18 @@
-Changes in version 1.23.2:
-
-BUG FIXES
-
-    o Prevent mergeSamples from producing colData that makes other functions
-      crashing later when coercing to data.frame.
-
-Changes in version 1.23.2:
-
-BUG FIXES
-
-    o Repaired paraclu support for CAGEset objects.
-    o normalizeTagCount works again on CAGEset objects.
+Changes in version 1.24.0:
 
 NEW FEATURES
 
-    o plotAnnot "group" argument accepts formulas such as "~ a + b" to indicate
-      metadata column names to be pasted together to form a new group factor.
-
-Changes in version 1.23.1:
+    o plotAnnot(): the "group" argument now accepts formulas such as "~ a + b"
+      to indicate names of metadata column that will be pasted together to
+      form a new group factor.
 
 BUG FIXES
 
-    o consensusClustersGR: Report expression score of the selected sample
+    o Prevent mergeSamples() from producing colData that cause other functions
+      to crash later when coercing to data.frame.
+    o Repaired paraclu support for CAGEset objects.
+    o normalizeTagCount() works again on CAGEset objects.
+    o consensusClustersGR() reports expression score of the selected sample
       (instead of silently ignoring the "sample" argument and reporting
       expression sum on all the samples).
 
