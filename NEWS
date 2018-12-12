@@ -1,3 +1,9 @@
+Changes in version 1.25.1:
+
+DOCUMENTATION
+
+    o Split the "CAGE resources" documentation into a separate vignette.
+
 Changes in version 1.24.0:
 
 NEW FEATURES
