@@ -9,10 +9,12 @@ output:
     toc: true
 bibliography: CAGEr.bib
 vignette: >
-  %\VignetteIndexEntry{CAGEr: an R package for CAGE data analysis and promoterome mining}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding[utf8]{inputenc}
   %\VignetteEncoding{UTF-8}
+  %\VignetteIndexEntry{CAGEr: an R package for CAGE data analysis and promoterome mining}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, echo = FALSE, results = "hide"}
