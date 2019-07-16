@@ -1,3 +1,11 @@
+Changes in version 1.27.0:
+
+NEW FEATURES
+
+    o Depends on MultiAssayExperiemnt instead of previously Importing it.  No
+      need to load it by hand (nor SummaryExperiment) anymore.
+
+
 Changes in version 1.26.0:
 
 DOCUMENTATION

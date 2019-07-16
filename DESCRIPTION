@@ -20,7 +20,6 @@ Imports:
     IRanges (>= 2.5.27),
     KernSmooth,
     memoise,
-    MultiAssayExperiment,
     plyr,
     Rsamtools,
     reshape,
@@ -35,6 +34,7 @@ Imports:
     VGAM
 Depends:
     methods,
+    MultiAssayExperiment,
     R (>= 2.15.0)
 Suggests:
     BSgenome.Drerio.UCSC.danRer7,
