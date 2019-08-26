@@ -10,7 +10,8 @@
 #' @details The `genomeName` element of the `metadata` slot is used to store the
 #' name of the _BSgenome_ package used when constructing the `CAGEr` object.
 #' Be careful that calling the `CTSS` constructor twice in a row will erase
-#' the fist metadata (because the `GPos` constructor does so).
+#' the fist metadata (because the [`GPos`] constructor does so).  _CAGEr_
+#' uses the `UnstitchedGPos` implementation of `GPos`.
 #' 
 #' @rdname CTSS-class
 #' 
@@ -28,7 +29,7 @@
 
 # (See <https://github.com/Bioconductor/Contributions/issues/261#issuecomment-277479436>.)
 
-.CTSS <- setClass("CTSS", contains = "GPos")
+.CTSS <- setClass("CTSS", contains = "UnstitchedGPos")
 
 setMethod("initialize", "CTSS", function(.Object, ..., bsgenomeName = NULL) {
   .Object <- callNextMethod(.Object, ...)

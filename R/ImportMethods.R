@@ -353,7 +353,7 @@ loadFileIntoGPos    <- function( filepath
 
 moleculesGR2CTSS <- function(gr) {
   tb <- table(promoters(gr, 0, 1))
-  gp <- as(names(tb), "GPos")
+  gp <- as(names(tb), "UnstitchedGPos")
   score(gp) <- Rle(as.integer(tb))
   gp
 }
@@ -440,7 +440,7 @@ bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
     gr <- .remove.added.G.CTSS(gr, genome, correctSystematicG = correctSystematicG)
   }
   tb <- table(promoters(gr, 0, 1))
-  gp <- as(names(tb), "GPos")
+  gp <- as(names(tb), "UnstitchedGPos")
   score(gp) <- Rle(unclass(tb))
   gp
 } 
@@ -519,7 +519,7 @@ import.bedScore <- function(filepath) {
   df <- data.frame( p = as.character(promoters(gr, 0, 1))
                   , s = score(gr))
   df <- rowsum(df$s, df$p)
-  gp <- as(rownames(df), "GPos")
+  gp <- as(rownames(df), "UnstitchedGPos")
   score(gp) <- Rle(as.integer(df[,1]))
   gp
 }
@@ -551,7 +551,7 @@ import.bedCTSS <- function(filepath) {
     stop("Input must not contain overlapping ranges.")
   seqlevels(gr) <- sortSeqlevels(seqlevels(gr))
   mcols(gr) <- DataFrame(score = Rle(as.integer(score(gr))))
-  as(gr, "GPos")
+  as(gr, "UnstitchedGPos")
 }
 
 #' import.CTSS
@@ -576,9 +576,10 @@ import.CTSS <- function(filepath) {
                       , sep = "\t"
                       , col.names  = c("chr",       "pos",     "strand",    "score")
                       , colClasses = c("character", "integer", "character", "integer"))
-  gp <- GPos(GRanges( seqnames = CTSS$chr
-                    , ranges   = IRanges(CTSS$pos, width = 1)
-                    , strand   = CTSS$strand))
+  gp <- GPos( stitch = FALSE
+            , GRanges( seqnames = CTSS$chr
+                     , ranges   = IRanges(CTSS$pos, width = 1)
+                     , strand   = CTSS$strand))
   score(gp) <- CTSS$score
   gp
 }
@@ -615,7 +616,7 @@ parseCAGEscanBlocksToGrangeTSS <- function (blocks) {
   snd    <- as.integer(unlist(lapply(blocks, `[[`, 3)))
   strand <- ifelse(fst < snd, "+", "-")
   start  <- pmin(fst, snd)
-  GPos(GRanges(chr, IRanges(start, width = 1), strand))
+  GPos(stitch=FALSE, GRanges(chr, IRanges(start, width = 1), strand))
 }
 
 #' import.CAGEscanMolecule

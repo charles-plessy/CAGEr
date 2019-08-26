@@ -280,7 +280,8 @@ setGeneric("CTSScoordinatesGR", function(object) standardGeneric("CTSScoordinate
 
 setMethod( "CTSScoordinatesGR", "CAGEset", function (object){
   ctssCoord <- object@CTSScoordinates
-  ctssCoord <- GPos(GRanges( ctssCoord$chr
+  ctssCoord <- GPos(stitch = FALSE
+                   ,GRanges( ctssCoord$chr
                            , IRanges(ctssCoord$pos, width = 1)
                            , ctssCoord$strand))
   if(!identical(object@filteredCTSSidx, logical()))
