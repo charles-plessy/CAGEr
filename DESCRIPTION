@@ -35,7 +35,7 @@ Imports:
 Depends:
     methods,
     MultiAssayExperiment,
-    R (>= 2.15.0)
+    R (>= 3.5.0)
 Suggests:
     BSgenome.Drerio.UCSC.danRer7,
     DESeq2,
@@ -81,6 +81,6 @@ Collate:
     'StrandInvaders.R'
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
