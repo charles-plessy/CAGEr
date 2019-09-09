@@ -28,3 +28,4 @@ Other loadFileIntoGPos: \code{\link{bam2CTSS}},
   \code{\link{import.bedmolecule}},
   \code{\link{loadFileIntoGPos}}
 }
+\concept{loadFileIntoGPos}

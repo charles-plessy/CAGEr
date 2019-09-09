@@ -30,3 +30,4 @@ gr
 \seealso{
 Other df2granges converters: \code{\link{tagClusterConvertors}}
 }
+\concept{df2granges converters}

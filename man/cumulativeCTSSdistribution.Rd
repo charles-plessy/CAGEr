@@ -10,8 +10,8 @@ cumulativeCTSSdistribution(object, clusters = c("tagClusters",
   "consensusClusters"), useMulticore = FALSE, nrCores = NULL)
 
 \S4method{cumulativeCTSSdistribution}{CAGEr}(object,
-  clusters = c("tagClusters", "consensusClusters"), useMulticore = FALSE,
-  nrCores = NULL)
+  clusters = c("tagClusters", "consensusClusters"),
+  useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object}
@@ -74,3 +74,5 @@ Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr clusters functions}
+\concept{CAGEr object modifiers}

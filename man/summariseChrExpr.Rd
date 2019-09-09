@@ -40,3 +40,4 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr object modifiers}

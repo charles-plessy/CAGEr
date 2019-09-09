@@ -51,3 +51,4 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr accessor methods}

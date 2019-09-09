@@ -49,3 +49,4 @@ Other CAGEr setter methods: \code{\link{genomeName}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr setter methods}

@@ -82,3 +82,5 @@ Other CAGEr plot functions: \code{\link{hanabiPlot}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr annotation functions}
+\concept{CAGEr plot functions}

@@ -9,9 +9,11 @@
 \usage{
 mergeSamples(object, mergeIndex, mergedSampleLabels)
 
-\S4method{mergeSamples}{CAGEset,numeric}(object, mergeIndex, mergedSampleLabels)
+\S4method{mergeSamples}{CAGEset,numeric}(object, mergeIndex,
+  mergedSampleLabels)
 
-\S4method{mergeSamples}{CAGEexp,ANY}(object, mergeIndex, mergedSampleLabels)
+\S4method{mergeSamples}{CAGEexp,ANY}(object, mergeIndex,
+  mergedSampleLabels)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}

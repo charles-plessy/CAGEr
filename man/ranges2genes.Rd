@@ -43,3 +43,5 @@ Other CAGEr gene expression analysis functions: \code{\link{CTSStoGenes}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr annotation functions}
+\concept{CAGEr gene expression analysis functions}

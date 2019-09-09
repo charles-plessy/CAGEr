@@ -58,3 +58,4 @@ Other CAGEr export functions: \code{\link{exportToBed}}
 \author{
 Vanja Haberle
 }
+\concept{CAGEr export functions}

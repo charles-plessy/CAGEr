@@ -33,3 +33,4 @@ Other loadFileIntoGPos: \code{\link{import.CTSS}},
   \code{\link{loadFileIntoGPos}},
   \code{\link{moleculesGR2CTSS}}
 }
+\concept{loadFileIntoGPos}

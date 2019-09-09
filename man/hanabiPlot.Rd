@@ -4,7 +4,8 @@
 \alias{hanabiPlot}
 \title{hanabiPlot}
 \usage{
-hanabiPlot(x, group, col = NULL, legend.pos = "topleft", pch = 1, ...)
+hanabiPlot(x, group, col = NULL, legend.pos = "topleft", pch = 1,
+  ...)
 }
 \arguments{
 \item{x}{A hanabi object.}
@@ -58,3 +59,5 @@ Other CAGEr plot functions: \code{\link{plotAnnot}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr plot functions}
+\concept{CAGEr richness functions}

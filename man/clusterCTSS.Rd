@@ -13,17 +13,19 @@ clusterCTSS(object, threshold = 1, nrPassThreshold = 1,
   minStability = 1, maxLength = 500, reduceToNonoverlapping = TRUE,
   customClusters = NULL, useMulticore = FALSE, nrCores = NULL)
 
-\S4method{clusterCTSS}{CAGEset}(object, threshold = 1, nrPassThreshold = 1,
-  thresholdIsTpm = TRUE, method = c("distclu", "paraclu", "custom"),
-  maxDist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf,
-  minStability = 1, maxLength = 500, reduceToNonoverlapping = TRUE,
-  customClusters = NULL, useMulticore = FALSE, nrCores = NULL)
+\S4method{clusterCTSS}{CAGEset}(object, threshold = 1,
+  nrPassThreshold = 1, thresholdIsTpm = TRUE, method = c("distclu",
+  "paraclu", "custom"), maxDist = 20, removeSingletons = FALSE,
+  keepSingletonsAbove = Inf, minStability = 1, maxLength = 500,
+  reduceToNonoverlapping = TRUE, customClusters = NULL,
+  useMulticore = FALSE, nrCores = NULL)
 
-\S4method{clusterCTSS}{CAGEexp}(object, threshold = 1, nrPassThreshold = 1,
-  thresholdIsTpm = TRUE, method = c("distclu", "paraclu", "custom"),
-  maxDist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf,
-  minStability = 1, maxLength = 500, reduceToNonoverlapping = TRUE,
-  customClusters = NULL, useMulticore = FALSE, nrCores = NULL)
+\S4method{clusterCTSS}{CAGEexp}(object, threshold = 1,
+  nrPassThreshold = 1, thresholdIsTpm = TRUE, method = c("distclu",
+  "paraclu", "custom"), maxDist = 20, removeSingletons = FALSE,
+  keepSingletonsAbove = Inf, minStability = 1, maxLength = 500,
+  reduceToNonoverlapping = TRUE, customClusters = NULL,
+  useMulticore = FALSE, nrCores = NULL)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
@@ -156,3 +158,5 @@ Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr clusters functions}
+\concept{CAGEr object modifiers}

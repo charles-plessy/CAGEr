@@ -9,7 +9,6 @@
 \alias{consensusClustersQuantileUp}
 \alias{consensusClustersQuantileUp,CAGEset-method}
 \alias{consensusClustersQuantileUp,CAGEexp-method}
-\alias{consensusClustersQuantile}
 \alias{consensusClustersQuantile,CAGEset-method}
 \alias{consensusClustersQuantile,CAGEexp-method}
 \alias{consensusClustersQuantileLow<-}

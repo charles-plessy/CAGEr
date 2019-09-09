@@ -10,9 +10,9 @@ plotInterquantileWidth(object, clusters = c("tagClusters",
   "consensusClusters"), tpmThreshold = 5, qLow = 0.1, qUp = 0.9,
   xlim = c(0, 150), ...)
 
-\S4method{plotInterquantileWidth}{CAGEr}(object, clusters = c("tagClusters",
-  "consensusClusters"), tpmThreshold = 5, qLow = 0.1, qUp = 0.9,
-  xlim = c(0, 150), ...)
+\S4method{plotInterquantileWidth}{CAGEr}(object,
+  clusters = c("tagClusters", "consensusClusters"), tpmThreshold = 5,
+  qLow = 0.1, qUp = 0.9, xlim = c(0, 150), ...)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object}
@@ -71,3 +71,5 @@ Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr clusters functions}
+\concept{CAGEr plot functions}

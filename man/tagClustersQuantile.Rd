@@ -16,7 +16,6 @@
 \alias{tagClustersQuantileLow<-,CAGEexp-method}
 \alias{tagClustersQuantileUp<-}
 \alias{tagClustersQuantileUp<-,CAGEset-method}
-\alias{tagClustersQuantileLow<-,CAGEexp-method}
 \title{Quantile metadata stored in CAGEr objects.}
 \usage{
 tagClustersQuantile(object, samples = NULL, q = NULL)
@@ -24,31 +23,40 @@ tagClustersQuantile(object, samples = NULL, q = NULL)
 \S4method{tagClustersQuantile}{TagClusters}(object, samples = NULL,
   q = NULL)
 
-\S4method{tagClustersQuantile}{CAGEexp}(object, samples = NULL, q = NULL)
+\S4method{tagClustersQuantile}{CAGEexp}(object, samples = NULL,
+  q = NULL)
 
 tagClustersQuantileLow(object, samples = NULL, q = NULL)
 
-\S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL, q = NULL)
+\S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL,
+  q = NULL)
 
-\S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL, q = NULL)
+\S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL,
+  q = NULL)
 
 tagClustersQuantileUp(object, samples = NULL, q = NULL)
 
-\S4method{tagClustersQuantileUp}{CAGEset}(object, samples = NULL, q = NULL)
+\S4method{tagClustersQuantileUp}{CAGEset}(object, samples = NULL,
+  q = NULL)
 
-\S4method{tagClustersQuantileUp}{CAGEexp}(object, samples = NULL, q = NULL)
+\S4method{tagClustersQuantileUp}{CAGEexp}(object, samples = NULL,
+  q = NULL)
 
 tagClustersQuantileLow(object, samples = NULL) <- value
 
-\S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL) <- value
+\S4method{tagClustersQuantileLow}{CAGEset}(object,
+  samples = NULL) <- value
 
-\S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL) <- value
+\S4method{tagClustersQuantileLow}{CAGEexp}(object,
+  samples = NULL) <- value
 
 tagClustersQuantileUp(object, samples = NULL) <- value
 
-\S4method{tagClustersQuantileUp}{CAGEset}(object, samples = NULL) <- value
+\S4method{tagClustersQuantileUp}{CAGEset}(object,
+  samples = NULL) <- value
 
-\S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL) <- value
+\S4method{tagClustersQuantileLow}{CAGEexp}(object,
+  samples = NULL) <- value
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}

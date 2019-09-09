@@ -13,9 +13,19 @@ Lazy-loaded example CAGEexp object, containing most of the CAGEr data
 structures created with the CAGEr modifier functions.
 }
 \examples{
-# The example commands in the CAGEexp help page were used to create the example
-# CAGEexp object used below.
 \dontrun{
+pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
+                               , "ctss$"
+                               , full.names = TRUE)
+sampleLabels <- sub( ".chr17.ctss", "", basename(pathsToInputFiles))
+exampleCAGEexp <-
+  CAGEexp( genomeName     = "BSgenome.Drerio.UCSC.danRer7"
+         , inputFiles     = pathsToInputFiles
+         , inputFilesType = "ctss"
+         , sampleLabels   = sub( ".chr17.ctss", "", basename(pathsToInputFiles)))
+getCTSS(exampleCAGEexp)
+librarySizes(exampleCAGEexp)
+colData(exampleCAGEexp)
 exampleCAGEexp$l1 <- NULL
 exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
 CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object

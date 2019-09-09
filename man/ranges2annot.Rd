@@ -62,3 +62,4 @@ Other CAGEr annotation functions: \code{\link{annotateCTSS}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr annotation functions}

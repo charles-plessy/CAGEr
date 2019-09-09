@@ -81,3 +81,5 @@ Other CAGEr annotation functions: \code{\link{plotAnnot}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr annotation functions}
+\concept{CAGEr object modifiers}

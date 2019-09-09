@@ -52,3 +52,4 @@ Other CAGEr promoter shift functions: \code{\link{scoreShift}}
 \author{
 Vanja Haberle
 }
+\concept{CAGEr promoter shift functions}

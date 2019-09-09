@@ -46,3 +46,5 @@ Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr clusters functions}
+\concept{CAGEr expression analysis functions}

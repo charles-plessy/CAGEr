@@ -11,10 +11,12 @@ normalizeTagCount(object, method = c("powerLaw", "simpleTpm", "none"),
   fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
 
 \S4method{normalizeTagCount}{CAGEset}(object, method = c("powerLaw",
-  "simpleTpm", "none"), fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
+  "simpleTpm", "none"), fitInRange = c(10, 1000), alpha = 1.25,
+  T = 10^6)
 
 \S4method{normalizeTagCount}{CAGEexp}(object, method = c("powerLaw",
-  "simpleTpm", "none"), fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
+  "simpleTpm", "none"), fitInRange = c(10, 1000), alpha = 1.25,
+  T = 10^6)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEset}} object}
@@ -94,3 +96,5 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr normalised data functions}
+\concept{CAGEr object modifiers}

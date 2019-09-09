@@ -59,3 +59,5 @@ Other CAGEr gene expression analysis functions: \code{\link{GeneExpDESeq2}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr gene expression analysis functions}
+\concept{CAGEr object modifiers}

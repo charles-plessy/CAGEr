@@ -4,7 +4,8 @@
 \alias{mapStats}
 \title{Process mapping statistics}
 \usage{
-mapStats(libs, scope, group = "default", facet = NULL, normalise = TRUE)
+mapStats(libs, scope, group = "default", facet = NULL,
+  normalise = TRUE)
 }
 \arguments{
 \item{libs}{A data frame with containing columns required by the \code{scope}

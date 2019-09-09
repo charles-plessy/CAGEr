@@ -14,47 +14,49 @@
 \title{Pairwise scatter plots and correlations of CAGE signal}
 \usage{
 plotCorrelation(object, what = c("CTSS", "consensusClusters"),
-  values = c("raw", "normalized"), samples = "all", method = "pearson",
-  tagCountThreshold = 1, applyThresholdBoth = FALSE, plotSize = 800)
+  values = c("raw", "normalized"), samples = "all",
+  method = "pearson", tagCountThreshold = 1,
+  applyThresholdBoth = FALSE, plotSize = 800)
 
 \S4method{plotCorrelation}{CAGEr}(object, what = c("CTSS",
-  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
-  plotSize = 800)
+  "consensusClusters"), values = c("raw", "normalized"),
+  samples = "all", method = "pearson", tagCountThreshold = 1,
+  applyThresholdBoth = FALSE, plotSize = 800)
 
 plotCorrelation2(object, what = c("CTSS", "consensusClusters"),
-  values = c("raw", "normalized"), samples = "all", method = "pearson",
-  tagCountThreshold = 1, applyThresholdBoth = FALSE, digits = 3)
+  values = c("raw", "normalized"), samples = "all",
+  method = "pearson", tagCountThreshold = 1,
+  applyThresholdBoth = FALSE, digits = 3)
 
 \S4method{plotCorrelation2}{CAGEset}(object, what = c("CTSS",
-  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
-  digits = 3)
+  "consensusClusters"), values = c("raw", "normalized"),
+  samples = "all", method = "pearson", tagCountThreshold = 1,
+  applyThresholdBoth = FALSE, digits = 3)
 
 \S4method{plotCorrelation2}{CAGEexp}(object, what = c("CTSS",
-  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
-  digits = 3)
+  "consensusClusters"), values = c("raw", "normalized"),
+  samples = "all", method = "pearson", tagCountThreshold = 1,
+  applyThresholdBoth = FALSE, digits = 3)
 
-\S4method{plotCorrelation2}{SummarizedExperiment}(object, what = c("CTSS",
-  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
-  digits = 3)
+\S4method{plotCorrelation2}{SummarizedExperiment}(object,
+  what = c("CTSS", "consensusClusters"), values = c("raw",
+  "normalized"), samples = "all", method = "pearson",
+  tagCountThreshold = 1, applyThresholdBoth = FALSE, digits = 3)
 
 \S4method{plotCorrelation2}{DataFrame}(object, what = c("CTSS",
-  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
-  digits = 3)
+  "consensusClusters"), values = c("raw", "normalized"),
+  samples = "all", method = "pearson", tagCountThreshold = 1,
+  applyThresholdBoth = FALSE, digits = 3)
 
 \S4method{plotCorrelation2}{data.frame}(object, what = c("CTSS",
-  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
-  digits = 3)
+  "consensusClusters"), values = c("raw", "normalized"),
+  samples = "all", method = "pearson", tagCountThreshold = 1,
+  applyThresholdBoth = FALSE, digits = 3)
 
 \S4method{plotCorrelation2}{matrix}(object, what = c("CTSS",
-  "consensusClusters"), values = c("raw", "normalized"), samples = "all",
-  method = "pearson", tagCountThreshold = 1, applyThresholdBoth = FALSE,
-  digits = 3)
+  "consensusClusters"), values = c("raw", "normalized"),
+  samples = "all", method = "pearson", tagCountThreshold = 1,
+  applyThresholdBoth = FALSE, digits = 3)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object or (only for
@@ -146,3 +148,4 @@ Vanja Haberle
 
 Charles Plessy
 }
+\concept{CAGEr plot functions}

@@ -28,3 +28,4 @@ Other loadFileIntoGPos: \code{\link{bam2CTSS}},
   \code{\link{loadFileIntoGPos}},
   \code{\link{moleculesGR2CTSS}}
 }
+\concept{loadFileIntoGPos}

@@ -110,3 +110,4 @@ Other CAGEr promoter shift functions: \code{\link{getShiftingPromoters}}
 \author{
 Vanja Haberle
 }
+\concept{CAGEr promoter shift functions}

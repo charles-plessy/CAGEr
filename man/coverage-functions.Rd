@@ -43,9 +43,11 @@ Note that strand is not taken into account.
 \examples{
 library(GenomicRanges)
 library(IRanges)
-ctss <- CAGEr:::.CTSS(GPos(GRanges( seqnames=Rle("chr1")
-                             , IRanges(c(1,3,4,12,14,25,28,31,35), w=1)
-                             , strand = "+")))
+ctss <- CAGEr:::.CTSS(
+          GPos( stitch = FALSE
+              , GRanges( seqnames=Rle("chr1")
+                       , IRanges(c(1,3,4,12,14,25,28,31,35), w=1)
+                       , strand = "+")))
 score(ctss) <- 1
 ctss.chr <- CAGEr:::.CTSS.chr(ctss)
 clusters <- GRanges( seqnames = Rle("chr1")

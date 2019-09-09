@@ -17,17 +17,17 @@ findStrandInvaders(object, distance = 1, barcode = NULL,
 removeStrandInvaders(object, distance = 1, barcode = NULL,
   linker = "TATAGGG")
 
-\S4method{findStrandInvaders}{CAGEexp}(object, distance = 1, barcode = NULL,
-  linker = "TATAGGG")
+\S4method{findStrandInvaders}{CAGEexp}(object, distance = 1,
+  barcode = NULL, linker = "TATAGGG")
 
 \S4method{removeStrandInvaders}{CAGEexp}(object, distance = 1,
   barcode = NULL, linker = "TATAGGG")
 
-\S4method{findStrandInvaders}{CTSS}(object, distance = 1, barcode = NULL,
-  linker = "TATAGGG")
+\S4method{findStrandInvaders}{CTSS}(object, distance = 1,
+  barcode = NULL, linker = "TATAGGG")
 
-\S4method{removeStrandInvaders}{CTSS}(object, distance = 1, barcode = NULL,
-  linker = "TATAGGG")
+\S4method{removeStrandInvaders}{CTSS}(object, distance = 1,
+  barcode = NULL, linker = "TATAGGG")
 }
 \arguments{
 \item{object}{A \code{\link{CAGEexp}} object object containing CTSS data and the name

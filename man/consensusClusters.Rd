@@ -12,8 +12,8 @@
 \alias{consensusClusters,CAGEr-method}
 \title{Get consensus clusters from CAGEr objects}
 \usage{
-consensusClustersGR(object, sample = NULL, returnInterquantileWidth = FALSE,
-  qLow = NULL, qUp = NULL)
+consensusClustersGR(object, sample = NULL,
+  returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
 
 \S4method{consensusClustersGR}{CAGEset}(object, sample = NULL,
   returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
@@ -27,8 +27,8 @@ consensusClustersSE(object)
 
 \S4method{consensusClustersSE}{CAGEexp}(object)
 
-consensusClusters(object, sample = NULL, returnInterquantileWidth = FALSE,
-  qLow = NULL, qUp = NULL)
+consensusClusters(object, sample = NULL,
+  returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
 
 \S4method{consensusClusters}{CAGEr}(object, sample = NULL,
   returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL)
@@ -118,3 +118,5 @@ Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr accessor methods}
+\concept{CAGEr clusters functions}

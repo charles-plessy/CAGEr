@@ -25,7 +25,8 @@ It is used internally by CAGEr for type safety.
 The \code{genomeName} element of the \code{metadata} slot is used to store the
 name of the \emph{BSgenome} package used when constructing the \code{CAGEr} object.
 Be careful that calling the \code{CTSS} constructor twice in a row will erase
-the fist metadata (because the \code{GPos} constructor does so).
+the fist metadata (because the \code{\link{GPos}} constructor does so).  \emph{CAGEr}
+uses the \code{UnstitchedGPos} implementation of \code{GPos}.
 
 The \code{CTSS.chr} class represents a \link{CTSS} object that is guaranteed
 to be only on a single chromosome.  It is used internally by \emph{CAGEr} for type

@@ -50,3 +50,5 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr accessor methods}
+\concept{CAGEr gene expression analysis functions}

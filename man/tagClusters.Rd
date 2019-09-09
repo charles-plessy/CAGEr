@@ -30,7 +30,8 @@ tagClustersGR(object, sample = NULL, returnInterquantileWidth = FALSE,
 
 tagClustersGR(object, samples = NULL) <- value
 
-\S4method{tagClustersGR}{CAGEset,ANY,ANY}(object, samples = NULL) <- value
+\S4method{tagClustersGR}{CAGEset,ANY,ANY}(object,
+  samples = NULL) <- value
 
 \S4method{tagClustersGR}{CAGEexp,ANY,TagClusters}(object,
   samples = NULL) <- value
@@ -99,3 +100,5 @@ Other CAGEr clusters functions: \code{\link{CTSSclusteringMethod}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr accessor methods}
+\concept{CAGEr clusters functions}

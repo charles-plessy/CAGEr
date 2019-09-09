@@ -13,7 +13,8 @@
 
 .cluster.ctss.chr(ctss.chr, max.dist)
 
-.ctss2clusters(ctss, max.dist = 20, useMulticore = FALSE, nrCores = NULL)
+.ctss2clusters(ctss, max.dist = 20, useMulticore = FALSE,
+  nrCores = NULL)
 
 .summarize.clusters(ctss.clustered, removeSingletons = FALSE,
   keepSingletonsAbove = Inf)

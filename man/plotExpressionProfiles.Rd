@@ -50,3 +50,4 @@ Other CAGEr plot functions: \code{\link{hanabiPlot}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr plot functions}

@@ -7,8 +7,8 @@
 \title{Plotting Hanabi objects}
 \usage{
 \method{plot}{hanabi}(x, alpha = 0.5, col = "black",
-  xlab = "Total counts", ylab = "Unique features", main = "Hanabi plot",
-  pch = 1, ...)
+  xlab = "Total counts", ylab = "Unique features",
+  main = "Hanabi plot", pch = 1, ...)
 
 \method{points}{hanabi}(x, ...)
 
@@ -43,3 +43,4 @@ Other CAGEr richness functions: \code{\link{hanabiPlot}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr richness functions}

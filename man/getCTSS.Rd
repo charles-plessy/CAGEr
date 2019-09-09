@@ -137,3 +137,4 @@ Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
 \author{
 Vanja Haberle
 }
+\concept{CAGEr object modifiers}

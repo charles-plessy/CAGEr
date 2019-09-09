@@ -35,3 +35,4 @@ head(consensusClustersTpm(exampleCAGEexp))
 \author{
 Vanja Haberle
 }
+\concept{CAGEr clustering methods}

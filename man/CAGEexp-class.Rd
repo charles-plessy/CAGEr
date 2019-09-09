@@ -29,8 +29,6 @@ function, because they will be used as column names in some tables.
 }}
 
 \examples{
-library("MultiAssayExperiment")
-library("SummarizedExperiment")
 pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
                                , "ctss$"
                                , full.names = TRUE)

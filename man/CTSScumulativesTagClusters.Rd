@@ -68,3 +68,5 @@ Other CAGEr accessor methods: \code{\link{CTSSclusteringMethod}},
   \code{\link{sampleLabels}},
   \code{\link{seqNameTotalsSE}}, \code{\link{tagClusters}}
 }
+\concept{CAGEr accessor methods}
+\concept{CAGEr clusters functions}

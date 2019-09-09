@@ -91,3 +91,4 @@ Other CAGEr richness functions: \code{\link{hanabiPlot}},
 \author{
 Charles Plessy
 }
+\concept{CAGEr richness functions}

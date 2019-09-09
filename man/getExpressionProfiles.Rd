@@ -6,8 +6,8 @@
 \alias{getExpressionProfiles,CAGEset-method}
 \title{CAGE data based expression clustering}
 \usage{
-getExpressionProfiles(object, what, tpmThreshold = 5, nrPassThreshold = 1,
-  method = "som", xDim = 5, yDim = 5)
+getExpressionProfiles(object, what, tpmThreshold = 5,
+  nrPassThreshold = 1, method = "som", xDim = 5, yDim = 5)
 
 \S4method{getExpressionProfiles}{CAGEset}(object, what, tpmThreshold = 5,
   nrPassThreshold = 1, method = "som", xDim = 5, yDim = 5)

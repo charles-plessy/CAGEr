@@ -73,3 +73,5 @@ Vanja Haberle
 
 Charles Plessy
 }
+\concept{CAGEr accessor methods}
+\concept{CAGEr clusters functions}

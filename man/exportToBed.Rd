@@ -110,3 +110,4 @@ Other CAGEr export functions: \code{\link{exportCTSStoBedGraph}}
 \author{
 Vanja Haberle
 }
+\concept{CAGEr export functions}
