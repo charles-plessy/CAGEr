@@ -518,7 +518,7 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' CAGEr:::ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 #' 
 #' ctss <- GenomicRanges::GRanges("chr1", IRanges::IPos(c(1,100,200,1500)), "+")
-#' ctss <- GenomicRanges::GPos(ctss)
+#' ctss <- GenomicRanges::GPos(ctss, stitch = FALSE)
 #' ctss <- CAGEr:::.CTSS(ctss)
 #' gr1   <- GenomicRanges::GRanges( "chr1"
 #'                                , IRanges::IRanges(c(650, 650, 1400), 2000), "+")
