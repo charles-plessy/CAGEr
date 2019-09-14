@@ -38,6 +38,9 @@ setMethod("initialize", "CTSS", function(.Object, ..., bsgenomeName = NULL) {
   .Object
 })
 
+# See https://stat.ethz.ch/pipermail/bioc-devel/2019-September/015524.html
+setMethod("coerce", c("CTSS", "GRanges"), from_GPos_to_GRanges)
+
 #' @name CTSS.chr-class
 #' 
 #' @aliases CTSS.chr
