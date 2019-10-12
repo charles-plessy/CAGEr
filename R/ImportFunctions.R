@@ -142,7 +142,7 @@
 		}
 
 		if(nrow(CTSS.minus)>0){
-			CTSS.minus.final <- f(CTSS.minus, G.reads.minus, "+")
+			CTSS.minus.final <- f(CTSS.minus, G.reads.minus, "-")
 		}else{
 			CTSS.minus.final <- data.table()
 		}
