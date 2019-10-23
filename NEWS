@@ -1,10 +1,19 @@
-Changes in version 1.27.0:
+Changes in version 1.28.0:
+
+BACKWARDS-INCOMPATIBLE CHANGES:
+
+    o The CTSS objects are now based on the UnstitchedGPos class instead
+      of the parent GPos class.  Existing CAGEexp objects might give
+      errors after package upgrade.
 
 NEW FEATURES
 
-    o Depends on MultiAssayExperiemnt instead of previously Importing it.  No
-      need to load it by hand (nor SummaryExperiment) anymore.
+    o Depends on MultiAssayExperiemnt instead of previously Importing it.
+      No need to load it by hand (nor SummaryExperiment) anymore.
 
+BUG FIXES
+
+    o Correct strand in .remove.added.G private function (PR#26).
 
 Changes in version 1.26.0:
 
