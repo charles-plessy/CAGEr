@@ -125,7 +125,7 @@ setMethod("normalizeTagCount", "CAGEset", function (object, method, fitInRange, 
 #' 
 setMethod("normalizeTagCount", "CAGEexp", function (object, method, fitInRange, alpha, T) {
 	objName <- deparse(substitute(object))
-	assays(CTSStagCountSE(object))$normalizedTpmMatrix <-
+	assays(CTSStagCountSE(object), withDimnames=FALSE)$normalizedTpmMatrix <-
 	  .normalizeTagCount_switcher(method, object, fitInRange, alpha, T)
 	assign(objName, object, envir = parent.frame())
 	invisible(1)
