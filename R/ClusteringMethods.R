@@ -208,7 +208,7 @@ setMethod( "clusterCTSS", "CAGEexp"
   assay <- ifelse(isTRUE(thresholdIsTpm), "normalizedTpmMatrix", "counts")
   data <- CTSStagCountSE(object)
 
-  if (! "normalizedTpmMatrix" %in% names(assays(data)))
+  if (! "normalizedTpmMatrix" %in% assayNames(data))
     stop( "Could not find normalized CAGE signal values, see ?normalizeTagCount.\n"
         , "clusterCTSS() needs normalized values to create its output tables, that "
         , "include TPM expression columns.")

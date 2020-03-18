@@ -119,7 +119,7 @@ setMethod( "quantilePositions", "CAGEr"
     
 		if(inherits(object, "CAGEexp")) {
       for (qName in paste("q", c(qLow, qUp), sep = "_")) {
-        assays(consensusClustersSE(object))[[qName]] <-
+        assays(consensusClustersSE(object), withDimnames=FALSE)[[qName]] <-
           DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
 		} else if (inherits(object, "CAGEset")) {
 		  for (s in names(cons.clusters.l)) {
