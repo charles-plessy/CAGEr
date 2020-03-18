@@ -1,3 +1,9 @@
+Changes in version 1.29.1:
+
+BUG FIXES
+
+    o Correct usage of `&&` for vector comparison in pairs.DataFrame().
+
 Changes in version 1.28.0:
 
 BACKWARDS-INCOMPATIBLE CHANGES:
