@@ -153,7 +153,6 @@ setMethod("plotAnnot", "CAGEexp",
 #' @seealso [plotAnnot], [mapStatsScopes]
 #' 
 #' @examples
-#' library(SummarizedExperiment)
 #' CAGEr:::mapStats(as.data.frame(colData(exampleCAGEexp)), "counts", sampleLabels(exampleCAGEexp))
 #' CAGEr:::mapStats(as.data.frame(colData(exampleCAGEexp)), "counts", c("A", "A", "B", "B", "C"))
 #' 
@@ -407,7 +406,6 @@ msScope_annotation <- function(libs) {
 #' @author Charles Plessy
 #' 
 #' @examples 
-#' library(SummarizedExperiment)
 #' annotateCTSS(exampleCAGEexp, exampleZv9_annot)
 #' colData(exampleCAGEexp)
 #' 
