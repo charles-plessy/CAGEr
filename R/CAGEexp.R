@@ -230,11 +230,12 @@ setAs("data.frame", "CAGEexp", function(from){
                                 , inputFilesType = "CTSStable"
                                 , row.names      = sample.labels))
 
-  object$librarySizes <- as.integer(colSums(from[,4:ncol(from),drop=FALSE]))
-  
   CTSStagCountSE(object) <-
     SummarizedExperiment( rowRanges = gr
                         , assays    = SimpleList(counts = counts))
+  
+  object$librarySizes <- as.integer(colSums(from[,4:ncol(from),drop=FALSE]))
+  
   
   return(object)
 })

@@ -177,13 +177,16 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
     stop("Value must be a RangedSummarizedExperiment object.")
   if (! all(colnames(value) == sampleLabels(object)))
     stop ("The CTSS data must match the CAGEexp object, with samples in the same order.")
-  sampleMapSE <-
-    listToMap(list(tagCountMatrix = data.frame( primary = sampleLabels(object)
-                                              , colname = colnames(value))))
-  sampleMap(object) <-
-    rbind( sampleMap(object)[sampleMap(object)$assay != "tagCountMatrix",]
-         , sampleMapSE)
-  experiments(object)$tagCountMatrix <- value
+  if (length(experiments(object)) == 0) {
+    object <- MultiAssayExperiment( experiments = ExperimentList(tagCountMatrix=value)
+                                  , colData = colData(object)
+                                  , metadata = metadata(object))
+    class(object) <- structure("CAGEexp", package = "CAGEr")
+  } else if (is.null(object[["tagCountMatrix"]])) {
+    object <- c(object, tagCountMatrix=value)
+  } else {
+    object[["tagCountMatrix"]] <- value
+  }
   if (validObject(object)) object
 })
 
@@ -395,13 +398,11 @@ setMethod( "consensusClustersSE<-"
          , function (object, value) {
   if (! all(colnames(value) == sampleLabels(object)))
     stop ("The expression data must match the CAGEexp object, with samples in the same order.")
-  sampleMapSE <-
-    listToMap(list(consensusClusters = data.frame( primary = sampleLabels(object)
-                                                 , colname = colnames(value))))
-  sampleMap(object) <-
-    rbind( sampleMap(object)[sampleMap(object)$assay != "consensusClusters",]
-         , sampleMapSE)
-  experiments(object)$consensusClusters <- value
+  if (is.null(object[["consensusClusters"]])) {
+    object <- c(object, consensusClusters = value)
+  } else {
+    object[["consensusClusters"]] <- value
+  }
   if (validObject(object)) object
 })
 
@@ -504,13 +505,11 @@ setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
          "(Gene symbols have no ranged coordinates).")
   if (! all(colnames(value) == sampleLabels(object)))
     stop ("The CTSS data must match the CAGEexp object, with samples in the same order.")
-  sampleMapSE <-
-    listToMap(list(geneExpMatrix = data.frame( primary = sampleLabels(object)
-                                             , colname = colnames(value))))
-  sampleMap(object) <-
-    rbind( sampleMap(object)[sampleMap(object)$assay != "geneExpMatrix",]
-         , sampleMapSE)
-  experiments(object)$geneExpMatrix <- value
+  if (is.null(object[["geneExpMatrix"]])) {
+    object <- c(object, geneExpMatrix = value)
+  } else {
+    object[["geneExpMatrix"]] <- value
+  }
   if (validObject(object)) object
 })
 
@@ -528,13 +527,11 @@ setMethod( "seqNameTotalsSE<-"
          , function (object, value) {
   if (! all(colnames(value) == sampleLabels(object)))
     stop ("The expression data must match the CAGEexp object, with samples in the same order.")
-  sampleMapSE <-
-    listToMap(list(seqNameTotals = data.frame( primary = sampleLabels(object)
-                                             , colname = colnames(value))))
-  sampleMap(object) <-
-    rbind( sampleMap(object)[sampleMap(object)$assay != "seqNameTotals",]
-         , sampleMapSE)
-  experiments(object)$seqNameTotals <- value
+  if (is.null(object[["seqNameTotals"]])) {
+    object <- c(object, seqNameTotals = value)
+  } else {
+    object[["seqNameTotals"]] <- value
+  }
   if (validObject(object)) object
 })
 

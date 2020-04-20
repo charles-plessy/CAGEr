@@ -124,11 +124,11 @@ setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSample
   new.CAGE.exp <- CAGEexp( metadata = list(genomeName = genomeName(object))
                      , colData  = new.CAGE.exp)
   
-  setColors(new.CAGE.exp, rainbow(n = length(mergedSampleLabels)))
-
   CTSStagCountSE(new.CAGE.exp) <-
     SummarizedExperiment( rowRanges = rowRanges(CTSStagCountSE(object))
                         , assays    = SimpleList(counts = tag.count.DF.new))
+  
+  setColors(new.CAGE.exp, rainbow(n = length(mergedSampleLabels)))
   
   assign(objName, new.CAGE.exp, envir = parent.frame())
   invisible(1)
