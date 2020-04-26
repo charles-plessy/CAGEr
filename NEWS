@@ -1,8 +1,9 @@
-Changes in version 1.29.1:
+Changes in version 1.30.0:
 
 BUG FIXES
 
     o Correct usage of `&&` for vector comparison in pairs.DataFrame().
+    o Adjust to latest SummarizedExperiment MultiAssayExperiment versions.
 
 Changes in version 1.28.0:
 
