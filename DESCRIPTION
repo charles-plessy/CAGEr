@@ -1,6 +1,6 @@
 Package: CAGEr
 Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for precise mapping of transcription start sites and promoterome mining
-Version: 1.30.0
+Version: 1.31.0
 Date: 2020-04-26
 Author: Vanja Haberle <vanja.haberle@gmail.com>
 Maintainer: Vanja Haberle <vanja.haberle@gmail.com>, Charles Plessy <charles.plessy@oist.jp>, Damir Baranasic <damir.baranasic@lms.mrc.ac.uk>, Sarvesh Nikumbh <s.nikumbh@lms.mrc.ac.uk>
