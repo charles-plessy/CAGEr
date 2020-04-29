@@ -783,7 +783,7 @@ setMethod("CTSStoGenes", "CAGEexp", function (object) {
     stop(objName, " is not annotated, see ", dQuote("annotateCTSS()"), ".")
   genes <- rowsum(CTSStagCountDf(object), as.factor(CTSScoordinatesGR(object)$genes))
   object$unannotated <- unname(unlist(genes[1,]))
-  genes <- genes[-1,]
+  genes <- genes[-1, , drop = FALSE]
   GeneExpSE(object) <- SummarizedExperiment( assays  = SimpleList(counts = as.matrix(genes))
                                            , rowData = DataFrame(symbol = rownames(genes)))
   object$genes      <- colSums(assay(GeneExpSE(object)) > 0)
