@@ -195,7 +195,7 @@ setMethod( ".CCtoSE"
     .rowsumAsMatrix <- function(DF, names) {
       rs <- rowsum(as.matrix(DelayedArray(DF)), as.factor(names))
       if (rownames(rs)[1] == "") # If some CTSS were not in clusters
-        rs <- rs[-1,]
+        rs <- rs[-1, , drop = FALSE]
       rs
       }
     
