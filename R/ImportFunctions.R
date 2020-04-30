@@ -182,12 +182,14 @@
   gr <- promoters(gr, 0, 1)
   gr$genomeSeq <- getSeq(getRefGenome(genome), gr, as.character = TRUE)
   
+  if(is.null(gr$extraG)) gr$extraG <- Rle(F)
+  
   grl <- split(gr, strand(gr))
 
   removeOnPlus <- function(gr) {
     firstbase <- substr(gr$seq, start = 1, stop = 1)
-    extraG <- firstbase == "G" & gr$genomeSeq != "G"
-    ranges(gr[extraG]) <- shift(ranges(gr[extraG]), 1)
+    gr$extraG <- Rle(firstbase == "G" & gr$genomeSeq != "G")
+    ranges(gr[gr$extraG]) <- shift(ranges(gr[gr$extraG]), 1)
     gr
   }
   
@@ -195,8 +197,8 @@
   
   removeOnMinus <- function(gr) {
     firstbase <- substr(gr$seq,start = gr$read.length, stop = gr$read.length)
-    extraG <- firstbase == "C" & gr$genomeSeq != "G"
-    ranges(gr[extraG]) <- shift(ranges(gr[extraG]), -1)
+    gr$extraG <- firstbase == "C" & gr$genomeSeq != "G"
+    ranges(gr[gr$extraG]) <- shift(ranges(gr[gr$extraG]), -1)
     gr
   }
   
