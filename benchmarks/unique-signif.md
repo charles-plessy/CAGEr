@@ -33,8 +33,8 @@ sx    <- signif(x, 2)
 sy    <- signif(y, 2)
 ```
 
-`DataFrame` tables are are coerced to `data.frame` objects by the
-`duplicated.DataTable` function, therefore execution times are similar.
+`DataFrame` tables are coerced to `data.frame` objects by the
+`duplicated.DataFrame` function, therefore execution times are similar.
 
 
 ```r
