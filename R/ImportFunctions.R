@@ -182,27 +182,31 @@
   gr <- promoters(gr, 0, 1)
   gr$genomeSeq <- getSeq(getRefGenome(genome), gr, as.character = TRUE)
   
-  if(is.null(gr$extraG)) gr$extraG <- Rle(F)
+  if(is.null(gr$extraG)) gr$extraG <- Rle(0L)
   
   grl <- split(gr, strand(gr))
 
   removeOnPlus <- function(gr) {
-    firstbase <- substr(gr$seq, start = 1, stop = 1)
-    gr$extraG <- Rle(firstbase == "G" & gr$genomeSeq != "G")
-    ranges(gr[gr$extraG]) <- shift(ranges(gr[gr$extraG]), 1)
+    offset <- 1 + gr$extraG
+    firstbase <- substr(gr$seq, start = offset, stop = offset)
+    gToRemove <- Rle(firstbase == "G" & gr$genomeSeq != "G")
+    ranges(gr[gToRemove]) <- shift(ranges(gr[gToRemove]), 1)
+    gr$extraG <- gr$extraG + gToRemove
     gr
   }
   
   grl[["+"]] <- removeOnPlus(grl[["+"]])
   
   removeOnMinus <- function(gr) {
-    firstbase <- substr(gr$seq,start = gr$read.length, stop = gr$read.length)
-    gr$extraG <- firstbase == "C" & gr$genomeSeq != "G"
-    ranges(gr[gr$extraG]) <- shift(ranges(gr[gr$extraG]), -1)
+    offset <- gr$read.length - gr$extraG
+    firstbase <- substr(gr$seq, start = offset, stop = offset)
+    gToRemove <- firstbase == "C" & gr$genomeSeq != "G"
+    ranges(gr[gToRemove]) <- shift(ranges(gr[gToRemove]), -1)
+    gr$extraG <- gr$extraG + gToRemove
     gr
   }
   
   grl[["-"]] <- removeOnMinus(grl[["-"]])
 
-  .CTSS(unlist(grl))
+  .CTSS(unname(unlist(grl)))
 }
