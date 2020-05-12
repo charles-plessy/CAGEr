@@ -41,6 +41,23 @@ setMethod("initialize", "CTSS", function(.Object, ..., bsgenomeName = NULL) {
 # See https://stat.ethz.ch/pipermail/bioc-devel/2019-September/015524.html
 setMethod("coerce", c("CTSS", "GRanges"), from_GPos_to_GRanges)
 
+#' @examples
+#' gr <- GRanges("chr1:1-10:-")
+#' gr$seq <- "AAAAAAAAAA"
+#' seqlengths(gr) <- 100
+#' genome(gr) <- "foo"
+#' as(gr, "CTSS")
+#' identical(seqinfo(gr), seqinfo(as(gr, "CTSS")))
+#' as(as(gr, "CTSS"), "CTSS") # Make sure it works twice in a row
+
+setAs("GRanges", "CTSS", function(from) {
+  gr <- promoters(from, 0, 1)
+  gp <- GPos(gr, stitch = FALSE)
+  mcols(gp) <- mcols(gr)
+  .CTSS(gp)
+})
+
+
 #' @name CTSS.chr-class
 #' 
 #' @aliases CTSS.chr

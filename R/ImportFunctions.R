@@ -179,7 +179,6 @@
 
 .remove.added.G.CTSS <- function(gr, genome, correctSystematicG = FALSE) {
     if(correctSystematicG == TRUE) stop ("correctSystematicG not supported yet for CAGEexp objects")
-  gr <- promoters(gr, 0, 1)
   gr$genomeSeq <- getSeq(getRefGenome(genome), gr, as.character = TRUE)
   
   if(is.null(gr$extraG)) gr$extraG <- Rle(0L)
@@ -190,7 +189,9 @@
     offset <- 1 + gr$extraG
     firstbase <- substr(gr$seq, start = offset, stop = offset)
     gToRemove <- Rle(firstbase == "G" & gr$genomeSeq != "G")
-    ranges(gr[gToRemove]) <- shift(ranges(gr[gToRemove]), 1)
+    # Calls for breakage...
+    # Would much prefer pos(gr[gToRemove]) <- pos(gr[gToRemove]) + 1
+    gr@ranges@pos[decode(gToRemove)] <- gr@ranges@pos[decode(gToRemove)] + 1L
     gr$extraG <- gr$extraG + gToRemove
     gr
   }
@@ -201,12 +202,15 @@
     offset <- gr$read.length - gr$extraG
     firstbase <- substr(gr$seq, start = offset, stop = offset)
     gToRemove <- firstbase == "C" & gr$genomeSeq != "G"
-    ranges(gr[gToRemove]) <- shift(ranges(gr[gToRemove]), -1)
+    # Calls for breakage...
+    # Would much prefer pos(gr[gToRemove]) <- pos(gr[gToRemove]) - 1
+    gr@ranges@pos[decode(gToRemove)] <- gr@ranges@pos[decode(gToRemove)] - 1L
     gr$extraG <- gr$extraG + gToRemove
     gr
   }
   
   grl[["-"]] <- removeOnMinus(grl[["-"]])
 
-  .CTSS(unname(unlist(grl)))
+  gr <- unlist(grl, use.names = FALSE)
+  as(gr, "CTSS")
 }

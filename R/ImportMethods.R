@@ -437,7 +437,7 @@ bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
   gr <- coerceInBSgenome(gr, genome)
   if(removeFirstG == TRUE) {
     message("\t-> Removing the first base of the reads if 'G' and not aligned to the genome...")
-    gr <- .remove.added.G.CTSS(gr, genome, correctSystematicG = correctSystematicG)
+    gr <- .remove.added.G.CTSS(as(gr, "CTSS"), genome, correctSystematicG = correctSystematicG)
   }
   tb <- table(promoters(gr, 0, 1))
   gp <- as(names(tb), "UnstitchedGPos")
