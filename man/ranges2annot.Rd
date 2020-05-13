@@ -42,7 +42,7 @@ CAGEr:::ranges2annot(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 
 ctss <- GenomicRanges::GRanges("chr1", IRanges::IPos(c(1,100,200,1500)), "+")
 ctss <- GenomicRanges::GPos(ctss, stitch = FALSE)
-ctss <- CAGEr:::.CTSS(ctss)
+ctss <- as(ctss, "CTSS")
 gr1   <- GenomicRanges::GRanges( "chr1"
                                , IRanges::IRanges(c(650, 650, 1400), 2000), "+")
 CAGEr:::ranges2annot(ctss, gr1)
@@ -55,9 +55,11 @@ CAGEr:::ranges2annot(ctss, gr2)
 \seealso{
 \code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
 
-Other CAGEr annotation functions: \code{\link{annotateCTSS}},
-  \code{\link{plotAnnot}}, \code{\link{ranges2genes}},
-  \code{\link{ranges2names}}
+Other CAGEr annotation functions: 
+\code{\link{annotateCTSS}()},
+\code{\link{plotAnnot}()},
+\code{\link{ranges2genes}()},
+\code{\link{ranges2names}()}
 }
 \author{
 Charles Plessy
