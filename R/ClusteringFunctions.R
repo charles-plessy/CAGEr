@@ -95,7 +95,7 @@ setMethod(".cluster.ctss.strand", "IPos", function(ctss.ipos.chr, max.dist) {
 #' @examples 
 #' 
 #' #.cluster.ctss.chr
-#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))
+#' ctss.chr <- as(CTSScoordinatesGR(exampleCAGEexp), "CTSS.chr")
 #' CAGEr:::.cluster.ctss.chr(ctss.chr, 20)
 
 setGeneric(".cluster.ctss.chr", function(ctss.chr, max.dist) standardGeneric(".cluster.ctss.chr"))
@@ -129,7 +129,7 @@ setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
 #' @examples 
 #' 
 #' # .ctss2clusters
-#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEexp))
+#' ctss <- CTSScoordinatesGR(exampleCAGEexp)
 #' score(ctss) <- CTSSnormalizedTpmDF(exampleCAGEexp)[[1]]
 #' seqnames(ctss)[rep(c(TRUE,FALSE), length(ctss) / 2)] <- "chr16"
 #' ctss
@@ -142,7 +142,7 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
   ctss <- sort(ctss)
   ctss <- ctss[score(ctss) != 0]
   ctss.list <- split(ctss, droplevels(seqnames(ctss)))
-  ctss.list <- lapply(ctss.list, .CTSS.chr)
+  ctss.list <- lapply(ctss.list, as, "CTSS.chr")
   ctss.list <- bplapply( ctss.list, .cluster.ctss.chr, max.dist = max.dist
                        , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	max.clust <- sapply(ctss.list, function(x) {max(x$id)})
@@ -250,7 +250,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
   ctss.cluster.list <- list()
   for(s in colnames(se)) {
     message("\t-> ", s)
-    d <- .CTSS(rowRanges(se))
+    d <- as(rowRanges(se), "CTSS")
     score(d) <- assays(se)[["normalizedTpmMatrix"]][[s]]
     d <- subset(d, score(d) > 0)
     clusters <- .ctss2clusters(ctss = d, max.dist = max.dist, useMulticore = useMulticore, nrCores = nrCores)

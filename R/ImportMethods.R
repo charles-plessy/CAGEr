@@ -691,7 +691,7 @@ setMethod( "getCTSS", "CAGEexp"
   for (i in seq_along(l))
     assay[,i] <- expandRange(rowRanges, l[[i]])
   
-  rowRanges <- .CTSS(rowRanges, bsgenomeName = genomeName(object))
+  rowRanges <- new("CTSS", rowRanges, bsgenomeName = genomeName(object))
   
   colnames(assay) <- sampleLabels(object)
   

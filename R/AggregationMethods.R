@@ -123,7 +123,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
 	if (inherits(object, "CAGEset")) {
 	  filteredSE <- CTSStagCountSE(object)[filter,]
 	  .getTotalTagCountSample <- function(x) {
-      ctss.s        <- .CTSS(rowRanges(filteredSE))
+      ctss.s        <- as(rowRanges(filteredSE), "CTSS")
       score(ctss.s) <- assay(filteredSE, "normalizedTpmMatrix")[[x]]
       ctss.s        <- ctss.s[ctss.s$filteredCTSSidx]
       ctss.s        <- ctss.s[score(ctss.s) > 0]
