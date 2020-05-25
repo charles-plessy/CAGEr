@@ -62,7 +62,7 @@ setMethod("coerce", c("CTSS", "GRanges"), from_GPos_to_GRanges)
           , contains = "CTSS"
           , validity =
   function(object) 
-    if (length(unique(seqnames(object))) != 1)
+    if (length(seqlevelsInUse(object)) > 1)
       return("Mutiple sequnames found: CTSS.chr objects should be only on a single chromosome.")
 )
 
