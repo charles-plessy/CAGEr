@@ -318,7 +318,7 @@ setMethod( "plotInterquantileWidth", "CAGEr"
   on.exit(par(old.par))
   
 	sapply(sample.labels, function(x) {
-    gr <- tagClustersGR(object, x, returnInterquantileWidth = TRUE, qLow = qLow, qUp = qUp)
+    gr <- getClustFun(object, x, returnInterquantileWidth = TRUE, qLow = qLow, qUp = qUp)
     gr <- gr[score(gr) >= tpmThreshold]
     width <- decode(gr$interquantile_width)
     h <- hist(width, breaks = round(max(width)/2), plot = F)
