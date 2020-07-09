@@ -28,8 +28,8 @@ setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minu
   # Annotate TCs with ID of the aggregated cluster they intersect with.
   gr.list <- endoapply( gr.list, function (gr) {
     o = findOverlaps(clusters.gr, gr)
-    gr$consensus.cluster <- queryHits(o)
-    gr$sample <- "tbd" # Can not retreive 
+    gr$consensus.cluster[subjectHits(o)] <- queryHits(o)
+    gr$sample <- "tbd" # Can not retrieve 
     gr
   })
   
