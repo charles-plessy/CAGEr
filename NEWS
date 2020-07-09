@@ -1,3 +1,10 @@
+Changes in version 1.31.3:
+
+BUG FIXES
+
+    o Correct `.make.consensus.clusters` internal function.  This should stop
+      triggering "Consensus clusters must not overlap with each other" errors.
+
 Changes in version 1.31.2:
 
 BUG FIXES
