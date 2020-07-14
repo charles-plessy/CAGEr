@@ -1,3 +1,11 @@
+Changes in version 1.31.4:
+
+BUG FIXES
+
+    o Update end coordinates before start coordinates in the function
+      `.aggregateTagClustersGR()`.  This should stop triggering
+      "'width(x)' cannot contain negative integers" errors.
+
 Changes in version 1.31.3:
 
 BUG FIXES
