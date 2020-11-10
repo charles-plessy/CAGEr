@@ -7,7 +7,7 @@ output:
     toc: yes
 ---
 
-```{r setup echo=FALSE}
+```{r setup, echo=FALSE}
 knitr::opts_chunk$set(cache  = TRUE)
 knitr::opts_knit$set(verbose = TRUE)
 # knitr::opts_chunk$set(dev=c('svg', 'png'))
@@ -171,7 +171,7 @@ hanabiPlot( hanabi(assay(GeneExpSE(ce))
           , group = ce$group
           , ylab  = "number of genes detected"
           , xlab  = "number of unique molecule counts"
-          , main  = "Gene discovery")
+          , main  = "Gene discovery"))
 ```
 
 ### TSS discovery
