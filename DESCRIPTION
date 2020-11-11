@@ -2,12 +2,12 @@ Package: CAGEr
 Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for precise mapping of transcription start sites and promoterome mining
 Version: 1.33.0
 Date: 2020-07-14
-Authors@R: c(
-  person("Vanja",   "Haberle",   email = "vanja.haberle@gmail.com",       role = c("aut", "cre")),
-  person("Charles", "Plessy",    email = "charles.plessy@oist.jp",        role = "cre"),
-  person("Damir",   "Baranasic", email = "damir.baranasic@lms.mrc.ac.uk", role = "cre"),
-  person("Sarvesh", "Nikumbh",   email = "s.nikumbh@lms.mrc.ac.uk",       role = "cre")
-)
+Authors@R:
+  c( person("Vanja",   "Haberle",   email = "vanja.haberle@gmail.com",       role = c("aut", "cre")),
+     person("Charles", "Plessy",    email = "charles.plessy@oist.jp",        role = "cre"),
+     person("Damir",   "Baranasic", email = "damir.baranasic@lms.mrc.ac.uk", role = "cre"),
+     person("Sarvesh", "Nikumbh",   email = "s.nikumbh@lms.mrc.ac.uk",       role = "cre")
+  )
 Imports:
     beanplot,
     BiocGenerics,
