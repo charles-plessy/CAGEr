@@ -3,10 +3,10 @@ Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for pr
 Version: 1.33.0
 Date: 2020-07-14
 Authors@R:
-  c( person("Vanja",   "Haberle",   email = "vanja.haberle@gmail.com",       role = c("aut", "cre")),
+  c( person("Vanja",   "Haberle",   email = "vanja.haberle@gmail.com",       role = "aut"),
      person("Charles", "Plessy",    email = "charles.plessy@oist.jp",        role = "cre"),
-     person("Damir",   "Baranasic", email = "damir.baranasic@lms.mrc.ac.uk", role = "cre"),
-     person("Sarvesh", "Nikumbh",   email = "s.nikumbh@lms.mrc.ac.uk",       role = "cre")
+     person("Damir",   "Baranasic", email = "damir.baranasic@lms.mrc.ac.uk", role = "ctb"),
+     person("Sarvesh", "Nikumbh",   email = "s.nikumbh@lms.mrc.ac.uk",       role = "ctb")
   )
 Imports:
     beanplot,
