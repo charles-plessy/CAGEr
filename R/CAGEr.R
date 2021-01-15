@@ -53,11 +53,15 @@ setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
 
 #' @name getRefGenome
 #' 
-#' @title Attempt to load a BSgenome
+#' @title Return a BSgenome or throws an error
 #' 
-#' @details Internal function that retreives a BSgenome object or throws an error if not available.
+#' @details If the `reference.genome` object exists and is a BSgenome_, it will
+#' be returned.  This allows the user to run things like
+#' `seqlevelsStyle(BSgenome.Hsapiens.UCSC.hg19) <- "NCBI"` on the BSgenome
+#' object before running `getCTSS`.  If the `reference.genome` object does not
+#' exist, attempts to load it and return it, or throws an error if not available.
 #' 
-#' @return A BSgenome object
+#' @return A BSgenome object of the same name as the `reference.genome` argument.
 #' 
 #' @param reference.genome
 #' 
@@ -69,6 +73,11 @@ setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
 getRefGenome <- function(reference.genome) {
   if (is.null(reference.genome))
     stop("Can not run this function with a NULL genome; see ", sQuote('help("genomeName")'), ".")
+  if (exists(reference.genome))
+    if ("BSgenome" %in% class(get(reference.genome)))
+      return(get(reference.genome))
+    else
+      stop("The ", sQuote(reference.genome), " object in the namespace is not a BSgenome")
   if(reference.genome %in% rownames(installed.packages()) == FALSE)
     stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
   requireNamespace(reference.genome)
