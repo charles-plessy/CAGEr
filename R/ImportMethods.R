@@ -439,8 +439,8 @@ bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
     message("\t-> Removing the first base of the reads if 'G' and not aligned to the genome...")
     gr <- .remove.added.G.CTSS(gr, genome, correctSystematicG = correctSystematicG)
   }
-  tb <- table(promoters(gr, 0, 1))
-  gp <- as(names(tb), "UnstitchedGPos")
+  tb <- table(gr)
+  gp <- CTSS(names(tb), bsgenomeName = genome)
   score(gp) <- Rle(unclass(tb))
   gp
 } 
