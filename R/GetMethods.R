@@ -292,7 +292,7 @@ setMethod( "CTSScoordinatesGR", "CAGEset", function (object){
     } else {
       warning("Skipping expression classes: not same length as CTSS.")
     }
-  .CTSS(ctssCoord, bsgenomeName = genomeName(object))
+  new("CTSS", ctssCoord, bsgenomeName = genomeName(object))
 })
 
 #' @rdname CTSScoordinates
@@ -428,7 +428,7 @@ setMethod( "CTSStagCountGR", "CAGEr", function (object, samples) {
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSStagCountDF(object)[[samples]]
   gr <- gr[score(gr) != 0]
-  gr <- .CTSS(gr, bsgenomeName = genomeName(object))
+  gr <- new("CTSS", gr, bsgenomeName = genomeName(object))
   sampleLabels(gr) <- sampleLabels(object)[samples]
   gr
 })
@@ -646,8 +646,7 @@ setGeneric("CTSSnormalizedTpmGR", function(object, samples) {
 setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, samples) {
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSSnormalizedTpmDF(object)[[samples]]
-  gr <- gr[score(gr) != 0]
-  .CTSS(gr, bsgenomeName = genomeName(object))
+  gr[score(gr) != 0]
 })
 
 #' @name CTSSclusteringMethod
