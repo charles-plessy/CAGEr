@@ -1,3 +1,11 @@
+Changes in version 1.33.1:
+
+BUG FIXES
+
+    o Reform the CTSS class.  New accessor: `CTSS()` (with no dot).
+    o Correct a class error when loading BAM files. (Closes #36).
+    o Use the BSgenome object from the main environment if available.
+
 Changes in version 1.31.4:
 
 BUG FIXES
