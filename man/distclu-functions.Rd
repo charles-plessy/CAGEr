@@ -13,14 +13,22 @@
 
 .cluster.ctss.chr(ctss.chr, max.dist)
 
-.ctss2clusters(ctss, max.dist = 20, useMulticore = FALSE,
-  nrCores = NULL)
+.ctss2clusters(ctss, max.dist = 20, useMulticore = FALSE, nrCores = NULL)
 
-.summarize.clusters(ctss.clustered, removeSingletons = FALSE,
-  keepSingletonsAbove = Inf)
+.summarize.clusters(
+  ctss.clustered,
+  removeSingletons = FALSE,
+  keepSingletonsAbove = Inf
+)
 
-.distclu(se, max.dist = 20, removeSingletons = FALSE,
-  keepSingletonsAbove = Inf, useMulticore = FALSE, nrCores = NULL)
+.distclu(
+  se,
+  max.dist = 20,
+  removeSingletons = FALSE,
+  keepSingletonsAbove = Inf,
+  useMulticore = FALSE,
+  nrCores = NULL
+)
 }
 \arguments{
 \item{ctss.ipos.chr}{A IPos object.}
@@ -108,11 +116,11 @@ identical(
 identical(CAGEr:::.cluster.ctss.strand(IPos(), 20), data.table::data.table())
 
 #.cluster.ctss.chr
-ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))
+ctss.chr <- as(CTSScoordinatesGR(exampleCAGEexp), "CTSS.chr")
 CAGEr:::.cluster.ctss.chr(ctss.chr, 20)
 
 # .ctss2clusters
-ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEexp))
+ctss <- CTSScoordinatesGR(exampleCAGEexp)
 score(ctss) <- CTSSnormalizedTpmDF(exampleCAGEexp)[[1]]
 seqnames(ctss)[rep(c(TRUE,FALSE), length(ctss) / 2)] <- "chr16"
 ctss
