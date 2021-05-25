@@ -23,7 +23,7 @@
 #' 
 #' @details From the 5' end the position, the position of a quantile \emph{q} is
 #' detemined as the first base in which of the cumulative expression is higher
-#' or equal to \emph{q\%} of the total CAGE signal of that cluster.  Promoter
+#' or equal to \emph{q%} of the total CAGE signal of that cluster.  Promoter
 #' \emph{interquantile width} is defined as the distance (in base pairs)
 #' between a \dQuote{lower} and an \dQuote{upper} quantile position.
 #' 
