@@ -8,10 +8,6 @@
 \alias{coerce,CTSS,GRanges-method}
 \alias{coerce,GRanges,CTSS-method}
 \alias{CTSS.chr-class}
-\alias{ConsensusClusters}
-\alias{.ConsensusClusters}
-\alias{TagClusters}
-\alias{.TagClusters}
 \title{CAGE Transcription Start Sites}
 \usage{
 \S4method{initialize}{CTSS}(.Object, ..., bsgenomeName = NULL)
@@ -41,9 +37,6 @@ plus \code{bsgenomeName}, and minus \code{stitch}, which is hardcoded to \code{F
 The \code{CTSS.chr} class represents a \code{CTSS} object that is
 guaranteed to be only on a single chromosome.  It is used internally by
 \emph{CAGEr} for type-safe polymorphic dispatch.
-
-The \code{ConsensusClusters} class represents consensus clusters.
-It is used internally by CAGEr for type safety.
 }
 \details{
 The \code{genomeName} element of the \code{metadata} slot is used to store the
@@ -51,12 +44,6 @@ name of the \emph{BSgenome} package used when constructing the \code{CAGEr} obje
 
 Coercion from \code{GRanges} to \code{CTSS} loses information, but it seems
 to be fine, since other coercions like \code{as(1.2, "integer")} do the same.
-
-Consensus clusters must not overlap, so that a single TSS in the
-genome can only be attributed to a single cluster.
-
-The \code{TagClusters} class represents tag clusters.
-It is used internally by CAGEr for type safety.
 }
 \examples{
 # Convert an UnstitchedGPos object using the new() constructor.

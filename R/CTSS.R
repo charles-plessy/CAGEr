@@ -119,16 +119,14 @@ setClass( "CTSS.chr"
 )
 
 
-#' @name ConsensusClusters
-#' @aliases .ConsensusClusters
+#' ConsensusClusters
 #' 
-#' @rdname CTSS-class
-#' 
-#' @description  The \code{ConsensusClusters} class represents consensus clusters.
+#' The \code{ConsensusClusters} class represents consensus clusters.
 #' It is used internally by CAGEr for type safety.
 #' 
-#' @details Consensus clusters must not overlap, so that a single TSS in the
+#' Consensus clusters must not overlap, so that a single TSS in the
 #' genome can only be attributed to a single cluster.
+#' @aliases ConsensusClusters
 
 .ConsensusClusters <-
   setClass( "ConsensusClusters"
@@ -137,11 +135,10 @@ setClass( "CTSS.chr"
             if (length(reduce(object, min.gapwidth=0L)) < length(object))
               return("Consensus clusters must not overlap with each other."))
 
-#' @name TagClusters
-#' 
-#' @rdname CTSS-class
-#' 
+#' TagClusters
+#'  
 #' @details The \code{TagClusters} class represents tag clusters.
 #' It is used internally by CAGEr for type safety.
+#' @aliases TagClusters
 
 .TagClusters <- setClass( "TagClusters", contains = "GRanges")
