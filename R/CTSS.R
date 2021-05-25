@@ -16,6 +16,7 @@
 setClass("CTSS", contains = "UnstitchedGPos")
 
 #' @rdname CTSS-class
+#' @param object See  [`methods::show`]
 
 setMethod("show", "CTSS", function(object) {
   callNextMethod()
@@ -27,6 +28,7 @@ setMethod("show", "CTSS", function(object) {
 
 
 #' @rdname CTSS-class
+#' @param .Object See  [`methods::new`]
 #' @examples 
 #' # Convert an UnstitchedGPos object using the new() constructor.
 #' gp <- GPos("chr1:2:-", stitch = FALSE)
@@ -45,6 +47,10 @@ setMethod("initialize", "CTSS", function(.Object, ..., bsgenomeName = NULL) {
 #' 
 #' The `CTSS` constructor takes the same arguments as [`GenomicRanges::GPos`],
 #' plus `bsgenomeName`, and minus `stitch`, which is hardcoded to `FALSE`.
+#' 
+#' @param seqnames,pos,strand,seqinfo,seqlengths,... See the documentation
+#'        of [`GenomicRanges::GPos`] for further details.
+#' @param bsgenomeName String containing the name of a _BSgenome_ package.
 #' 
 #' @rdname CTSS-class
 #' @examples 
@@ -73,6 +79,8 @@ CTSS <- function (seqnames = NULL, pos = NULL, strand = NULL, ...,
 setMethod("coerce", c("CTSS", "GRanges"), from_GPos_to_GRanges)
 
 #' @rdname CTSS-class
+#' 
+#' @param from,to,strict See  [`methods::coerce`].
 #' 
 #' @details Coercion from `GRanges` to `CTSS` loses information, but it seems
 #' to be fine, since other coercions like `as(1.2, "integer")` do the same.

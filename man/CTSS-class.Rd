@@ -29,6 +29,18 @@ CTSS(
 
 \S4method{coerce}{GRanges,CTSS}(from, to = "CTSS", strict = TRUE)
 }
+\arguments{
+\item{object}{See  \code{\link[methods:show]{methods::show}}}
+
+\item{.Object}{See  \code{\link[methods:new]{methods::new}}}
+
+\item{bsgenomeName}{String containing the name of a \emph{BSgenome} package.}
+
+\item{seqnames, pos, strand, seqinfo, seqlengths, ...}{See the documentation
+of \code{\link[GenomicRanges:GPos-class]{GenomicRanges::GPos}} for further details.}
+
+\item{from, to, strict}{See  \code{\link[methods:setAs]{methods::coerce}}.}
+}
 \description{
 The \code{CTSS} class represents CAGE transcription start sites (CTSS) at
 single-nucleotide resolution, using \code{\link[GenomicRanges:GPos-class]{GenomicRanges::UnstitchedGPos}} as base
