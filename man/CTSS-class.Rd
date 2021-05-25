@@ -3,6 +3,7 @@
 \docType{class}
 \name{CTSS-class}
 \alias{CTSS-class}
+\alias{show,CTSS-method}
 \alias{initialize,CTSS-method}
 \alias{CTSS}
 \alias{coerce,CTSS,GRanges-method}
@@ -10,6 +11,8 @@
 \alias{CTSS.chr-class}
 \title{CAGE Transcription Start Sites}
 \usage{
+\S4method{show}{CTSS}(object)
+
 \S4method{initialize}{CTSS}(.Object, ..., bsgenomeName = NULL)
 
 CTSS(

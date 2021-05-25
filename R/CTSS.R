@@ -15,6 +15,8 @@
 
 setClass("CTSS", contains = "UnstitchedGPos")
 
+#' @rdname CTSS-class
+
 setMethod("show", "CTSS", function(object) {
   callNextMethod()
   bsgenomeName  <- ifelse(is.null(object@metadata$genomeName),
