@@ -4,8 +4,7 @@
 \alias{.powerLaw}
 \title{.powerLaw}
 \usage{
-.powerLaw(tag.counts, fitInRange = c(10, 1000), alpha = 1.25,
-  T = 10^6)
+.powerLaw(tag.counts, fitInRange = c(10, 1000), alpha = 1.25, T = 10^6)
 }
 \arguments{
 \item{tag.counts}{Numerical values whose reverse cumulative distribution will be fitted

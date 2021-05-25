@@ -4,7 +4,9 @@
 \name{exampleCAGEexp}
 \alias{exampleCAGEexp}
 \title{Example CAGEexp object.}
-\format{A \link{CAGEexp} object.}
+\format{
+A \link{CAGEexp} object.
+}
 \usage{
 exampleCAGEexp
 }

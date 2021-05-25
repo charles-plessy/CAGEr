@@ -19,12 +19,14 @@ Imports a "CTSS" file in a \link{GPos} object
 CAGEr:::import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))
 }
 \seealso{
-Other loadFileIntoGPos: \code{\link{bam2CTSS}},
-  \code{\link{import.bam.ctss}}, \code{\link{import.bam}},
-  \code{\link{import.bedCTSS}},
-  \code{\link{import.bedScore}},
-  \code{\link{import.bedmolecule}},
-  \code{\link{loadFileIntoGPos}},
-  \code{\link{moleculesGR2CTSS}}
+Other loadFileIntoGPos: 
+\code{\link{bam2CTSS}()},
+\code{\link{import.bam.ctss}()},
+\code{\link{import.bam}()},
+\code{\link{import.bedCTSS}()},
+\code{\link{import.bedScore}()},
+\code{\link{import.bedmolecule}()},
+\code{\link{loadFileIntoGPos}()},
+\code{\link{moleculesGR2CTSS}()}
 }
 \concept{loadFileIntoGPos}

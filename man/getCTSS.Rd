@@ -7,17 +7,35 @@
 \alias{getCTSS,CAGEexp-method}
 \title{Reading CAGE data from input file(s) and detecting TSSs}
 \usage{
-getCTSS(object, sequencingQualityThreshold = 10,
-  mappingQualityThreshold = 20, removeFirstG = TRUE,
-  correctSystematicG = TRUE, useMulticore = FALSE, nrCores = NULL)
+getCTSS(
+  object,
+  sequencingQualityThreshold = 10,
+  mappingQualityThreshold = 20,
+  removeFirstG = TRUE,
+  correctSystematicG = TRUE,
+  useMulticore = FALSE,
+  nrCores = NULL
+)
 
-\S4method{getCTSS}{CAGEset}(object, sequencingQualityThreshold = 10,
-  mappingQualityThreshold = 20, removeFirstG = TRUE,
-  correctSystematicG = TRUE, useMulticore = FALSE, nrCores = NULL)
+\S4method{getCTSS}{CAGEset}(
+  object,
+  sequencingQualityThreshold = 10,
+  mappingQualityThreshold = 20,
+  removeFirstG = TRUE,
+  correctSystematicG = TRUE,
+  useMulticore = FALSE,
+  nrCores = NULL
+)
 
-\S4method{getCTSS}{CAGEexp}(object, sequencingQualityThreshold = 10,
-  mappingQualityThreshold = 20, removeFirstG = TRUE,
-  correctSystematicG = TRUE, useMulticore = FALSE, nrCores = NULL)
+\S4method{getCTSS}{CAGEexp}(
+  object,
+  sequencingQualityThreshold = 10,
+  mappingQualityThreshold = 20,
+  removeFirstG = TRUE,
+  correctSystematicG = TRUE,
+  useMulticore = FALSE,
+  nrCores = NULL
+)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEset}} or a A \code{\link{CAGEexp}} object.}
@@ -125,14 +143,16 @@ evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
 \code{\link{CTSStagCountTable}}, \code{\link{inputFilesType}},
 \code{\link{librarySizes}}.
 
-Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
-  \code{\link{CustomConsensusClusters}},
-  \code{\link{aggregateTagClusters}},
-  \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
-  \code{\link{cumulativeCTSSdistribution}},
-  \code{\link{normalizeTagCount}},
-  \code{\link{quantilePositions}},
-  \code{\link{summariseChrExpr}}
+Other CAGEr object modifiers: 
+\code{\link{CTSStoGenes}()},
+\code{\link{CustomConsensusClusters}()},
+\code{\link{aggregateTagClusters}()},
+\code{\link{annotateCTSS}()},
+\code{\link{clusterCTSS}()},
+\code{\link{cumulativeCTSSdistribution}()},
+\code{\link{normalizeTagCount}()},
+\code{\link{quantilePositions}()},
+\code{\link{summariseChrExpr}()}
 }
 \author{
 Vanja Haberle

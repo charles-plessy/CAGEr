@@ -28,6 +28,7 @@ gr
 # identical(df, CCgranges2dataframe(gr))
 }
 \seealso{
-Other df2granges converters: \code{\link{tagClusterConvertors}}
+Other df2granges converters: 
+\code{\link{tagClusterConvertors}}
 }
 \concept{df2granges converters}

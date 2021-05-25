@@ -30,9 +30,11 @@ CAGEr:::ranges2names(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 
 }
 \seealso{
-Other CAGEr annotation functions: \code{\link{annotateCTSS}},
-  \code{\link{plotAnnot}}, \code{\link{ranges2annot}},
-  \code{\link{ranges2genes}}
+Other CAGEr annotation functions: 
+\code{\link{annotateCTSS}()},
+\code{\link{plotAnnot}()},
+\code{\link{ranges2annot}()},
+\code{\link{ranges2genes}()}
 }
 \author{
 Charles Plessy

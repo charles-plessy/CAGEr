@@ -21,11 +21,14 @@ for a given alignment.
 # import.bedScore(system.file("extdata", "example.bed", package = "CAGEr"))
 }
 \seealso{
-Other loadFileIntoGPos: \code{\link{bam2CTSS}},
-  \code{\link{import.CTSS}}, \code{\link{import.bam.ctss}},
-  \code{\link{import.bam}}, \code{\link{import.bedCTSS}},
-  \code{\link{import.bedmolecule}},
-  \code{\link{loadFileIntoGPos}},
-  \code{\link{moleculesGR2CTSS}}
+Other loadFileIntoGPos: 
+\code{\link{bam2CTSS}()},
+\code{\link{import.CTSS}()},
+\code{\link{import.bam.ctss}()},
+\code{\link{import.bam}()},
+\code{\link{import.bedCTSS}()},
+\code{\link{import.bedmolecule}()},
+\code{\link{loadFileIntoGPos}()},
+\code{\link{moleculesGR2CTSS}()}
 }
 \concept{loadFileIntoGPos}

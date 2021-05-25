@@ -41,6 +41,7 @@ tagClustersGR(exampleCAGEexp)
 head(CAGEr:::TCgranges2dataframe(CAGEr:::tagClustersGR(exampleCAGEexp, 1)))
 }
 \seealso{
-Other df2granges converters: \code{\link{consensusClusterConvertors}}
+Other df2granges converters: 
+\code{\link{consensusClusterConvertors}}
 }
 \concept{df2granges converters}
