@@ -39,7 +39,7 @@ Default value \code{NULL} uses all detected cores.}
 }
 \value{
 When \code{clusters = "tagClusters"}, the slots \code{tagClustersQuantileLow}
-and \code{tagClustersQuantileUp} of a provided \code{\link{CAGEset}} object will
+and \code{tagClustersQuantileUp} of a provided \code{\link{CAGEexp}} object will
 be occupied with the positions of specified quantiles in all tag clusters for all
 CAGE datasets. When \code{clusters = "consensusClusters"} the slots
 \code{consensusClustersQuantileLow} and \code{consensusClustersQuantileUp} will be
@@ -68,23 +68,23 @@ between a \dQuote{lower} and an \dQuote{upper} quantile position.
 }
 \examples{
 head(cbind(
-  CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
-  CAGEr:::tagClustersQuantileUp (exampleCAGEset, 1)
+  CAGEr:::tagClustersQuantileLow(exampleCAGEexp, 1),
+  CAGEr:::tagClustersQuantileUp (exampleCAGEexp, 1)
 ))
-quantilePositions( object = exampleCAGEset, clusters = "tagClusters"
+quantilePositions( object = exampleCAGEexp, clusters = "tagClusters"
                  , qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
 head(cbind(
-  CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
-  CAGEr:::tagClustersQuantileUp (exampleCAGEset,1 )
+  CAGEr:::tagClustersQuantileLow(exampleCAGEexp, 1),
+  CAGEr:::tagClustersQuantileUp (exampleCAGEexp,1 )
 ))
 
-cumulativeCTSSdistribution(exampleCAGEset, "consensusClusters") # Defaults in object do not fit
-quantilePositions( object = exampleCAGEset, clusters = "consensusClusters"
+cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters") # Defaults in object do not fit
+quantilePositions( object = exampleCAGEexp, clusters = "consensusClusters"
                  , qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
                  
 head(cbind(
-  CAGEr:::consensusClustersQuantileLow(exampleCAGEset, 1),
-  CAGEr:::consensusClustersQuantileUp (exampleCAGEset , 1)
+  CAGEr:::consensusClustersQuantileLow(exampleCAGEexp, 1),
+  CAGEr:::consensusClustersQuantileUp (exampleCAGEexp, 1)
 ))
 
 quantilePositions(exampleCAGEexp, "tagClusters",       qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))

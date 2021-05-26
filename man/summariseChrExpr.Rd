@@ -10,7 +10,7 @@ summariseChrExpr(object)
 \S4method{summariseChrExpr}{CAGEexp}(object)
 }
 \arguments{
-\item{object}{A \code{CAGEexp} object (\code{CAGEset} objects are not supported).}
+\item{object}{A \code{CAGEexp} object objects are not supported).}
 }
 \value{
 Modifies the \code{CAGEexp} by adding a \dQuote{seqNameTotals} experiment

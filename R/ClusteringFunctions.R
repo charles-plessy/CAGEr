@@ -240,8 +240,6 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, removeSi
 #' \dontrun{
 #' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEexp), useMulticore = TRUE)
 #' }
-#' 
-#' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEset))
 
 setGeneric(".distclu", function(se, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, useMulticore = FALSE, nrCores = NULL) standardGeneric(".distclu"))
 
@@ -478,77 +476,3 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	return(ctss.cluster.list)
 	
 }
-
-#' @name tagClusterConvertors
-#' 
-#' @title Private functions to convert TC formats
-#' 
-#' @description Interconvert tag clusters (TC) formats used in classes CAGEset
-#' (\code{data.frame}) and CAGEexp (\code{GRanges}).
-#' 
-#' @details 
-#' The original format used in \code{\link{CAGEset}} objects follows BED
-#' ("0-based") conventsion for the start and end coordinates.  On the other
-#' hand, the GRanges objects used in \code{\link{CAGEexp}} objects follow
-#' the "1-based" convention.  Therefore a value of 1 has to be added or
-#' subtracted to the start positions when converting between both formats.
-#' 
-#' @family df2granges converters
-#' 
-#' @examples 
-#' df <- tagClusters(exampleCAGEset, 1)
-#' head(df)
-#' gr <- CAGEr:::TCdataframe2granges(df)
-#' gr
-#' head(CAGEr:::TCgranges2dataframe(gr))
-#' # No exact round-trip because start and end were not integer in df.
-#' identical(df, CAGEr:::TCgranges2dataframe(gr))
-#' if (! all(df == CAGEr:::TCgranges2dataframe(gr)))
-#'   stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
-#' 
-#' tagClustersGR(exampleCAGEexp)
-#' head(CAGEr:::TCgranges2dataframe(CAGEr:::tagClustersGR(exampleCAGEexp, 1)))
-NULL
-
-#' @name TCgranges2dataframe
-#' 
-#' @rdname tagClusterConvertors
-#' 
-#' @param gr Consensus clusters in \code{GRanges} format.
-
-TCgranges2dataframe <- function(gr) {
-  if (!is.null(gr$cluster)) {
-    df <- data.frame(cluster = gr$cluster)
-    gr$cluster <- NULL
-  } else {
-    df <- data.frame(cluster = as.integer(names(gr)))  # Make sure it does not sort lexically!
-  }
-  df <- cbind(df , data.frame( chr     = decode(seqnames(gr))
-                             , start   = start(gr) -1
-                             , end     = end(gr)
-                             , strand  = decode(droplevels(strand(gr)))))
-  if(is.null(gr$tpm))
-    df$tpm <- score(gr)
-  score(gr) <- NULL
-  df <- cbind(df, mcols(gr))
-  as.data.frame(df)
-}
-
-#' @name TCdataframe2granges
-#' @rdname tagClusterConvertors
-#' 
-#' @param df Consensus clusters in \code{data.frame} format.
-
-TCdataframe2granges <- function(df) {
-	gr <- GRanges( seqnames           = df$chr
-	             , ranges             = IRanges(df$start + 1, df$end)
- 	             , score              = df$tpm
-               , strand             = df$strand)
-	if(is.null(df[["cluster"]]))
-	  gr$cluster <- seq_along(gr)
-	mcols(gr) <- cbind( mcols(gr)
-	                  , df[,setdiff(colnames(df), c("chr", "start", "end", "strand")), drop = FALSE])
-	names(gr) <- rownames(df)
-	gr
-}
-

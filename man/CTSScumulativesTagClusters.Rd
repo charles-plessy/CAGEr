@@ -2,36 +2,27 @@
 % Please edit documentation in R/GetMethods.R, R/SetMethods.R
 \name{CTSScumulativesTagClusters}
 \alias{CTSScumulativesTagClusters}
-\alias{CTSScumulativesTagClusters,CAGEset-method}
 \alias{CTSScumulativesTagClusters,CAGEexp-method}
 \alias{CTSScumulativesCC}
-\alias{CTSScumulativesCC,CAGEset-method}
 \alias{CTSScumulativesCC,CAGEexp-method}
 \alias{CTSScumulativesTagClusters<-}
-\alias{CTSScumulativesTagClusters<-,CAGEset-method}
 \alias{CTSScumulativesTagClusters<-,CAGEexp-method}
 \title{Get/set CTSS cumulative TC or CC data}
 \usage{
 CTSScumulativesTagClusters(object, samples = NULL)
 
-\S4method{CTSScumulativesTagClusters}{CAGEset}(object, samples = NULL)
-
 \S4method{CTSScumulativesTagClusters}{CAGEexp}(object, samples = NULL)
 
 CTSScumulativesCC(object, samples = NULL)
-
-\S4method{CTSScumulativesCC}{CAGEset}(object, samples = NULL)
 
 \S4method{CTSScumulativesCC}{CAGEexp}(object, samples = NULL)
 
 CTSScumulativesTagClusters(object) <- value
 
-\S4method{CTSScumulativesTagClusters}{CAGEset}(object) <- value
-
 \S4method{CTSScumulativesTagClusters}{CAGEexp}(object) <- value
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} or \code{\link{CAGEset}} object.}
+\item{object}{A \code{\link{CAGEexp}} object.}
 
 \item{samples}{One or more valid sample names.}
 

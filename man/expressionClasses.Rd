@@ -2,18 +2,17 @@
 % Please edit documentation in R/GetMethods.R
 \name{expressionClasses}
 \alias{expressionClasses}
-\alias{expressionClasses,CAGEset-method}
 \alias{expressionClasses,CAGEexp-method}
 \title{Extract labels of expression classes}
 \usage{
 expressionClasses(object, what = c("CTSS", "consensusClusters"))
 
-\S4method{expressionClasses}{CAGEset}(object, what = c("CTSS", "consensusClusters"))
+\S4method{expressionClasses}{CAGEexp}(object, what = c("CTSS", "consensusClusters"))
 
 \S4method{expressionClasses}{CAGEexp}(object, what = c("CTSS", "consensusClusters"))
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} object.}
+\item{object}{A \code{\link{CAGEexp}} object.}
 
 \item{what}{Which level of expression clustering should be used. Can be either
 \code{"CTSS"} to extract labels of expression classes of individual CTSSs or
@@ -27,11 +26,11 @@ function.
 }
 \description{
 Retrieves labels of expression classes of either individual CTSSs or consensus
-clusters from a CAGEset object.
+clusters from a CAGEexp object.
 }
 \examples{
 
-exprClasses <- expressionClasses(exampleCAGEset, what = "CTSS")
+exprClasses <- expressionClasses(exampleCAGEexp, what = "CTSS")
 exprClasses
 
 }

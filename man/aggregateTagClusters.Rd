@@ -54,12 +54,7 @@ Unix-like platforms).}
 (\code{NULL}) uses all detected cores.}
 }
 \value{
-For \code{\link{CAGEset}} objects, the \code{consensusClusters} slot will be
-populated with a data frame indicating the cluster name, chromosome, start
-and end coordinates, the strand, and the normalised expression score of the
-cluster.  This table is returned by the \code{\link{consensusClusters}} function.
-
-For \code{\link{CAGEexp}} objects, the experiment \code{consensusClusters} will be occupied
+Returns the object in which the experiment \code{consensusClusters} will be occupied
 by a \code{\link{RangedSummarizedExperiment}} containing the cluster coodinates as row
 ranges, and their expression levels in the \code{counts} and \code{normalized} assays.
 These genomic ranges are returned by the \code{\link{consensusClustersGR}} function.
@@ -89,14 +84,6 @@ of promoters that can be further used for expression profiling or detecting
 "shifting" (differentially used) promoters between different CAGE samples.
 }
 \examples{
-head(consensusClusters(exampleCAGEset))
-aggregateTagClusters( exampleCAGEset, tpmThreshold = 50
-                    , excludeSignalBelowThreshold = FALSE, maxDist = 100)
-head(consensusClusters(exampleCAGEset))
-
-aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
-  excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
-head(consensusClusters(exampleCAGEset))
 
 consensusClustersGR(exampleCAGEexp)
 aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50

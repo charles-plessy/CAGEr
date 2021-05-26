@@ -3,44 +3,29 @@
 \name{consensusClustersQuantile}
 \alias{consensusClustersQuantile}
 \alias{consensusClustersQuantileLow}
-\alias{consensusClustersQuantileLow,CAGEset-method}
 \alias{consensusClustersQuantileLow,CAGEexp-method}
 \alias{consensusClustersQuantileUp}
-\alias{consensusClustersQuantileUp,CAGEset-method}
 \alias{consensusClustersQuantileUp,CAGEexp-method}
-\alias{consensusClustersQuantile,CAGEset-method}
 \alias{consensusClustersQuantile,CAGEexp-method}
 \alias{consensusClustersQuantileLow<-}
-\alias{consensusClustersQuantileLow<-,CAGEset-method}
 \alias{consensusClustersQuantileUp<-}
-\alias{consensusClustersQuantileUp<-,CAGEset-method}
 \title{Quantile metadata stored in CAGEr objects.}
 \usage{
 consensusClustersQuantileLow(object, samples = NULL)
-
-\S4method{consensusClustersQuantileLow}{CAGEset}(object, samples = NULL)
 
 \S4method{consensusClustersQuantileLow}{CAGEexp}(object, samples = NULL)
 
 consensusClustersQuantileUp(object, samples = NULL)
 
-\S4method{consensusClustersQuantileUp}{CAGEset}(object, samples = NULL)
-
 \S4method{consensusClustersQuantileUp}{CAGEexp}(object, samples = NULL)
 
 consensusClustersQuantile(object, sample = NULL, q)
-
-\S4method{consensusClustersQuantile}{CAGEset}(object, sample = NULL, q)
 
 \S4method{consensusClustersQuantile}{CAGEexp}(object, sample = NULL, q)
 
 consensusClustersQuantileLow(object, samples = NULL) <- value
 
-\S4method{consensusClustersQuantileLow}{CAGEset}(object, samples = NULL) <- value
-
 consensusClustersQuantileUp(object, samples = NULL) <- value
-
-\S4method{consensusClustersQuantileUp}{CAGEset}(object, samples = NULL) <- value
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}

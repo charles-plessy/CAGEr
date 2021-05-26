@@ -2,15 +2,12 @@
 % Please edit documentation in R/MergingMethods.R
 \name{mergeSamples}
 \alias{mergeSamples}
-\alias{mergeSamples,CAGEset,numeric-method}
-\alias{mergeSamples,CAGEexp,ANY-method}
+\alias{mergeSamples,CAGEexp-method}
 \title{Merge CAGE samples}
 \usage{
 mergeSamples(object, mergeIndex, mergedSampleLabels)
 
-\S4method{mergeSamples}{CAGEset,numeric}(object, mergeIndex, mergedSampleLabels)
-
-\S4method{mergeSamples}{CAGEexp,ANY}(object, mergeIndex, mergedSampleLabels)
+\S4method{mergeSamples}{CAGEexp}(object, mergeIndex, mergedSampleLabels)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
@@ -50,10 +47,6 @@ by merging datasets labeled with lowest \code{mergeIndex} value (in this case \c
 \emph{etc}.
 }
 \examples{
-mergeSamples( exampleCAGEset
-            , mergeIndex = c(1,1,2)
-            , mergedSampleLabels = c("mergedSample1", "mergedSample2"))
-exampleCAGEset
 
 mergeSamples( exampleCAGEexp
             , mergeIndex = c(3,2,4,4,1)
@@ -63,4 +56,6 @@ exampleCAGEexp
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }

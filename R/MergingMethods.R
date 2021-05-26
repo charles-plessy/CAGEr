@@ -38,12 +38,9 @@
 #' downstream information will be reset.
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' 
 #' @examples 
-#' mergeSamples( exampleCAGEset
-#'             , mergeIndex = c(1,1,2)
-#'             , mergedSampleLabels = c("mergedSample1", "mergedSample2"))
-#' exampleCAGEset
 #' 
 #' mergeSamples( exampleCAGEexp
 #'             , mergeIndex = c(3,2,4,4,1)
@@ -71,35 +68,6 @@ checkMergeOK <- function(object, objName, mergeIndex, mergedSampleLabels) {
   if(length(unique(mergedSampleLabels)) != length(mergedSampleLabels))
     stop("Duplicated sample labels are not allowed!")
 }
-
-#' @rdname mergeSamples
-
-setMethod( "mergeSamples", c("CAGEset", mergeIndex = "numeric")
-         , function (object, mergeIndex, mergedSampleLabels) {
-	objName <- deparse(substitute(object))
-	sample.labels <- sampleLabels(object)
-	tag.count <- object@tagCountMatrix
-	lib.sizes <- object@librarySizes
-	
-	checkMergeOK(object, objName, mergeIndex, mergedSampleLabels)
-	
-	mergeIndex <- as.integer(mergeIndex)
-	tag.count.matrix.new <- sapply(sort(unique(mergeIndex)), function(x) {cols <- which(mergeIndex == x); a <- rowSums(tag.count[,cols,drop=F]); return(a)})
-	lib.sizes.new <- sapply(sort(unique(mergeIndex)), function(x) {cols <- which(mergeIndex == x); a <- sum(lib.sizes[cols]); return(a)})
-	names(lib.sizes.new) <- mergedSampleLabels
-	colnames(tag.count.matrix.new) <- mergedSampleLabels
-	names(mergedSampleLabels) <- rainbow(n = length(mergedSampleLabels))
-	
-	new.CAGE.set <- suppressWarnings(suppressMessages(new("CAGEset", genomeName = object@genomeName, inputFiles = paste(mergedSampleLabels, "_merged", sep = ""), inputFilesType = object@inputFilesType, sampleLabels = mergedSampleLabels, librarySizes = lib.sizes.new, CTSScoordinates = object@CTSScoordinates, tagCountMatrix = as.data.frame(tag.count.matrix.new))))
-	
-	assign(objName, new.CAGE.set, envir = parent.frame())
-	invisible(1)	
-})
-
-myRowSumsL <- function(l)
-  Reduce( f    = `+`
-        , x    = DataFrame(l)
-        , init = Rle(rep(0L, nrow(DataFrame(l)))))
 
 #' @rdname mergeSamples
 
@@ -133,4 +101,3 @@ setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSample
   assign(objName, new.CAGE.exp, envir = parent.frame())
   invisible(1)
 })
-  

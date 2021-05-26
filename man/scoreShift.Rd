@@ -2,7 +2,7 @@
 % Please edit documentation in R/ShiftingMethods.R
 \name{scoreShift}
 \alias{scoreShift}
-\alias{scoreShift,CAGEset-method}
+\alias{scoreShift,CAGEexp-method}
 \title{Calculate promoter shifting score}
 \usage{
 scoreShift(
@@ -15,7 +15,7 @@ scoreShift(
   nrCores = NULL
 )
 
-\S4method{scoreShift}{CAGEset}(
+\S4method{scoreShift}{CAGEexp}(
   object,
   groupX,
   groupY,
@@ -101,18 +101,18 @@ along consensus clusters, they have to be calculated beforehand by calling
 \code{\link{cumulativeCTSSdistribution}} function.
 
 The slots \code{shiftingGroupX}, \code{shiftingGroupY} and
-\code{consensusClustersShiftingScores} of the provided \code{\link{CAGEset}} object will
+\code{consensusClustersShiftingScores} of the provided \code{\link{CAGEexp}} object will
 be occupied by the information on the groups of CAGE datasets that have been compared and
 shifting scores of all consensus clusters.  Consensus clusters (promoters) with shifting
 score and/or FDR above specified threshold can be extracted by calling
 \code{\link{getShiftingPromoters}} function.
 }
 \examples{
-scoreShift( exampleCAGEset
+scoreShift( exampleCAGEexp
           , groupX = c("sample1", "sample2")
           , groupY = "sample3"
           , testKS = TRUE, useTpmKS = FALSE)
-head(getShiftingPromoters(exampleCAGEset))
+head(getShiftingPromoters(exampleCAGEexp))
 
 }
 \seealso{

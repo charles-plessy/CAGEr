@@ -2,15 +2,15 @@
 % Please edit documentation in R/ExportMethods.R
 \name{plotExpressionProfiles}
 \alias{plotExpressionProfiles}
-\alias{plotExpressionProfiles,CAGEset-method}
+\alias{plotExpressionProfiles,CAGEr-method}
 \title{Plotting expression profiles derived from CAGE data}
 \usage{
 plotExpressionProfiles(object, what)
 
-\S4method{plotExpressionProfiles}{CAGEset}(object, what)
+\S4method{plotExpressionProfiles}{CAGEr}(object, what)
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} object.}
+\item{object}{A \code{\link{CAGEr}} object.}
 
 \item{what}{Which level of expression clustering should be used.  Can be either
 \code{"CTSS"} to plot expression profiles of individual CTSSs or \code{"consensusClusters"}
@@ -34,7 +34,7 @@ Different expression classes (boxes) are plotted in different colors and are lab
 labels returned by expression clustering.
 }
 \examples{
-plotExpressionProfiles(object = exampleCAGEset, what = "CTSS")
+plotExpressionProfiles(object = exampleCAGEexp, what = "CTSS")
 
 }
 \seealso{

@@ -1,8 +1,8 @@
 #' CAGEr class to hold all data and metadata about one CAGE experiment.
 #' 
 #' The [`CAGEr`] class is a [`MultiAssayExperiment`] object containing all data
-#' and metadata about a set of CAGE libraries.  It is a replacement for the
-#' [`CAGEset`] class.  The main difference is that the expression data is stored
+#' and metadata about a set of CAGE libraries.  It replaced the CAGEset class
+#' in 2017.  The main difference is that the expression data is stored
 #' in [`DataFrame`] objects of [`Rle`]-encoded expression values, instead of plain
 #' `data.frame`s.  With large datasets, this saves considerable amounts of memory.
 #' 
@@ -60,7 +60,7 @@
 #' exampleCAGEexp$l1 <- colSums(CTSStagCountDf(exampleCAGEexp) > 0)
 #' exampleCAGEexp$l1
 #' 
-#' @seealso [`CAGEset-class`], [`make.names`]
+#' @seealso [`make.names`]
 #' 
 #' @rdname CAGEexp-class
 #' @aliases CAGEexp-class

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ShiftingMethods.R
 \name{getShiftingPromoters}
 \alias{getShiftingPromoters}
-\alias{getShiftingPromoters,CAGEset-method}
+\alias{getShiftingPromoters,CAGEexp-method}
 \title{Select consensus clusters with shifting score above threshold}
 \usage{
 getShiftingPromoters(
@@ -12,7 +12,7 @@ getShiftingPromoters(
   fdrThreshold = 1
 )
 
-\S4method{getShiftingPromoters}{CAGEset}(
+\S4method{getShiftingPromoters}{CAGEexp}(
   object,
   tpmThreshold = 0,
   scoreThreshold = -Inf,
@@ -20,7 +20,7 @@ getShiftingPromoters(
 )
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} object.}
+\item{object}{A \code{\link{CAGEexp}} object.}
 
 \item{tpmThreshold}{Consensus clusters with total CAGE signal \code{>= tpmThreshold}
 in each of the compared groups will be returned.}
@@ -49,7 +49,7 @@ samples, along with the value of the shifting score, P-value and FDR.  Scores an
 P-values/FDR have to be calculated beforehand by calling \code{\link{scoreShift}} function.
 }
 \examples{
-head(getShiftingPromoters( exampleCAGEset, tpmThreshold = 100
+head(getShiftingPromoters( exampleCAGEexp, tpmThreshold = 100
                          , scoreThreshold = 0.4, fdrThreshold = 0.01))
 
 }

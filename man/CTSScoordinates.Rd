@@ -2,45 +2,33 @@
 % Please edit documentation in R/GetMethods.R, R/SetMethods.R
 \name{CTSScoordinates}
 \alias{CTSScoordinates}
-\alias{CTSScoordinates,CAGEset-method}
 \alias{CTSScoordinates,CAGEexp-method}
 \alias{CTSScoordinatesGR}
-\alias{CTSScoordinatesGR,CAGEset-method}
 \alias{CTSScoordinatesGR,CAGEexp-method}
 \alias{CTSScoordinatesGR<-}
-\alias{CTSScoordinatesGR<-,CAGEset-method}
 \alias{CTSScoordinatesGR<-,CAGEexp-method}
 \alias{CTSStagCountSE<-}
-\alias{CTSStagCountSE<-,CAGEset-method}
 \alias{CTSStagCountSE<-,CAGEexp-method}
 \title{Genomic coordinates of TSSs from a \code{CAGEr} object}
 \usage{
 CTSScoordinates(object)
 
-\S4method{CTSScoordinates}{CAGEset}(object)
-
 \S4method{CTSScoordinates}{CAGEexp}(object)
 
 CTSScoordinatesGR(object)
-
-\S4method{CTSScoordinatesGR}{CAGEset}(object)
 
 \S4method{CTSScoordinatesGR}{CAGEexp}(object)
 
 CTSScoordinatesGR(object) <- value
 
-\S4method{CTSScoordinatesGR}{CAGEset}(object) <- value
-
 \S4method{CTSScoordinatesGR}{CAGEexp}(object) <- value
 
 CTSStagCountSE(object) <- value
 
-\S4method{CTSStagCountSE}{CAGEset}(object) <- value
-
 \S4method{CTSStagCountSE}{CAGEexp}(object) <- value
 }
 \arguments{
-\item{object}{A \code{CAGEset} or \code{CAGEexp} object.}
+\item{object}{A \code{CAGEexp} object.}
 
 \item{value}{Coordinates to update, in a format according to the function name.}
 }
@@ -54,13 +42,13 @@ if \code{\link[=clusterCTSS]{clusterCTSS()}} was ran earlier.
 }
 \description{
 Extracts the genomic coordinates of all detected TSSs
-from \link{CAGEset} and \link{CAGEexp} objects.
+from \link{CAGEexp} objects.
 }
 \examples{
-CTSS <- CTSScoordinates(exampleCAGEset)
+CTSS <- CTSScoordinates(exampleCAGEexp)
 head(CTSS)
 
-CTSScoordinatesGR(exampleCAGEset)
+CTSScoordinatesGR(exampleCAGEexp)
 
 }
 \seealso{

@@ -2,19 +2,10 @@
 % Please edit documentation in R/NormalizationMethods.R
 \name{normalizeTagCount}
 \alias{normalizeTagCount}
-\alias{normalizeTagCount,CAGEset-method}
 \alias{normalizeTagCount,CAGEexp-method}
 \title{Normalizing raw CAGE tag count}
 \usage{
 normalizeTagCount(
-  object,
-  method = c("powerLaw", "simpleTpm", "none"),
-  fitInRange = c(10, 1000),
-  alpha = 1.25,
-  T = 10^6
-)
-
-\S4method{normalizeTagCount}{CAGEset}(
   object,
   method = c("powerLaw", "simpleTpm", "none"),
   fitInRange = c(10, 1000),
@@ -31,7 +22,7 @@ normalizeTagCount(
 )
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} object}
+\item{object}{A \code{\link{CAGEexp}} object}
 
 \item{method}{Method to be used for normalization.  Can be either \code{"simpleTpm"}
 to convert tag counts to tags per million or \code{"powerLaw"} to normalize to a
@@ -52,7 +43,7 @@ the referent distribution.  Used only when \code{method = "powerLaw"}, otherwise
 ignored.  See Details.}
 }
 \value{
-The slot \code{normalizedTpmMatrix} of the provided \code{\link{CAGEset}} object
+The slot \code{normalizedTpmMatrix} of the provided \code{\link{CAGEexp}} object
 will be occupied by normalized CAGE signal values per CTSS across all
 experiments, or with the raw tag counts (in case \code{method = "none"}).
 }
@@ -83,8 +74,6 @@ referent distribution specified by \code{alpha} and \code{T}. When \code{T = 10^
 normalized values are expressed as tags per million (tpm).
 }
 \examples{
-normalizeTagCount(exampleCAGEset, method = "simpleTpm")
-normalizeTagCount(exampleCAGEset, method = "powerLaw")
 normalizeTagCount(exampleCAGEexp, method = "simpleTpm")
 normalizeTagCount(exampleCAGEexp, method = "powerLaw")
 

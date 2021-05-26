@@ -2,37 +2,29 @@
 % Please edit documentation in R/GetMethods.R
 \name{CTSStagCountTable}
 \alias{CTSStagCountTable}
-\alias{CTSStagCountTable,CAGEset-method}
 \alias{CTSStagCountTable,CAGEexp-method}
-\alias{CTSStagCountSE,CAGEset-method}
 \alias{CTSStagCountSE,CAGEexp-method}
 \title{Extracting CAGE tag count for TSSs from CAGEr objects}
 \usage{
 CTSStagCountTable(object)
 
-\S4method{CTSStagCountTable}{CAGEset}(object)
-
 \S4method{CTSStagCountTable}{CAGEexp}(object)
-
-\S4method{CTSStagCountSE}{CAGEset}(object)
 
 \S4method{CTSStagCountSE}{CAGEexp}(object)
 }
 \arguments{
-\item{object}{A CAGEset or CAGEexp object.}
+\item{object}{A \code{CAGEexp} object.}
 }
 \value{
 Returns an expression table with the number of CAGE tags supporting each
-TSS (rows) in every CAGE dataset (columns).  The table is in \code{data.frame}
-format for \code{CAGEset} objects and in \code{DataFrame} format for \code{CAGEexp}
-objects.  Use this function when the next consumer can handle both formats.
+TSS (rows) in every CAGE dataset (columns).  The table is in \code{\link{DataFrame}} format.
 }
 \description{
 Extracts the tag count for all detected TSSs in all CAGE datasets
-from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+from \code{\link{CAGEexp}} objects.
 }
 \examples{
-tagCount <- CTSStagCount(exampleCAGEset)
+tagCount <- CTSStagCount(exampleCAGEexp)
 head(tagCount)
 
 }

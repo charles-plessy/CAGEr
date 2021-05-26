@@ -83,8 +83,6 @@ which all samples will be normalized. For details about normalization see
 \code{\link{normalizeTagCount}} function.
 }
 \examples{
-plotReverseCumulatives(exampleCAGEset, fitInRange = c(10,500), onePlot = TRUE)
-plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 
 plotReverseCumulatives( exampleCAGEexp, xlim = c(1, 1e4), ylim = c(1, 1e5)
                       , fitInRange = c(5,100), onePlot = TRUE)

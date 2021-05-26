@@ -76,13 +76,7 @@
 #' different datasets can further be aggregated into a single referent set of
 #' consensus clusters by calling the [`aggregateTagClusters`] function.
 #' 
-#' @return The slots `clusteringMethod`, `filteredCTSSidx` and `tagClusters` of
-#' the provided [`CAGEset`] object will be occupied by the information on method
-#' used for clustering, CTSSs included in the clusters and list of tag clusters
-#' per CAGE experiment, respectively.  To retrieve tag clusters for individual
-#' CAGE dataset use the [`tagClusters()`] function.
-#' 
-#' In [`CAGEexp`] objects, the results will be stored as a `GRangesList` of
+#' @return Returns the [`CAGEexp`] object, in which, the results will be stored as a `GRangesList` of
 #' [`TagClusters`] objects in the metadata slot `tagClusters`.  The
 #' `TagClusters` objects will contain a `filteredCTSSidx` column if appropriate.
 #' The clustering method name is saved in the metadata slot of the `GRangesList`.
@@ -99,11 +93,6 @@
 #' @family CAGEr clusters functions
 #' 
 #' @examples
-#' head(tagClusters(exampleCAGEset, "sample1"))
-#' clusterCTSS( object = exampleCAGEset, threshold = 50, thresholdIsTpm = TRUE
-#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
-#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-#' head(tagClusters(exampleCAGEset, "sample1"))
 #' 
 #' clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
 #'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
@@ -121,83 +110,6 @@ setGeneric( "clusterCTSS"
                     , reduceToNonoverlapping = TRUE, customClusters = NULL
                     , useMulticore = FALSE, nrCores = NULL)
               standardGeneric("clusterCTSS"))
-
-#' @rdname clusterCTSS
-
-setMethod( "clusterCTSS", "CAGEset"
-         , function( object, threshold, nrPassThreshold, thresholdIsTpm, method
-                   , maxDist, removeSingletons, keepSingletonsAbove, minStability
-                   , maxLength, reduceToNonoverlapping, customClusters
-                   , useMulticore, nrCores) {
-  
-	objName <- deparse(substitute(object))
-	sample.labels <- sampleLabels(object)
-	
-	message("\nFiltering CTSSs below threshold...")
-	if(thresholdIsTpm){
-	  if (identical(object@normalizedTpmMatrix, data.frame()))
-	    stop("Could not find normalized CAGE signal values, see ?normalizeTagCount.")
-		data <- object@normalizedTpmMatrix
-	}else{
-		if (identical(object@tagCountMatrix, data.frame()))
-	    stop("Could not find CTSS tag counts, see ?getCTSS.")
-	  data <- object@tagCountMatrix
-	}
-	
-	if (identical(object@normalizedTpmMatrix, data.frame()))
-	    stop("Could not find normalized CAGE signal values, see ?normalizeTagCount.\n",
-	         "clusterCTSS() needs normalized values to create its output tables, that ",
-	         "include TPM expression columns.")
-	
-	idx <- NULL # Initialise to keep R CMD check happy.
-	
-	getCTSSdataSE <- function() {
-	if(threshold > 0){
-		nr.pass.threshold <- apply(data, 1, function(x) {sum(x >= threshold)})
-		idx <<- nr.pass.threshold >= min(nrPassThreshold, length(sample.labels))
-		data <<- CTSStagCountSE(object)[idx,]
-	}else{
-		data <<- CTSStagCountSE(object)
-		idx <<- rep(TRUE, nrow(data))
-	}}
-	
-	getCTSSdatadf <- function() {
-	if(threshold > 0){
-		nr.pass.threshold <- apply(data, 1, function(x) {sum(x >= threshold)})
-		idx <<- nr.pass.threshold >= min(nrPassThreshold, length(sample.labels))
-		data <<- cbind(CTSScoordinates(object)[idx,], object@normalizedTpmMatrix[idx,,drop=F])
-	}else{
-		data <<- cbind(CTSScoordinates(object), object@normalizedTpmMatrix)
-		idx <<- rep(TRUE, nrow(data))
-	}}
-		
-	message("Clustering...")
-	method <- match.arg(method)
-	if(method == "distclu"){
-	  getCTSSdataSE()
-		ctss.cluster.list <- .distclu(se = data, max.dist = maxDist, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, useMulticore = useMulticore, nrCores = nrCores)
-	}else if (method == "paraclu"){
-	  getCTSSdatadf()
-		ctss.cluster.list <- .paraclu(data = data, sample.labels = sample.labels, minStability = minStability, maxLength = maxLength, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, reduceToNonoverlapping = reduceToNonoverlapping, useMulticore = useMulticore, nrCores = nrCores)
-	}else if(method == "custom"){
-	  getCTSSdatadf()
-		if(length(customClusters)==0){
-			stop("'customClusters' must be given when method = \"custom\"")
-		}
-		ctss.cluster.list <- .predefined.clusters(data = data, sample.labels = sample.labels, custom.clusters = customClusters, useMulticore = useMulticore, nrCores = nrCores)
-	}
-	
-	object@filteredCTSSidx <- idx
-	object@clusteringMethod <- method
-	if (method == "distclu") {
-	  ctss.cluster.list <- lapply(ctss.cluster.list, TCgranges2dataframe)
-	}
-	object@tagClusters <- ctss.cluster.list
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
-})
-
-#' @rdname clusterCTSS
 
 setMethod( "clusterCTSS", "CAGEexp"
          , function( object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist

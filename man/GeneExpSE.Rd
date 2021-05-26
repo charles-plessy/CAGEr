@@ -2,13 +2,10 @@
 % Please edit documentation in R/GetMethods.R
 \name{GeneExpSE}
 \alias{GeneExpSE}
-\alias{GeneExpSE,CAGEset-method}
 \alias{GeneExpSE,CAGEexp-method}
 \title{Retreives the SummarizedExperiment containing gene expression levels.}
 \usage{
 GeneExpSE(object)
-
-\S4method{GeneExpSE}{CAGEset}(object)
 
 \S4method{GeneExpSE}{CAGEexp}(object)
 }

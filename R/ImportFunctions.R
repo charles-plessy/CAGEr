@@ -171,7 +171,7 @@
 #' gr <- GRanges("chr1", IRanges(1, 10), strand = c("+", "+", "-", "-"))
 #' gr$seq <- c("ATTTAAATTT", "GTTTAAATTT", "TTTAAATTTA", "TTTAAATTTC")
 #' gr$read.length <- 10
-#' genome <- genomeName(exampleCAGEset)
+#' genome <- genomeName(exampleCAGEexp)
 #' .remove.added.G.CTSS(gr, genome)
 #' 
 #' @noRd

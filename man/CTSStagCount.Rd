@@ -2,13 +2,10 @@
 % Please edit documentation in R/GetMethods.R
 \name{CTSStagCount}
 \alias{CTSStagCount}
-\alias{CTSStagCount,CAGEset-method}
 \alias{CTSStagCount,CAGEexp-method}
 \alias{CTSStagCountDf}
-\alias{CTSStagCountDf,CAGEset-method}
 \alias{CTSStagCountDf,CAGEexp-method}
 \alias{CTSStagCountDF}
-\alias{CTSStagCountDF,CAGEset-method}
 \alias{CTSStagCountDF,CAGEexp-method}
 \alias{CTSStagCountDA}
 \alias{CTSStagCountDA,CAGEr-method}
@@ -19,19 +16,13 @@
 \usage{
 CTSStagCount(object)
 
-\S4method{CTSStagCount}{CAGEset}(object)
-
 \S4method{CTSStagCount}{CAGEexp}(object)
 
 CTSStagCountDf(object)
 
-\S4method{CTSStagCountDf}{CAGEset}(object)
-
 \S4method{CTSStagCountDf}{CAGEexp}(object)
 
 CTSStagCountDF(object)
-
-\S4method{CTSStagCountDF}{CAGEset}(object)
 
 \S4method{CTSStagCountDF}{CAGEexp}(object)
 
@@ -66,18 +57,11 @@ column indicating expression values for a given sample.
 }
 \description{
 Extracts the tag count for all detected TSSs in all CAGE datasets
-from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+from \code{\link{CAGEexp}} objects.
 }
 \examples{
-head(CTSStagCount(exampleCAGEset))
-head(CTSStagCountDf(exampleCAGEset))
-CTSStagCountDF(exampleCAGEset)
-CTSStagCountDA(exampleCAGEset)
-
 head(CTSStagCount(exampleCAGEexp))
 head(CTSStagCountDf(exampleCAGEexp))
-CTSStagCountDF(exampleCAGEset)
-CTSStagCountDA(exampleCAGEset)
 
 }
 \seealso{

@@ -2,13 +2,10 @@
 % Please edit documentation in R/GetMethods.R
 \name{GeneExpDESeq2}
 \alias{GeneExpDESeq2}
-\alias{GeneExpDESeq2,CAGEset-method}
 \alias{GeneExpDESeq2,CAGEexp-method}
 \title{Export gene expression data for DESeq2 analysis}
 \usage{
 GeneExpDESeq2(object, design)
-
-\S4method{GeneExpDESeq2}{CAGEset}(object, design)
 
 \S4method{GeneExpDESeq2}{CAGEexp}(object, design)
 }

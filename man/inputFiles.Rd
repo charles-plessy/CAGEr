@@ -2,27 +2,21 @@
 % Please edit documentation in R/GetMethods.R, R/SetMethods.R
 \name{inputFiles}
 \alias{inputFiles}
-\alias{inputFiles,CAGEset-method}
 \alias{inputFiles,CAGEexp-method}
 \alias{inputFiles<-}
-\alias{inputFiles<-,CAGEset-method}
 \alias{inputFiles<-,CAGEexp-method}
 \title{Extracting paths to input files from CAGEr objects}
 \usage{
 inputFiles(object)
 
-\S4method{inputFiles}{CAGEset}(object)
-
 \S4method{inputFiles}{CAGEexp}(object)
 
 inputFiles(object) <- value
 
-\S4method{inputFiles}{CAGEset}(object) <- value
-
 \S4method{inputFiles}{CAGEexp}(object) <- value
 }
 \arguments{
-\item{object}{A CAGEset or CAGEexp object.}
+\item{object}{A CAGEexp object.}
 
 \item{value}{A character vector with one file path per sample.}
 }
@@ -31,10 +25,10 @@ Returns a character vector of paths to CAGE data input files.
 }
 \description{
 Extracts the paths to CAGE data input files from
-\code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+code{\link{CAGEexp}} objects.
 }
 \examples{
-inputFiles(exampleCAGEset)
+inputFiles(exampleCAGEexp)
 
 }
 \seealso{

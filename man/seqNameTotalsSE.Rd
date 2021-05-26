@@ -2,14 +2,11 @@
 % Please edit documentation in R/GetMethods.R, R/SetMethods.R
 \name{seqNameTotalsSE}
 \alias{seqNameTotalsSE}
-\alias{seqNameTotalsSE,CAGEset-method}
 \alias{seqNameTotalsSE,CAGEexp-method}
 \alias{seqNameTotalsSE<-}
 \title{Retreives the SummarizedExperiment containing chromosome expression totals.}
 \usage{
 seqNameTotalsSE(object)
-
-\S4method{seqNameTotalsSE}{CAGEset}(object)
 
 \S4method{seqNameTotalsSE}{CAGEexp}(object)
 

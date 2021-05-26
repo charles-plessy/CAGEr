@@ -15,7 +15,7 @@
 #' referent power-law distribution (Balwierz _et al_., Genome Biology 2009) can be
 #' specified.
 #' 
-#' @param object A [`CAGEset`] object
+#' @param object A [`CAGEexp`] object
 #' 
 #' @param method Method to be used for normalization.  Can be either `"simpleTpm"`
 #'   to convert tag counts to tags per million or `"powerLaw"` to normalize to a
@@ -54,7 +54,7 @@
 #' referent distribution specified by `alpha` and `T`. When `T = 10^6`,
 #' normalized values are expressed as tags per million (tpm).
 #' 
-#' @return The slot `normalizedTpmMatrix` of the provided [`CAGEset`] object
+#' @return The slot `normalizedTpmMatrix` of the provided [`CAGEexp`] object
 #' will be occupied by normalized CAGE signal values per CTSS across all
 #' experiments, or with the raw tag counts (in case `method = "none"`).
 #' 
@@ -72,8 +72,6 @@
 #' @family CAGEr normalised data functions
 #' 
 #' @examples 
-#' normalizeTagCount(exampleCAGEset, method = "simpleTpm")
-#' normalizeTagCount(exampleCAGEset, method = "powerLaw")
 #' normalizeTagCount(exampleCAGEexp, method = "simpleTpm")
 #' normalizeTagCount(exampleCAGEexp, method = "powerLaw")
 #' 
@@ -86,13 +84,13 @@ setGeneric( "normalizeTagCount"
 
 #' .normalizeTagCount_switcher
 #' 
-#' Common code to normalizeTagCount for CAGEset and CAGEexp objects
+#' Common code to normalizeTagCount for `CAGEexp` objects
 #' Do not reuse elsewhere.
 #' 
 #' @param method The method.
-#' @param object A CAGEset or CAGEexp object.
+#' @param object A `CAGEexp` object.
 #' 
-#' @return A data.frame for CAGEset objects, or a DataFrame for CAGEexp objects.
+#' @return A [`DataFrame`].
 #' 
 #' @noRd
 
@@ -106,17 +104,6 @@ setGeneric( "normalizeTagCount"
         , none      = CTSStagCountTable(object)
         , stop('"method" must be one of ("powerLaw", "simpleTpm", "none")'))
 }
-
-# For the CAGEset class, normalizeTagCount populates the normalizedTpmMatrix slot.
-
-#' @rdname normalizeTagCount
-
-setMethod("normalizeTagCount", "CAGEset", function (object, method, fitInRange, alpha, T) {
-	objName <- deparse(substitute(object))
-	object@normalizedTpmMatrix <- .normalizeTagCount_switcher(method, object, fitInRange, alpha, T)
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
-})
 
 # For the CAGEexp class, normalizeTagCount populates the normalized slot or the tagCountMatrix
 # experiment.

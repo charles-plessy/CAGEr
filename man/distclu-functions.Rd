@@ -137,6 +137,4 @@ CAGEr:::.distclu(CTSStagCountSE(exampleCAGEexp))
 \dontrun{
 CAGEr:::.distclu(CTSStagCountSE(exampleCAGEexp), useMulticore = TRUE)
 }
-
-CAGEr:::.distclu(CTSStagCountSE(exampleCAGEset))
 }

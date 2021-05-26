@@ -27,9 +27,6 @@ colors are used in various plots and exported tracks to consistently
 represent corresponding samples.
 }
 \examples{
-sampleLabels(exampleCAGEset)
-setColors(exampleCAGEset, colors = c("darkred", "navy", "forestgreen"))
-sampleLabels(exampleCAGEset)
 
 sampleLabels(exampleCAGEexp)
 setColors(exampleCAGEexp, 5)

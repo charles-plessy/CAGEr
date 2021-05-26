@@ -3,17 +3,17 @@
 \name{extractExpressionClass}
 \alias{extractExpressionClass}
 \alias{extractExpressionClass,CAGEexp-method}
-\alias{extractExpressionClass,CAGEset-method}
+\alias{extractExpressionClass,CAGEr-method}
 \title{Extract elements of the specified expression class}
 \usage{
 extractExpressionClass(object, what, which = "all")
 
 \S4method{extractExpressionClass}{CAGEexp}(object, what, which = "all")
 
-\S4method{extractExpressionClass}{CAGEset}(object, what, which = "all")
+\S4method{extractExpressionClass}{CAGEr}(object, what, which = "all")
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} object.}
+\item{object}{A \code{\link{CAGEexp}} object.}
 
 \item{what}{Which level of expression clustering should be used. Can be either
 \code{"CTSS"} to extract expression class of individual CTSSs or
@@ -33,7 +33,7 @@ corresponding expression class.
 Extracts CTSSs or consensus clusters belonging to a specified expression class.
 }
 \examples{
-CTSSexprClasses <- extractExpressionClass(exampleCAGEset, what = "CTSS", which = "all")
+CTSSexprClasses <- extractExpressionClass(exampleCAGEexp, what = "CTSS", which = "all")
 head(CTSSexprClasses)
 
 }

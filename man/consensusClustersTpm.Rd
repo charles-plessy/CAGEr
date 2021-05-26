@@ -2,13 +2,10 @@
 % Please edit documentation in R/GetMethods.R
 \name{consensusClustersTpm}
 \alias{consensusClustersTpm}
-\alias{consensusClustersTpm,CAGEset-method}
 \alias{consensusClustersTpm,CAGEexp-method}
-\title{Extracting consensus clusters tpm matrix from CAGEset object}
+\title{Extracting consensus clusters tpm matrix from CAGEr object}
 \usage{
 consensusClustersTpm(object)
-
-\S4method{consensusClustersTpm}{CAGEset}(object)
 
 \S4method{consensusClustersTpm}{CAGEexp}(object)
 }
@@ -24,7 +21,6 @@ Extracts a table with normalized CAGE tag values for consensus
 clusters across all samples from a \code{\link{CAGEr}} object.
 }
 \examples{
-head(consensusClustersTpm(exampleCAGEset))
 head(consensusClustersTpm(exampleCAGEexp))
 
 }

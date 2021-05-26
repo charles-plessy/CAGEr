@@ -2,27 +2,21 @@
 % Please edit documentation in R/GetMethods.R, R/SetMethods.R
 \name{inputFilesType}
 \alias{inputFilesType}
-\alias{inputFilesType,CAGEset-method}
 \alias{inputFilesType,CAGEexp-method}
 \alias{inputFilesType<-}
-\alias{inputFilesType<-,CAGEset-method}
 \alias{inputFilesType<-,CAGEexp-method}
 \title{Input file formats for CAGEr objects}
 \usage{
 inputFilesType(object)
 
-\S4method{inputFilesType}{CAGEset}(object)
-
 \S4method{inputFilesType}{CAGEexp}(object)
 
 inputFilesType(object) <- value
 
-\S4method{inputFilesType}{CAGEset}(object) <- value
-
 \S4method{inputFilesType}{CAGEexp}(object) <- value
 }
 \arguments{
-\item{object}{A CAGEset or CAGEexp object.}
+\item{object}{A CAGEexp object.}
 
 \item{value}{A character vector with one file type per sample.}
 }
@@ -33,7 +27,7 @@ objects, the return value is character vector with one member per sample.
 }
 \description{
 Get or set the information on the type of CAGE data input
-files from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+files from \code{\link{CAGEexp}} objects.
 }
 \details{
 The following input file types are supported:
@@ -72,7 +66,7 @@ Start Sites (CTSS) with four columns indicating \emph{chromosome},
 }
 }
 \examples{
-inputFilesType(exampleCAGEset)
+inputFilesType(exampleCAGEexp)
 
 }
 \seealso{

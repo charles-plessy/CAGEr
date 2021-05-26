@@ -2,18 +2,15 @@
 % Please edit documentation in R/GetMethods.R
 \name{librarySizes}
 \alias{librarySizes}
-\alias{librarySizes,CAGEset-method}
 \alias{librarySizes,CAGEexp-method}
 \title{Extracting library sizes from CAGEr objects}
 \usage{
 librarySizes(object)
 
-\S4method{librarySizes}{CAGEset}(object)
-
 \S4method{librarySizes}{CAGEexp}(object)
 }
 \arguments{
-\item{object}{A CAGEset or CAGEexp object.}
+\item{object}{A CAGEexp object.}
 }
 \value{
 Returns an integer vector of total number of CAGE tags (library size) for all CAGE
@@ -21,15 +18,15 @@ datasets in the CAGEr object.
 }
 \description{
 Extracts the library sizes (total number of CAGE tags) for all CAGE datasets
-from \code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+from \code{\link{CAGEexp}} objects.
 }
 \details{
 Library sizes are calculated when loading data with the \code{getCTSS}
-function and stored in the \code{librarySizes} slot of \code{CAGEset} objects,
-or in the \code{librarySizes} column of the \code{colData} ov \code{CAGEexp} objects.
+function and stored in the \code{librarySizes} column of the \code{colData} of
+\code{CAGEexp} objects.
 }
 \examples{
-librarySizes(exampleCAGEset)
+librarySizes(exampleCAGEexp)
 
 }
 \seealso{

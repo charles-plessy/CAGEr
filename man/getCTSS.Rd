@@ -3,21 +3,10 @@
 \docType{methods}
 \name{getCTSS}
 \alias{getCTSS}
-\alias{getCTSS,CAGEset-method}
 \alias{getCTSS,CAGEexp-method}
 \title{Reading CAGE data from input file(s) and detecting TSSs}
 \usage{
 getCTSS(
-  object,
-  sequencingQualityThreshold = 10,
-  mappingQualityThreshold = 20,
-  removeFirstG = TRUE,
-  correctSystematicG = TRUE,
-  useMulticore = FALSE,
-  nrCores = NULL
-)
-
-\S4method{getCTSS}{CAGEset}(
   object,
   sequencingQualityThreshold = 10,
   mappingQualityThreshold = 20,
@@ -38,7 +27,7 @@ getCTSS(
 )
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} or a A \code{\link{CAGEexp}} object.}
+\item{object}{A \code{\link{CAGEexp}} object.}
 
 \item{sequencingQualityThreshold}{Only CAGE tags with average sequencing quality
 \code{>= sequencingQualityThreshold} and mapping quality \code{>=
@@ -84,12 +73,10 @@ CAGE tags, otherwise ignored.  See Details.}
 (set to \code{NULL} to use all detected cores).}
 }
 \value{
-For \code{\link{CAGEset}} objects, the slots \code{librarySizes}, \code{CTSScoordinates}
-and \code{tagCountMatrix} will be occupied by the information on CTSSs created from input CAGE
-files.  For \code{\link{CAGEexp}} objects, the \code{tagCountMatrix} experiment will be
+Returns the object, in which the \code{tagCountMatrix} experiment will be
 occupied by a \code{SummarizedExperiment} containing the expression data as a \code{DataFrame}
-of \code{Rle} integers, and the CTSS coordinates as a \code{GRanges} object.  In both cases
-the expression data can be retreived with \code{\link{CTSStagCount}} functions.  In addition,
+of \code{Rle} integers, and the CTSS coordinates as a \code{GRanges} object.
+The expression data can be retreived with \code{\link{CTSStagCount}} functions.  In addition,
 the library sizes are calculated and stored in the object.
 }
 \description{
@@ -125,10 +112,10 @@ pathsToInputFiles <- system.file("extdata", c("Zf.unfertilized.egg.chr17.ctss",
   
 labels <- paste("sample", seq(1,3,1), sep = "")
 
-myCAGEset <- new("CAGEset", genomeName = "BSgenome.Drerio.UCSC.danRer7",
+myCAGEexp <- new("CAGEexp", genomeName = "BSgenome.Drerio.UCSC.danRer7",
  inputFiles = pathsToInputFiles, inputFilesType = "ctss", sampleLabels = labels)
 
-getCTSS(myCAGEset)
+getCTSS(myCAGEexp)
 
 }
 \references{

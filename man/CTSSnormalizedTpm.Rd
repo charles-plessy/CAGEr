@@ -2,13 +2,10 @@
 % Please edit documentation in R/GetMethods.R
 \name{CTSSnormalizedTpm}
 \alias{CTSSnormalizedTpm}
-\alias{CTSSnormalizedTpm,CAGEset-method}
 \alias{CTSSnormalizedTpm,CAGEexp-method}
 \alias{CTSSnormalizedTpmDf}
-\alias{CTSSnormalizedTpmDf,CAGEset-method}
 \alias{CTSSnormalizedTpmDf,CAGEexp-method}
 \alias{CTSSnormalizedTpmDF}
-\alias{CTSSnormalizedTpmDF,CAGEset-method}
 \alias{CTSSnormalizedTpmDF,CAGEexp-method}
 \alias{CTSSnormalizedTpmGR}
 \alias{CTSSnormalizedTpmGR,CAGEr-method}
@@ -16,19 +13,13 @@
 \usage{
 CTSSnormalizedTpm(object)
 
-\S4method{CTSSnormalizedTpm}{CAGEset}(object)
-
 \S4method{CTSSnormalizedTpm}{CAGEexp}(object)
 
 CTSSnormalizedTpmDf(object)
 
-\S4method{CTSSnormalizedTpmDf}{CAGEset}(object)
-
 \S4method{CTSSnormalizedTpmDf}{CAGEexp}(object)
 
 CTSSnormalizedTpmDF(object)
-
-\S4method{CTSSnormalizedTpmDF}{CAGEset}(object)
 
 \S4method{CTSSnormalizedTpmDF}{CAGEexp}(object)
 
@@ -37,7 +28,7 @@ CTSSnormalizedTpmGR(object, samples)
 \S4method{CTSSnormalizedTpmGR}{CAGEr}(object, samples)
 }
 \arguments{
-\item{object}{A CAGEset or CAGEexp object.}
+\item{object}{A \code{CAGEexp} object.}
 
 \item{samples}{The name of sample(s) as reported by \code{sampleLabels(object)},
 or the number identifying the sample(s).}
@@ -52,16 +43,11 @@ and normalized CAGE signal supporting each TSS (rows) in every CAGE dataset (col
 }
 \description{
 Extracts the normalized CAGE signal for all detected TSSs
-in all CAGE datasets from \code{\link{CAGEset}} and
-\code{\link{CAGEexp}} objects.
+in all CAGE datasets from \code{\link{CAGEexp}} objects.
 }
 \examples{
-head(CTSSnormalizedTpm(exampleCAGEset))
-
 normalizeTagCount(exampleCAGEexp)
 head(CTSSnormalizedTpm(exampleCAGEexp))
-
-head(CTSSnormalizedTpmDf(exampleCAGEset))
 
 normalizeTagCount(exampleCAGEexp)
 head(CTSSnormalizedTpmDf(exampleCAGEexp))

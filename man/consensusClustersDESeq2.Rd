@@ -2,13 +2,10 @@
 % Please edit documentation in R/GetMethods.R
 \name{consensusClustersDESeq2}
 \alias{consensusClustersDESeq2}
-\alias{consensusClustersDESeq2,CAGEset-method}
 \alias{consensusClustersDESeq2,CAGEexp-method}
 \title{Export \emph{consensus cluster} expression data for DESeq2 analysis}
 \usage{
 consensusClustersDESeq2(object, design)
-
-\S4method{consensusClustersDESeq2}{CAGEset}(object, design)
 
 \S4method{consensusClustersDESeq2}{CAGEexp}(object, design)
 }

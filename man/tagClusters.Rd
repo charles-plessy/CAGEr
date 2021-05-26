@@ -4,10 +4,8 @@
 \alias{tagClusters}
 \alias{tagClusters,CAGEr-method}
 \alias{tagClustersGR}
-\alias{tagClustersGR,CAGEset-method}
 \alias{tagClustersGR,CAGEexp-method}
 \alias{tagClustersGR<-}
-\alias{tagClustersGR<-,CAGEset,ANY,ANY-method}
 \alias{tagClustersGR<-,CAGEexp,ANY,TagClusters-method}
 \alias{tagClustersGR<-,CAGEexp,missing,GRangesList-method}
 \title{Extract tag clusters (TCs) for individual CAGE experiments}
@@ -36,14 +34,6 @@ tagClustersGR(
   qUp = NULL
 )
 
-\S4method{tagClustersGR}{CAGEset}(
-  object,
-  sample = NULL,
-  returnInterquantileWidth = FALSE,
-  qLow = NULL,
-  qUp = NULL
-)
-
 \S4method{tagClustersGR}{CAGEexp}(
   object,
   sample = NULL,
@@ -53,8 +43,6 @@ tagClustersGR(
 )
 
 tagClustersGR(object, samples = NULL) <- value
-
-\S4method{tagClustersGR}{CAGEset,ANY,ANY}(object, samples = NULL) <- value
 
 \S4method{tagClustersGR}{CAGEexp,ANY,TagClusters}(object, samples = NULL) <- value
 
@@ -89,7 +77,7 @@ Extracts tag clusters (TCs) produced by \code{\link{clusterCTSS}} function for
 a specified CAGE experiment from a CAGEr object.
 }
 \examples{
-head(tagClusters( exampleCAGEset, "sample2"
+head(tagClusters( exampleCAGEexp, "sample2"
                 , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9))
 tagClustersGR(exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9)
 

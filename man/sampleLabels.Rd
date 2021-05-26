@@ -2,20 +2,16 @@
 % Please edit documentation in R/CAGEr.R, R/SetMethods.R
 \name{sampleLabels}
 \alias{sampleLabels}
-\alias{sampleLabels,CAGEset-method}
 \alias{sampleLabels,CAGEexp-method}
 \alias{sampleLabels,CTSS-method}
 \alias{sampleList}
 \alias{sampleList,CAGEr-method}
 \alias{sampleLabels<-}
-\alias{sampleLabels<-,CAGEset-method}
 \alias{sampleLabels<-,CAGEexp-method}
 \alias{sampleLabels<-,CTSS-method}
 \title{Get and set sample labels}
 \usage{
 sampleLabels(object)
-
-\S4method{sampleLabels}{CAGEset}(object)
 
 \S4method{sampleLabels}{CAGEexp}(object)
 
@@ -26,8 +22,6 @@ sampleList(object)
 \S4method{sampleList}{CAGEr}(object)
 
 sampleLabels(object) <- value
-
-\S4method{sampleLabels}{CAGEset}(object) <- value
 
 \S4method{sampleLabels}{CAGEexp}(object) <- value
 
@@ -67,9 +61,9 @@ usign the \code{rainbow} function.  Assigned colors are not guaranteed
 to be stable.
 }
 \examples{
-sampleLabels(exampleCAGEset)
+sampleLabels(exampleCAGEexp)
 
-sampleList(exampleCAGEset)
+sampleList(exampleCAGEexp)
 
 }
 \seealso{

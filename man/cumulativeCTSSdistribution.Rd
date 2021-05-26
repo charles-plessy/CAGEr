@@ -31,11 +31,7 @@ cumulativeCTSSdistribution(
 (set to \code{NULL} to use all detected cores).}
 }
 \value{
-For \code{CAGEset} objects, the slot \code{CTSScumulativesTagClusters}
-(when \code{clusters = "tagClusters"}) or \code{CTSScumulativesConsensusClusters}
-(when \code{clusters = "consensusClusters"}) of the will be occupied by the
-list containing cumulative sum of the CAGE signal along genomic regions per
-CAGE experiment.  In \code{CAGEexp} objects, cumulative sums are stored
+In \code{CAGEexp} objects, cumulative sums are stored
 in the metadata slot using the \code{RleList} class.
 }
 \description{
@@ -43,10 +39,8 @@ Calculates the cumulative sum of raw CAGE counts along each tag
 cluster or consensus cluster in every sample within a CAGEr object.
 }
 \examples{
-CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
-cumulativeCTSSdistribution(object = exampleCAGEset, clusters = "tagClusters")
-CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
-cumulativeCTSSdistribution(exampleCAGEset, clusters = "consensusClusters")
+CTSScumulativesTagClusters(exampleCAGEexp)[[1]][1:6]
+cumulativeCTSSdistribution(exampleCAGEexp, clusters = "consensusClusters")
 
 clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20

@@ -2,13 +2,10 @@
 % Please edit documentation in R/Annotations.R
 \name{CTSStoGenes}
 \alias{CTSStoGenes}
-\alias{CTSStoGenes,CAGEset-method}
 \alias{CTSStoGenes,CAGEexp-method}
 \title{Make a gene expression table.}
 \usage{
 CTSStoGenes(object)
-
-\S4method{CTSStoGenes}{CAGEset}(object)
 
 \S4method{CTSStoGenes}{CAGEexp}(object)
 }
@@ -32,7 +29,7 @@ number of counts that did not overlap with a known gene.
 }
 \description{
 Add a gene expression table in the \code{GeneExpSE} experiment slot of an
-annotated \code{\link{CAGEexp}} object.  \code{\link{CAGEset}} objects are not supported.
+annotated \code{\link{CAGEexp}} object.
 }
 \examples{
 CTSStoGenes(exampleCAGEexp)

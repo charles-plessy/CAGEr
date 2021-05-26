@@ -65,8 +65,6 @@
 #' @family CAGEr plot functions
 #' 
 #' @examples 
-#' plotReverseCumulatives(exampleCAGEset, fitInRange = c(10,500), onePlot = TRUE)
-#' plotReverseCumulatives(exampleCAGEset, values = "normalized", onePlot = TRUE)
 #' 
 #' plotReverseCumulatives( exampleCAGEexp, xlim = c(1, 1e4), ylim = c(1, 1e5)
 #'                       , fitInRange = c(5,100), onePlot = TRUE)
@@ -211,8 +209,8 @@ setMethod( "plotReverseCumulatives", "CAGEr"
 #' @seealso \code{\link{normalizeTagCount}}
 #' 
 #' @examples
-#' exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "bedGraph", oneFile = TRUE)
-#' exportCTSStoBedGraph(exampleCAGEset, values = "normalized", format = "BigWig", oneFile = TRUE)
+#' exportCTSStoBedGraph(exampleCAGEexp, values = "normalized", format = "bedGraph", oneFile = TRUE)
+#' exportCTSStoBedGraph(exampleCAGEexp, values = "normalized", format = "BigWig", oneFile = TRUE)
 #' 
 #' @export
 
@@ -287,9 +285,6 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 #' @importFrom graphics hist
 #' 
 #' @examples
-#' plotInterquantileWidth( object = exampleCAGEset, clusters = "tagClusters"
-#'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
-#' 
 #' plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
 #'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
 #' 
@@ -349,7 +344,7 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 #' expression classes are shown in different colors and are labeled according to the labels
 #' returned by expression clustering.
 #' 
-#' @param object A \code{\link{CAGEset}} object.
+#' @param object A \code{\link{CAGEr}} object.
 #' 
 #' @param what Which level of expression clustering should be used.  Can be either
 #' \code{"CTSS"} to plot expression profiles of individual CTSSs or \code{"consensusClusters"}
@@ -373,7 +368,7 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 #'          \code{\link{extractExpressionClass}}.
 #'          
 #' @examples
-#' plotExpressionProfiles(object = exampleCAGEset, what = "CTSS")
+#' plotExpressionProfiles(object = exampleCAGEexp, what = "CTSS")
 #' 
 #' @export
 
@@ -382,7 +377,7 @@ setGeneric( "plotExpressionProfiles"
 
 #' @rdname plotExpressionProfiles
 
-setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
+setMethod( "plotExpressionProfiles", "CAGEr", function (object, what){
 	
 	if(what == "CTSS") {
 		
@@ -508,11 +503,9 @@ setMethod( "plotExpressionProfiles", "CAGEset", function (object, what){
 #' @examples 
 #' 
 #' ### exporting CTSSs colored by expression class
-#' exportToBed(object = exampleCAGEset, what = "CTSS", colorByExpressionProfile = TRUE)
+#' exportToBed(object = exampleCAGEexp, what = "CTSS", colorByExpressionProfile = TRUE)
 #' 
 #' ### exporting tag clusters in gene-like representation
-#' exportToBed( object = exampleCAGEset, what = "tagClusters"
-#'            , qLow = 0.1, qUp = 0.9, oneFile = TRUE)
 #'            
 #' exportToBed( object = exampleCAGEexp, what = "tagClusters"
 #'            , qLow = 0.1, qUp = 0.9, oneFile = TRUE)

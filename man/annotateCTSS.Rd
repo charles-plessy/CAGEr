@@ -2,27 +2,21 @@
 % Please edit documentation in R/Annotations.R
 \name{annotateCTSS}
 \alias{annotateCTSS}
-\alias{annotateCTSS,CAGEset,ANY-method}
 \alias{annotateCTSS,CAGEexp,GRanges-method}
 \alias{annotateConsensusClusters}
-\alias{annotateConsensusClusters,CAGEset,ANY-method}
 \alias{annotateConsensusClusters,CAGEexp,GRanges-method}
 \title{Annotate and compute summary statistics}
 \usage{
 annotateCTSS(object, ranges)
 
-\S4method{annotateCTSS}{CAGEset,ANY}(object, ranges)
-
 \S4method{annotateCTSS}{CAGEexp,GRanges}(object, ranges)
 
 annotateConsensusClusters(object, ranges)
 
-\S4method{annotateConsensusClusters}{CAGEset,ANY}(object, ranges)
-
 \S4method{annotateConsensusClusters}{CAGEexp,GRanges}(object, ranges)
 }
 \arguments{
-\item{object}{\code{CAGEexp} object (\code{CAGEset}s are not supported).}
+\item{object}{\code{CAGEexp} object.}
 
 \item{ranges}{A \code{\link{GRanges}} object, optionally containing \code{gene_name},
 \code{type} and \code{transcript_type} metadata.}

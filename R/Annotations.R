@@ -382,7 +382,7 @@ msScope_annotation <- function(libs) {
 #' @description `annotateCTSS` annotates the _CTSS_ of a [`CAGEexp`] object and
 #' computes annotation statistics.
 #' 
-#' @param object `CAGEexp` object (`CAGEset`s are not supported).
+#' @param object `CAGEexp` object.
 #'   
 #' @param ranges A [`GRanges`] object, optionally containing `gene_name`,
 #'   `type` and `transcript_type` metadata.
@@ -414,11 +414,6 @@ msScope_annotation <- function(libs) {
 #' @export
 
 setGeneric("annotateCTSS", function(object, ranges) standardGeneric("annotateCTSS"))
-
-#' @rdname annotateCTSS
-
-setMethod("annotateCTSS", "CAGEset", function (object, ranges){
-  stop("CAGEset objects not supported.")})
 
 #' @rdname annotateCTSS
 
@@ -455,11 +450,6 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
 #' @export
 
 setGeneric("annotateConsensusClusters", function(object, ranges) standardGeneric("annotateConsensusClusters"))
-
-#' @rdname annotateCTSS
-
-setMethod("annotateConsensusClusters", "CAGEset", function (object, ranges){
-  stop("CAGEset objects not supported.")})
 
 #' @rdname annotateCTSS
 
@@ -734,7 +724,7 @@ ranges2names <- function(rangesA, rangesB) {
 #' Make a gene expression table.
 #' 
 #' Add a gene expression table in the `GeneExpSE` experiment slot of an
-#' annotated [`CAGEexp`] object.  [`CAGEset`] objects are not supported.
+#' annotated [`CAGEexp`] object.
 #' 
 #' @param object A `CAGEexp` object that was annotated with the [annotateCTSS()]
 #'        function.
@@ -769,11 +759,6 @@ ranges2names <- function(rangesA, rangesB) {
 #' @export
 
 setGeneric("CTSStoGenes", function(object) standardGeneric("CTSStoGenes"))
-
-#' @rdname CTSStoGenes
-
-setMethod("CTSStoGenes", "CAGEset", function (object)
-  stop("Not supported for ", dQuote("CAGEset"), " objects."))
 
 #' @rdname CTSStoGenes
 

@@ -23,20 +23,12 @@ NULL
  
 #' CAGEr objects
 #' 
-#' The _CAGEr_ package provides two classes of objects to load, contain and
-#' process CAGE data:
-#' 
-#' * The [`CAGEset`] class is the original object format in _CAGEr_, as when
-#'   published in Haberle _et al._, 2015. 
-#'   
-#' * The [`CAGEexp`] class is a new class format in 2017, which is based on the
-#'   [`MultiAssayExperiment`] class.  In comparison with `CAGEset`, objects,
-#'   `CAGEexp` objects benefit from a a more efficient data storage, using
-#'   `DataFrame`s of run-length-encoded (`Rle`) integers, allowing for the
-#'   loading and use of much larger transcriptome datasets.
-#'  
-#' Most _CAGEr_ functions support both classes interchangabely, and the `CAGEr`
-#' class was created for methods that support both classes identically.
+#' The _CAGEr_ package provides one classe of objects to load, contain and
+#' process CAGE data: the [`CAGEexp`] class, introduced 2017, which is based on the
+#' [`MultiAssayExperiment`] class.  In comparison with the original `CAGEset`
+#' class (removed in 2021) `CAGEexp` objects benefit from a a more efficient data storage, using
+#' `DataFrame`s of run-length-encoded (`Rle`) integers, allowing for the
+#' loading and use of much larger transcriptome datasets.
 #' 
 #' @references Haberle V, Forrest ARR, Hayashizaki Y, Carninci P and Lenhard B
 #' (**2015**). \dQuote{CAGEr: precise TSS data retrieval and high-resolution
@@ -48,7 +40,7 @@ NULL
 #' @import BiocGenerics
 #' @exportClass CAGEr
 
-setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
+setClassUnion("CAGEr", c("CAGEexp"))  # Legacy of dual support for CAGEset before 2021
 
 
 #' @name getRefGenome
@@ -107,7 +99,7 @@ getRefGenome <- function(reference.genome) {
 #' @author Vanja Haberle
 #' 
 #' @examples 
-#' sampleLabels(exampleCAGEset)
+#' sampleLabels(exampleCAGEexp)
 #' 
 #' @family CAGEr accessor methods
 #' @seealso \code{\link{setColors}}
@@ -116,11 +108,6 @@ getRefGenome <- function(reference.genome) {
 #' @export
 
 setGeneric("sampleLabels", function(object) standardGeneric("sampleLabels"))
-
-#' @rdname sampleLabels
-
-setMethod("sampleLabels", "CAGEset", function (object)
-  object@sampleLabels)
 
 #' @rdname sampleLabels
 
@@ -149,7 +136,7 @@ setMethod("sampleLabels", "CTSS", function (object)
 #' element names will be sample names.
 #' 
 #' @examples 
-#' sampleList(exampleCAGEset)
+#' sampleList(exampleCAGEexp)
 #' 
 #' @export
 #' @rdname sampleLabels

@@ -4,7 +4,6 @@
 \alias{plotCorrelation}
 \alias{plotCorrelation,CAGEr-method}
 \alias{plotCorrelation2}
-\alias{plotCorrelation2,CAGEset-method}
 \alias{plotCorrelation2,CAGEexp-method}
 \alias{plotCorrelation2,SummarizedExperiment-method}
 \alias{plotCorrelation2,DataFrame-method}
@@ -35,17 +34,6 @@ plotCorrelation(
 )
 
 plotCorrelation2(
-  object,
-  what = c("CTSS", "consensusClusters"),
-  values = c("raw", "normalized"),
-  samples = "all",
-  method = "pearson",
-  tagCountThreshold = 1,
-  applyThresholdBoth = FALSE,
-  digits = 3
-)
-
-\S4method{plotCorrelation2}{CAGEset}(
   object,
   what = c("CTSS", "consensusClusters"),
   values = c("raw", "normalized"),

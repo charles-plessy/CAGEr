@@ -103,11 +103,9 @@ all consensus clusters are shown in black.
 \examples{
 
 ### exporting CTSSs colored by expression class
-exportToBed(object = exampleCAGEset, what = "CTSS", colorByExpressionProfile = TRUE)
+exportToBed(object = exampleCAGEexp, what = "CTSS", colorByExpressionProfile = TRUE)
 
 ### exporting tag clusters in gene-like representation
-exportToBed( object = exampleCAGEset, what = "tagClusters"
-           , qLow = 0.1, qUp = 0.9, oneFile = TRUE)
            
 exportToBed( object = exampleCAGEexp, what = "tagClusters"
            , qLow = 0.1, qUp = 0.9, oneFile = TRUE)

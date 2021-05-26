@@ -5,16 +5,12 @@
 \alias{tagClustersQuantile,TagClusters-method}
 \alias{tagClustersQuantile,CAGEexp-method}
 \alias{tagClustersQuantileLow}
-\alias{tagClustersQuantileLow,CAGEset-method}
 \alias{tagClustersQuantileLow,CAGEexp-method}
 \alias{tagClustersQuantileUp}
-\alias{tagClustersQuantileUp,CAGEset-method}
 \alias{tagClustersQuantileUp,CAGEexp-method}
 \alias{tagClustersQuantileLow<-}
-\alias{tagClustersQuantileLow<-,CAGEset-method}
 \alias{tagClustersQuantileLow<-,CAGEexp-method}
 \alias{tagClustersQuantileUp<-}
-\alias{tagClustersQuantileUp<-,CAGEset-method}
 \title{Quantile metadata stored in CAGEr objects.}
 \usage{
 tagClustersQuantile(object, samples = NULL, q = NULL)
@@ -25,25 +21,17 @@ tagClustersQuantile(object, samples = NULL, q = NULL)
 
 tagClustersQuantileLow(object, samples = NULL, q = NULL)
 
-\S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL, q = NULL)
-
 \S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL, q = NULL)
 
 tagClustersQuantileUp(object, samples = NULL, q = NULL)
-
-\S4method{tagClustersQuantileUp}{CAGEset}(object, samples = NULL, q = NULL)
 
 \S4method{tagClustersQuantileUp}{CAGEexp}(object, samples = NULL, q = NULL)
 
 tagClustersQuantileLow(object, samples = NULL) <- value
 
-\S4method{tagClustersQuantileLow}{CAGEset}(object, samples = NULL) <- value
-
 \S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL) <- value
 
 tagClustersQuantileUp(object, samples = NULL) <- value
-
-\S4method{tagClustersQuantileUp}{CAGEset}(object, samples = NULL) <- value
 
 \S4method{tagClustersQuantileLow}{CAGEexp}(object, samples = NULL) <- value
 }
@@ -61,7 +49,7 @@ indicates a quantile.}
 \value{
 Returns a \code{data.frame} where the first column gives cluster
 names and the next columns give quantile positions, in \emph{zero-based}
-chromosome coordinates (because the tag clusters in CAGEset objects are
+chromosome coordinates (because the tag clusters in former CAGEset objects were
 represented in zero-based coordinates as well)).
 }
 \description{

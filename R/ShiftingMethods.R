@@ -77,7 +77,7 @@
 #' \code{\link{cumulativeCTSSdistribution}} function.
 #' 
 #' The slots \code{shiftingGroupX}, \code{shiftingGroupY} and
-#' \code{consensusClustersShiftingScores} of the provided \code{\link{CAGEset}} object will
+#' \code{consensusClustersShiftingScores} of the provided \code{\link{CAGEexp}} object will
 #' be occupied by the information on the groups of CAGE datasets that have been compared and
 #' shifting scores of all consensus clusters.  Consensus clusters (promoters) with shifting
 #' score and/or FDR above specified threshold can be extracted by calling
@@ -89,11 +89,11 @@
 #' @family CAGEr promoter shift functions
 #' 
 #' @examples
-#' scoreShift( exampleCAGEset
+#' scoreShift( exampleCAGEexp
 #'           , groupX = c("sample1", "sample2")
 #'           , groupY = "sample3"
 #'           , testKS = TRUE, useTpmKS = FALSE)
-#' head(getShiftingPromoters(exampleCAGEset))
+#' head(getShiftingPromoters(exampleCAGEexp))
 #'
 #' @importFrom stats p.adjust
 #' @importFrom utils head
@@ -106,7 +106,7 @@ setGeneric( "scoreShift"
 
 #' @rdname scoreShift
 
-setMethod( "scoreShift", "CAGEset"
+setMethod( "scoreShift", "CAGEexp"
          , function (object, groupX, groupY, testKS, useTpmKS, useMulticore, nrCores) {
 	
 	objName <- deparse(substitute(object))
@@ -279,7 +279,7 @@ setMethod( "scoreShift", "CAGEset"
 #' samples, along with the value of the shifting score, P-value and FDR.  Scores and
 #' P-values/FDR have to be calculated beforehand by calling \code{\link{scoreShift}} function.
 #' 
-#' @param object A \code{\link{CAGEset}} object.
+#' @param object A \code{\link{CAGEexp}} object.
 #' 
 #' @param tpmThreshold Consensus clusters with total CAGE signal \code{>= tpmThreshold}
 #'        in each of the compared groups will be returned.
@@ -304,7 +304,7 @@ setMethod( "scoreShift", "CAGEset"
 #' @family CAGEr promoter shift functions
 #' 
 #' @examples 
-#' head(getShiftingPromoters( exampleCAGEset, tpmThreshold = 100
+#' head(getShiftingPromoters( exampleCAGEexp, tpmThreshold = 100
 #'                          , scoreThreshold = 0.4, fdrThreshold = 0.01))
 #' 
 #' @export
@@ -315,7 +315,7 @@ setGeneric( "getShiftingPromoters"
 
 #' @rdname getShiftingPromoters
 
-setMethod( "getShiftingPromoters", "CAGEset"
+setMethod( "getShiftingPromoters", "CAGEexp"
          , function (object, tpmThreshold, scoreThreshold, fdrThreshold) {
 
 	shifting.scores <- object@consensusClustersShiftingScores

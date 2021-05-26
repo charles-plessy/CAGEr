@@ -2,31 +2,22 @@
 % Please edit documentation in R/SetMethods.R
 \name{consensusClusters<-}
 \alias{consensusClusters<-}
-\alias{consensusClusters<-,CAGEset-method}
 \alias{consensusClusters<-,CAGEexp-method}
 \alias{consensusClustersSE<-}
-\alias{consensusClustersSE<-,CAGEset,ANY-method}
 \alias{consensusClustersSE<-,CAGEexp,RangedSummarizedExperiment-method}
 \alias{consensusClustersGR<-}
-\alias{consensusClustersGR<-,CAGEset-method}
 \alias{consensusClustersGR<-,CAGEexp-method}
 \title{Set consensus clusters from CAGEr objects}
 \usage{
 consensusClusters(object) <- value
 
-\S4method{consensusClusters}{CAGEset}(object) <- value
-
 \S4method{consensusClusters}{CAGEexp}(object) <- value
 
 consensusClustersSE(object) <- value
 
-\S4method{consensusClustersSE}{CAGEset,ANY}(object) <- value
-
 \S4method{consensusClustersSE}{CAGEexp,RangedSummarizedExperiment}(object) <- value
 
 consensusClustersGR(object) <- value
-
-\S4method{consensusClustersGR}{CAGEset}(object) <- value
 
 \S4method{consensusClustersGR}{CAGEexp}(object) <- value
 }

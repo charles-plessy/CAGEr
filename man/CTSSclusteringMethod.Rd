@@ -2,26 +2,20 @@
 % Please edit documentation in R/GetMethods.R, R/SetMethods.R
 \name{CTSSclusteringMethod}
 \alias{CTSSclusteringMethod}
-\alias{CTSSclusteringMethod,CAGEset-method}
 \alias{CTSSclusteringMethod,GRangesList-method}
 \alias{CTSSclusteringMethod,CAGEexp-method}
 \alias{CTSSclusteringMethod<-}
-\alias{CTSSclusteringMethod<-,CAGEset-method}
 \alias{CTSSclusteringMethod<-,GRangesList-method}
 \alias{CTSSclusteringMethod<-,CAGEexp-method}
 \title{Get /set CTSS clustering method}
 \usage{
 CTSSclusteringMethod(object)
 
-\S4method{CTSSclusteringMethod}{CAGEset}(object)
-
 \S4method{CTSSclusteringMethod}{GRangesList}(object)
 
 \S4method{CTSSclusteringMethod}{CAGEexp}(object)
 
 CTSSclusteringMethod(object) <- value
-
-\S4method{CTSSclusteringMethod}{CAGEset}(object) <- value
 
 \S4method{CTSSclusteringMethod}{GRangesList}(object) <- value
 
@@ -37,7 +31,6 @@ Returns or sets the name of the method that was used make tag
 clusters from the CTSSs of a \code{\link{CAGEr}} object.
 }
 \examples{
-CTSSclusteringMethod(exampleCAGEset)
 CTSSclusteringMethod(exampleCAGEexp)
 
 }

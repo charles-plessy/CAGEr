@@ -5,7 +5,7 @@
 #' @description Clusters CAGE expression across multiple experiments, both at level of
 #' individual TSSs or entire clusters of TSSs.
 #' 
-#' @param object A \code{\link{CAGEset}} object
+#' @param object A \code{\link{CAGEexp}} object
 #' 
 #' @param what At which level should the expression clustering be done.  Can be either
 #' \code{"CTSS"} to perform clustering of individual CTSSs or \code{"consensusClusters"}
@@ -43,7 +43,7 @@
 #' @return If \code{what = "CTSS"} the slots \code{CTSSexpressionClusteringMethod} and
 #' \code{CTSSexpressionClasses} will be occupied, and if \code{what = "consensusClusters"} the
 #' slots \code{consensusClustersExpressionClusteringMethod} and
-#' \code{consensusClustersExpressionClasses} of the provided \code{\link{CAGEset}} object will
+#' \code{consensusClustersExpressionClasses} of the provided \code{\link{CAGEexp}} object will
 #' be occupied with the results of expression clustering.  Labels of expression classes (clusters)
 #' can be retrieved using \code{\link{expressionClasses}} function, and elements belonging to a
 #' specific expression class can be selected using \code{\link{extractExpressionClass}} function.
@@ -58,7 +58,7 @@
 #' \code{\link{extractExpressionClass}}.
 #' 
 #' @examples 
-#' getExpressionProfiles(exampleCAGEset, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
+#' getExpressionProfiles(exampleCAGEexp, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
 #'                      , method = "som", xDim = 3, yDim = 3)
 #' 
 #' @importFrom stats kmeans
@@ -73,14 +73,14 @@ setGeneric( "getExpressionProfiles"
 
 #' @rdname getExpressionProfiles
 
-setMethod( "getExpressionProfiles", "CAGEset"
+setMethod( "getExpressionProfiles", "CAGEexp"
          , function (object, what, tpmThreshold, nrPassThreshold, method, xDim, yDim){
 
 	objName <- deparse(substitute(object))
 	sample.labels = sampleLabels(object)
 	
 	if(length(sample.labels) < 2){
-		stop("Provided CAGEset object contains only one sample! At least two samples are required for expression profiling!")
+		stop("Provided CAGEexp object contains only one sample! At least two samples are required for expression profiling!")
 	}
 
 	if(what == "CTSS") {
@@ -142,7 +142,7 @@ setMethod( "getExpressionProfiles", "CAGEset"
 #' 
 #' @description Extracts CTSSs or consensus clusters belonging to a specified expression class.
 #' 
-#' @param object A \code{\link{CAGEset}} object.
+#' @param object A \code{\link{CAGEexp}} object.
 #' 
 #' @param what Which level of expression clustering should be used. Can be either
 #'        \code{"CTSS"} to extract expression class of individual CTSSs or
@@ -163,7 +163,7 @@ setMethod( "getExpressionProfiles", "CAGEset"
 #'          \code{\link{expressionClasses}}.
 #' 
 #' @examples
-#' CTSSexprClasses <- extractExpressionClass(exampleCAGEset, what = "CTSS", which = "all")
+#' CTSSexprClasses <- extractExpressionClass(exampleCAGEexp, what = "CTSS", which = "all")
 #' head(CTSSexprClasses)
 #' 
 #' @export
@@ -178,7 +178,7 @@ setMethod( "extractExpressionClass", "CAGEexp", function (object, what, which="a
 
 #' @rdname extractExpressionClass
 
-setMethod( "extractExpressionClass", "CAGEset", function (object, what, which="all"){
+setMethod( "extractExpressionClass", "CAGEr", function (object, what, which="all"){
 	objName <- deparse(substitute(object))
 
 	if(what == "CTSS"){

@@ -2,45 +2,9 @@
 % Please edit documentation in R/ClusteringMethods.R
 \name{clusterCTSS}
 \alias{clusterCTSS}
-\alias{clusterCTSS,CAGEset-method}
-\alias{clusterCTSS,CAGEexp-method}
 \title{Cluster CTSSs into tag clusters}
 \usage{
 clusterCTSS(
-  object,
-  threshold = 1,
-  nrPassThreshold = 1,
-  thresholdIsTpm = TRUE,
-  method = c("distclu", "paraclu", "custom"),
-  maxDist = 20,
-  removeSingletons = FALSE,
-  keepSingletonsAbove = Inf,
-  minStability = 1,
-  maxLength = 500,
-  reduceToNonoverlapping = TRUE,
-  customClusters = NULL,
-  useMulticore = FALSE,
-  nrCores = NULL
-)
-
-\S4method{clusterCTSS}{CAGEset}(
-  object,
-  threshold = 1,
-  nrPassThreshold = 1,
-  thresholdIsTpm = TRUE,
-  method = c("distclu", "paraclu", "custom"),
-  maxDist = 20,
-  removeSingletons = FALSE,
-  keepSingletonsAbove = Inf,
-  minStability = 1,
-  maxLength = 500,
-  reduceToNonoverlapping = TRUE,
-  customClusters = NULL,
-  useMulticore = FALSE,
-  nrCores = NULL
-)
-
-\S4method{clusterCTSS}{CAGEexp}(
   object,
   threshold = 1,
   nrPassThreshold = 1,
@@ -109,13 +73,7 @@ has no effect on non-Unix-like platforms.}
 value \code{NULL} uses all detected cores.}
 }
 \value{
-The slots \code{clusteringMethod}, \code{filteredCTSSidx} and \code{tagClusters} of
-the provided \code{\link{CAGEset}} object will be occupied by the information on method
-used for clustering, CTSSs included in the clusters and list of tag clusters
-per CAGE experiment, respectively.  To retrieve tag clusters for individual
-CAGE dataset use the \code{\link[=tagClusters]{tagClusters()}} function.
-
-In \code{\link{CAGEexp}} objects, the results will be stored as a \code{GRangesList} of
+Returns the \code{\link{CAGEexp}} object, in which, the results will be stored as a \code{GRangesList} of
 \code{\link{TagClusters}} objects in the metadata slot \code{tagClusters}.  The
 \code{TagClusters} objects will contain a \code{filteredCTSSidx} column if appropriate.
 The clustering method name is saved in the metadata slot of the \code{GRangesList}.
@@ -145,11 +103,6 @@ different datasets can further be aggregated into a single referent set of
 consensus clusters by calling the \code{\link{aggregateTagClusters}} function.
 }
 \examples{
-head(tagClusters(exampleCAGEset, "sample1"))
-clusterCTSS( object = exampleCAGEset, threshold = 50, thresholdIsTpm = TRUE
-           , nrPassThreshold = 1, method = "distclu", maxDist = 20
-           , removeSingletons = TRUE, keepSingletonsAbove = 100)
-head(tagClusters(exampleCAGEset, "sample1"))
 
 clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20

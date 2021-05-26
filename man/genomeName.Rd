@@ -2,18 +2,14 @@
 % Please edit documentation in R/GetMethods.R, R/SetMethods.R
 \name{genomeName}
 \alias{genomeName}
-\alias{genomeName,CAGEset-method}
 \alias{genomeName,CAGEexp-method}
 \alias{genomeName,CTSS-method}
 \alias{genomeName<-}
-\alias{genomeName<-,CAGEset-method}
 \alias{genomeName<-,CAGEexp-method}
 \alias{genomeName<-,CTSS-method}
 \title{Extracting genome name from CAGEr objects}
 \usage{
 genomeName(object)
-
-\S4method{genomeName}{CAGEset}(object)
 
 \S4method{genomeName}{CAGEexp}(object)
 
@@ -21,14 +17,12 @@ genomeName(object)
 
 genomeName(object) <- value
 
-\S4method{genomeName}{CAGEset}(object) <- value
-
 \S4method{genomeName}{CAGEexp}(object) <- value
 
 \S4method{genomeName}{CTSS}(object) <- value
 }
 \arguments{
-\item{object}{A CAGEset or CAGEexp object.}
+\item{object}{A CAGEexp or a CTSS object.}
 
 \item{value}{The name of a \code{BSgenome} package.}
 }
@@ -37,7 +31,7 @@ Returns a name of a BSgenome package used as a referent genome.
 }
 \description{
 Extracts the name of a referent genome from a
-\code{\link{CAGEset}} and \code{\link{CAGEexp}} objects.
+\code{CAGEexp} or a \code{CTSS} object.
 }
 \details{
 \code{\link{CAGEexp}} objects constructed with \code{NULL} in place
@@ -45,7 +39,7 @@ of the genome name can not run some commands that need access to genomic data,
 such as BigWig export or G-correction.
 }
 \examples{
-genomeName(exampleCAGEset)
+genomeName(exampleCAGEexp)
 
 }
 \seealso{

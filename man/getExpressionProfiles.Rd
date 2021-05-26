@@ -2,7 +2,7 @@
 % Please edit documentation in R/ExpressionProfilingMethods.R
 \name{getExpressionProfiles}
 \alias{getExpressionProfiles}
-\alias{getExpressionProfiles,CAGEset-method}
+\alias{getExpressionProfiles,CAGEexp-method}
 \title{CAGE data based expression clustering}
 \usage{
 getExpressionProfiles(
@@ -15,7 +15,7 @@ getExpressionProfiles(
   yDim = 5
 )
 
-\S4method{getExpressionProfiles}{CAGEset}(
+\S4method{getExpressionProfiles}{CAGEexp}(
   object,
   what,
   tpmThreshold = 5,
@@ -26,7 +26,7 @@ getExpressionProfiles(
 )
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} object}
+\item{object}{A \code{\link{CAGEexp}} object}
 
 \item{what}{At which level should the expression clustering be done.  Can be either
 \code{"CTSS"} to perform clustering of individual CTSSs or \code{"consensusClusters"}
@@ -51,7 +51,7 @@ that will be returned by K-means algorithm and \code{yDim} is ignored.  When \co
 If \code{what = "CTSS"} the slots \code{CTSSexpressionClusteringMethod} and
 \code{CTSSexpressionClasses} will be occupied, and if \code{what = "consensusClusters"} the
 slots \code{consensusClustersExpressionClusteringMethod} and
-\code{consensusClustersExpressionClasses} of the provided \code{\link{CAGEset}} object will
+\code{consensusClustersExpressionClasses} of the provided \code{\link{CAGEexp}} object will
 be occupied with the results of expression clustering.  Labels of expression classes (clusters)
 can be retrieved using \code{\link{expressionClasses}} function, and elements belonging to a
 specific expression class can be selected using \code{\link{extractExpressionClass}} function.
@@ -76,7 +76,7 @@ within entire consensus cluster across multiple experiments, and threshold value
 \code{tpmThreshold} and \code{nrPassThreshold} are applied to entire consensus clusters.
 }
 \examples{
-getExpressionProfiles(exampleCAGEset, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
+getExpressionProfiles(exampleCAGEexp, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
                      , method = "som", xDim = 3, yDim = 3)
 
 }

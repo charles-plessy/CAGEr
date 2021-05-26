@@ -2,13 +2,10 @@
 % Please edit documentation in R/AllClasses.R
 \name{mergeCAGEsets}
 \alias{mergeCAGEsets}
-\alias{mergeCAGEsets,CAGEset,CAGEset-method}
 \alias{mergeCAGEsets,CAGEexp,CAGEexp-method}
 \title{Merge two CAGEr objects into one}
 \usage{
 mergeCAGEsets(cs1, cs2)
-
-\S4method{mergeCAGEsets}{CAGEset,CAGEset}(cs1, cs2)
 
 \S4method{mergeCAGEsets}{CAGEexp,CAGEexp}(cs1, cs2)
 }
@@ -26,7 +23,7 @@ merged object.  Also, it is only possible to merge two objects that contain
 TSS information for the same reference genome and do not share any sample
 names.
 
-Returns a \code{CAGEset} or \code{CAGEexp} object, which contains a union of
+Returns a \code{CAGEexp} object, which contains a union of
 TSS positions present in the two input objects and raw tag counts for those
 TSSs in all samples from both input objects.
 }
@@ -42,20 +39,6 @@ library(BSgenome.Drerio.UCSC.danRer7)
 pathsToInputFiles <- system.file("extdata", c("Zf.unfertilized.egg.chr17.ctss",
   "Zf.30p.dome.chr17.ctss", "Zf.prim6.rep1.chr17.ctss"), package="CAGEr")
   
-myCAGEset1 <- new("CAGEset", genomeName = "BSgenome.Drerio.UCSC.danRer7",
-inputFiles = pathsToInputFiles[1:2], inputFilesType = "ctss", sampleLabels =
-c("sample1", "sample2"))
-getCTSS(myCAGEset1)
-
-myCAGEset2 <- new("CAGEset", genomeName = "BSgenome.Drerio.UCSC.danRer7",
-inputFiles = pathsToInputFiles[3], inputFilesType = "ctss", sampleLabels =
-"sample3")
-
-getCTSS(myCAGEset2)
-
-myCAGEset <- mergeCAGEsets(myCAGEset1, myCAGEset2)
-
-
 ce1 <- CAGEexp(genomeName = "BSgenome.Drerio.UCSC.danRer7",
 inputFiles = pathsToInputFiles[1:2], inputFilesType = "ctss", sampleLabels =
 c("sample1", "sample2"))
@@ -71,8 +54,10 @@ ce <- mergeCAGEsets(ce1, ce2)
 
 }
 \seealso{
-\code{\link{CAGEset}}, \code{\link{CAGEexp}}
+\code{\link{CAGEexp}}
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }

@@ -77,17 +77,6 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' components corespond to the name of the corresponding cluster) v.
 #'
 #' @examples 
-#' ctss      <- CTSSnormalizedTpmGR(exampleCAGEset, "sample1")
-#' ctss      <- ctss[ctss$filteredCTSSidx]
-#' clusters  <- tagClustersGR(exampleCAGEset, "sample1")
-#' clusters.cumsum <- RleList(CAGEr:::.getCumsum(ctss, clusters))
-#' identical( lapply(exampleCAGEset@CTSScumulativesTagClusters[[1]],decode)
-#'          , lapply(clusters.cumsum, decode))
-#' # Not identical if not decoded because Rle method is attached to S4Vectors in one case
-#' # and to IRanges in the other case.
-#' decode(clusters.cumsum[[1]])
-#' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
-#' clusters[1]
 #' 
 #' ctss      <- CTSSnormalizedTpmGR(exampleCAGEexp, "Zf.30p.dome")
 #' ctss      <- ctss[ctss$filteredCTSSidx]

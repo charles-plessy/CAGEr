@@ -1,7 +1,7 @@
 #' @include CAGEr.R CTSS.R
 
 ####################################################################
-# Functions for setting internal data in CAGEset and CAGEexp objects
+# Functions for setting internal data in CAGEexp objects
 #
 
 #' @name genomeName<-
@@ -12,13 +12,6 @@
 #' @export
 
 setGeneric("genomeName<-", function(object, value) standardGeneric("genomeName<-"))
-
-#' @rdname genomeName
-
-setMethod("genomeName<-", "CAGEset", function (object, value){
-	object@genomeName <- value
-	if (validObject(object)) object
-})
 
 #' @rdname genomeName
 
@@ -46,13 +39,6 @@ setGeneric("inputFiles<-", function(object, value) standardGeneric("inputFiles<-
 
 #' @rdname inputFiles
 
-setMethod("inputFiles<-", "CAGEset", function (object, value){
-	object@inputFiles <- value
-	if (validObject(object)) object
-})
-
-#' @rdname inputFiles
-
 setMethod("inputFiles<-", "CAGEexp", function (object, value){
   object$inputFiles <- value
   if (validObject(object)) object
@@ -67,13 +53,6 @@ setMethod("inputFiles<-", "CAGEexp", function (object, value){
 #' @export
 
 setGeneric("inputFilesType<-", function(object, value) standardGeneric("inputFilesType<-"))
-
-#' @rdname inputFilesType
-
-setMethod("inputFilesType<-", "CAGEset", function (object, value){
-	object@inputFilesType <- value
-	if (validObject(object)) object
-})
 
 #' @rdname inputFilesType
 
@@ -92,13 +71,6 @@ setMethod("inputFilesType<-", "CAGEexp", function (object, value){
 #' @export
 
 setGeneric("sampleLabels<-", function(object, value) standardGeneric("sampleLabels<-"))
-
-#' @rdname sampleLabels
-
-setMethod("sampleLabels<-", "CAGEset", function (object, value){
-	object@sampleLabels <- value
-	if (validObject(object)) object
-})
 
 #' @rdname sampleLabels
 
@@ -125,11 +97,6 @@ setMethod("sampleLabels<-", "CTSS", function (object, value){
 
 setGeneric("librarySizes<-", function(object, value) standardGeneric("librarySizes<-"))
 
-setMethod("librarySizes<-", "CAGEset", function (object, value){
-	object@librarySizes <- value
-	if (validObject(object)) object
-})
-
 setMethod("librarySizes<-", "CAGEexp", function (object, value){
   object$librarySizes <- value
   if (validObject(object)) object
@@ -145,12 +112,6 @@ setGeneric("CTSScoordinatesGR<-", function(object, value) standardGeneric("CTSSc
 
 #' @rdname CTSScoordinates
 
-setMethod("CTSScoordinatesGR<-", "CAGEset", function (object, value){
-	stop("Not implemented for the CAGEset class.")
-})
-
-#' @rdname CTSScoordinates
-
 setMethod("CTSScoordinatesGR<-", "CAGEexp", function (object, value){
   if (! is(value, "GRanges")) stop("Value must be a GRanges object.")
   rowRanges(object@ExperimentList$tagCountMatrix) <- value
@@ -163,12 +124,6 @@ setMethod("CTSScoordinatesGR<-", "CAGEexp", function (object, value){
 #' @export
 
 setGeneric("CTSStagCountSE<-", function(object, value) standardGeneric("CTSStagCountSE<-"))
-
-#' @rdname CTSScoordinates
-
-setMethod("CTSStagCountSE<-", "CAGEset", function (object, value){
-	stop("Not implemented for the CAGEset class.")
-})
 
 #' @rdname CTSScoordinates
 
@@ -199,11 +154,6 @@ setMethod("CTSStagCountSE<-", "CAGEexp", function (object, value){
 setGeneric( "filteredCTSSidx<-"
           , function(object, value) standardGeneric("filteredCTSSidx<-"))
 
-setMethod("filteredCTSSidx<-", "CAGEset", function (object, value) {
-	object@filteredCTSSidx <- decode(value) # CAGEset expects a logical.
-	if (validObject(object)) object
-})
-
 setMethod("filteredCTSSidx<-", "CAGEexp", function (object, value) {
   CTSScoordinatesGR(object)$filteredCTSSidx <- value
   if (validObject(object)) object
@@ -218,13 +168,6 @@ setMethod("filteredCTSSidx<-", "CAGEexp", function (object, value) {
 
 setGeneric( "CTSSclusteringMethod<-"
           , function(object, value) standardGeneric("CTSSclusteringMethod<-"))
-
-#' @rdname CTSSclusteringMethod
-
-setMethod("CTSSclusteringMethod<-", "CAGEset", function (object, value) {
-	object@clusteringMethod <- value
-	if (validObject(object)) object
-})
 
 #' @rdname CTSSclusteringMethod
 
@@ -254,13 +197,6 @@ setGeneric( "CTSScumulativesTagClusters<-"
 
 #' @rdname CTSScumulativesTagClusters
 
-setMethod("CTSScumulativesTagClusters<-", "CAGEset", function (object, value) {
-	object@CTSScumulativesTagClusters <- value
-	if (validObject(object)) object
-})
-
-#' @rdname CTSScumulativesTagClusters
-
 setMethod("CTSScumulativesTagClusters<-", "CAGEexp", function (object, value) {
   metadata(object)$CTSScumulativesTagClusters <- value
   if (validObject(object)) object
@@ -276,18 +212,6 @@ setGeneric( "tagClustersQuantileLow<-"
 
 #' @rdname tagClustersQuantile
 
-setMethod("tagClustersQuantileLow<-", "CAGEset", function (object, samples, value) {
-  validSamples(object, samples)
-  if(is.null(samples)) {
-	  object@tagClustersQuantileLow <- value
-  } else {
-    object@tagClustersQuantileLow[[samples]] <- value
-  }
-	if (validObject(object)) object
-})
-
-#' @rdname tagClustersQuantile
-
 setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, samples, value)
   stop("Not supported for CAGEexp.  Use tagClustersGR<- instead."))
 
@@ -297,18 +221,6 @@ setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, samples, valu
 setGeneric( "tagClustersQuantileUp<-"
           , function(object, samples = NULL, value)
               standardGeneric("tagClustersQuantileUp<-"))
-
-#' @rdname tagClustersQuantile
-
-setMethod("tagClustersQuantileUp<-", "CAGEset", function (object, samples, value) {
-  validSamples(object, samples)
-  if(is.null(samples)) {
-	  object@tagClustersQuantileUp <- value
-  } else {
-    object@tagClustersQuantileUp[[samples]] <- value
-  }
-	if (validObject(object)) object
-})
 
 #' @rdname tagClustersQuantile
 
@@ -324,11 +236,6 @@ setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, samples, valu
 setGeneric( "tagClustersGR<-"
           , function(object, samples = NULL, value)
             standardGeneric("tagClustersGR<-"))
-
-#' @rdname tagClusters
-
-setMethod("tagClustersGR<-", "CAGEset", function (object, samples, value)
-  stop("Not supported for CAGEset. Set tagClustersQuantileLow/Up instead."))
 
 #' @rdname tagClusters
 
@@ -368,13 +275,6 @@ setGeneric("consensusClusters<-", function(object, value) standardGeneric("conse
 
 #' @rdname consensusClusters-set
 
-setMethod("consensusClusters<-", "CAGEset", function (object, value){
-	object@consensusClusters <- value
-  if (validObject(object)) object
-})
-
-#' @rdname consensusClusters-set
-
 setMethod("consensusClusters<-", "CAGEexp", function (object, value){
   stop("Not supported for CAGEexp.")
 })
@@ -384,12 +284,6 @@ setMethod("consensusClusters<-", "CAGEexp", function (object, value){
 #' @export
 
 setGeneric("consensusClustersSE<-", function(object, value) standardGeneric("consensusClustersSE<-"))
-
-#' @rdname consensusClusters-set
-
-setMethod("consensusClustersSE<-", "CAGEset", function (object, value){
-	stop("Not implemented for the CAGEset class.")
-})
 
 #' @rdname consensusClusters-set
 
@@ -414,12 +308,6 @@ setGeneric("consensusClustersGR<-", function(object, value) standardGeneric("con
 
 #' @rdname consensusClusters-set
 
-setMethod("consensusClustersGR<-", "CAGEset", function (object, value){
-	stop("Not implemented for the CAGEset class.")
-})
-
-#' @rdname consensusClusters-set
-
 setMethod("consensusClustersGR<-", "CAGEexp", function (object, value){
   if (! is(value, "GRanges")) stop("Value must be a GRanges object.")
   rowRanges(object@ExperimentList$consensusClusters) <- value
@@ -434,19 +322,6 @@ setGeneric( "consensusClustersQuantileLow<-"
           , function(object, samples = NULL, value)
               standardGeneric("consensusClustersQuantileLow<-"))
 
-#' @rdname consensusClustersQuantile
-
-setMethod("consensusClustersQuantileLow<-", "CAGEset", function (object, samples, value){
-	validSamples(object, samples)
-  if(is.null(samples)) {
-	  object@consensusClustersQuantileLow <- value
-  } else {
-    object@consensusClustersQuantileLow[[samples]] <- value
-  }
-	if (validObject(object)) object
-})
-
-
 #' @name consensusClustersQuantileUp<-
 #' @rdname consensusClustersQuantile
 
@@ -454,28 +329,10 @@ setGeneric( "consensusClustersQuantileUp<-"
           , function(object, samples = NULL, value)
               standardGeneric("consensusClustersQuantileUp<-"))
 
-#' @rdname consensusClustersQuantile
-
-setMethod("consensusClustersQuantileUp<-", "CAGEset", function (object, samples, value){
-	validSamples(object, samples)
-  if(is.null(samples)) {
-	  object@consensusClustersQuantileUp <- value
-  } else {
-    object@consensusClustersQuantileUp[[samples]] <- value
-  }
-	if (validObject(object)) object
-})
-
-
 #' @name `CTSScumulativesCC<-`
 #' @noRd
 
 setGeneric("CTSScumulativesCC<-", function(object, value) standardGeneric("CTSScumulativesCC<-"))
-
-setMethod("CTSScumulativesCC<-", "CAGEset", function (object, value){
-	object@CTSScumulativesConsensusClusters <- value
-  if (validObject(object)) object
-})
 
 setMethod("CTSScumulativesCC<-", "CAGEexp", function (object, value){
 	metadata(object)$CTSScumulativesConsensusClusters <- value
@@ -492,10 +349,6 @@ setMethod("CTSScumulativesCC<-", "CAGEexp", function (object, value){
 # Not exported for the moment.
 
 setGeneric("GeneExpSE<-", function(object, value) standardGeneric("GeneExpSE<-"))
-
-setMethod("GeneExpSE<-", "CAGEset", function (object, value){
-	stop("Not implemented for the CAGEset class.")
-})
 
 setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
   if (! is(value, "SummarizedExperiment"))
@@ -518,9 +371,6 @@ setMethod("GeneExpSE<-", "CAGEexp", function (object, value){
 #'        such as chromosomes.
 
 setGeneric("seqNameTotalsSE<-", function(object, value) standardGeneric("seqNameTotalsSE<-"))
-
-setMethod("seqNameTotalsSE<-", "CAGEset", function (object, value){
-	stop("Not implemented for the CAGEset class.")})
 
 setMethod( "seqNameTotalsSE<-"
          , c("CAGEexp", "SummarizedExperiment")
@@ -560,9 +410,6 @@ setMethod( "seqNameTotalsSE<-"
 #' @importFrom grDevices rgb
 #' 
 #' @examples
-#' sampleLabels(exampleCAGEset)
-#' setColors(exampleCAGEset, colors = c("darkred", "navy", "forestgreen"))
-#' sampleLabels(exampleCAGEset)
 #' 
 #' sampleLabels(exampleCAGEexp)
 #' setColors(exampleCAGEexp, 5)

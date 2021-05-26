@@ -28,7 +28,7 @@
 #' between a \dQuote{lower} and an \dQuote{upper} quantile position.
 #' 
 #' @return When \code{clusters = "tagClusters"}, the slots \code{tagClustersQuantileLow}
-#' and \code{tagClustersQuantileUp} of a provided \code{\link{CAGEset}} object will
+#' and \code{tagClustersQuantileUp} of a provided \code{\link{CAGEexp}} object will
 #' be occupied with the positions of specified quantiles in all tag clusters for all
 #' CAGE datasets. When \code{clusters = "consensusClusters"} the slots
 #' \code{consensusClustersQuantileLow} and \code{consensusClustersQuantileUp} will be
@@ -50,23 +50,23 @@
 #' 
 #' @examples 
 #' head(cbind(
-#'   CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
-#'   CAGEr:::tagClustersQuantileUp (exampleCAGEset, 1)
+#'   CAGEr:::tagClustersQuantileLow(exampleCAGEexp, 1),
+#'   CAGEr:::tagClustersQuantileUp (exampleCAGEexp, 1)
 #' ))
-#' quantilePositions( object = exampleCAGEset, clusters = "tagClusters"
+#' quantilePositions( object = exampleCAGEexp, clusters = "tagClusters"
 #'                  , qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
 #' head(cbind(
-#'   CAGEr:::tagClustersQuantileLow(exampleCAGEset, 1),
-#'   CAGEr:::tagClustersQuantileUp (exampleCAGEset,1 )
+#'   CAGEr:::tagClustersQuantileLow(exampleCAGEexp, 1),
+#'   CAGEr:::tagClustersQuantileUp (exampleCAGEexp,1 )
 #' ))
 #' 
-#' cumulativeCTSSdistribution(exampleCAGEset, "consensusClusters") # Defaults in object do not fit
-#' quantilePositions( object = exampleCAGEset, clusters = "consensusClusters"
+#' cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters") # Defaults in object do not fit
+#' quantilePositions( object = exampleCAGEexp, clusters = "consensusClusters"
 #'                  , qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
 #'                  
 #' head(cbind(
-#'   CAGEr:::consensusClustersQuantileLow(exampleCAGEset, 1),
-#'   CAGEr:::consensusClustersQuantileUp (exampleCAGEset , 1)
+#'   CAGEr:::consensusClustersQuantileLow(exampleCAGEexp, 1),
+#'   CAGEr:::consensusClustersQuantileUp (exampleCAGEexp, 1)
 #' ))
 #' 
 #' quantilePositions(exampleCAGEexp, "tagClusters",       qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
@@ -101,11 +101,6 @@ setMethod( "quantilePositions", "CAGEr"
 	  ctss.clusters <- GRangesList(ctss.clusters)
 		if(inherits(object, "CAGEexp")) {
 		  tagClustersGR(object) <- ctss.clusters
-		} else if (inherits(object,  "CAGEset")) {
-		  for (s in names(ctss.clusters)) {
-	  	  tagClustersQuantileLow(object, s) <- tagClustersQuantile(ctss.clusters[[s]], q = qLow)
-        tagClustersQuantileUp (object, s) <- tagClustersQuantile(ctss.clusters[[s]], q = qUp)
-		  }
 		} else stop("Unsupported CAGEr class.")
 	} else if (clusters == "consensusClusters"){
     cons.clusters.l <- bplapply(sampleList(object),
@@ -121,11 +116,6 @@ setMethod( "quantilePositions", "CAGEr"
       for (qName in paste("q", c(qLow, qUp), sep = "_")) {
         assays(consensusClustersSE(object), withDimnames=FALSE)[[qName]] <-
           DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
-		} else if (inherits(object, "CAGEset")) {
-		  for (s in names(cons.clusters.l)) {
-	  	  consensusClustersQuantileLow(object, s) <- .getClustersQuantile(cons.clusters.l[[s]], q = qLow)
-        consensusClustersQuantileUp (object, s) <- .getClustersQuantile(cons.clusters.l[[s]], q = qUp)
-		  }
 		} else stop("Unsupported CAGEr class.")
 	}
 	assign(objName, object, envir = parent.frame())

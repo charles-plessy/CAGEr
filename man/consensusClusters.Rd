@@ -2,24 +2,14 @@
 % Please edit documentation in R/GetMethods.R
 \name{consensusClustersGR}
 \alias{consensusClustersGR}
-\alias{consensusClustersGR,CAGEset-method}
 \alias{consensusClustersGR,CAGEexp-method}
 \alias{consensusClustersSE}
-\alias{consensusClustersSE,CAGEset-method}
 \alias{consensusClustersSE,CAGEexp-method}
 \alias{consensusClusters}
 \alias{consensusClusters,CAGEr-method}
 \title{Get consensus clusters from CAGEr objects}
 \usage{
 consensusClustersGR(
-  object,
-  sample = NULL,
-  returnInterquantileWidth = FALSE,
-  qLow = NULL,
-  qUp = NULL
-)
-
-\S4method{consensusClustersGR}{CAGEset}(
   object,
   sample = NULL,
   returnInterquantileWidth = FALSE,
@@ -36,8 +26,6 @@ consensusClustersGR(
 )
 
 consensusClustersSE(object)
-
-\S4method{consensusClustersSE}{CAGEset}(object)
 
 \S4method{consensusClustersSE}{CAGEexp}(object)
 
@@ -77,9 +65,7 @@ only when \code{sample} argument is specified and
 is a \code{\link{GRanges}} wrapper containing similar information as the data frame
 returned by \code{consensusClustersGR}.  The \code{score} columns indicates the
 normalised expression value of each cluster, either across all samples
-(\code{sample = NULL}), or for the selected sample.  The \code{tpm} column provides
-the same information for compatibility with \code{CAGEset} objects but may be
-removed in the future.
+(\code{sample = NULL}), or for the selected sample.  The legacy \code{tpm} column may be removed in the future.
 
 \code{consensusClustersSE} returns the \code{\link{SummarizedExperiment}} stored
 in the \code{consensusClusters} experiment slot of the CAGEexp object.
@@ -101,12 +87,11 @@ object.
 consensusClustersGR( exampleCAGEexp, sample = 2
                    , returnInterquantileWidth = TRUE
                    , qLow = 0.1, qUp = 0.9)
-head(consensusClusters(exampleCAGEset))
-head(consensusClusters(exampleCAGEset, sample = "sample2"))
+head(consensusClusters(exampleCAGEexp, sample = "sample2"))
 
-cumulativeCTSSdistribution(exampleCAGEset, "consensusClusters") # Defaults in object do not fit
-quantilePositions(exampleCAGEset, "consensusClusters")
-head(consensusClusters(exampleCAGEset, sample = "sample2"
+cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters") # Defaults in object do not fit
+quantilePositions(exampleCAGEexp, "consensusClusters")
+head(consensusClusters(exampleCAGEexp, sample = "sample2"
                       , returnInterquantileWidth = TRUE
                       , qLow = 0.1, qUp = 0.9))
 
