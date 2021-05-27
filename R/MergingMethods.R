@@ -75,7 +75,13 @@ setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSample
   objName <- deparse(substitute(object))
   checkMergeOK(object, objName, mergeIndex, mergedSampleLabels)
 
-  tag.count.DF.new <- tapply(as.list(CTSStagCountDF(object)), mergeIndex, myRowSumsL)
+  tag.count.DF.new <- tapply(
+    as.list(CTSStagCountDF(object)),
+    mergeIndex,
+    \(l) Reduce( f    = `+`
+               , x    = DataFrame(l)
+               , init = l |> DataFrame() |> nrow() |> rep(x=0L) |> Rle())
+  )
   tag.count.DF.new <- DataFrame(do.call(list, tag.count.DF.new))
   colnames(tag.count.DF.new) <- mergedSampleLabels
 
