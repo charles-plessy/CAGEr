@@ -184,7 +184,9 @@ setMethod( "extractExpressionClass", "CAGEr", function (object, what, which="all
 	if(what == "CTSS"){
 		classes <- object@CTSSexpressionClasses
 		if(length(classes)>0){
-			r <- cbind(CTSScoordinates(object), object@normalizedTpmMatrix)
+		  ctss <- CTSScoordinatesGR(object) |> granges() |> as.data.frame()
+		  ctss <- data.frame(chr=ctss$seqnames, pos=ctss$start, strand=ctss$strand)
+			r <- cbind(ctss, object@normalizedTpmMatrix)
 			r$expression_class <- NA
 			r$expression_class[as.integer(names(classes))] <- classes
 			if(which == "all") {

@@ -78,7 +78,7 @@ Other CAGEr clusters functions:
 \code{\link{cumulativeCTSSdistribution}()},
 \code{\link{plotInterquantileWidth}()},
 \code{\link{quantilePositions}()},
-\code{\link{tagClusters}()}
+\code{\link{tagClustersGR}()}
 }
 \author{
 Charles Plessy

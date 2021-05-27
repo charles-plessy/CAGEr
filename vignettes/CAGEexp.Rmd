@@ -259,16 +259,7 @@ be accessed directly using the native methods of the `MultiAssayExperiment` and
 CTSStagCountSE(ce)
 CTSScoordinatesGR(ce)
 CTSStagCountDF(ce)
-```
-
-For compatiblity with earlier CAGEr works using _CAGEset_ objects, and to provide simpler data
-formats, the coordinates and expression values can also be accessed as simple `data.frames`.
-Note howerver that with large data sets it can cause extreme performance issues.
-
-```{r}
-head(CTSScoordinates(ce))
-head(CTSStagCountDf(ce))
-head(CTSStagCount(ce))
+CTSStagCountGR(ce, 1)  # GRanges for one sample with expression count.
 ```
 
 Note that the samples are ordered in the way they were supplied when creating the _CAGEexp_ object
@@ -481,10 +472,12 @@ Our final set of tag clusters will not include singletons (clusters with only on
 normalized signal is above 5, \emph{i.e.} it is a reasonably supported TSS.  The `clusterCTSS`
 function creates a set of clusters for each sample separately; for each cluster it returns the
 genomic coordinates, counts the number of TSSs within the cluster, determines the position of the
-most frequently used (dominant) TSS, calculates the total CAGE signal within the cluster and CAGE signal supporting the dominant TSS only.  We can extract tag clusters for a desired sample from `CAGEexp` object by calling the `tagClusters` function:
+most frequently used (dominant) TSS, calculates the total CAGE signal within the cluster and CAGE
+signal supporting the dominant TSS only.  We can extract tag clusters for a desired sample from
+`CAGEexp` object by calling the `tagClustersGR` function:
 
 ```{r}
-head(tagClusters(ce, sample = "zf_unfertilized_egg"))
+tagClustersGR(ce, sample = "zf_unfertilized_egg")
 ```
 
 Promoter width
@@ -887,18 +880,12 @@ Please let me know your opinion about the names and scope of the accessors below
 
 Name                | Output 
 --------------------|------------------------------------------------------
-CTSScoordinates     | Coordinate table in ad-hoc data.frame format.
 CTSScoordinatesGR   | Coordinate table in GRanges format.
-CTSStagCount        | Raw CTSS counts in ad-hoc data.frame format (with coordinates).
 CTSStagCountDA      | Raw CTSS counts in DelayedArray format wrapping a integer Rle DataFrame.
 CTSStagCountDF      | Raw CTSS counts in integer Rle DataFrame format.
-CTSStagCountDf      | Raw CTSS counts in data.frame format (without coordinates).
 CTSStagCountGR      | Raw CTSS counts in GRanges format (single samples).
 CTSStagCountSE      | RangedSummarizedExperiment containing an assay for the Raw CTSS counts.
-CTSStagCountTable   | Returns CTSStagCount for CAGEsets and CTSStagCountDF for CAGEexps.
-CTSSnormalizedTpm   | Normalised CTSS values in ad-hoc data.frame format (with coordinates).
 CTSSnormalizedTpmDF | Normalised CTSS values in Rle DataFrame format.
-CTSSnormalizedTpmDf | Normalised CTSS values in ad-hoc data.frame format (without coordinates).
 CTSSnormalizedTpmGR | Normalised CTSS values in GRanges format (single samples).
 
 ### Cluster data

@@ -185,8 +185,8 @@ function (object){
   as.integer(object$librarySizes)
 })
 
-
-#' @name CTSScoordinates
+#' @rdname CTSScoordinates
+#' @name CTSScoordinatesGR
 #' 
 #' @title Genomic coordinates of TSSs from a `CAGEr` object
 #' 
@@ -195,35 +195,16 @@ function (object){
 #' 
 #' @param object A `CAGEexp` object.
 #' 
-#' @return [CTSScoordinates()] returns a `data.frame` with genomic coordinates
-#' of all TSSs.  The `pos` column contains 1-based coordinate of the TSS.
-#' 
 #' @seealso
 #' [`getCTSS`]
 #' 
 #' @examples
-#' CTSS <- CTSScoordinates(exampleCAGEexp)
-#' head(CTSS)
+#' CTSScoordinatesGR(exampleCAGEexp)
 #'
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' @family CAGEr accessor methods
 #' @export
-
-setGeneric("CTSScoordinates", function(object) standardGeneric("CTSScoordinates"))
-
-#' @rdname CTSScoordinates
-
-setMethod("CTSScoordinates", "CAGEexp", function (object) {
-  gr <- rowRanges(experiments(object)$tagCountMatrix)
-  data.frame( chr = as.character(seqnames(gr))
-            , pos = start(gr)
-            , strand = as.character(strand(gr))
-            , stringsAsFactors = FALSE)
-})
-
-
-#' @name CTSScoordinatesGR
-#' @rdname CTSScoordinates
 #' 
 #' @return `CTSScoordinatesGR` returns the coordinates as a [CTSS()] object
 #' wrapping genomic ranges.  A `filteredCTSSidx` column metadata will be present
@@ -231,7 +212,6 @@ setMethod("CTSScoordinates", "CAGEexp", function (object) {
 #' 
 #' @seealso [`clusterCTSS`]
 #' 
-#' @author Charles Plessy
 #' 
 #' @importFrom GenomeInfoDb genome genome<-
 #' @importFrom IRanges IRanges
@@ -248,23 +228,21 @@ setGeneric("CTSScoordinatesGR", function(object) standardGeneric("CTSScoordinate
 setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
   rowRanges(CTSStagCountSE(object)))
 
-
-#' @name CTSStagCount
+#' @rdname CTSStagCount
+#' @name CTSStagCountDF
 #' 
-#' @title Extract raw CAGE TSSs expression tables from [`CAGEr`] objects
+#' @title Raw CAGE TSSs expression counts
 #' 
 #' @description Extracts the tag count for all detected TSSs in all CAGE datasets
 #'              from [`CAGEexp`] objects.
 #' 
-#' @param object A `CAGEr` object.
+#' @param object A `CAGEexp` object.
 #' @param samples (For `CTSStagCountGR`.) Name(s) or number(s) identifying sample(s).
 #'  
 #' @return Returns an object with number of CAGE tags supporting each TSS
 #' (rows) in every CAGE dataset (columns).  The class of the object depends on the
 #' function being called:
 #' 
-#' * `CTSStagCount`:   A [`data.frame`], containing coordinates and expression values.
-#' * `CTSStagCountDf`: A `data.frame``, containing only expression values.
 #' * `CTSStagCountDF`: A [`DataFrame`] of [`Rle`] integers.
 #' * `CTSStagCountDA`: A [`DelayedArray`] wrapping a `DataFrame` of `Rle` integers.
 #' * `CTSStagCountSE`: A [`RangedSummarizedExperiment`]` containing a `DataFrame`
@@ -274,41 +252,14 @@ setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
 #' 
 #' @seealso [getCTSS()]
 #' 
-#' @examples
-#' head(CTSStagCount(exampleCAGEexp))
-#' head(CTSStagCountDf(exampleCAGEexp))
-#' 
 #' @author Vanja Haberle
 #' @author Charles Plessy
 #' 
 #' @family CAGEr accessor methods
 #' @family CAGEr CTSS methods
-#' @export
-
-setGeneric("CTSStagCount", function(object) standardGeneric("CTSStagCount"))
-
-#' @rdname CTSStagCount
-
-setMethod( "CTSStagCount", "CAGEexp", function (object)
-  cbind( CTSScoordinates(object)
-       , as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer))))
-
-
-#' @name CTSStagCountDf
-#' @rdname CTSStagCount
 #' 
-#' @export
-
-setGeneric("CTSStagCountDf", function(object) standardGeneric("CTSStagCountDf"))
-
-#' @rdname CTSStagCount
-
-setMethod("CTSStagCountDf", "CAGEexp", function (object) 
-  as.data.frame(lapply(assay(experiments(object)$tagCountMatrix), as.integer)))
-
-
-#' @name CTSStagCountDF
-#' @rdname CTSStagCount
+#' @examples 
+#' CTSStagCountDF(exampleCAGEexp)
 #'  
 #' @export
 
@@ -323,6 +274,9 @@ setMethod("CTSStagCountDF", "CAGEexp", function (object)
 #' @name CTSStagCountDA
 #' @rdname CTSStagCount
 #' 
+#' @examples 
+#' CTSStagCountDA(exampleCAGEexp)
+#' 
 #' @import DelayedArray DelayedArray
 #' @export
 
@@ -336,6 +290,9 @@ setMethod("CTSStagCountDA", signature(object = "CAGEr"), function (object)
 
 #' @name CTSStagCountGR
 #' @rdname CTSStagCount
+#' 
+#' @examples 
+#' CTSStagCountGR(exampleCAGEexp, 1)
 #'  
 #' @export
 
@@ -356,51 +313,17 @@ setMethod( "CTSStagCountGR", "CAGEr", function (object, samples) {
   gr
 })
 
-
-#' @name CTSStagCountTable
-#' 
-#' @title Extracting CAGE tag count for TSSs from CAGEr objects
-#' 
-#' @description Extracts the tag count for all detected TSSs in all CAGE datasets
-#' from [`CAGEexp`] objects.
-#' 
-#' @param object A `CAGEexp` object.
-#'  
-#' @return Returns an expression table with the number of CAGE tags supporting each
-#' TSS (rows) in every CAGE dataset (columns).  The table is in [`DataFrame`] format.
-#' 
-#' @seealso \code{\link{getCTSS}}
-#' 
-#' @examples
-#' tagCount <- CTSStagCount(exampleCAGEexp)
-#' head(tagCount)
-#' 
-#' @author Vanja Haberle
-#' @family CAGEr accessor methods
-#' @export
-
-setGeneric(
-name="CTSStagCountTable",
-def=function(object){
-	standardGeneric("CTSStagCountTable")
-})
-
-#' @rdname CTSStagCountTable
-
-setMethod("CTSStagCountTable",
-signature(object = "CAGEexp"),
-  function(object) CTSStagCountDF(object)
-)
-
-
 #' @name CTSStagCountSE
 #' @rdname CTSStagCount
+#' 
+#' @examples 
+#' CTSStagCountSE(exampleCAGEexp)
 #' 
 #' @export
 
 setGeneric("CTSStagCountSE", function(object) standardGeneric("CTSStagCountSE"))
 
-#' @rdname CTSStagCountTable
+#' @rdname CTSStagCount
 
 setMethod("CTSStagCountSE", "CAGEexp", function (object) {
   se <- experiments(object)$tagCountMatrix
@@ -408,8 +331,8 @@ setMethod("CTSStagCountSE", "CAGEexp", function (object) {
   se
 })
 
-
-#' @name CTSSnormalizedTpm
+#' @name CTSSnormalizedTpmDF
+#' @rdname CTSSnormalizedTpm
 #' 
 #' @title Extracting normalized CAGE signal for TSSs from CAGEr objects
 #' 
@@ -418,63 +341,15 @@ setMethod("CTSStagCountSE", "CAGEexp", function (object) {
 #' 
 #' @param object A `CAGEexp` object.
 #' 
-#' @return \code{CTSSnormalizedTpm} returns a \code{data.frame} containing coordinates
-#' and normalized CAGE signal supporting each TSS (rows) in every CAGE dataset (columns).
-#' 
 #' @seealso \code{\link{normalizeTagCount}}
 #' 
 #' @examples 
-#' normalizeTagCount(exampleCAGEexp)
-#' head(CTSSnormalizedTpm(exampleCAGEexp))
+#' CTSSnormalizedTpmDF(exampleCAGEexp)
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' @family CAGEr accessor methods
 #' @export
-
-setGeneric(
-name="CTSSnormalizedTpm",
-def=function(object){
-	standardGeneric("CTSSnormalizedTpm")
-})
-
-#' @rdname CTSSnormalizedTpm
-
-setMethod("CTSSnormalizedTpm",
-signature(object = "CAGEexp"),
-function (object){
-  cbind( CTSScoordinates(object)
-       , data.frame(lapply(assays(CTSStagCountSE(object))[["normalizedTpmMatrix"]], decode)))
-})
-
-
-#' @name CTSSnormalizedTpmDf
-#' @rdname CTSSnormalizedTpm
-#' 
-#' @return \code{CTSSnormalizedTpmDf} returns a \code{data.frame} of normalised expression values.
-#' 
-#' @examples 
-#' normalizeTagCount(exampleCAGEexp)
-#' head(CTSSnormalizedTpmDf(exampleCAGEexp))
-#' 
-#' @export
-
-setGeneric(
-name="CTSSnormalizedTpmDf",
-def=function(object){
-	standardGeneric("CTSSnormalizedTpmDf")
-})
-
-#' @rdname CTSSnormalizedTpm
-
-setMethod("CTSSnormalizedTpmDf",
-signature(object = "CAGEexp"),
-function (object){
-  data.frame(lapply(assays(CTSStagCountSE(object))[["normalizedTpmMatrix"]], decode))
-})
-
-
-#' @name CTSSnormalizedTpmDF
-#' @rdname CTSSnormalizedTpm
 #' 
 #' @return \code{CTSSnormalizedTpmDF} returns a \code{DataFrame} of normalised expression values.
 #' 
@@ -501,6 +376,9 @@ function (object){
 #' 
 #' @param samples The name of sample(s) as reported by \code{sampleLabels(object)},
 #'        or the number identifying the sample(s).
+#' 
+#' @examples 
+#' CTSSnormalizedTpmGR(exampleCAGEexp, 1)
 #'  
 #' @export
 
@@ -553,7 +431,8 @@ setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
   # is not needed here.
 
 
-#' @name tagClusters
+#' @name tagClustersGR
+#' @rdname tagClusters
 #' 
 #' @title Extract tag clusters (TCs) for individual CAGE experiments
 #' 
@@ -583,52 +462,8 @@ setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
 #' @export
 #' 
 #' @examples
-#' head(tagClusters( exampleCAGEexp, "sample2"
-#'                 , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9))
-
-setGeneric( "tagClusters"
-          , function( object, samples = NULL
-                    , returnInterquantileWidth = FALSE, qLow = NULL, qUp = NULL) {
-  validSamples(object, samples)
-  standardGeneric("tagClusters")
-})
-
-.checkqLowUp <- function(qLow, qUp, object, sample) {
-    if (is.null(qLow) | is.null(qUp))
-      stop( "No quantiles specified! Please specify which quantile positions should be used to calculate width (qLow and qUp arguments)!")
-    if (is.null(tagClustersQuantileLow(object)) & is.null(tagClustersQuantileUp(object)))
-      stop("Interquantile width cannot be returned because no quantile positions have been calculated yet! Run 'quantilePositions()' first to get the positions of the desired quantiles!")
-    if( (!(paste0("q_", qLow) %in% colnames(tagClustersQuantileLow(object)[[sample]]) &
-           paste0("q_", qUp)  %in% colnames(tagClustersQuantileUp(object)[[sample]]))))
-      stop("Interquantile width cannot be returned because specified quantile positions have not been calculated! Run 'quantilePositions()' again to get the positions of the desired quantiles!")
-}
- 
-#' @rdname tagClusters
-
-setMethod("tagClusters", "CAGEr", function (object, samples, returnInterquantileWidth, qLow, qUp){
-  if (is.null(samples)) {
-    tc.list <- lapply(sampleList(object), tagClusters, object = object, returnInterquantileWidth = returnInterquantileWidth, qLow = qLow, qUp = qUp)
-    return(tc.list)
-  }
-  
-  if (inherits(object, "CAGEexp")) {
-    tc <- TCgranges2dataframe(metadata(object)$tagClusters[[samples]])
-  } else {
-    stop("Unsupported CAGEr class.")
-  }
-  
-  if (returnInterquantileWidth) {
-    .checkqLowUp(qLow, qUp, object, samples)
-  	tc.w <- merge( tagClustersQuantileLow(object)[[samples]]
-  	             , tagClustersQuantileUp(object)[[samples]])
-  	tc.w <- tc.w[,c("cluster", paste0("q_", qLow), paste0("q_", qUp))]
-  	tc.w$interquantile_width <- tc.w[,3] - tc.w[,2] + 1
-  	tc <- merge(tc, tc.w)
-  }
-  tc
-})
-
-#' @rdname tagClusters
+#' tagClustersGR( exampleCAGEexp, 1
+#'                 , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
 #' 
 #' @param sample Label of one CAGE dataset (experiment, sample) for which to extract tag
 #'        clusters. (For \code{tagClustersGR}, only one sample can be extracted.)
@@ -974,7 +809,8 @@ setMethod( "consensusClusters", "CAGEr"
       cc <- cc[cc$tpm > 0,]
       
       # Get dominant TSS expression score
-      ctss <- CTSSnormalizedTpm(object)[,c("chr", "pos", "strand", sample)]
+      ctss <- CTSSnormalizedTpmGR(object, sample)[, "score"] |> as.data.frame()
+      colnames(ctss) <- colnames(ctss) |> sub(pat="seqnames", rep="chr")
       pick <- match( paste(  cc$chr,   cc$dominant_ctss,   cc$strand)
                    , paste(ctss$chr, ctss$pos + 1,       ctss$strand))
       

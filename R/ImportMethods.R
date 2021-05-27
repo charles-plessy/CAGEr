@@ -88,9 +88,7 @@
 #' 
 #' @author Vanja Haberle
 #' 
-#' @seealso \code{\link{CTSScoordinates}}, \code{\link{CTSStagCount}},
-#'   \code{\link{CTSStagCountTable}}, \code{\link{inputFilesType}},
-#'    \code{\link{librarySizes}}.
+#' @seealso \code{\link{inputFilesType}}, \code{\link{librarySizes}}.
 #' 
 #' @family CAGEr object modifiers
 #' 

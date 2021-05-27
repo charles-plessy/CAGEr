@@ -108,7 +108,7 @@ Richness
 --------
 
 ```{r calculate-richness}
-ce$r100l1 <- rarefy(t(CTSStagCountDf(ce)),100)
+ce$r100l1 <- rarefy(t(as.data.frame(CTSStagCountDF(ce))),100)
 ce$r100l1[ce$counts < 100] <- NA
 ce$r100g <- rarefy(t(data.frame(assay(GeneExpSE(ce)))),100)
 ce$r100g[ce$counts < 100] <- NA

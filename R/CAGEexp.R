@@ -57,7 +57,7 @@
 #' 
 #' # Columns of the "colData" table are accessible directly via the "$" operator.
 #' 
-#' exampleCAGEexp$l1 <- colSums(CTSStagCountDf(exampleCAGEexp) > 0)
+#' exampleCAGEexp$l1 <- CTSStagCountDF(exampleCAGEexp) |> sapply ( \(col) sum(col > 0) )
 #' exampleCAGEexp$l1
 #' 
 #' @seealso [`make.names`]

@@ -99,9 +99,9 @@ setGeneric( "normalizeTagCount"
   method <- match.arg(method)
   message("\nNormalizing tag count...")
   switch( method
-        , powerLaw  = .powerLaw(CTSStagCountTable(object), fitInRange, alpha, T)
-        , simpleTpm = .simpleTpm(CTSStagCountTable(object))
-        , none      = CTSStagCountTable(object)
+        , powerLaw  = .powerLaw(CTSStagCountDF(object), fitInRange, alpha, T)
+        , simpleTpm = .simpleTpm(CTSStagCountDF(object))
+        , none      = CTSStagCountDF(object)
         , stop('"method" must be one of ("powerLaw", "simpleTpm", "none")'))
 }
 

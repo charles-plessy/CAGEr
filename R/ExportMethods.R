@@ -529,7 +529,8 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		
 		oneFile <- TRUE
 		use.blocks <- F
-		ctss <- CTSScoordinates(object)
+		ctss <- CTSScoordinatesGR(object) |> granges() |> as.data.frame()
+		ctss <- data.frame(chr=ctss$seqnames, pos=ctss$start, strand=ctss$strand)
 		#filtered_ctss <- object@filteredCTSSidx
 
 		if(colorByExpressionProfile == TRUE){

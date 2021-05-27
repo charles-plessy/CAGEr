@@ -38,11 +38,10 @@ CTSSclusteringMethod(exampleCAGEexp)
 \code{\link{clusterCTSS}}
 
 Other CAGEr accessor methods: 
-\code{\link{CTSScoordinates}()},
+\code{\link{CTSScoordinatesGR}()},
 \code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CTSSnormalizedTpm}()},
-\code{\link{CTSStagCountTable}()},
-\code{\link{CTSStagCount}()},
+\code{\link{CTSSnormalizedTpmDF}()},
+\code{\link{CTSStagCountDF}()},
 \code{\link{GeneExpDESeq2}()},
 \code{\link{GeneExpSE}()},
 \code{\link{consensusClustersGR}()},
@@ -52,7 +51,7 @@ Other CAGEr accessor methods:
 \code{\link{librarySizes}()},
 \code{\link{sampleLabels}()},
 \code{\link{seqNameTotalsSE}()},
-\code{\link{tagClusters}()}
+\code{\link{tagClustersGR}()}
 
 Other CAGEr clusters functions: 
 \code{\link{CTSScumulativesTagClusters}()},
@@ -64,7 +63,7 @@ Other CAGEr clusters functions:
 \code{\link{cumulativeCTSSdistribution}()},
 \code{\link{plotInterquantileWidth}()},
 \code{\link{quantilePositions}()},
-\code{\link{tagClusters}()}
+\code{\link{tagClustersGR}()}
 }
 \author{
 Vanja Haberle

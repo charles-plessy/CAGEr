@@ -126,9 +126,7 @@ Carninci \emph{et al.} (2006) Genome-wide analysis of mammalian promoter archite
 evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
 }
 \seealso{
-\code{\link{CTSScoordinates}}, \code{\link{CTSStagCount}},
-\code{\link{CTSStagCountTable}}, \code{\link{inputFilesType}},
-\code{\link{librarySizes}}.
+\code{\link{inputFilesType}}, \code{\link{librarySizes}}.
 
 Other CAGEr object modifiers: 
 \code{\link{CTSStoGenes}()},

@@ -77,7 +77,7 @@ Other CAGEr clusters functions:
 \code{\link{consensusClustersGR}()},
 \code{\link{cumulativeCTSSdistribution}()},
 \code{\link{quantilePositions}()},
-\code{\link{tagClusters}()}
+\code{\link{tagClustersGR}()}
 }
 \author{
 Vanja Haberle
