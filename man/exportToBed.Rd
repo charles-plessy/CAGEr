@@ -117,5 +117,7 @@ Other CAGEr export functions:
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
 \concept{CAGEr export functions}

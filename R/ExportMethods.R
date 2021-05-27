@@ -497,6 +497,7 @@ setMethod( "plotExpressionProfiles", "CAGEr", function (object, what){
 #' @return Creates BED file(s) in the working directory.
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' 
 #' @family CAGEr export functions
 #' 
@@ -557,36 +558,27 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		
 		colorByExpressionProfile <- FALSE
 		
+		clusters <- tagClustersGR(object)
+		
 		if(!is.null(qLow)) {
 		
 		use.blocks <- T
-		q.low <- tagClustersQuantileLow(object, q = qLow)
-		q.low <- lapply(q.low, function(x) {colnames(x)[2:ncol(x)] <- paste("qLow_", do.call(rbind, strsplit(colnames(x)[2:ncol(x)], split = "_", fixed = T))[,2], sep = ""); return(x)})
-		q.up <- tagClustersQuantileUp(object, q = qUp)
-		q.up <- lapply(q.up, function(x) {colnames(x)[2:ncol(x)] <- paste("qUp_", do.call(rbind, strsplit(colnames(x)[2:ncol(x)], split = "_", fixed = T))[,2], sep = ""); return(x)})
-		q <- lapply(as.list(1:length(sample.labels)), function(x) {merge(q.low[[x]], q.up[[x]], by.x = "cluster", by.y = "cluster")})
-		names(q) <- sample.labels
-		clusters <- lapply(as.list(sample.labels), function(x) {tagClusters(object, samples = x)})
-		names(clusters) <- sample.labels
-		clusters.q.list <- lapply(as.list(sample.labels), function(x) {merge(clusters[[x]], q[[x]], by.x = "cluster", by.y = "cluster")})
 		track.names <- paste(sample.labels, paste(" (tag clusters (TC) q(", qLow, ")-q(",qUp,"))", sep = ""), sep = "")
 		r <- paste(".qLow", qLow, "_qUp", qUp, sep = "")
 			
 		}else{
 			use.blocks <- F
-			clusters.q.list <- lapply(as.list(sample.labels), function(x) {tagClusters(object, samples = x)})			
 			track.names <- paste(sample.labels, paste(" (tag clusters (TC))", sep = ""), sep = "")
 			r <- ""
 		}
 		
-		names(clusters.q.list) <- sample.labels
 		itemRgb = FALSE
 		cols <- names(sample.labels)
 		cols <- as.list(apply(sapply(cols, function(x) {as.integer(col2rgb(x))}), 2, function(y) {paste(y, collapse = ",")}))
 		names(cols) <- sample.labels
 
 		if(oneFile){
-			track.file <- rep(paste("All.samples.tagClusters", r, ".bed", sep = ""), length(clusters.q.list))
+			track.file <- rep(paste("All.samples.tagClusters", r, ".bed", sep = ""), length(clusters))
 		}else{
 			track.file <- paste(sample.labels, ".tagClusters", r, ".bed", sep = "")
 		}
@@ -671,12 +663,12 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		
 	}else{
 		itemRgb <- FALSE
-		names <- as.list(rep(".", length(clusters.q.list)))
+		names <- as.list(rep(".", length(clusters)))
 	}
 	
 	track.descriptions <- track.names
 	
-	for(i in 1:length(clusters.q.list)){
+	for(i in seq_along(clusters)){
 		if(i == 1){
 			app <- F
 		}else{
@@ -687,7 +679,7 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 				file.remove(track.file[i])
 			}				
 		}
-		.make.cluster.bed.track(clusters.q = clusters.q.list[[i]], use.blocks = use.blocks, q.low = qLow, q.up = qUp, track.file = track.file[i], track.name = track.names[i], track.description = track.descriptions[i], cols = cols[[i]], name = names[[i]], itemRgb = itemRgb, app = app)
+		.make.cluster.bed.track(clusters.q = clusters[[i]], use.blocks = use.blocks, q.low = qLow, q.up = qUp, track.file = track.file[i], track.name = track.names[i], track.description = track.descriptions[i], cols = cols[[i]], name = names[[i]], itemRgb = itemRgb, app = app)
 		
 	}
 	

@@ -260,30 +260,31 @@ value.low=min(vec), value.high=max(vec), value.mid=(value.low+value.high)/2, ...
 		file.remove(track.file)
 	}	
 
-	chr = clusters.q$chr
-	start = clusters.q$start
-	end = clusters.q$end
-	strand = clusters.q$strand
+	chr = seqnames(clusters.q)
+	start = start(clusters.q)
+	end = end(clusters.q)
+	strand = strand(clusters.q)
 
 	if(use.blocks){
 		
-	q.low.pos = clusters.q[,paste('qLow_', q.low, sep = '')] - 1 
-	q.up.pos = clusters.q[,paste('qUp_', q.up, sep = '')]
+	q.low.pos = decode(mcols(clusters.q)[,paste('q_', q.low, sep = '')] - 1 )
+	q.up.pos  = decode(mcols(clusters.q)[,paste('q_', q.up,  sep = '')]     )
 		
-	dominant_ctss_start = clusters.q$dominant_ctss - 1
-	dominant_ctss_end = clusters.q$dominant_ctss
-	dominant_ctss_start[clusters.q$dominant_ctss == clusters.q$start] = clusters.q$start[clusters.q$dominant_ctss == clusters.q$start]
-	dominant_ctss_end[clusters.q$dominant_ctss == clusters.q$start] = clusters.q$start[clusters.q$dominant_ctss == clusters.q$start]
+	dominant_ctss_start = mcols(clusters.q)$dominant_ctss - 1
+	dominant_ctss_end = mcols(clusters.q)$dominant_ctss
+	domAtStart <- mcols(clusters.q)$dominant_ctss == start(clusters.q)
+	dominant_ctss_start[domAtStart] = start(clusters.q)[domAtStart]
+	dominant_ctss_end[domAtStart]   = start(clusters.q)[domAtStart]
 	
 	sth = 0
-	block_nr = rep(3, nrow(clusters.q))
-	block_nr[which((clusters.q$dominant_ctss <= q.low.pos) | (clusters.q$dominant_ctss > q.up.pos))] = 4
+	block_nr = rep(3, length(clusters.q))
+	block_nr[which((dominant_ctss_end <= q.low.pos) | (dominant_ctss_end > q.up.pos))] = 4
 	block_lengths = paste(1, formatC(q.up.pos - q.low.pos, format = 'f', digits = 0), 1, sep = ',')
-	block_lengths[which(clusters.q$dominant_ctss <= q.low.pos)] = paste(1, 1, formatC(q.up.pos[which(clusters.q$dominant_ctss <= q.low.pos)] - q.low.pos[which(clusters.q$dominant_ctss <= q.low.pos)], format = 'f', digits = 0), 1, sep = ',')
-	block_lengths[which(clusters.q$dominant_ctss > q.up.pos)] = paste(1, formatC(q.up.pos[which(clusters.q$dominant_ctss > q.up.pos)] - q.low.pos[which(clusters.q$dominant_ctss > q.up.pos)], format = 'f', digits = 0), 1, 1, sep = ',')
+	block_lengths[which(dominant_ctss_end <= q.low.pos)] = paste(1, 1, formatC(q.up.pos[which(dominant_ctss_end <= q.low.pos)] - q.low.pos[which(dominant_ctss_end <= q.low.pos)], format = 'f', digits = 0), 1, sep = ',')
+	block_lengths[which(dominant_ctss_end > q.up.pos)] = paste(1, formatC(q.up.pos[which(dominant_ctss_end > q.up.pos)] - q.low.pos[which(dominant_ctss_end > q.up.pos)], format = 'f', digits = 0), 1, 1, sep = ',')
 	block_rel_pos = paste(0, formatC(q.low.pos - start, format = 'f', digits = 0), end - start - 1, sep = ',')
-	block_rel_pos[which(clusters.q$dominant_ctss <= q.low.pos)] = paste(0, formatC(dominant_ctss_start[which(clusters.q$dominant_ctss <= q.low.pos)] - start[which(clusters.q$dominant_ctss <= q.low.pos)], format = 'f', digits = 0), formatC(q.low.pos[which(clusters.q$dominant_ctss <= q.low.pos)] - start[which(clusters.q$dominant_ctss <= q.low.pos)], format = 'f', digits = 0), end[which(clusters.q$dominant_ctss <= q.low.pos)] - start[which(clusters.q$dominant_ctss <= q.low.pos)] - 1, sep = ',')
-	block_rel_pos[which(clusters.q$dominant_ctss > q.up.pos)] = paste(0, formatC(q.low.pos[which(clusters.q$dominant_ctss > q.up.pos)] - start[which(clusters.q$dominant_ctss > q.up.pos)], format = 'f', digits = 0), formatC(dominant_ctss_start[which(clusters.q$dominant_ctss > q.up.pos)] - start[which(clusters.q$dominant_ctss > q.up.pos)], format = 'f', digits = 0), end[which(clusters.q$dominant_ctss > q.up.pos)] - start[which(clusters.q$dominant_ctss > q.up.pos)] - 1, sep = ',')
+	block_rel_pos[which(dominant_ctss_end <= q.low.pos)] = paste(0, formatC(dominant_ctss_start[which(dominant_ctss_end <= q.low.pos)] - start[which(dominant_ctss_end <= q.low.pos)], format = 'f', digits = 0), formatC(q.low.pos[which(dominant_ctss_end <= q.low.pos)] - start[which(dominant_ctss_end <= q.low.pos)], format = 'f', digits = 0), end[which(dominant_ctss_end <= q.low.pos)] - start[which(dominant_ctss_end <= q.low.pos)] - 1, sep = ',')
+	block_rel_pos[which(dominant_ctss_end > q.up.pos)] = paste(0, formatC(q.low.pos[which(dominant_ctss_end > q.up.pos)] - start[which(dominant_ctss_end > q.up.pos)], format = 'f', digits = 0), formatC(dominant_ctss_start[which(dominant_ctss_end > q.up.pos)] - start[which(dominant_ctss_end > q.up.pos)], format = 'f', digits = 0), end[which(dominant_ctss_end > q.up.pos)] - start[which(dominant_ctss_end > q.up.pos)] - 1, sep = ',')
 	
     removeFirstBlock <- unlist(lapply(strsplit(block_rel_pos, split = ",", fixed = T), function(x) {x[1] == x[2]}))
     removeLastBlock <- unlist(lapply(as.list(c(1:length(end))), function(x) {s <- tail(strsplit(block_rel_pos[x], split = ",", fixed = T)[[1]],2)[1]; l <- tail(strsplit(block_lengths[x], split = ",", fixed = T)[[1]],2)[1]; return((as.integer(end[x])-as.integer(start[x])) == (as.integer(s)+as.integer(l)))}))
