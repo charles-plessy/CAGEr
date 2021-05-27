@@ -580,34 +580,6 @@ setMethod("tagClustersQuantile", "CAGEexp", function (object, samples, q) {
   }
 })
 
-#' @name tagClustersQuantileLow
-#' @rdname tagClustersQuantile
-
-setGeneric("tagClustersQuantileLow", function(object, samples = NULL, q = NULL) {
-  validSamples(object, samples)
-  standardGeneric("tagClustersQuantileLow")
-})
-
-#' @rdname tagClustersQuantile
-
-setMethod("tagClustersQuantileLow", "CAGEexp", function (object, samples, q)
-  tagClustersQuantile(object = object, samples = samples, q = q))
-
-
-#' @name tagClustersQuantileUp
-#' @rdname tagClustersQuantile
-
-setGeneric("tagClustersQuantileUp", function(object, samples = NULL, q = NULL) {
-  validSamples(object, samples)
-  standardGeneric("tagClustersQuantileUp")
-})
-
-#' @rdname tagClustersQuantile
-
-setMethod("tagClustersQuantileUp", "CAGEexp", function (object, samples, q)
-  tagClustersQuantile(object = object, samples = samples, q = q))
-
-
 #' @name consensusClustersGR
 #' @rdname consensusClusters
 #' @return `consensusClustersGR` returns a [`ConsensusClusters`] object, which

@@ -202,32 +202,6 @@ setMethod("CTSScumulativesTagClusters<-", "CAGEexp", function (object, value) {
   if (validObject(object)) object
 })
 
-
-#' @name tagClustersQuantileLow<-
-#' @rdname tagClustersQuantile
-
-setGeneric( "tagClustersQuantileLow<-"
-          , function(object, samples = NULL, value)
-              standardGeneric("tagClustersQuantileLow<-"))
-
-#' @rdname tagClustersQuantile
-
-setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, samples, value)
-  stop("Not supported for CAGEexp.  Use tagClustersGR<- instead."))
-
-#' @name tagClustersQuantileUp<-
-#' @rdname tagClustersQuantile
-#' 
-setGeneric( "tagClustersQuantileUp<-"
-          , function(object, samples = NULL, value)
-              standardGeneric("tagClustersQuantileUp<-"))
-
-#' @rdname tagClustersQuantile
-
-setMethod("tagClustersQuantileLow<-", "CAGEexp", function (object, samples, value)
-  stop("Not supported for CAGEexp.  Use tagClustersGR<- instead."))
-
-
 #' @name tagClustersGR<-
 #' @rdname tagClusters
 #' 

@@ -27,14 +27,7 @@
 #' \emph{interquantile width} is defined as the distance (in base pairs)
 #' between a \dQuote{lower} and an \dQuote{upper} quantile position.
 #' 
-#' @return When \code{clusters = "tagClusters"}, the slots \code{tagClustersQuantileLow}
-#' and \code{tagClustersQuantileUp} of a provided \code{\link{CAGEexp}} object will
-#' be occupied with the positions of specified quantiles in all tag clusters for all
-#' CAGE datasets. When \code{clusters = "consensusClusters"} the slots
-#' \code{consensusClustersQuantileLow} and \code{consensusClustersQuantileUp} will be
-#' occupied by the corresponding information for consensus clusters.
-#' 
-#' In \code{\link{CAGEexp}} objects, the positions of the quantiles are defined
+#' @return Returns the objects, in wich the positions of the quantiles are defined
 #' reliatively to the start point of their cluster, for more efficient
 #' \code{Rle} compression.  The quantile data for \emph{tag clusters} are stored
 #' in the \code{TagClusters} objects directly.  The quantile data for
@@ -49,25 +42,6 @@
 #' @family CAGEr clusters functions
 #' 
 #' @examples 
-#' head(cbind(
-#'   CAGEr:::tagClustersQuantileLow(exampleCAGEexp, 1),
-#'   CAGEr:::tagClustersQuantileUp (exampleCAGEexp, 1)
-#' ))
-#' quantilePositions( object = exampleCAGEexp, clusters = "tagClusters"
-#'                  , qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
-#' head(cbind(
-#'   CAGEr:::tagClustersQuantileLow(exampleCAGEexp, 1),
-#'   CAGEr:::tagClustersQuantileUp (exampleCAGEexp,1 )
-#' ))
-#' 
-#' cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters") # Defaults in object do not fit
-#' quantilePositions( object = exampleCAGEexp, clusters = "consensusClusters"
-#'                  , qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
-#'                  
-#' head(cbind(
-#'   CAGEr:::consensusClustersQuantileLow(exampleCAGEexp, 1),
-#'   CAGEr:::consensusClustersQuantileUp (exampleCAGEexp, 1)
-#' ))
 #' 
 #' quantilePositions(exampleCAGEexp, "tagClusters",       qLow = c(0.1, 0.2), qUp = c(0.8, 0.9))
 #' tagClustersGR(exampleCAGEexp)
