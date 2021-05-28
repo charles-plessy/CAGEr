@@ -1,3 +1,12 @@
+Changes in version 1.99.0:
+
+BACKWARDS-INCOMPATIBLE CHANGES:
+
+    o The `CAGEset` class is removed.
+    o Accessors using plain `data.frame` formats are removed.
+    o Modifier functions return the object instead of silently modifying it
+      in the global environment
+
 Changes in version 1.34.0:
 
 BUG FIXES
