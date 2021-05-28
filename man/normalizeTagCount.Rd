@@ -74,8 +74,8 @@ referent distribution specified by \code{alpha} and \code{T}. When \code{T = 10^
 normalized values are expressed as tags per million (tpm).
 }
 \examples{
-normalizeTagCount(exampleCAGEexp, method = "simpleTpm")
-normalizeTagCount(exampleCAGEexp, method = "powerLaw")
+ce1 <- normalizeTagCount(exampleCAGEexp, method = "simpleTpm")
+ce2 <- normalizeTagCount(exampleCAGEexp, method = "powerLaw")
 
 }
 \references{

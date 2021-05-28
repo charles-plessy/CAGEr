@@ -48,7 +48,6 @@ setGeneric( "cumulativeCTSSdistribution"
 
 setMethod( "cumulativeCTSSdistribution", "CAGEr"
          , function (object, clusters, useMulticore, nrCores) {
-  objName <- deparse(substitute(object))
   message("\nCalculating cumulative sum of CAGE signal along clusters...")
   clusters <- match.arg(clusters)
   getClusters <- switch( clusters
@@ -69,6 +68,5 @@ setMethod( "cumulativeCTSSdistribution", "CAGEr"
 	if (inherits(object, "CAGEexp"))
     samples.cumsum.list <- lapply(samples.cumsum.list, RleList)
 	object <- setClusters(object, samples.cumsum.list)
-  assign(objName, object, envir = parent.frame())
-  invisible(1)
+    object
 })

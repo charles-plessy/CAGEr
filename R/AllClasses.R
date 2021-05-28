@@ -34,13 +34,13 @@
 #' ce1 <- CAGEexp(genomeName = "BSgenome.Drerio.UCSC.danRer7",
 #' inputFiles = pathsToInputFiles[1:2], inputFilesType = "ctss", sampleLabels =
 #' c("sample1", "sample2"))
-#' getCTSS(ce1)
+#' ce1 <- getCTSS(ce1)
 #' 
 #' ce2 <- CAGEexp(genomeName = "BSgenome.Drerio.UCSC.danRer7",
 #' inputFiles = pathsToInputFiles[3], inputFilesType = "ctss", sampleLabels =
 #' "sample3")
 #' 
-#' getCTSS(ce2)
+#' ce2 <- getCTSS(ce2)
 #' 
 #' ce <- mergeCAGEsets(ce1, ce2)
 #' 

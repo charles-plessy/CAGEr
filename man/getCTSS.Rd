@@ -115,7 +115,7 @@ labels <- paste("sample", seq(1,3,1), sep = "")
 myCAGEexp <- new("CAGEexp", genomeName = "BSgenome.Drerio.UCSC.danRer7",
  inputFiles = pathsToInputFiles, inputFilesType = "ctss", sampleLabels = labels)
 
-getCTSS(myCAGEexp)
+myCAGEexp <- getCTSS(myCAGEexp)
 
 }
 \references{

@@ -113,9 +113,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
     consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters)
     score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
     object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
-	
-	assign(objname, object, envir = parent.frame())
-	invisible(1)
+    object
 })
 
 
@@ -244,7 +242,6 @@ setMethod( "CustomConsensusClusters", c("CAGEexp", "GRanges")
                                         , clusters)
   score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
   object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
-  
-  assign(objname, object, envir = parent.frame())
-	invisible(object)
+
+  object
 })

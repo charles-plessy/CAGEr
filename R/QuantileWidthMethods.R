@@ -60,7 +60,6 @@ setGeneric( "quantilePositions"
 
 setMethod( "quantilePositions", "CAGEr"
          , function (object, clusters, qLow, qUp, useMulticore, nrCores) {
-	objName <- deparse(substitute(object))
 	clusters <- match.arg(clusters)
 	message("\nGetting positions of quantiles within clusters...")
 	if (clusters == "tagClusters") {
@@ -92,6 +91,5 @@ setMethod( "quantilePositions", "CAGEr"
           DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
 		} else stop("Unsupported CAGEr class.")
 	}
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
+      object
 })

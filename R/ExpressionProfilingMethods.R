@@ -76,7 +76,6 @@ setGeneric( "getExpressionProfiles"
 setMethod( "getExpressionProfiles", "CAGEexp"
          , function (object, what, tpmThreshold, nrPassThreshold, method, xDim, yDim){
 
-	objName <- deparse(substitute(object))
 	sample.labels = sampleLabels(object)
 	
 	if(length(sample.labels) < 2){
@@ -107,8 +106,7 @@ setMethod( "getExpressionProfiles", "CAGEexp"
 		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
 	}
 
-	assign(objName, object, envir = parent.frame())
-	invisible(1)	
+	object
 })
 
 #' @name .clusterExpression

@@ -401,7 +401,6 @@ setGeneric("setColors", function(object, colors = NULL) standardGeneric("setColo
 
 setMethod("setColors", "CAGEr", function (object, colors){
 
-  objName <- deparse(substitute(object))
   sample.labels <- sampleLabels(object)
   
   if(length(colors) == 1 & is.numeric(colors)){
@@ -417,6 +416,5 @@ setMethod("setColors", "CAGEr", function (object, colors){
   }
   
   sampleLabels(object) <- sample.labels
-  assign(objName, object, envir = parent.frame())
-  invisible(1)
+  object
 })

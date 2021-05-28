@@ -116,7 +116,6 @@ setMethod( "clusterCTSS", "CAGEexp"
                    , removeSingletons, keepSingletonsAbove, minStability, maxLength
                    , reduceToNonoverlapping, customClusters, useMulticore, nrCores) {
 
-  objName <- deparse(substitute(object))
   assay <- ifelse(isTRUE(thresholdIsTpm), "normalizedTpmMatrix", "counts")
   data <- CTSStagCountSE(object)
 
@@ -157,8 +156,7 @@ setMethod( "clusterCTSS", "CAGEexp"
   
   CTSSclusteringMethod(ctss.cluster.list) <- method
   metadata(object)$tagClusters <- ctss.cluster.list
-  assign(objName, object, envir = parent.frame())
-  invisible(1)
+  object
 })
 
 #' @name .clusterAggregateAndSum

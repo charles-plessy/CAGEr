@@ -56,7 +56,7 @@ exampleCAGEexp <-
 # Expression data is loaded by the getCTSS() function, that also calculates
 # library sizes and store them in the object's column data.
 
-getCTSS(exampleCAGEexp)
+exampleCAGEexp <- getCTSS(exampleCAGEexp)
 librarySizes(exampleCAGEexp)
 colData(exampleCAGEexp)
 

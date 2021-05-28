@@ -40,6 +40,5 @@ setMethod("summariseChrExpr", "CAGEexp", function(object) {
                                               , norm   = seqNameTotals.norm)
                         , rowData = DataFrame(as.data.frame(seqinfo(getRefGenome(genomeName(object))))))
   validObject(object)
-  assign(objname, object, envir = parent.frame())
-  invisible(1)
+  object
 })

@@ -237,7 +237,7 @@ To actually read in the data into the object we use `getCTSS()` function, that w
 an experiment called `tagCountMatrix` to the _CAGEexp_ object.
 
 ```{r load_data}
-getCTSS(ce)
+ce <- getCTSS(ce)
 ce
 ```
 
@@ -294,7 +294,7 @@ or any other input that has the same structure, see `help("annotateCTSS")` for d
 In this example, we will use a sample annotation for zebrafish (see `help("exampleZv9_annot")`).
 
 ```{r}
-annotateCTSS(ce, exampleZv9_annot)
+ce <- annotateCTSS(ce, exampleZv9_annot)
 ```
 
 The annotation results are stored as tag counts in the sample metadata, and as new
@@ -345,9 +345,9 @@ rearrange the samples in the temporal order of the zebrafish development (unfert
 the `mergeSamples()` function:
 
 ```{r}
-mergeSamples(ce, mergeIndex = c(3,2,4,4,1), 
-			mergedSampleLabels = c("zf_unfertilized_egg", "zf_high", "zf_30p_dome", "zf_prim6"))
-annotateCTSS(ce, exampleZv9_annot)
+ce <- mergeSamples(ce, mergeIndex = c(3,2,4,4,1), 
+                   mergedSampleLabels = c("Zf.unfertilized.egg", "Zf.high", "Zf.30p.dome", "Zf.prim6"))
+ce <- annotateCTSS(ce, exampleZv9_annot)
 ```
 
 The `mergeIndex` argument controls which samples will be merged and how the final dataset will be
@@ -406,7 +406,7 @@ one million to get normalized tags per million values.]
 To perform normalization we pass these parameters to the `normalizeTagCount` function.
 
 ```{r}
-normalizeTagCount(ce, method = "powerLaw", fitInRange = c(5, 1000), alpha = 1.2, T = 5*10^4)
+ce <- normalizeTagCount(ce, method = "powerLaw", fitInRange = c(5, 1000), alpha = 1.2, T = 5*10^4)
 ce[["tagCountMatrix"]]
 ```
 
@@ -458,14 +458,14 @@ between two neighbouring TSSs. Prior to clustering we will filter out low-fideli
 ones supported by less than 1 normalized tag counts in all of the samples.
 
 ```{r}
-clusterCTSS( object = ce
-           , threshold = 1
-           , thresholdIsTpm = TRUE
-           , nrPassThreshold = 1
-           , method = "distclu"
-           , maxDist = 20
-           , removeSingletons = TRUE
-           , keepSingletonsAbove = 5)
+ce <- clusterCTSS( ce
+                 , threshold = 1
+                 , thresholdIsTpm = TRUE
+                 , nrPassThreshold = 1
+                 , method = "distclu"
+                 , maxDist = 20
+                 , removeSingletons = TRUE
+                 , keepSingletonsAbove = 5)
 ```
 
 Our final set of tag clusters will not include singletons (clusters with only one TSS), unless the
@@ -477,7 +477,7 @@ signal supporting the dominant TSS only.  We can extract tag clusters for a desi
 `CAGEexp` object by calling the `tagClustersGR` function:
 
 ```{r}
-tagClustersGR(ce, sample = "zf_unfertilized_egg")
+tagClustersGR(ce, sample = "Zf.unfertilized.egg")
 ```
 
 Promoter width
@@ -519,8 +519,8 @@ functions, which calculate cumulative distribution for every tag cluster in each
 samples and determine the positions of selected quantiles, respectively:
 
 ```{r}
-cumulativeCTSSdistribution(ce, clusters = "tagClusters", useMulticore = T)
-quantilePositions(ce, clusters = "tagClusters", qLow = 0.1, qUp = 0.9)
+ce <- cumulativeCTSSdistribution(ce, clusters = "tagClusters", useMulticore = T)
+ce <- quantilePositions(ce, clusters = "tagClusters", qLow = 0.1, qUp = 0.9)
 ```
 
 Tag clusters and their interquantile width can be retrieved by calling `tagClusters` function:
@@ -554,7 +554,7 @@ be created.  This is done using the `aggregateTagClusters` function, which aggre
 from all samples into a single set of non-overlapping consensus clusters:
 
 ```{r}
-aggregateTagClusters(ce, tpmThreshold = 5, qLow = 0.1, qUp = 0.9, maxDist = 100)
+ce <- aggregateTagClusters(ce, tpmThreshold = 5, qLow = 0.1, qUp = 0.9, maxDist = 100)
 ce$outOfClusters / ce$librarySizes *100
 ```
 
@@ -578,9 +578,9 @@ the `clusters` parameter to `"consensusClusters"`.  Like the CTSS, the consensus
 also be annotated:
 
 ```{r}
-annotateConsensusClusters(ce, exampleZv9_annot)
-cumulativeCTSSdistribution(ce, clusters = "consensusClusters", useMulticore = TRUE)
-quantilePositions(ce, clusters = "consensusClusters", qLow = 0.1, qUp = 0.9, useMulticore = TRUE)
+ce <- annotateConsensusClusters(ce, exampleZv9_annot)
+ce <- cumulativeCTSSdistribution(ce, clusters = "consensusClusters", useMulticore = TRUE)
+ce <- quantilePositions(ce, clusters = "consensusClusters", qLow = 0.1, qUp = 0.9, useMulticore = TRUE)
 ```
 
 Although consensus clusters are created to represent consensus across all samples, they obviously
@@ -590,7 +590,7 @@ different samples.  Sample-specific information on consensus clusters can be ret
 tag clusters):
 
 ```{r}
-consensusClustersGR( ce, sample = "zf_unfertilized_egg"
+consensusClustersGR( ce, sample = "Zf.unfertilized.egg"
 		               , returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9)
 ```
 
@@ -744,7 +744,7 @@ shifting score calculation and statistical testing, we have to calculate
 cumulative distribution along all consensus clusters:
 
 ```{r}
-cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
+ce <- cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
 ```
 
 Next, we calculate a shifting score and P-value of Kolmogorov-Smirnov test for

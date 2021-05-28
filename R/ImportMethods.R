@@ -103,7 +103,7 @@
 #' myCAGEexp <- new("CAGEexp", genomeName = "BSgenome.Drerio.UCSC.danRer7",
 #'  inputFiles = pathsToInputFiles, inputFilesType = "ctss", sampleLabels = labels)
 #' 
-#' getCTSS(myCAGEexp)
+#' myCAGEexp <- getCTSS(myCAGEexp)
 #' 
 #' @docType methods
 #' 
@@ -554,8 +554,6 @@ setMethod( "getCTSS", "CAGEexp"
                     , removeFirstG, correctSystematicG
                     , useMulticore, nrCores) {
 
-  objName <- deparse(substitute(object))
-
   # Step 0: Test existance of each file before spending time loading them.
   
   checkFilesExist(inputFiles(object))
@@ -611,10 +609,9 @@ setMethod( "getCTSS", "CAGEexp"
   
   librarySizes(object) <- unlist(lapply(CTSStagCountDF(object), sum))
   
-  # Setp 6: overwrite the object in the parent environment.
+  # Setp 6: Return the modified object.
   
-  assign(objName, object, envir = parent.frame())
-  invisible(1)
+  object
 })
 
 #' #' importPublicData

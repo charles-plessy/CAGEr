@@ -418,8 +418,6 @@ setGeneric("annotateCTSS", function(object, ranges) standardGeneric("annotateCTS
 #' @rdname annotateCTSS
 
 setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
-  objName <- deparse(substitute(object))
-  
   CTSScoordinatesGR(object)$genes      <- ranges2genes(CTSScoordinatesGR(object), ranges)
   CTSScoordinatesGR(object)$annotation <- ranges2annot(CTSScoordinatesGR(object), ranges)
   
@@ -427,10 +425,8 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
                  , function(X) tapply(X, CTSScoordinatesGR(object)$annotation, sum))
   colData(object)[levels(CTSScoordinatesGR(object)$annotation)] <- DataFrame(t(annot))
   
-  if (validObject(object)) {
-    assign(objName, object, envir = parent.frame())
-    invisible(1)
-  }
+  validObject(object)
+  object
 })
 
 #' @name annotateConsensusClusters
@@ -454,16 +450,13 @@ setGeneric("annotateConsensusClusters", function(object, ranges) standardGeneric
 #' @rdname annotateCTSS
 
 setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object, ranges){
-  objName <- deparse(substitute(object))
   if(is.null(experiments(object)$tagCountMatrix))
-    stop(objName, " does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
+    stop("Input does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
   consensusClustersGR(object)$annotation <- ranges2annot(consensusClustersGR(object), ranges)
   if(!is.null(ranges$gene_name))
     consensusClustersGR(object)$genes    <- ranges2genes(consensusClustersGR(object), ranges)
-  if (validObject(object)) {
-    assign(objName, object, envir = parent.frame())
-    invisible(1)
-  }
+  validObject(object)
+  object
 })
 
 
@@ -763,9 +756,8 @@ setGeneric("CTSStoGenes", function(object) standardGeneric("CTSStoGenes"))
 #' @rdname CTSStoGenes
 
 setMethod("CTSStoGenes", "CAGEexp", function (object) {
-  objName <- deparse(substitute(object))
   if (is.null(CTSScoordinatesGR(object)$genes))
-    stop(objName, " is not annotated, see ", dQuote("annotateCTSS()"), ".")
+    stop("Input is not annotated, see ", dQuote("annotateCTSS()"), ".")
   genes <- rowsum(as.data.frame(CTSStagCountDF(object)), as.factor(CTSScoordinatesGR(object)$genes))
   object$unannotated <- unname(unlist(genes[1,]))
   genes <- genes[-1, , drop = FALSE]
@@ -773,8 +765,6 @@ setMethod("CTSStoGenes", "CAGEexp", function (object) {
                                            , rowData = DataFrame(symbol = rownames(genes)))
   object$genes      <- colSums(assay(GeneExpSE(object)) > 0)
   # object$geneSymbols <- countSymbols(assay(GeneExpSE(object)) %>% as.data.frame)
-  if (validObject(object)) {
-    assign(objName, object, envir = parent.frame())
-    invisible(1)
-  }
+  validObject(object)
+  object
 })

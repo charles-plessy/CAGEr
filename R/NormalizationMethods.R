@@ -72,8 +72,8 @@
 #' @family CAGEr normalised data functions
 #' 
 #' @examples 
-#' normalizeTagCount(exampleCAGEexp, method = "simpleTpm")
-#' normalizeTagCount(exampleCAGEexp, method = "powerLaw")
+#' ce1 <- normalizeTagCount(exampleCAGEexp, method = "simpleTpm")
+#' ce2 <- normalizeTagCount(exampleCAGEexp, method = "powerLaw")
 #' 
 #' @export
 
@@ -111,9 +111,7 @@ setGeneric( "normalizeTagCount"
 #' @rdname normalizeTagCount
 #' 
 setMethod("normalizeTagCount", "CAGEexp", function (object, method, fitInRange, alpha, T) {
-	objName <- deparse(substitute(object))
 	assays(CTSStagCountSE(object), withDimnames=FALSE)$normalizedTpmMatrix <-
 	  .normalizeTagCount_switcher(method, object, fitInRange, alpha, T)
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
+	object
 })

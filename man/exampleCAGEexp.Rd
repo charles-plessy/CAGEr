@@ -25,24 +25,25 @@ exampleCAGEexp <-
          , inputFiles     = pathsToInputFiles
          , inputFilesType = "ctss"
          , sampleLabels   = sub( ".chr17.ctss", "", basename(pathsToInputFiles)))
-getCTSS(exampleCAGEexp)
+exampleCAGEexp <- getCTSS(exampleCAGEexp)
 librarySizes(exampleCAGEexp)
 colData(exampleCAGEexp)
 exampleCAGEexp$l1 <- NULL
 exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
 CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object
 exampleCAGEexp$librarySizes <- sapply(CTSStagCountDF(exampleCAGEexp), sum) # Repair metadata
-summariseChrExpr(exampleCAGEexp)
-annotateCTSS(exampleCAGEexp, exampleZv9_annot)
-CTSStoGenes(exampleCAGEexp)
-normalizeTagCount(exampleCAGEexp)
-clusterCTSS(exampleCAGEexp)
-cumulativeCTSSdistribution(exampleCAGEexp, "tagClusters")
-quantilePositions(exampleCAGEexp, "tagClusters")
-aggregateTagClusters(exampleCAGEexp)
-annotateConsensusClusters(exampleCAGEexp, exampleZv9_annot)
-cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters")
-quantilePositions(exampleCAGEexp, "consensusClusters")
+exampleCAGEexp <- 
+  summariseChrExpr(exampleCAGEexp)                |>
+  annotateCTSS(exampleZv9_annot)                  |>
+  CTSStoGenes()                                   |>
+  normalizeTagCount()                             |>
+  clusterCTSS()                                   |>
+  cumulativeCTSSdistribution("tagClusters")       |>
+  quantilePositions("tagClusters")                |>
+  aggregateTagClusters()                          |>
+  annotateConsensusClusters(exampleZv9_annot)     |>
+  cumulativeCTSSdistribution("consensusClusters") |>
+  quantilePositions("consensusClusters")
 save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
 }
 }

@@ -265,10 +265,7 @@ setMethod( "scoreShift", "CAGEexp"
 	object@consensusClustersShiftingScores <- clusters.info
 	object@shiftingGroupX <- groupX
 	object@shiftingGroupY <- groupY
-
-	assign(objName, object, envir = parent.frame())
-	invisible(1)
-
+	object
 })
 
 #' Select consensus clusters with shifting score above threshold

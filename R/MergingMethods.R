@@ -52,11 +52,10 @@
 setGeneric("mergeSamples", function(object, mergeIndex, mergedSampleLabels)
 	standardGeneric("mergeSamples"))
 
-checkMergeOK <- function(object, objName, mergeIndex, mergedSampleLabels) {
+checkMergeOK <- function(object, mergeIndex, mergedSampleLabels) {
   if( length(mergeIndex) != length(sampleLabels(object)))
-    stop( "length of ", sQuote("mergeIndex"), " must match number of samples! See "
-        ,  sQuote(paste0('sampleLabels("', objName, '") '))
-        , "to list your CAGE samples.")
+    stop( "length of ", sQuote("mergeIndex"), " must match number of samples! See the "
+        ,  sQuote("sampleLabels()"), "function to list your CAGE samples.")
 
   if( length(unique(mergeIndex)) != length(mergedSampleLabels))
     stop( "numer of provided ", sQuote("mergedSampleLabels"), " must match number of unique values "
@@ -72,8 +71,7 @@ checkMergeOK <- function(object, objName, mergeIndex, mergedSampleLabels) {
 #' @rdname mergeSamples
 
 setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSampleLabels) {
-  objName <- deparse(substitute(object))
-  checkMergeOK(object, objName, mergeIndex, mergedSampleLabels)
+  checkMergeOK(object, mergeIndex, mergedSampleLabels)
 
   tag.count.DF.new <- tapply(
     as.list(CTSStagCountDF(object)),
@@ -103,7 +101,6 @@ setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSample
                         , assays    = SimpleList(counts = tag.count.DF.new))
   
   setColors(new.CAGE.exp, rainbow(n = length(mergedSampleLabels)))
-  
-  assign(objName, new.CAGE.exp, envir = parent.frame())
-  invisible(1)
+
+  new.CAGE.exp
 })
