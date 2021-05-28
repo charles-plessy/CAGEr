@@ -526,7 +526,7 @@ ce <- quantilePositions(ce, clusters = "tagClusters", qLow = 0.1, qUp = 0.9)
 Tag clusters and their interquantile width can be retrieved by calling `tagClusters` function:
 
 ```{r}
-tagClustersGR( ce, "zf_unfertilized_egg"
+tagClustersGR( ce, "Zf.unfertilized.egg"
              , returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9)
 ```
 
@@ -752,7 +752,7 @@ all promoters comparing two specified samples:
 
 ```{r}
 # Not supported yet for CAGEexp objects, sorry.
-# scoreShift(ce, groupX = "zf_unfertilized_egg", groupY = "zf_prim6",
+# scoreShift(ce, groupX = "Zf.unfertilized.egg", groupY = "zf_prim6",
 # 		testKS = TRUE, useTpmKS = FALSE)
 ```
 
@@ -844,12 +844,12 @@ An example of such data frame is shown below:
 TSS.df <- read.table(system.file( "extdata/Zf.unfertilized.egg.chr17.ctss"
                                 , package = "CAGEr"))
 # make sure the column names are as required
-colnames(TSS.df) <- c("chr", "pos", "strand", "zf_unfertilized_egg")
+colnames(TSS.df) <- c("chr", "pos", "strand", "Zf.unfertilized.egg")
 # make sure the column classes are as required
 TSS.df$chr <- as.character(TSS.df$chr)
 TSS.df$pos <- as.integer(TSS.df$pos)
 TSS.df$strand <- as.character(TSS.df$strand)
-TSS.df$zf_unfertilized_egg <- as.integer(TSS.df$zf_unfertilized_egg)
+TSS.df$Zf.unfertilized.egg <- as.integer(TSS.df$Zf.unfertilized.egg)
 head(TSS.df)
 ```
 
