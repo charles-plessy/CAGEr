@@ -76,8 +76,8 @@ within entire consensus cluster across multiple experiments, and threshold value
 \code{tpmThreshold} and \code{nrPassThreshold} are applied to entire consensus clusters.
 }
 \examples{
-getExpressionProfiles(exampleCAGEexp, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
-                     , method = "som", xDim = 3, yDim = 3)
+# getExpressionProfiles(exampleCAGEexp, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
+#                    , method = "som", xDim = 3, yDim = 3)
 
 }
 \references{

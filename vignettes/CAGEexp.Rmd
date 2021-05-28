@@ -892,12 +892,10 @@ CTSSnormalizedTpmGR | Normalised CTSS values in GRanges format (single samples).
 
 Name                    | Output 
 ------------------------|------------------------------------------------------
-consensusClusters       | Consensus cluster coordinates in ad-hoc data.frame format.
 consensusClustersDESeq2 | Consensus cluster coordinates and expression matrix in DESeq2 format.
 consensusClustersGR     | Consensus cluster coordinates in GRanges format.
 consensusClustersSE     | Consensus cluster coordinates and expression matrix in RangedSummarizedExperiment format.
 consensusClustersTpm    | Consensus cluster coordinates and raw expression matrix.
-tagClusters             | Per-sample list of tag cluster coordinates in ad-hoc data.frame format.
 tagClustersGR           | Per-sample GRangesList of tag cluster coordinates.
 
 ### Gene data

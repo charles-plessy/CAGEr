@@ -584,8 +584,9 @@ setMethod("exportToBed", "CAGEr", function( object, what, qLow, qUp
 		}
 		
 	}else if(what == "consensusClusters"){
-		
-		clusters <- consensusClusters(object)
+	  # consensusClustersGR not actually supported but below
+	  # consensusClustersQuantileLow is also broken anyway so let's fix them together later.
+		clusters <- consensusClustersGR(object)  
 		colnames(clusters)[1] = "cluster"
 		if(!(colorByExpressionProfile)){
 			cols <- as.list(rep("0,0,0", length(sample.labels)))

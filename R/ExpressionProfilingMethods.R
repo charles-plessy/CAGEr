@@ -58,8 +58,8 @@
 #' \code{\link{extractExpressionClass}}.
 #' 
 #' @examples 
-#' getExpressionProfiles(exampleCAGEexp, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
-#'                      , method = "som", xDim = 3, yDim = 3)
+#' # getExpressionProfiles(exampleCAGEexp, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
+#' #                    , method = "som", xDim = 3, yDim = 3)
 #' 
 #' @importFrom stats kmeans
 #' @export
@@ -203,7 +203,7 @@ setMethod( "extractExpressionClass", "CAGEr", function (object, what, which="all
 	}else if(what == "consensusClusters") {
 		classes <- object@consensusClustersExpressionClasses
 		if(length(classes)>0){
-			r <- cbind(consensusClusters(object),  object@consensusClustersTpmMatrix)
+			r <- cbind(consensusClustersGR(object),  object@consensusClustersTpmMatrix)
 			r$expression_class <- NA
 			r$expression_class[as.integer(names(classes))] <- classes
 			if(which == "all") {
