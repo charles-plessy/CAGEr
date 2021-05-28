@@ -84,7 +84,7 @@ constructing the human and mouse promoterome with deepCAGE data, \emph{Genome Bi
 \strong{10}(7):R79.
 }
 \seealso{
-\code{\link{plotReverseCumulatives}}, \code{\link{CTSSnormalizedTpm}}
+\code{\link{plotReverseCumulatives}}, \code{\link{CTSSnormalizedTpmDF}}
 
 Other CAGEr object modifiers: 
 \code{\link{CTSStoGenes}()},

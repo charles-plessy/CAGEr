@@ -792,7 +792,7 @@ setMethod("CTSScumulativesCC", "CAGEexp", function (object, samples) {
 #' @author Vanja Haberle
 #' 
 #' @family CAGEr clustering methods
-#' @seealso \code{\link{consensusClusters}}
+#' @seealso \code{\link{consensusClustersSE}}
 #' 
 #' @examples
 #' head(consensusClustersTpm(exampleCAGEexp))

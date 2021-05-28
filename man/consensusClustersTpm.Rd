@@ -25,7 +25,7 @@ head(consensusClustersTpm(exampleCAGEexp))
 
 }
 \seealso{
-\code{\link{consensusClusters}}
+\code{\link{consensusClustersSE}}
 }
 \author{
 Vanja Haberle

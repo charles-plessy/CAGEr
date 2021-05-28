@@ -66,7 +66,7 @@
 #' 
 #' @author Vanja Haberle
 #' 
-#' @seealso [`plotReverseCumulatives`], [`CTSSnormalizedTpm`]
+#' @seealso [`plotReverseCumulatives`], [`CTSSnormalizedTpmDF`]
 #' 
 #' @family CAGEr object modifiers
 #' @family CAGEr normalised data functions
