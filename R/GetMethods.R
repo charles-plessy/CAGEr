@@ -436,40 +436,40 @@ setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
 #' 
 #' @title Extract tag clusters (TCs) for individual CAGE experiments
 #' 
-#' @description Extracts tag clusters (TCs) produced by \code{\link{clusterCTSS}} function for
-#' a specified CAGE experiment from a CAGEr object.
+#' @description Extracts tag clusters (TCs) produced by [`clusterCTSS`] function
+#' for a specified CAGE experiment from a [`CAGEexp`] object.
 #' 
-#' @param object A \code{\link{CAGEr}} object.
+#' @param object A `CAGEexp` object.
 #' 
-#' @param samples Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.
-#' If \code{samples = NULL}, a list of all the clusters for each sample is returned.
+#' @param sample Label of the CAGE dataset (experiment, sample) for which to
+#' extract tag clusters. If `samples = NULL`, a list of all the clusters for
+#' each sample is returned.
 #' 
-#' @param returnInterquantileWidth Should the interquantile width for each tag cluster be returned.
+#' @param returnInterquantileWidth Return the interquantile width for each tag cluster.
 #' 
-#' @param qLow,qUp Position of which quantile should be used as a left (lower) or right (upper)
-#' boundary (for \code{qLow} and \code{qUp} respectively) when calculating interquantile width. 
-#' Default value \code{NULL} results in using the start coordinate of the cluster.  Used only
-#' when \code{returnInterquantileWidth = TRUE}, otherwise ignored.
+#' @param qLow,qUp Position of which quantile should be used as a left (lower)
+#' or right (upper) boundary (for `qLow` and `qUp` respectively) when
+#' calculating interquantile width.  Default value `NULL` results in using the
+#' start coordinate of the cluster.  Used only when
+#' `returnInterquantileWidth = TRUE`, otherwise ignored.
 #' 
-#' @return Returns a \code{data.frame} with genomic coordinates, position of dominant TSS, total
-#' CAGE signal and additional information for all TCs from specified CAGE dataset (sample).  If
-#' \code{returnInterquantileWidth = TRUE}, interquantile width for each TC is also calculated
-#' using specified quantile positions and returned in the data frame.
+#' @return Returns a `GRangesList` or a `GRanges` object with genomic coordinates,
+#' position of dominant TSS, total CAGE signal and additional information for
+#' all TCs from specified CAGE dataset (sample).  If
+#' `returnInterquantileWidth = TRUE`, interquantile width for each TC is also
+#' calculated using provided quantile positions.
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
+#' 
 #' @family CAGEr accessor methods
 #' @family CAGEr clusters functions
 #' @export
 #' 
 #' @examples
+#' tagClustersGR( exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9 )
 #' tagClustersGR( exampleCAGEexp, 1
-#'                 , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
-#' 
-#' @param sample Label of one CAGE dataset (experiment, sample) for which to extract tag
-#'        clusters. (For \code{tagClustersGR}, only one sample can be extracted.)
-#' 
-#' @examples
-#' tagClustersGR(exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9)
+#'              , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9 )
 #' 
 #' @export
 
@@ -520,65 +520,6 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
   rowData(CTSStagCountSE(object))$filteredCTSSidx
 })
 
-#' @name tagClustersQuantile
-#' @title Quantile metadata stored in CAGEr objects.
-#' 
-#' @description Accessor functions to quantile metadata.
-#' 
-#' @param object A \code{\link{CAGEr}} object.
-#' @param samples Sample name(s), number(s) or \code{NULL} (default) for all samples.
-#' @param q A single quantile (not a list)
-#' @param value A list (one entry per sample) of data frames with multiple columns:
-#'        \code{cluster} for the cluster ID, and then \code{q_0.n} where \code{0.n}
-#'        indicates a quantile.
-#' 
-#' @return Returns a \code{data.frame} where the first column gives cluster
-#' names and the next columns give quantile positions, in \emph{zero-based}
-#' chromosome coordinates (because the tag clusters in former CAGEset objects were
-#' represented in zero-based coordinates as well)).
-
-setGeneric("tagClustersQuantile", function(object, samples = NULL, q = NULL)
-  standardGeneric("tagClustersQuantile"))
-
-.getClustersQuantile <- function (object, q) {
-  qName <- paste0("q_", q)
-  if (! all(qName %in% colnames(mcols(object))))
-    stop( "At least one of the quantiles "
-        , paste(sQuote(qName), collapse=" or ")
-        , " was not found.")
-  tcq <- mcols(object)[, qName, drop = FALSE]
-	tcq <- data.frame(lapply(tcq, decode))
-	tcq <- tcq + start(object) - 1
-	cbind(cluster = names(object), tcq)
-}
-
-#' @rdname tagClustersQuantile
-
-setMethod("tagClustersQuantile", "TagClusters", function (object, samples, q) {
-  if (is.null(q))
-    stop("Indicate which quantile(s) to extract from this TagClusters object.")
-  if (! is.null(samples))
-    stop(sQuote("samples"), " must be NULL.")
-  .getClustersQuantile(object, q)
-})
-
-#' @rdname tagClustersQuantile
-
-setMethod("tagClustersQuantile", "CAGEexp", function (object, samples, q) {
-  validSamples(object, samples)
-  if (length(samples) > 1)
-    stop("Multiple samples not supported for CAGEexp objects(all or just one).")
-  if (is.null(q))
-    stop("A single quantile must be chosen for CAGEexp objects.")
-  if (is.null(samples)) {
-    lapply( sampleList(object)
-          , tagClustersQuantile
-          , object = object
-          , q = q)
-  } else {
-    tagClustersQuantile(tagClustersGR(object, samples), q = q)
-  }
-})
 
 #' @name consensusClustersGR
 #' @rdname consensusClusters

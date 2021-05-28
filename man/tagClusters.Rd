@@ -31,38 +31,37 @@ tagClustersGR(object, samples = NULL) <- value
 \S4method{tagClustersGR}{CAGEexp,missing,GRangesList}(object, samples = NULL) <- value
 }
 \arguments{
-\item{object}{A \code{\link{CAGEr}} object.}
+\item{object}{A \code{CAGEexp} object.}
 
-\item{sample}{Label of one CAGE dataset (experiment, sample) for which to extract tag
-clusters. (For \code{tagClustersGR}, only one sample can be extracted.)}
+\item{sample}{Label of the CAGE dataset (experiment, sample) for which to
+extract tag clusters. If \code{samples = NULL}, a list of all the clusters for
+each sample is returned.}
 
-\item{returnInterquantileWidth}{Should the interquantile width for each tag cluster be returned.}
+\item{returnInterquantileWidth}{Return the interquantile width for each tag cluster.}
 
-\item{qLow, qUp}{Position of which quantile should be used as a left (lower) or right (upper)
-boundary (for \code{qLow} and \code{qUp} respectively) when calculating interquantile width.
-Default value \code{NULL} results in using the start coordinate of the cluster.  Used only
-when \code{returnInterquantileWidth = TRUE}, otherwise ignored.}
-
-\item{samples}{Label of the CAGE dataset (experiment, sample) for which to extract tag clusters.
-If \code{samples = NULL}, a list of all the clusters for each sample is returned.}
+\item{qLow, qUp}{Position of which quantile should be used as a left (lower)
+or right (upper) boundary (for \code{qLow} and \code{qUp} respectively) when
+calculating interquantile width.  Default value \code{NULL} results in using the
+start coordinate of the cluster.  Used only when
+\code{returnInterquantileWidth = TRUE}, otherwise ignored.}
 
 \item{value}{A \code{\link{TagClusters}} object.}
 }
 \value{
-Returns a \code{data.frame} with genomic coordinates, position of dominant TSS, total
-CAGE signal and additional information for all TCs from specified CAGE dataset (sample).  If
-\code{returnInterquantileWidth = TRUE}, interquantile width for each TC is also calculated
-using specified quantile positions and returned in the data frame.
+Returns a \code{GRangesList} or a \code{GRanges} object with genomic coordinates,
+position of dominant TSS, total CAGE signal and additional information for
+all TCs from specified CAGE dataset (sample).  If
+\code{returnInterquantileWidth = TRUE}, interquantile width for each TC is also
+calculated using provided quantile positions.
 }
 \description{
-Extracts tag clusters (TCs) produced by \code{\link{clusterCTSS}} function for
-a specified CAGE experiment from a CAGEr object.
+Extracts tag clusters (TCs) produced by \code{\link{clusterCTSS}} function
+for a specified CAGE experiment from a \code{\link{CAGEexp}} object.
 }
 \examples{
+tagClustersGR( exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9 )
 tagClustersGR( exampleCAGEexp, 1
-                , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9)
-
-tagClustersGR(exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9)
+             , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9 )
 
 }
 \seealso{
@@ -96,6 +95,8 @@ Other CAGEr clusters functions:
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
 \concept{CAGEr accessor methods}
 \concept{CAGEr clusters functions}
