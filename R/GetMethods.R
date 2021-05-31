@@ -564,11 +564,9 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
 #' @family CAGEr clusters functions
 #' 
 #' @examples
-#' consensusClustersGR(exampleCAGEexp, 2)
-#' ce <- quantilePositions(exampleCAGEexp, "consensusClusters")
-#' consensusClustersGR(ce, sample = 2
-#'                       , returnInterquantileWidth = TRUE
-#'                       , qLow = 0.1, qUp = 0.9)
+#' consensusClustersGR( exampleCAGEexp, sample = 2
+#'                    , returnInterquantileWidth = TRUE
+#'                    , qLow = 0.1, qUp = 0.9)
 #' 
 #' @export
 
@@ -581,10 +579,6 @@ setGeneric( "consensusClustersGR"
   standardGeneric("consensusClustersGR")})
 
 #' @rdname consensusClusters
-#' @examples 
-#' consensusClustersGR( exampleCAGEexp, sample = 2
-#'                    , returnInterquantileWidth = TRUE
-#'                    , qLow = 0.1, qUp = 0.9)
 
 setMethod( "consensusClustersGR", "CAGEexp"
          , function (object, sample, returnInterquantileWidth, qLow, qUp) {
