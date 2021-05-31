@@ -588,8 +588,6 @@ setGeneric( "consensusClustersGR"
 
 setMethod( "consensusClustersGR", "CAGEexp"
          , function (object, sample, returnInterquantileWidth, qLow, qUp) {
-  if(is.null(experiments(object)$consensusClusters))
-    stop("No consensus clusters found.  See ", sQuote("?aggregateTagClusters"), " on how to create them.")
   cc <- rowRanges(consensusClustersSE(object))
   if(!is.null(sample)) {
     if (!is.null(qLow))
@@ -622,6 +620,8 @@ setGeneric("consensusClustersSE", function(object) standardGeneric("consensusClu
 #' @rdname consensusClusters
 
 setMethod("consensusClustersSE", "CAGEexp", function (object)
+  if(is.null(experiments(object)$consensusClusters))
+    stop("No consensus clusters found.  See ", sQuote("?aggregateTagClusters"), " on how to create them.")
   experiments(object)$consensusClusters)
 
 
