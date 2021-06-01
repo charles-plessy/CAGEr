@@ -63,15 +63,10 @@ Extracts the information on consensus clusters from a \code{\link{CAGEr}}
 object.
 }
 \examples{
-consensusClustersGR(exampleCAGEexp, 2)
-ce <- quantilePositions(exampleCAGEexp, "consensusClusters")
-consensusClustersGR(ce, sample = 2
-                      , returnInterquantileWidth = TRUE
-                      , qLow = 0.1, qUp = 0.9)
-
 consensusClustersGR( exampleCAGEexp, sample = 2
                    , returnInterquantileWidth = TRUE
                    , qLow = 0.1, qUp = 0.9)
+
 }
 \seealso{
 \code{\link[=consensusClusters<-]{consensusClusters<-()}}

@@ -613,10 +613,11 @@ setGeneric("consensusClustersSE", function(object) standardGeneric("consensusClu
 
 #' @rdname consensusClusters
 
-setMethod("consensusClustersSE", "CAGEexp", function (object)
+setMethod("consensusClustersSE", "CAGEexp", function (object) {
   if(is.null(experiments(object)$consensusClusters))
     stop("No consensus clusters found.  See ", sQuote("?aggregateTagClusters"), " on how to create them.")
-  experiments(object)$consensusClusters)
+  experiments(object)$consensusClusters
+})
 
 
 #' @name consensusClustersDESeq2
