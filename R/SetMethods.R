@@ -243,18 +243,7 @@ setMethod("tagClustersGR<-", c("CAGEexp", "missing", "GRangesList"), function (o
 #' @author Vanja Haberle
 #' @author Charles Plessy
 #' 
-#' @export
-
-setGeneric("consensusClusters<-", function(object, value) standardGeneric("consensusClusters<-"))
-
-#' @rdname consensusClusters-set
-
-setMethod("consensusClusters<-", "CAGEexp", function (object, value){
-  stop("Not supported for CAGEexp.")
-})
-
-#' @name consensusClustersSE<-
-#' @rdname consensusClusters-set
+#' @aliases consensusClustersSE<-
 #' @export
 
 setGeneric("consensusClustersSE<-", function(object, value) standardGeneric("consensusClustersSE<-"))
