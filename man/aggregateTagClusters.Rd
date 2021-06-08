@@ -54,14 +54,15 @@ Unix-like platforms).}
 (\code{NULL}) uses all detected cores.}
 }
 \value{
-Returns the object in which the experiment \code{consensusClusters} will be occupied
-by a \code{\link{RangedSummarizedExperiment}} containing the cluster coodinates as row
-ranges, and their expression levels in the \code{counts} and \code{normalized} assays.
-These genomic ranges are returned by the \code{\link{consensusClustersGR}} function.
-The CTSS ranges of the \code{tagCountMatrix} experiment will gain a \code{cluster}
-column indicating which cluster they belong to.  Lastly, the number of
-CTSS outside clusters will be documented in the \code{outOfClusters} column data.
-This table is returned by the \code{\link{consensusClusters}} function.
+Returns the object in which the \emph{experiment} \code{consensusClusters} will
+be occupied by a \code{\link{RangedSummarizedExperiment}} containing the cluster
+coordinates as row ranges, and their expression levels in the \code{counts} and
+\code{normalized} assays.  These genomic ranges are returned by the
+\code{\link{consensusClustersGR}} function and the whole object can be accessed with
+the \code{\link{consensusClustersSE}} function.  The CTSS ranges of the
+\code{tagCountMatrix} \emph{experiment} will gain a \code{cluster} column indicating which
+cluster they belong to.  Lastly, the number of CTSS outside clusters will be
+documented in the \code{outOfClusters} column data.
 }
 \description{
 Aggregates tag clusters (TCs) across all CAGE datasets within

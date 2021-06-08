@@ -87,7 +87,7 @@
 #' 
 #' @author Vanja Haberle
 #' 
-#' @seealso [`tagClusters`], [`aggregateTagClusters`] and [`CTSSclusteringMethod`].
+#' @seealso [`tagClustersGR`], [`aggregateTagClusters`] and [`CTSSclusteringMethod`].
 #' 
 #' @family CAGEr object modifiers
 #' @family CAGEr clusters functions

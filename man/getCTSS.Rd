@@ -74,10 +74,11 @@ CAGE tags, otherwise ignored.  See Details.}
 }
 \value{
 Returns the object, in which the \code{tagCountMatrix} experiment will be
-occupied by a \code{SummarizedExperiment} containing the expression data as a \code{DataFrame}
-of \code{Rle} integers, and the CTSS coordinates as a \code{GRanges} object.
-The expression data can be retreived with \code{\link{CTSStagCount}} functions.  In addition,
-the library sizes are calculated and stored in the object.
+occupied by a \code{\link{RangedSummarizedExperiment}} containing the expression data
+as a \code{DataFrame} of \code{Rle} integers, and the CTSS coordinates as genomic
+ranges in a \code{\link{CTSS}} object.  The expression data can be retrieved with
+the \code{\link{CTSStagCountDF}} function.  In addition, the library sizes are
+calculated and stored in the object's sample data (see \code{\link{librarySizes}}).
 }
 \description{
 Reads input CAGE datasets into CAGEr object, constructs CAGE

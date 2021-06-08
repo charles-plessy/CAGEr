@@ -72,11 +72,12 @@
 #' is an implementation of the correction algorithm described in Carninci \emph{et al.},
 #' Nature Genetics 2006, Supplementary Information section 3-e.
 #' 
-#' @return Returns the object, in which the \code{tagCountMatrix} experiment will be
-#' occupied by a \code{SummarizedExperiment} containing the expression data as a \code{DataFrame}
-#' of \code{Rle} integers, and the CTSS coordinates as a \code{GRanges} object.
-#' The expression data can be retreived with \code{\link{CTSStagCount}} functions.  In addition,
-#' the library sizes are calculated and stored in the object.
+#' @return Returns the object, in which the `tagCountMatrix` experiment will be
+#' occupied by a [`RangedSummarizedExperiment`] containing the expression data
+#' as a `DataFrame` of `Rle` integers, and the CTSS coordinates as genomic
+#' ranges in a [`CTSS`] object.  The expression data can be retrieved with
+#' the [`CTSStagCountDF`] function.  In addition, the library sizes are
+#' calculated and stored in the object's sample data (see [`librarySizes`]).
 #' 
 #' @references 
 #' 

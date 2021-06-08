@@ -175,6 +175,7 @@ setMethod( "extractExpressionClass", "CAGEexp", function (object, what, which="a
   stop("Not supported for CAGEexp objects."))
 
 #' @rdname extractExpressionClass
+#' @importFrom GenomicRanges granges
 
 setMethod( "extractExpressionClass", "CAGEr", function (object, what, which="all"){
 	objName <- deparse(substitute(object))

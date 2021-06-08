@@ -47,15 +47,16 @@
 #' of promoters that can be further used for expression profiling or detecting
 #'  "shifting" (differentially used) promoters between different CAGE samples.
 #' 
-#' @return Returns the object in which the experiment `consensusClusters` will be occupied
-#' by a [`RangedSummarizedExperiment`] containing the cluster coodinates as row
-#' ranges, and their expression levels in the `counts` and `normalized` assays.
-#' These genomic ranges are returned by the [`consensusClustersGR`] function.
-#' The CTSS ranges of the `tagCountMatrix` experiment will gain a `cluster`
-#' column indicating which cluster they belong to.  Lastly, the number of
-#' CTSS outside clusters will be documented in the `outOfClusters` column data.
-#' This table is returned by the [`consensusClusters`] function.
-#' 
+#' @return Returns the object in which the _experiment_ `consensusClusters` will
+#' be occupied by a [`RangedSummarizedExperiment`] containing the cluster
+#' coordinates as row ranges, and their expression levels in the `counts` and
+#' `normalized` assays.  These genomic ranges are returned by the
+#' [`consensusClustersGR`] function and the whole object can be accessed with
+#' the [`consensusClustersSE`] function.  The CTSS ranges of the
+#' `tagCountMatrix` _experiment_ will gain a `cluster` column indicating which
+#' cluster they belong to.  Lastly, the number of CTSS outside clusters will be
+#' documented in the `outOfClusters` column data.
+#'  
 #' @author Vanja Haberle
 #' @author Charles Plessy
 #' 

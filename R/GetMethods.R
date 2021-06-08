@@ -427,8 +427,6 @@ setMethod("CTSSclusteringMethod", "GRangesList", function (object)
 
 setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
   CTSSclusteringMethod(metadata(object)$tagClusters))
-  # extrat directly TCs from metadata slot because tagClustersGR does more that
-  # is not needed here.
 
 
 #' @name tagClustersGR

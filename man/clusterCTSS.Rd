@@ -116,7 +116,7 @@ mammalian genomes, \emph{Genome Research} \strong{18}(1):1-12,
 (\href{http://www.cbrc.jp/paraclu/}{http://www.cbrc.jp/paraclu/}).
 }
 \seealso{
-\code{\link{tagClusters}}, \code{\link{aggregateTagClusters}} and \code{\link{CTSSclusteringMethod}}.
+\code{\link{tagClustersGR}}, \code{\link{aggregateTagClusters}} and \code{\link{CTSSclusteringMethod}}.
 
 Other CAGEr object modifiers: 
 \code{\link{CTSStoGenes}()},

@@ -24,11 +24,11 @@ tagClustersGR(
   qUp = NULL
 )
 
-tagClustersGR(object, samples = NULL) <- value
+tagClustersGR(object, sample = NULL) <- value
 
-\S4method{tagClustersGR}{CAGEexp,ANY,TagClusters}(object, samples = NULL) <- value
+\S4method{tagClustersGR}{CAGEexp,ANY,TagClusters}(object, sample = NULL) <- value
 
-\S4method{tagClustersGR}{CAGEexp,missing,GRangesList}(object, samples = NULL) <- value
+\S4method{tagClustersGR}{CAGEexp,missing,GRangesList}(object, sample = NULL) <- value
 }
 \arguments{
 \item{object}{A \code{CAGEexp} object.}

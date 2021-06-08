@@ -208,20 +208,20 @@ setMethod("CTSScumulativesTagClusters<-", "CAGEexp", function (object, value) {
 #' @param value A \code{\link{TagClusters}} object.
 
 setGeneric( "tagClustersGR<-"
-          , function(object, samples = NULL, value)
+          , function(object, sample = NULL, value)
             standardGeneric("tagClustersGR<-"))
 
 #' @rdname tagClusters
 
-setMethod("tagClustersGR<-", c(object = "CAGEexp", value = "TagClusters"), function (object, samples, value) {
-  validSamples(object, samples)
-	metadata(object)$tagClusters[[samples]] <- value
+setMethod("tagClustersGR<-", c(object = "CAGEexp", value = "TagClusters"), function (object, sample, value) {
+  validSamples(object, sample)
+	metadata(object)$tagClusters[[sample]] <- value
   if (validObject(object)) object
 })
 
 #' @rdname tagClusters
 
-setMethod("tagClustersGR<-", c("CAGEexp", "missing", "GRangesList"), function (object, samples, value) {
+setMethod("tagClustersGR<-", c("CAGEexp", "missing", "GRangesList"), function (object, sample, value) {
 	metadata(object)$tagClusters <- value
   if (validObject(object)) object
 })
