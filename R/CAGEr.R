@@ -185,19 +185,23 @@ setMethod("validSamples", "CAGEr", function (object, x){
 setGeneric(".filterCtss", function( object
                                   , threshold       = 0
                                   , nrPassThreshold = 1
-                                  , thresholdIsTpm  = TRUE)
-  standardGeneric(".filterCtss"))
+                                  , thresholdIsTpm  = TRUE) {
+  if (threshold == 0) return(Rle(TRUE))
+  standardGeneric(".filterCtss")
+})
 
 setMethod(".filterCtss", "CAGEr", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
-	if (threshold == 0) return(Rle(TRUE))
   .filterCtss(CTSStagCountSE(object), threshold, nrPassThreshold, thresholdIsTpm)
 })
 
 setMethod(".filterCtss", "RangedSummarizedExperiment", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
-	if (threshold == 0) return(Rle(TRUE))
   assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
   if(assay == "normalizedTpmMatrix" & is.null(assays(object)[[assay]]))
     stop("Normalise the CAGEr object first with ", sQuote("normalizeTagCount()"), ".")
-  nr.pass.threshold <- rowSums(DelayedArray(assays(object)[[assay]]) >= threshold)
+  .filterCtss(DelayedArray(assays(object)[[assay]]), threshold, nrPassThreshold, thresholdIsTpm)
+})
+
+setMethod(".filterCtss", "DelayedArray", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
+  nr.pass.threshold <- rowSums(object >= threshold)
   Rle(nr.pass.threshold >= min(nrPassThreshold, ncol(object)))
 })
