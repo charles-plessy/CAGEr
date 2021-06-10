@@ -363,9 +363,7 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 #' @author Vanja Haberle
 #' 
 #' @family CAGEr plot functions
-#' 
-#' @seealso \code{\link{getExpressionProfiles}}, \code{\link{expressionClasses}},
-#'          \code{\link{extractExpressionClass}}.
+#' @family CAGEr expression clustering functions
 #'          
 #' @examples
 #' plotExpressionProfiles(object = exampleCAGEexp, what = "CTSS")

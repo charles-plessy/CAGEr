@@ -38,9 +38,12 @@ head(CTSSexprClasses)
 
 }
 \seealso{
-\code{\link{getExpressionProfiles}}, \code{\link{plotExpressionProfiles}},
-\code{\link{expressionClasses}}.
+Other CAGEr expression clustering functions: 
+\code{\link{expressionClasses}()},
+\code{\link{getExpressionProfiles}()},
+\code{\link{plotExpressionProfiles}()}
 }
 \author{
 Vanja Haberle
 }
+\concept{CAGEr expression clustering functions}

@@ -38,17 +38,20 @@ plotExpressionProfiles(object = exampleCAGEexp, what = "CTSS")
 
 }
 \seealso{
-\code{\link{getExpressionProfiles}}, \code{\link{expressionClasses}},
-\code{\link{extractExpressionClass}}.
-
 Other CAGEr plot functions: 
 \code{\link{hanabiPlot}()},
 \code{\link{plotAnnot}()},
 \code{\link{plotCorrelation}()},
 \code{\link{plotInterquantileWidth}()},
 \code{\link{plotReverseCumulatives}()}
+
+Other CAGEr expression clustering functions: 
+\code{\link{expressionClasses}()},
+\code{\link{extractExpressionClass}()},
+\code{\link{getExpressionProfiles}()}
 }
 \author{
 Vanja Haberle
 }
+\concept{CAGEr expression clustering functions}
 \concept{CAGEr plot functions}

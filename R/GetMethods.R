@@ -819,9 +819,8 @@ setMethod("consensusClustersTpm", "CAGEexp", function (object)
 #' matches the number of expression clusters returned by \code{\link{getExpressionProfiles}}
 #' function.
 #' 
-#' @seealso \code{\link{getExpressionProfiles}} \code{\link{plotExpressionProfiles}}
-#'          \code{\link{extractExpressionClass}}
-#'          
+#' @family CAGEr expression clustering functions
+#' 
 #' @examples
 #' 
 #' exprClasses <- expressionClasses(exampleCAGEexp, what = "CTSS")

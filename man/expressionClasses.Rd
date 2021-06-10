@@ -35,6 +35,9 @@ exprClasses
 
 }
 \seealso{
-\code{\link{getExpressionProfiles}} \code{\link{plotExpressionProfiles}}
-\code{\link{extractExpressionClass}}
+Other CAGEr expression clustering functions: 
+\code{\link{extractExpressionClass}()},
+\code{\link{getExpressionProfiles}()},
+\code{\link{plotExpressionProfiles}()}
 }
+\concept{CAGEr expression clustering functions}
