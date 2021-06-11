@@ -3,24 +3,35 @@
 \name{getExpressionProfiles}
 \alias{getExpressionProfiles}
 \alias{getExpressionProfiles,CAGEexp-method}
+\alias{getExpressionProfiles,DelayedArray-method}
 \title{CAGE data based expression clustering}
 \usage{
 getExpressionProfiles(
   object,
-  what,
+  what = c("CTSS", "consensusClusters"),
   tpmThreshold = 5,
   nrPassThreshold = 1,
-  method = "som",
+  method = c("som", "kmeans"),
   xDim = 5,
   yDim = 5
 )
 
 \S4method{getExpressionProfiles}{CAGEexp}(
   object,
-  what,
+  what = c("CTSS", "consensusClusters"),
   tpmThreshold = 5,
   nrPassThreshold = 1,
-  method = "som",
+  method = c("som", "kmeans"),
+  xDim = 5,
+  yDim = 5
+)
+
+\S4method{getExpressionProfiles}{DelayedArray}(
+  object,
+  what = c("CTSS", "consensusClusters"),
+  tpmThreshold = 5,
+  nrPassThreshold = 1,
+  method = c("som", "kmeans"),
   xDim = 5,
   yDim = 5
 )
@@ -79,8 +90,15 @@ values in \code{tpmThreshold} and \code{nrPassThreshold} are applied to entire
 consensus clusters.
 }
 \examples{
-# getExpressionProfiles(exampleCAGEexp, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
-#                    , method = "som", xDim = 3, yDim = 3)
+getExpressionProfiles( exampleCAGEexp, "CTSS"
+                     , tpmThreshold = 50, nrPassThreshold = 1
+                     , method = "som", xDim = 3, yDim = 3)
+                     
+getExpressionProfiles( exampleCAGEexp, "CTSS"
+                     , tpmThreshold = 50, nrPassThreshold = 1
+                     , method = "kmeans", xDim = 3)
+
+getExpressionProfiles(exampleCAGEexp, "consensusClusters")
 
 }
 \references{
@@ -88,15 +106,13 @@ Toronen \emph{et al.} (1999) Analysis of gene expression data using
 self-organizing maps, \emph{FEBS Letters} \emph{451}:142-146.
 }
 \seealso{
-\code{\link{plotExpressionProfiles}}, \code{\link{expressionClasses}},
-\code{\link{extractExpressionClass}}.
-
 Other CAGEr expression clustering functions: 
 \code{\link{expressionClasses}()},
-\code{\link{extractExpressionClass}()},
 \code{\link{plotExpressionProfiles}()}
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
 \concept{CAGEr expression clustering functions}

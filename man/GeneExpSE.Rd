@@ -30,6 +30,7 @@ Other CAGEr accessor methods:
 \code{\link{CTSStagCountDF}()},
 \code{\link{GeneExpDESeq2}()},
 \code{\link{consensusClustersGR}()},
+\code{\link{expressionClasses}()},
 \code{\link{genomeName}()},
 \code{\link{inputFilesType}()},
 \code{\link{inputFiles}()},

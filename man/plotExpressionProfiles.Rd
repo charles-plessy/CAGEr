@@ -47,11 +47,12 @@ Other CAGEr plot functions:
 
 Other CAGEr expression clustering functions: 
 \code{\link{expressionClasses}()},
-\code{\link{extractExpressionClass}()},
 \code{\link{getExpressionProfiles}()}
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
 \concept{CAGEr expression clustering functions}
 \concept{CAGEr plot functions}

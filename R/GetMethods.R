@@ -803,70 +803,41 @@ setMethod("consensusClustersTpm", "CAGEexp", function (object)
 
 #' @name expressionClasses
 #' 
-#' @title Extract labels of expression classes
+#' @title Extract labels of _expression classes_
 #' 
-#' @description Retrieves labels of expression classes of either individual CTSSs or consensus
-#' clusters from a CAGEexp object.
+#' @description Retrieves labels of _expression classes_ of individual CTSSs
+#' or consensus clusters from a `CAGEr` object.
 #' 
-#' @param object A \code{\link{CAGEexp}} object.
+#' @param object A [`CAGEr`] object.
 #' 
-#' @param what Which level of expression clustering should be used. Can be either
-#'        \code{"CTSS"} to extract labels of expression classes of individual CTSSs or
-#'        \code{"consensusClusters"} to extract labels of expression classes of consensus
-#'        clusters.
-#' 
-#' @return Returns character vector of labels of expression classes.  The number of labels
-#' matches the number of expression clusters returned by \code{\link{getExpressionProfiles}}
-#' function.
+#' @return Returns a [`Rle`]-encoded vector of labels of _expression classes_.
+#' The number of labels matches the number of expression clusters returned by
+#' [`getExpressionProfiles`] function.
 #' 
 #' @family CAGEr expression clustering functions
+#' @family CAGEr accessor methods
 #' 
 #' @examples
-#' 
-#' exprClasses <- expressionClasses(exampleCAGEexp, what = "CTSS")
-#' exprClasses
+#' expressionClasses(CTSScoordinatesGR(exampleCAGEexp))
+#' exampleCAGEexp |> consensusClustersGR() |> expressionClasses()
 #' 
 #' @export
 
-setGeneric( "expressionClasses"
-          , function(object, what = c("CTSS", "consensusClusters"))
-              standardGeneric("expressionClasses"))
+setGeneric( "expressionClasses", function(object)
+  standardGeneric("expressionClasses"))
 
 #' @rdname expressionClasses
 
-setMethod("expressionClasses",
-signature(object = "CAGEexp"),
-function (object, what){
-	if(what == "CTSS"){
-		classes <- unique(sort(object@CTSSexpressionClasses))
-		if(length(classes)>0){
-			return(classes)
-		}else{
-			stop("No expression clustering of CTSSs has been done yet!")
-		}
-	}else if(what == "consensusClusters") {
-		classes <- unique(sort(object@consensusClustersExpressionClasses))
-		if(length(classes)>0){
-			return(classes)
-		}else{
-			stop("No expression clustering of consensus clusters has been done yet!")
-		}
-	}else{
-		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
-	}
+setMethod("expressionClasses", "CTSS", function (object) {
+  classes <- object$exprClass
+    if (is.null(classes)) stop("No expression clustering of CTSSs has been done yet!")
+  classes
 })
 
-#' @rdname expressionClasses
-
-setMethod("expressionClasses", "CAGEexp", function (object, what) {
-  switch (match.arg(what),
-    CTSS = {
-      classes <- CTSScoordinatesGR(object)$expressionClasses
-      if(is.null(classes)) stop("No expression clustering of CTSSs has been done yet!")},
-    consensusClusters = {
-      classes <- consensusClustersGR(object)$expressionClasses
-      if(is.null(classes)) stop("No expression clustering of consensus clusters has been done yet!")})
-  unique(sort(classes))
+setMethod("expressionClasses", "ConsensusClusters", function (object) {
+  classes <- object$exprClass
+  if (is.null(classes)) stop("No expression clustering of consensus clusters has been done yet!")
+  classes
 })
 
 
@@ -878,26 +849,6 @@ setGeneric("CTSSexpressionClusteringMethod", function(object)
 
 setMethod("CTSSexpressionClusteringMethod", "CAGEexp", function (object)
   metadata(object)$CTSSexpressionClusteringMethod)
-
-
-
-#' @name CTSSexpressionClasses
-#' @noRd
-
-setGeneric("CTSSexpressionClasses", function(object) standardGeneric("CTSSexpressionClasses"))
-
-setMethod("CTSSexpressionClasses", "CAGEexp", function (object)
-  metadata(object)$CTSSexpressionClasses)
-
-
-#' @name consensusClustersExpressionClasses
-#' @noRd 
-
-setGeneric("consensusClustersExpressionClasses", function(object)
-  standardGeneric("consensusClustersExpressionClasses"))
-
-setMethod("consensusClustersExpressionClasses", "CAGEexp", function (object)
-  metadata(object)$consensusClustersExpressionClasses)
 
 
 #' @name consensusClustersExpressionClusteringMethod

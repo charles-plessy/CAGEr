@@ -37,13 +37,15 @@ exampleCAGEexp <-
   annotateCTSS(exampleZv9_annot)                  |>
   CTSStoGenes()                                   |>
   normalizeTagCount()                             |>
+  getExpressionProfiles("CTSS")                   |>
   clusterCTSS()                                   |>
   cumulativeCTSSdistribution("tagClusters")       |>
   quantilePositions("tagClusters")                |>
   aggregateTagClusters()                          |>
   annotateConsensusClusters(exampleZv9_annot)     |>
   cumulativeCTSSdistribution("consensusClusters") |>
-  quantilePositions("consensusClusters")
+  quantilePositions("consensusClusters")          |>
+  getExpressionProfiles("consensusClusters")
 save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
 }
 }

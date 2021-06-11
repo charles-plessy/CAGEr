@@ -2,42 +2,51 @@
 % Please edit documentation in R/GetMethods.R
 \name{expressionClasses}
 \alias{expressionClasses}
-\alias{expressionClasses,CAGEexp-method}
-\title{Extract labels of expression classes}
+\alias{expressionClasses,CTSS-method}
+\title{Extract labels of \emph{expression classes}}
 \usage{
-expressionClasses(object, what = c("CTSS", "consensusClusters"))
+expressionClasses(object)
 
-\S4method{expressionClasses}{CAGEexp}(object, what = c("CTSS", "consensusClusters"))
-
-\S4method{expressionClasses}{CAGEexp}(object, what = c("CTSS", "consensusClusters"))
+\S4method{expressionClasses}{CTSS}(object)
 }
 \arguments{
-\item{object}{A \code{\link{CAGEexp}} object.}
-
-\item{what}{Which level of expression clustering should be used. Can be either
-\code{"CTSS"} to extract labels of expression classes of individual CTSSs or
-\code{"consensusClusters"} to extract labels of expression classes of consensus
-clusters.}
+\item{object}{A \code{\link{CAGEr}} object.}
 }
 \value{
-Returns character vector of labels of expression classes.  The number of labels
-matches the number of expression clusters returned by \code{\link{getExpressionProfiles}}
-function.
+Returns a \code{\link{Rle}}-encoded vector of labels of \emph{expression classes}.
+The number of labels matches the number of expression clusters returned by
+\code{\link{getExpressionProfiles}} function.
 }
 \description{
-Retrieves labels of expression classes of either individual CTSSs or consensus
-clusters from a CAGEexp object.
+Retrieves labels of \emph{expression classes} of individual CTSSs
+or consensus clusters from a \code{CAGEr} object.
 }
 \examples{
-
-exprClasses <- expressionClasses(exampleCAGEexp, what = "CTSS")
-exprClasses
+expressionClasses(CTSStagCountGR(exampleCAGEexp))
+exampleCAGEexp |> consensusClustersGR() |> expressionClasses()
 
 }
 \seealso{
 Other CAGEr expression clustering functions: 
-\code{\link{extractExpressionClass}()},
 \code{\link{getExpressionProfiles}()},
 \code{\link{plotExpressionProfiles}()}
+
+Other CAGEr accessor methods: 
+\code{\link{CTSSclusteringMethod}()},
+\code{\link{CTSScoordinatesGR}()},
+\code{\link{CTSScumulativesTagClusters}()},
+\code{\link{CTSSnormalizedTpmDF}()},
+\code{\link{CTSStagCountDF}()},
+\code{\link{GeneExpDESeq2}()},
+\code{\link{GeneExpSE}()},
+\code{\link{consensusClustersGR}()},
+\code{\link{genomeName}()},
+\code{\link{inputFilesType}()},
+\code{\link{inputFiles}()},
+\code{\link{librarySizes}()},
+\code{\link{sampleLabels}()},
+\code{\link{seqNameTotalsSE}()},
+\code{\link{tagClustersGR}()}
 }
+\concept{CAGEr accessor methods}
 \concept{CAGEr expression clustering functions}

@@ -81,6 +81,7 @@ Other CAGEr accessor methods:
 \code{\link{GeneExpDESeq2}()},
 \code{\link{GeneExpSE}()},
 \code{\link{consensusClustersGR}()},
+\code{\link{expressionClasses}()},
 \code{\link{genomeName}()},
 \code{\link{inputFiles}()},
 \code{\link{librarySizes}()},

@@ -649,31 +649,34 @@ knitr::include_graphics("images/TagClustersBed.svg")
 Expression profiling
 --------------------
 
-Since CAGE signal reflects level of transcription from a given TSS or promoter it can be used
-for 5′ centered expression profiling.  Expression clustering can be done at level of individual
-CTSSs or at level of entire promoters (consensus clusters).  In the former case, feature vector
-containing log transformed and scaled normalized CAGE signal at individual TSS across multiple
-samples is used as input for clustering algorithm, whereas in the latter case CAGE signal
-within the entire consensus cluster is used.  _CAGEr_ supports two unsupervised clustering
-algorithms: kmeans and self-organizing maps (SOM).  Both algorithms require to specify a
-number of clusters in advance.
+The CAGE signal is a quantitative measure of promoter activity.  In _CAGEr_,
+normalised expression scores of individual CTSSs or consensus clusters can be
+clustered in _expression classes_.  Two unsupervised clustering algorithms are
+supported: kmeans and self-organizing maps (SOM).  Both require to specify a
+number of clusters in advance.  Results are stored in the `exprClass` _metadata
+column_ of the CTSS or consensus clusters genomic ranges, and the
+`expressionClass` accessor function is provided for convenience.
 
-We will perform expression clustering at the level of entire promoter using SOM algorithm and
-applying it only to promoters with normalized CAGE signal $>= 15$ in at least one sample.
+In the example below, we perform expression clustering at the level of entire
+promoters using SOM algorithm with 4 × 2 dimensions and applying it only to
+consensus clusters with a normalized CAGE signal of at least 10 TPM in at least
+one sample.
 
 ```{r}
-# Not supported yet for CAGEexp objects, sorry.
-# getExpressionProfiles(ce, what = "consensusClusters", tpmThreshold = 10, 
-# 		nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
+ce <- getExpressionProfiles(ce, what = "consensusClusters", tpmThreshold = 10, 
+  nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
+
+expressionClass(consensusClustersGR(ce)) |> table(useNA = "always")
+
+consensusClustersGR(ce) |> subset(expressionClass(consensusClustersGR(ce)) ==  "0_1")
 ```
 
-Distribution of expression across samples for 8 clusters returned by SOM (4 $\times$ 2 map) can
+Distribution of expression across samples for the 8 clusters returned by SOM can
 be visualized using the `plotExpressionProfiles` function 
 as shown in Figure \@ref(fig:ConsensusClustersExpressionProfiles):
 
 ```{r}
-# Not supported yet for CAGEexp objects, sorry.
-# plotExpressionProfiles(ce, what = "consensusClusters")
+plotExpressionProfiles(ce, what = "consensusClusters")
 ```
 
 

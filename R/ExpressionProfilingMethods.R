@@ -56,23 +56,28 @@
 #' self-organizing maps, _FEBS Letters_ *451*:142-146.
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' 
 #' @family CAGEr expression clustering functions
 #' 
-#' @seealso \code{\link{plotExpressionProfiles}}, \code{\link{expressionClasses}},
-#' \code{\link{extractExpressionClass}}.
-#' 
 #' @examples 
-#' # getExpressionProfiles(exampleCAGEexp, what = "CTSS", tpmThreshold = 50, nrPassThreshold = 1
-#' #                    , method = "som", xDim = 3, yDim = 3)
+#' getExpressionProfiles( exampleCAGEexp, "CTSS"
+#'                      , tpmThreshold = 50, nrPassThreshold = 1
+#'                      , method = "som", xDim = 3, yDim = 3)
+#'                      
+#' getExpressionProfiles( exampleCAGEexp, "CTSS"
+#'                      , tpmThreshold = 50, nrPassThreshold = 1
+#'                      , method = "kmeans", xDim = 3)
+#' 
+#' getExpressionProfiles(exampleCAGEexp, "consensusClusters")
 #' 
 #' @importFrom stats kmeans
 #' @export
 
 setGeneric( "getExpressionProfiles"
-          , function( object, what
+          , function( object, what = c("CTSS", "consensusClusters")
                     , tpmThreshold = 5, nrPassThreshold = 1
-                    , method = "som"
+                    , method = c("som", "kmeans")
                     , xDim = 5, yDim = 5)
               standardGeneric("getExpressionProfiles"))
 
@@ -80,50 +85,45 @@ setGeneric( "getExpressionProfiles"
 
 setMethod( "getExpressionProfiles", "CAGEexp"
          , function (object, what, tpmThreshold, nrPassThreshold, method, xDim, yDim){
+  what <- match.arg(what)
 
-	sample.labels = sampleLabels(object)
-	
-	if(length(sample.labels) < 2){
+	if (length(sampleLabels(object)) < 2)
 		stop("Provided CAGEexp object contains only one sample! At least two samples are required for expression profiling!")
-	}
+  
+  tpm.mx <- switch( what
+                  , CTSS              = CTSSnormalizedTpmDF(object)
+                  , consensusClusters = assay(consensusClustersSE(object), "normalized"))
+  
+  l   <- getExpressionProfiles( object = DelayedArray(tpm.mx)
+                              , tpmThreshold = tpmThreshold, nrPassThreshold = nrPassThreshold
+                              , method = method, xDim = xDim, yDim = yDim)
+  cl  <- l[[1]]
+  idx <- l[[2]]
 
-	if(what == "CTSS") {
-		
-		tpm.mx <- object@normalizedTpmMatrix
-		l = .clusterExpression(tpm.mx = tpm.mx, sample.labels = sample.labels, tpmThreshold = tpmThreshold, nrPassThreshold = nrPassThreshold, method = method, xDim = xDim, yDim = yDim)
-		cl = l[[1]]
-		idx = l[[2]]
-		names(cl) <- which(idx == TRUE)
-		object@CTSSexpressionClasses <- cl
-		object@CTSSexpressionClusteringMethod <- method		
-	
-	}else if(what == "consensusClusters") {
-	
-		tpm.mx <- object@consensusClustersTpmMatrix
-		l = .clusterExpression(tpm.mx = tpm.mx, sample.labels = sample.labels, tpmThreshold = tpmThreshold, nrPassThreshold = nrPassThreshold, method = method, xDim = xDim, yDim = yDim)
-		cl = l[[1]]
-		idx = l[[2]]
-		names(cl) <- which(idx == TRUE)
-		object@consensusClustersExpressionClasses <- cl
-		object@consensusClustersExpressionClusteringMethod <- method
-		
-	}else{
-		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
-	}
-
-	object
+  if (what == "CTSS") {
+    mcols(CTSScoordinatesGR(object))$exprClass <- Rle(NA) # initialise
+    mcols(CTSScoordinatesGR(object))[idx, "exprClass"] <- cl
+    metadata(object)$CTSSexpressionClusteringMethod <- method	
+ } else if (what == "consensusClusters") {
+    mcols(consensusClustersGR(object))$exprClass <- Rle(NA) # initialise
+    mcols(consensusClustersGR(object))[idx, "exprClass"] <- cl
+    metadata(object)$consensusClustersExpressionClusteringMethod <- method
+  }
+  object
 })
 
-#' @name .clusterExpression
-#' @noRd
+#' @rdname getExpressionProfiles
 #' @importFrom som som
+#' @importFrom stats kmeans
 
-.clusterExpression <- function(tpm.mx, sample.labels, tpmThreshold = 5, nrPassThreshold = 1, method, xDim = 5, yDim = 5) {
+setMethod("getExpressionProfiles", "DelayedArray",
+function (object, what, tpmThreshold, nrPassThreshold, method, xDim, yDim) {
+  method <- match.arg(method)
+
+  idx <- .filterCtss( object, threshold = tpmThreshold
+                    , nrPassThreshold = nrPassThreshold, thresholdIsTpm = TRUE)
 	
-	nr.pass.threshold <- apply(tpm.mx, 1, function(x) {sum(x >= tpmThreshold)})
-	idx <- nr.pass.threshold >= min(nrPassThreshold, length(sample.labels))
-	
-	m <- t(scale(t(log(tpm.mx+1)), center=F)) 
+	m <- t(scale(t(log(object + 1)), center=FALSE))
 	m <- m[idx,]
 	
 	if(method == "som") {
@@ -132,99 +132,6 @@ setMethod( "getExpressionProfiles", "CAGEexp"
 	}else if(method == "kmeans"){
 		m.kmeans <- kmeans(m, centers = xDim)
 		cl <- as.character(m.kmeans$cluster)
-	}else{
-		stop("'method' parameter must be one of the (\"som\", \"kmeans\")")
-	}	
-	return(list(cl, idx))
-	
-}
-
-#' @name extractExpressionClass
-#' 
-#' @title Extract elements of the specified expression class
-#' 
-#' @description Extracts CTSSs or consensus clusters belonging to a specified expression class.
-#' 
-#' @param object A \code{\link{CAGEexp}} object.
-#' 
-#' @param what Which level of expression clustering should be used. Can be either
-#'        \code{"CTSS"} to extract expression class of individual CTSSs or
-#'        \code{"consensusClusters"} to extract expression class of consensus clusters.
-#' 
-#' @param which Which expression class should be extracted. It has to be one of the valid
-#'        expression class labels (as returned by \code{\link{expressionClasses}} function),
-#'        or \code{"all"} to extract members of all expression classes.
-#'        
-#' @return Returns a \code{data.frame} of CTSSs (when \code{what = "CTSS"}) or consensus clusters
-#' (when \code{what = "consensusClusters"}) belonging to a specified expression class, with
-#' genomic coordinates and additional information.  Last column contains the label of the
-#' corresponding expression class.
-#' 
-#' @author Vanja Haberle
-#' 
-#' @family CAGEr expression clustering functions
-#' 
-#' @examples
-#' CTSSexprClasses <- extractExpressionClass(exampleCAGEexp, what = "CTSS", which = "all")
-#' head(CTSSexprClasses)
-#' 
-#' @export
-
-setGeneric( "extractExpressionClass", function(object, what, which="all")
-  standardGeneric("extractExpressionClass"))
-
-#' @rdname extractExpressionClass
-
-setMethod( "extractExpressionClass", "CAGEexp", function (object, what, which="all")
-  stop("Not supported for CAGEexp objects."))
-
-#' @rdname extractExpressionClass
-#' @importFrom GenomicRanges granges
-
-setMethod( "extractExpressionClass", "CAGEr", function (object, what, which="all"){
-	objName <- deparse(substitute(object))
-
-	if(what == "CTSS"){
-		classes <- object@CTSSexpressionClasses
-		if(length(classes)>0){
-		  ctss <- CTSScoordinatesGR(object) |> granges() |> as.data.frame()
-		  ctss <- data.frame(chr=ctss$seqnames, pos=ctss$start, strand=ctss$strand)
-			r <- cbind(ctss, object@normalizedTpmMatrix)
-			r$expression_class <- NA
-			r$expression_class[as.integer(names(classes))] <- classes
-			if(which == "all") {
-				r <- subset(r, !(is.na(r$expression_class)))
-				return(r)
-			}else if(as.character(which) %in% unique(classes)){
-				r <- subset(r, r$expression_class == as.character(which))
-				return(r)
-			}else{
-				stop("'which' parameter must be either 'all' or one of the expression classes! See expressionClasses(", objName, ", what='CTSS') for CTSS expression classes in your dataset!")
-			}
-		}else{
-			stop("No CTSS expression clustering has been done yet!")
-		}
-		
-	}else if(what == "consensusClusters") {
-		classes <- object@consensusClustersExpressionClasses
-		if(length(classes)>0){
-			r <- cbind(consensusClustersGR(object),  object@consensusClustersTpmMatrix)
-			r$expression_class <- NA
-			r$expression_class[as.integer(names(classes))] <- classes
-			if(which == "all") {
-				r <- subset(r, !(is.na(r$expression_class)))
-				return(r)
-			}else if(as.character(which) %in% unique(classes)){
-				r <- subset(r, r$expression_class == as.character(which))
-				return(r)
-			}else{
-				stop("'which' parameter must be either 'all' or one of the expression classes! See expressionClasses(", objName, ", what='consensusClusters') for consensusCluster expression classes in your dataset!")
-			}
-		}else{
-			stop("No consensusClusters expression clustering has been done yet!")
-		}
-
-	}else{
-		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
 	}
+	return(list(cl, idx))
 })
