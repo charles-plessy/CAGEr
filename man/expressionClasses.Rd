@@ -22,7 +22,7 @@ Retrieves labels of \emph{expression classes} of individual CTSSs
 or consensus clusters from a \code{CAGEr} object.
 }
 \examples{
-expressionClasses(CTSStagCountGR(exampleCAGEexp))
+expressionClasses(CTSScoordinatesGR(exampleCAGEexp))
 exampleCAGEexp |> consensusClustersGR() |> expressionClasses()
 
 }

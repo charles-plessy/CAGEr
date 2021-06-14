@@ -337,37 +337,31 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 
 #' @name plotExpressionProfiles
 #' 
-#' @title Plotting expression profiles derived from CAGE data
+#' @title Plot CAGE expression profiles
 #' 
-#' @description Creates a chart with beanplots representing distribution of normalized
-#' expression across CAGE experiments for individual expression classes.  Different
-#' expression classes are shown in different colors and are labeled according to the labels
-#' returned by expression clustering.
+#' @description Beanplot of distribution of normalized expression across CAGE
+#' experiments for individual _expression classes_, colored and labeled
+#' according to the information set when expression clustering was performed.
 #' 
-#' @param object A \code{\link{CAGEr}} object.
+#' @param object A [`CAGEr`] object.
 #' 
-#' @param what Which level of expression clustering should be used.  Can be either
-#' \code{"CTSS"} to plot expression profiles of individual CTSSs or \code{"consensusClusters"}
-#' to plot expression profiles of consensus clusters.
+#' @param what `CTSS` or `consensusClusters`.
 #' 
-#' @details The created file contains beanplots representing distribution of normalized
-#' expression across CAGE experiments for individual expression classes shown in separate
-#' boxes.  Each labeled box represents one expression class and contains a set of
-#' beanplots - one per CAGE experiment. Individual CAGE experiments are shown on X-axis and
-#' scaled normalized expression on Y-axis.  Individual beanplots show distribution of
-#' normalized expression values of elements belonging to specific expression class in
-#' particular CAGE experiment, and the entire box represents single expression profile.
-#' Different expression classes (boxes) are plotted in different colors and are labeled with
+#' @details The beanplots are shown in one labeled box per _expression class_.
+#' Each beanplot represents one CAGE experiment.  The vertical axis represents
+#' scaled normalized expression.  The color of each class is determined by the
 #' labels returned by expression clustering.
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' 
 #' @family CAGEr plot functions
 #' @family CAGEr expression clustering functions
 #'          
 #' @examples
-#' plotExpressionProfiles(object = exampleCAGEexp, what = "CTSS")
+#' plotExpressionProfiles(exampleCAGEexp, what = "CTSS")
 #' 
+#' @importFrom reshape2 melt
 #' @export
 
 setGeneric( "plotExpressionProfiles"
@@ -375,45 +369,29 @@ setGeneric( "plotExpressionProfiles"
 
 #' @rdname plotExpressionProfiles
 
-setMethod( "plotExpressionProfiles", "CAGEr", function (object, what){
-	
-	if(what == "CTSS") {
-		
-		cl <- CTSSexpressionClasses(object)
-		if(length(cl)>0){
-			tpm.mx <- object@normalizedTpmMatrix
-			tpm.mx <- tpm.mx[as.integer(names(cl)),]
-			cl.method <- object@CTSSexpressionClusteringMethod
-		}else{
-			stop("No CTSS expression profiling has been done yet! Run getExpressionProfiles function first!")
-		}
-		
-	}else if(what == "consensusClusters"){
-		
-		cl <- consensusClustersExpressionClasses(object)
-		if(length(cl)>0){
-			tpm.mx <- consensusClustersTpm(object)
-			tpm.mx <- tpm.mx[as.integer(names(cl)),]
-			cl.method <- consensusClustersExpressionClusteringMethod(object)
-		}else{
-			stop("No consensusClusters expression profiling has been done yet! Run getExpressionProfiles function first!")
-		}
-		
-	}else{
-		stop("'what' parameter must be one of the (\"CTSS\", \"consensusClusters\")")
+setMethod( "plotExpressionProfiles", "CAGEexp"
+         , function (object, what=c("CTSS", "consensusClusters")) {
+  what <- match.arg(what)
+  
+  if(what == "CTSS") {
+    cl <- expressionClasses(CTSScoordinatesGR(object))
+    cl.method <- CTSSexpressionClusteringMethod(object)
+    DF <- CTSSnormalizedTpmDF(object)
+	} else if (what == "consensusClusters") {
+    cl <- expressionClasses(consensusClustersGR(object))
+    cl.method <- consensusClustersExpressionClusteringMethod(object)
+    DF <- DataFrame(consensusClustersTpm(object))
 	}
-	
-	l <- .extract.cluster.info(tpm.mx, cl)
-	cl <- l[[1]]
-	m <- l[[2]]
-	# file_name = paste(what, "_expression_profiles.pdf", sep = "")
-	# pdf(file = file_name, height = 5.5 * (max(cl[,2]) + 1) + 3, width = 6 * (max(cl[,1]) + 1))
-	old.par <- par(mfrow = c(max(cl[,2]) + 1, max(cl[,1]) + 1))
-	on.exit(par(old.par))
-	suppressWarnings(.plot.clusters.beanplots(value.matrix = m, cl = cl, cl.method = cl.method, dim.som.x = max(cl[,1]) + 1, dim.som.y = max(cl[,2]) + 1, cex.axis = 1, las = 2))
-	# dev.off()
-	# message("\nFile '", file_name, "' has been created in your working directory (", getwd(), ")"
-	invisible(TRUE)
+  
+  DF <- cbind(DF, exprClass=cl)
+  DF <- DF[!is.na(cl),]
+  df <- reshape2::melt(as.data.frame(DF), id="exprClass")
+
+  ggplot2::ggplot(df) +
+    ggplot2::aes(value, variable) +
+    ggplot2::geom_violin() +
+    ggplot2::facet_wrap(~exprClass) +
+    ggplot2::scale_x_log10()
 })
 
 

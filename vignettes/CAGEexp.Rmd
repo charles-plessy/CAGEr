@@ -666,33 +666,29 @@ one sample.
 ce <- getExpressionProfiles(ce, what = "consensusClusters", tpmThreshold = 10, 
   nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
 
-expressionClass(consensusClustersGR(ce)) |> table(useNA = "always")
+consensusClustersGR(ce)$exprClass |> table(useNA = "always")
 
-consensusClustersGR(ce) |> subset(expressionClass(consensusClustersGR(ce)) ==  "0_1")
 ```
 
 Distribution of expression across samples for the 8 clusters returned by SOM can
 be visualized using the `plotExpressionProfiles` function 
 as shown in Figure \@ref(fig:ConsensusClustersExpressionProfiles):
 
-```{r}
+```{r ConsensusClustersExpressionProfiles}
 plotExpressionProfiles(ce, what = "consensusClusters")
 ```
 
 
-```{r ConsensusClustersExpressionProfiles, echo=FALSE, fig.align="center", fig.cap="Expression clusters"}
+```{r ConsensusClustersExpressionProfiles_svg, echo=FALSE, fig.align="center", fig.cap="Expression clusters"}
 knitr::include_graphics("images/ConsensusClustersExpressionProfiles.svg")
 ```
 
-Each cluster is shown in different color and is marked by its label and the
+FIXME! Each cluster is shown in different color and is marked by its label and the
 number of elements (promoters) in the cluster. We can extract promoters
-belonging to a specific cluster by typing:
+belonging to a specific cluster by typing commands like:
 
 ```{r}
-# Not supported yet for CAGEexp objects, sorry.
-# class3_1 <- extractExpressionClass(ce, 
-# 		what = "consensusClusters", which = "3_1")
-# head(class3_1)
+consensusClustersGR(ce) |> subset(consensusClustersGR(ce)$exprClass ==  "0_1")
 ```
 
 Consensus clusters and information on their expression profile can be exported to a BED file, which allows visualization of the promoters in the 

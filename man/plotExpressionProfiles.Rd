@@ -2,39 +2,31 @@
 % Please edit documentation in R/ExportMethods.R
 \name{plotExpressionProfiles}
 \alias{plotExpressionProfiles}
-\alias{plotExpressionProfiles,CAGEr-method}
-\title{Plotting expression profiles derived from CAGE data}
+\alias{plotExpressionProfiles,CAGEexp-method}
+\title{Plot CAGE expression profiles}
 \usage{
 plotExpressionProfiles(object, what)
 
-\S4method{plotExpressionProfiles}{CAGEr}(object, what)
+\S4method{plotExpressionProfiles}{CAGEexp}(object, what)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
 
-\item{what}{Which level of expression clustering should be used.  Can be either
-\code{"CTSS"} to plot expression profiles of individual CTSSs or \code{"consensusClusters"}
-to plot expression profiles of consensus clusters.}
+\item{what}{\code{CTSS} or \code{consensusClusters}.}
 }
 \description{
-Creates a chart with beanplots representing distribution of normalized
-expression across CAGE experiments for individual expression classes.  Different
-expression classes are shown in different colors and are labeled according to the labels
-returned by expression clustering.
+Beanplot of distribution of normalized expression across CAGE
+experiments for individual \emph{expression classes}, colored and labeled
+according to the information set when expression clustering was performed.
 }
 \details{
-The created file contains beanplots representing distribution of normalized
-expression across CAGE experiments for individual expression classes shown in separate
-boxes.  Each labeled box represents one expression class and contains a set of
-beanplots - one per CAGE experiment. Individual CAGE experiments are shown on X-axis and
-scaled normalized expression on Y-axis.  Individual beanplots show distribution of
-normalized expression values of elements belonging to specific expression class in
-particular CAGE experiment, and the entire box represents single expression profile.
-Different expression classes (boxes) are plotted in different colors and are labeled with
+The beanplots are shown in one labeled box per \emph{expression class}.
+Each beanplot represents one CAGE experiment.  The vertical axis represents
+scaled normalized expression.  The color of each class is determined by the
 labels returned by expression clustering.
 }
 \examples{
-plotExpressionProfiles(object = exampleCAGEexp, what = "CTSS")
+plotExpressionProfiles(exampleCAGEexp, what = "CTSS")
 
 }
 \seealso{
