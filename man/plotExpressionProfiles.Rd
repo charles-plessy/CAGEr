@@ -7,7 +7,7 @@
 \usage{
 plotExpressionProfiles(object, what)
 
-\S4method{plotExpressionProfiles}{CAGEexp}(object, what)
+\S4method{plotExpressionProfiles}{CAGEexp}(object, what = c("CTSS", "consensusClusters"))
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
