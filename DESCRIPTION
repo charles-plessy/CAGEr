@@ -26,7 +26,7 @@ Imports:
     memoise,
     plyr,
     Rsamtools,
-    reshape,
+    reshape2,
     rtracklayer,
     S4Vectors (>= 0.27.5),
     som,

@@ -159,7 +159,7 @@ setMethod("plotAnnot", "CAGEexp",
 #' 
 #' @importFrom gtools mixedorder
 #' @importFrom plyr ddply
-#' @importFrom reshape melt
+#' @importFrom reshape2 melt
 
 mapStats <- function( libs
                     , scope
@@ -219,8 +219,8 @@ mapStats <- function( libs
   mapstats.sd       <- data.frame(sapply(columns, doSd, simplify = FALSE))
   mapstats.sd$group <- rownames(mapstats.sd)
   
-  mapstats          <- reshape::melt(mapstats,    id.vars="group")
-  mapstats$sd       <- reshape::melt(mapstats.sd, id.vars="group")$value
+  mapstats          <- reshape2::melt(mapstats,    id.vars="group")
+  mapstats$sd       <- reshape2::melt(mapstats.sd, id.vars="group")$value
   
   value <- NULL # To silence "no visible binding for global variable" error in R CMD check.
   mapstats          <- plyr::ddply( mapstats
