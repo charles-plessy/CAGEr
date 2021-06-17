@@ -280,7 +280,7 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 #' @family CAGEr plot functions
 #' @family CAGEr clusters functions
 #' 
-#' @importFrom ggplot2 ggplot aes scale_fill_manual geom_histogram facet_wrap
+#' @importFrom ggplot2 ggplot scale_fill_manual geom_histogram facet_wrap
 #' @importFrom ggplot2 xlab ylab labs
 #' 
 #' @examples
@@ -322,7 +322,7 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 	binsize <- round(max(iqwidths$iq_width)/2)
 	
 	ggplot2::ggplot(iqwidths) +
-	  ggplot2::aes(iq_width, fill = sampleName) +
+	  ggplot2::aes_string(x = "iq_width", fill = "sampleName") +
 	  ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
 	  ggplot2::geom_histogram(bins = binsize) +
 	  ggplot2::facet_wrap("~sampleName") +
@@ -386,7 +386,7 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
   df <- reshape2::melt(as.data.frame(DF), id="exprClass")
 
   ggplot2::ggplot(df) +
-    ggplot2::aes(value, variable) +
+    ggplot2::aes_string(x = "value", y = "variable") +
     ggplot2::geom_violin() +
     ggplot2::facet_wrap(~exprClass) +
     ggplot2::scale_x_log10()
