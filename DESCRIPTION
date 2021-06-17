@@ -15,6 +15,7 @@ Imports:
     BSgenome,
     data.table,
     DelayedArray,
+    DelayedMatrixStats,
     formula.tools,
     GenomeInfoDb,
     GenomicAlignments,

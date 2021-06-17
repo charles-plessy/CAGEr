@@ -115,6 +115,7 @@ setMethod( "getExpressionProfiles", "CAGEexp"
 #' @rdname getExpressionProfiles
 #' @importFrom som som
 #' @importFrom stats kmeans
+#' @import DelayedMatrixStats
 
 setMethod("getExpressionProfiles", "DelayedArray",
 function (object, what, tpmThreshold, nrPassThreshold, method, xDim, yDim) {
