@@ -108,11 +108,11 @@ score and/or FDR above specified threshold can be extracted by calling
 \code{\link{getShiftingPromoters}} function.
 }
 \examples{
-scoreShift( exampleCAGEexp
-          , groupX = c("sample1", "sample2")
-          , groupY = "sample3"
-          , testKS = TRUE, useTpmKS = FALSE)
-head(getShiftingPromoters(exampleCAGEexp))
+# scoreShift( exampleCAGEexp
+#           , groupX = c("sample1", "sample2")
+#           , groupY = "sample3"
+#           , testKS = TRUE, useTpmKS = FALSE)
+# head(getShiftingPromoters(exampleCAGEexp))
 
 }
 \seealso{

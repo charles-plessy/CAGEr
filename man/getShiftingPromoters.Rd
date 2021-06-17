@@ -49,8 +49,8 @@ samples, along with the value of the shifting score, P-value and FDR.  Scores an
 P-values/FDR have to be calculated beforehand by calling \code{\link{scoreShift}} function.
 }
 \examples{
-head(getShiftingPromoters( exampleCAGEexp, tpmThreshold = 100
-                         , scoreThreshold = 0.4, fdrThreshold = 0.01))
+#head(getShiftingPromoters( exampleCAGEexp, tpmThreshold = 100
+#                         , scoreThreshold = 0.4, fdrThreshold = 0.01))
 
 }
 \seealso{
