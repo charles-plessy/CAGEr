@@ -47,9 +47,7 @@
 #' `CTSSexpressionClasses` will be set accordingly, and if
 #' `what = "consensusClusters"` the elements `consensusClustersExpressionClusteringMethod`
 #' and `consensusClustersExpressionClasses` will be set.  Labels of expression
-#' classes (clusters) can be retrieved using [`expressionClasses`] function, and
-#' elements belonging to a specific expression class can be selected using
-#' [`extractExpressionClass`] function.
+#' classes (clusters) can be retrieved using [`expressionClasses`] function.
 #' 
 #' @references 
 #' Toronen _et al._ (1999) Analysis of gene expression data using

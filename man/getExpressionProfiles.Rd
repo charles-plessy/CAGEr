@@ -63,9 +63,7 @@ objects's metadata elements \code{CTSSexpressionClusteringMethod} and
 \code{CTSSexpressionClasses} will be set accordingly, and if
 \code{what = "consensusClusters"} the elements \code{consensusClustersExpressionClusteringMethod}
 and \code{consensusClustersExpressionClasses} will be set.  Labels of expression
-classes (clusters) can be retrieved using \code{\link{expressionClasses}} function, and
-elements belonging to a specific expression class can be selected using
-\code{\link{extractExpressionClass}} function.
+classes (clusters) can be retrieved using \code{\link{expressionClasses}} function.
 }
 \description{
 Clusters CAGE expression across multiple experiments, both at
