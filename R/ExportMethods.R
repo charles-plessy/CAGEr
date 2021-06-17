@@ -281,7 +281,7 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 #' @family CAGEr clusters functions
 #' 
 #' @importFrom ggplot2 ggplot scale_fill_manual geom_histogram facet_wrap
-#' @importFrom ggplot2 xlab ylab labs
+#' @importFrom ggplot2 ggtitle xlab ylab labs
 #' 
 #' @examples
 #' plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
@@ -328,10 +328,11 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
 	  ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
 	  ggplot2::geom_histogram(bins = binsize) +
 	  ggplot2::facet_wrap("~sampleName") +
-	  ggplot2::xlab(paste0(
-	      switch(clusters, tagClusters = "Tag Clusters", consensusClusters = "Consenss Clusters"),
-	      " interquantile width (q", qLow, "-q", qUp, " (bp)")) +
-	  ggplot2::ylab("Relative frequency") +
+	  ggplot2::ggtitle(paste0(
+	    switch(clusters, tagClusters = "Tag Clusters", consensusClusters = "Consenss Clusters"),
+	    " interquantile width (quantile ", qLow, " to ", qUp, ")")) +
+	  ggplot2::xlab("Interquantile width (bp)") +
+	  ggplot2::ylab("Frequency") +
 	  ggplot2::labs(fill = "Sample name")
 })
 
