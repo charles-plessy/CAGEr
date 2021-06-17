@@ -26,33 +26,31 @@ plotInterquantileWidth(
 )
 }
 \arguments{
-\item{object}{A \code{\link{CAGEr}} object}
+\item{object}{A \code{\link{CAGEexp}} object}
 
-\item{clusters}{Which clusters to be used.  (\code{"tagClusters"} for \emph{tag clusters}
-or \code{"consensusClusters"} for \emph{consensus clusters}.}
+\item{clusters}{\code{tagClusters} or \code{consensusClusters}.}
 
-\item{tpmThreshold}{Exclude clusters with normalized signal \code{< tpmThreshold}.}
+\item{tpmThreshold}{Exclude clusters with normalized signal lower than \code{tpmThreshold}.}
 
-\item{qLow, qUp}{Position of which "lower" (resp. "upper") quantile should be used as 5'
-(resp. 3') boundary.  See Details.}
+\item{qLow, qUp}{Quantile defining the 5' ("lower") and 3' ("upper")
+boundaries of the clusters.}
 
-\item{xlim}{The x axis limits of the plot.}
-
-\item{...}{Additional arguments passed to \code{plot()} function, such as \code{ylim},
-\emph{etc.}.}
+\item{xlim}{Maximal width to be plotted.}
+}
+\value{
+Plots the histograms with the \code{ggplot2} engine and returns the plot
+object invisibly.
 }
 \description{
-Plots histograms of the interquantile width of tag clusters or
-consensus clusters in each CAGE dataset.
+Histograms of the interquantile width of tag clusters or
+consensus clusters in each CAGE experiment.
 }
 \details{
-Interquantile width is a width (in base-pairs) of the central part of the genomic
-region (bounded by the positions of specified \code{qLow} and \code{qUp} quantiles) that
-contains \code{>= (qUp - qLow) * 100\%} of the CAGE signal.  Positions of specified quantiles
-within each cluster have to be calculated beforehand by calling \code{\link{quantilePositions}}
-function.  Interquantile width is a more robust measure of the promoter width than the total
-span of the region, because it takes into account the magnitude of the expression in the
-region.
+Interquantile width is a more robust measure of the promoter width
+than the total span of the region, because it takes into account the
+magnitude of the expression in the region.  Positions of specified quantiles
+within each cluster have to be calculated beforehand by calling
+\code{\link{quantilePositions}}.
 }
 \examples{
 plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
@@ -81,6 +79,8 @@ Other CAGEr clusters functions:
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
 \concept{CAGEr clusters functions}
 \concept{CAGEr plot functions}

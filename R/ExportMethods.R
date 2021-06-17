@@ -251,38 +251,37 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 #' 
 #' @title Plot cluster widths
 #' 
-#' @description Plots histograms of the interquantile width of tag clusters or
-#' consensus clusters in each CAGE dataset.
+#' @description Histograms of the interquantile width of tag clusters or
+#' consensus clusters in each CAGE experiment.
 #' 
-#' @param object A \code{\link{CAGEr}} object
+#' @param object A [`CAGEexp`] object
 #' 
-#' @param clusters Which clusters to be used.  (\code{"tagClusters"} for \emph{tag clusters}
-#'        or \code{"consensusClusters"} for \emph{consensus clusters}.
+#' @param clusters `tagClusters` or `consensusClusters`.
 #' 
-#' @param tpmThreshold Exclude clusters with normalized signal \code{< tpmThreshold}.
+#' @param tpmThreshold Exclude clusters with normalized signal lower than `tpmThreshold`.
 #' 
-#' @param qLow,qUp Position of which "lower" (resp. "upper") quantile should be used as 5'
-#'        (resp. 3') boundary.  See Details.
+#' @param qLow,qUp Quantile defining the 5' ("lower") and 3' ("upper")
+#'        boundaries of the clusters.
 #' 
-#' @param xlim The x axis limits of the plot.
+#' @param xlim Maximal width to be plotted.
 #' 
-#' @param ... Additional arguments passed to \code{plot()} function, such as \code{ylim},
-#'        \emph{etc.}.
+#' @details Interquantile width is a more robust measure of the promoter width
+#' than the total span of the region, because it takes into account the
+#' magnitude of the expression in the region.  Positions of specified quantiles
+#' within each cluster have to be calculated beforehand by calling
+#' [`quantilePositions`].
 #' 
-#' @details Interquantile width is a width (in base-pairs) of the central part of the genomic
-#' region (bounded by the positions of specified \code{qLow} and \code{qUp} quantiles) that
-#' contains \code{>= (qUp - qLow) * 100\%} of the CAGE signal.  Positions of specified quantiles
-#' within each cluster have to be calculated beforehand by calling \code{\link{quantilePositions}}
-#' function.  Interquantile width is a more robust measure of the promoter width than the total
-#' span of the region, because it takes into account the magnitude of the expression in the
-#' region.
+#' @return Plots the histograms with the `ggplot2` engine and returns the plot
+#' object invisibly.
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' 
 #' @family CAGEr plot functions
 #' @family CAGEr clusters functions
 #' 
-#' @importFrom graphics hist
+#' @importFrom ggplot2 ggplot aes scale_fill_manual geom_histogram facet_wrap
+#' @importFrom ggplot2 xlab ylab labs
 #' 
 #' @examples
 #' plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
@@ -302,37 +301,36 @@ setGeneric( "plotInterquantileWidth"
 setMethod( "plotInterquantileWidth", "CAGEr"
          , function (object, clusters, tpmThreshold, qLow, qUp, xlim, ...) {
            
-	sample.labels <- sampleLabels(object)
-	cols <- names(sample.labels)
 	clusters <- match.arg(clusters)
 	getClustFun <- switch( clusters
 	                     , tagClusters       = tagClustersGR
 	                     , consensusClusters = consensusClustersGR)
-
-  old.par <- par(mar = c(5,5,5,1))
-  on.exit(par(old.par))
   
-	sapply(sample.labels, function(x) {
+  # Extract a list of data frames in "long" format for ggplot
+	iqwidths <- lapply(seq_along(sampleLabels(object)), function(x) {
     gr <- getClustFun(object, x, returnInterquantileWidth = TRUE, qLow = qLow, qUp = qUp)
     gr <- gr[score(gr) >= tpmThreshold]
-    width <- decode(gr$interquantile_width)
-    h <- hist(width, breaks = round(max(width)/2), plot = F)
-    h$counts <- h$counts/sum(h$counts)
-    col <- as.integer(col2rgb(cols[which(sample.labels == x)]))/255
-    plot( h
-        , xlim = xlim
-        , main = x
-        , xlab = paste0(clusters, " interquantile width q", qLow, "-q", qUp, " (bp)")
-        , ylab = "relative frequency"
-        , col = rgb(col[1], col[2], col[3], 0.5)
-        , border = cols[which(sample.labels == x)]
-        , cex.axis = 1.8
-        , cex.lab = 1.8
-        , cex.main = 2.5
-        , col.main = cols[which(sample.labels == x)]
-        , ...)
-  })
-	invisible(1)
+    data.frame(
+      sampleName  = sampleLabels(object)[[x]],
+      iq_width    = decode(gr$interquantile_width))
+	})
+	
+	# Bind them together and set factor labels in proper order
+	iqwidths <- do.call(rbind, iqwidths)
+  iqwidths$sampleName <- factor(iqwidths$sampleName, levels = sampleLabels(object))
+  
+	binsize <- round(max(iqwidths$iq_width)/2)
+	
+	ggplot2::ggplot(iqwidths) +
+	  ggplot2::aes(iq_width, fill = sampleName) +
+	  ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
+	  ggplot2::geom_histogram(bins = binsize) +
+	  ggplot2::facet_wrap("~sampleName") +
+	  ggplot2::xlab(paste0(
+	      switch(clusters, tagClusters = "Tag Clusters", consensusClusters = "Consenss Clusters"),
+	      " interquantile width (q", qLow, "-q", qUp, " (bp)")) +
+	  ggplot2::ylab("Relative frequency") +
+	  ggplot2::labs(fill = "Sample name")
 })
 
 #' @name plotExpressionProfiles
