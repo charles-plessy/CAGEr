@@ -263,7 +263,7 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 #' @param qLow,qUp Quantile defining the 5' ("lower") and 3' ("upper")
 #'        boundaries of the clusters.
 #' 
-#' @param xlim Maximal width to be plotted.
+#' @param xlim Range of width to be plotted.
 #' 
 #' @details Interquantile width is a more robust measure of the promoter width
 #' than the total span of the region, because it takes into account the
@@ -285,7 +285,8 @@ setMethod("exportCTSStoBedGraph", "CAGEr", function (object, values, format, one
 #' 
 #' @examples
 #' plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
-#'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
+#'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9
+#'                       , xlim = c(2,200))
 #' 
 #' @export
 
@@ -318,6 +319,7 @@ setMethod( "plotInterquantileWidth", "CAGEr"
 	# Bind them together and set factor labels in proper order
 	iqwidths <- do.call(rbind, iqwidths)
   iqwidths$sampleName <- factor(iqwidths$sampleName, levels = sampleLabels(object))
+  iqwidths <- iqwidths[iqwidths$iq_width >= xlim[1] & iqwidths$iq_width <= xlim[2],]
   
 	binsize <- round(max(iqwidths$iq_width)/2)
 	

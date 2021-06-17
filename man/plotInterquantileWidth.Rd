@@ -35,7 +35,7 @@ plotInterquantileWidth(
 \item{qLow, qUp}{Quantile defining the 5' ("lower") and 3' ("upper")
 boundaries of the clusters.}
 
-\item{xlim}{Maximal width to be plotted.}
+\item{xlim}{Range of width to be plotted.}
 }
 \value{
 Plots the histograms with the \code{ggplot2} engine and returns the plot
@@ -54,7 +54,8 @@ within each cluster have to be calculated beforehand by calling
 }
 \examples{
 plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
-                      , tpmThreshold = 50, qLow = 0.1, qUp = 0.9)
+                      , tpmThreshold = 50, qLow = 0.1, qUp = 0.9
+                      , xlim = c(2,200))
 
 }
 \seealso{
