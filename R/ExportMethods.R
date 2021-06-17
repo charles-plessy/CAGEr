@@ -294,13 +294,13 @@ setGeneric( "plotInterquantileWidth"
           , function( object
                     , clusters = c("tagClusters", "consensusClusters")
                     , tpmThreshold = 5
-                    , qLow = 0.1, qUp = 0.9, xlim = c(0,150), ...)
+                    , qLow = 0.1, qUp = 0.9, xlim = c(0,150))
             	standardGeneric("plotInterquantileWidth"))
 
 #' @rdname plotInterquantileWidth
 
-setMethod( "plotInterquantileWidth", "CAGEr"
-         , function (object, clusters, tpmThreshold, qLow, qUp, xlim, ...) {
+setMethod( "plotInterquantileWidth", "CAGEexp"
+         , function (object, clusters, tpmThreshold, qLow, qUp, xlim) {
            
 	clusters <- match.arg(clusters)
 	getClustFun <- switch( clusters

@@ -2,7 +2,7 @@
 % Please edit documentation in R/ExportMethods.R
 \name{plotInterquantileWidth}
 \alias{plotInterquantileWidth}
-\alias{plotInterquantileWidth,CAGEr-method}
+\alias{plotInterquantileWidth,CAGEexp-method}
 \title{Plot cluster widths}
 \usage{
 plotInterquantileWidth(
@@ -11,18 +11,16 @@ plotInterquantileWidth(
   tpmThreshold = 5,
   qLow = 0.1,
   qUp = 0.9,
-  xlim = c(0, 150),
-  ...
+  xlim = c(0, 150)
 )
 
-\S4method{plotInterquantileWidth}{CAGEr}(
+\S4method{plotInterquantileWidth}{CAGEexp}(
   object,
   clusters = c("tagClusters", "consensusClusters"),
   tpmThreshold = 5,
   qLow = 0.1,
   qUp = 0.9,
-  xlim = c(0, 150),
-  ...
+  xlim = c(0, 150)
 )
 }
 \arguments{
