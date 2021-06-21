@@ -346,8 +346,7 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
 #' `what` equals`"tagClusters"`.
 #' 
 #' @param oneTrack Logical, should the data be converted in an individual
-#' object or a list of objects? Ignored when `what = "CTSS"`, which by default
-#' produces only one track.
+#' object or a list of objects?
 #' 
 #' @details The BED representations of _CTSSs_, _tag cluster_ and
 #' _consensus clusters_ can be directly visualised in the ZENBU or UCSC Genome
@@ -421,6 +420,8 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
 #' exportToTrack(CTSScoordinatesGR(exampleCAGEexp))  # Or:
 #' exampleCAGEexp |> CTSScoordinatesGR() |> exportToTrack()
 #' 
+#' exportToTrack(exampleCAGEexp, what = "CTSS", oneTrack = TRUE)
+#' 
 #' ### exporting CTSSs colored by expression class
 #' # FIXME exportToTrack(object = exampleCAGEexp, what = "CTSS", colorByExpressionProfile = TRUE)
 #' 
@@ -450,7 +451,8 @@ setMethod( "exportToTrack", "CAGEexp"
                    , colorByExpressionProfile, oneTrack) {
   clusters <-
 	  switch( match.arg(what)
-	        , CTSS              = CTSScoordinatesGR(  object)
+	        , CTSS              = if (oneTrack) { CTSScoordinatesGR(object)
+	                              } else { CTSStagCountGR(object, samples = "all") }
 	        , tagClusters       = tagClustersGR(      object, qLow = qLow, qUp = qUp)
 	        , consensusClusters = consensusClustersGR(object, qLow = qLow, qUp = qUp))
 	

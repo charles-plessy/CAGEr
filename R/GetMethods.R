@@ -237,7 +237,8 @@ setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
 #'              from [`CAGEexp`] objects.
 #' 
 #' @param object A `CAGEexp` object.
-#' @param samples (For `CTSStagCountGR`.) Name(s) or number(s) identifying sample(s).
+#' @param samples For `CTSStagCountGR` only: name(s) or number(s) identifying
+#' sample(s) or "all" to return a `GRangesList` of all the samples.
 #'  
 #' @return Returns an object with number of CAGE tags supporting each TSS
 #' (rows) in every CAGE dataset (columns).  The class of the object depends on the
@@ -248,7 +249,8 @@ setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
 #' * `CTSStagCountSE`: A [`RangedSummarizedExperiment`]` containing a `DataFrame`
 #'    of `Rle` integers.
 #' * `CTSStagCountGR`: A `CTSS` object (wrapping `GRanges`) containing a `score`
-#'     column indicating expression values for a given sample.
+#'    column indicating expression values for a given sample, or a
+#'   `GRangesList` of `CTSS` objects.
 #' 
 #' @seealso [getCTSS()]
 #' 
@@ -293,6 +295,7 @@ setMethod("CTSStagCountDA", signature(object = "CAGEr"), function (object)
 #' 
 #' @examples 
 #' CTSStagCountGR(exampleCAGEexp, 1)
+#' CTSStagCountGR(exampleCAGEexp, "all")
 #'  
 #' @export
 
@@ -300,7 +303,11 @@ setGeneric("CTSStagCountGR", function(object, samples) standardGeneric("CTSStagC
 
 #' @rdname CTSStagCount
 
-setMethod( "CTSStagCountGR", "CAGEr", function (object, samples) {
+setMethod( "CTSStagCountGR", "CAGEexp", function (object, samples) {
+  if (samples == "all") {
+    l <- lapply(seq_along(sampleLabels(object)), CTSStagCountGR, object = object)
+    return(GRangesList(l))
+  }
   if (! (samples %in% sampleLabels(object) |
        samples %in% seq_along(sampleLabels(object))))
   stop(sQuote("samples"), " must be the name or number of a sample label.")
