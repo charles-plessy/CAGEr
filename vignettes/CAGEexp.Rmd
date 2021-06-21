@@ -60,7 +60,7 @@ while allowing filtering out low-quality tags and removing technology-specific b
 performs normalization of raw CAGE tag count, clustering of TSSs into tag clusters (TC) and their
 aggregation across multiple CAGE experiments into promoters to construct the promoterome. Various
 methods for normalization and clustering of TSSs are supported. Exporting data into different types
-of track files allows various visualisations of TSSs and clusters (promoters) in the UCSC Genome
+of track objects allows export and various visualisations of TSSs and clusters (promoters) in the UCSC Genome
 Browser, which facilitate generation of hypotheses. _CAGEr_ manipulates multiple CAGE experiments 
 at once and performs analyses across datasets, including expression profiling and detection of
 differential TSS usage (promoter shifting). Multicore option for parallel processing is supported on
@@ -597,17 +597,24 @@ consensusClustersGR( ce, sample = "Zf.unfertilized.egg"
 This will, in addition to genomic coordinates of the consensus clusters, which are constant across all samples, also return the position of the dominant TSS, the CAGE signal (tpm) and the interquantile width specific for a given sample. Note that when specifying individual sample, only the consensus clusters that have some CAGE signal in that sample will be returned (which will be a subset of all consensus clusters).
 
 
-Data export for genome browsers
-------------------------------
+Track export for genome browsers
+--------------------------------
 
-CAGE data can be visualized in the genomic context by exporting raw or normalized CAGE tag counts
-to a bedGraph (or BigWig) file and uploading (or linking) the file to a genome browser. Positions
-of TSSs and tag counts supporting them are exported using `exportCTSStoBedGraph()`^[Note that
-the [ZENBU genome browser](http://fantom.gsc.riken.jp/zenbu) can display natively data from BAM
-or BED files as coverage tracks.]:
+CAGE data can be visualized in the genomic context by converting raw or
+normalized CAGE tag counts to a track object and exporting it to a file format
+such as _BED_, _bedGraph_ or _BigWig_ for uploading (or linking) to a genome
+browser`^[Note that the [ZENBU genome browser](http://fantom.gsc.riken.jp/zenbu)
+can also display natively data from BAMor BED files as coverage tracks.].
 
 ```{r}
-exportCTSStoBedGraph(ce, values = "normalized", format = "bedGraph", oneFile = TRUE)
+# FIXME: export GrangesList of CTSSes, split them by strand, put strand name
+# set negative scores on negative strand,
+# in track name, and show how to loop on the object or provide a function for that
+# FIXME make CTSSnormalizedTpmGR it able to loop over samples, or create CTSSnormalizedTpmGRL
+trk <- exportToTrack(CTSSnormalizedTpmGR(ce, "Zf.30p.dome"))
+# export(trk[strand(trk) == "+"], con = "fixme", format = "ucsc", subformat = "bedGraph", append = TRUE)
+# Fixme: restore the function to do the aboce.
+#exportCTSStoBedGraph(ce, values = "normalized", format = "bedGraph", oneFile = TRUE)
 ```
 
 This will produce a single bedGraph file with multiple annotated tracks that can be directly
@@ -620,7 +627,8 @@ the browser.
 Alternatively, the tracks can be exported to a binary BigWig format:
 
 ```{r}
-exportCTSStoBedGraph(ce, values = "normalized", format = "BigWig")
+## FIXME
+#exportCTSStoBedGraph(ce, values = "normalized", format = "BigWig")
 ```
 
 which will produce two BigWig files per sample (one for TSSs on the plus strand and the other
@@ -634,7 +642,8 @@ Interquantile width can also be visualized in a gene-like representation in the 
 browser by exporting the data into a BED file:
 
 ```{r}
-exportToBed(object = ce, what = "tagClusters", qLow = 0.1, qUp = 0.9, oneFile = TRUE)
+### FIXME.... toooo slooooooowwwww !!!
+exportToTrack(ce, what = "tagClusters", qLow = 0.1, qUp = 0.9, oneTrack = TRUE)
 ```
 
 In this gene-like representation (Figure \@ref(fig:tagClustersBed)), the oriented line shows the
