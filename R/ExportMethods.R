@@ -205,6 +205,11 @@ setMethod( "plotReverseCumulatives", "CAGEr"
 #' @importFrom ggplot2 ggtitle xlab ylab labs
 #' 
 #' @examples
+#' 
+#' plotInterquantileWidth( exampleCAGEexp, clusters = "tagClusters"
+#'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9
+#'                       , xlim = c(2,200))
+#'                       
 #' plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
 #'                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9
 #'                       , xlim = c(2,200))
