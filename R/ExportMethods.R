@@ -287,6 +287,7 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
 #'          
 #' @examples
 #' plotExpressionProfiles(exampleCAGEexp, what = "CTSS")
+#' exampleCAGEexp |> plotExpressionProfiles("consensusClusters")
 #' 
 #' @importFrom reshape2 melt
 #' @export
