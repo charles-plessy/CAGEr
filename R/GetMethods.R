@@ -315,7 +315,6 @@ setMethod( "CTSStagCountGR", "CAGEexp", function (object, samples) {
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSStagCountDF(object)[[samples]]
   gr <- gr[score(gr) != 0]
-  gr <- new("CTSS", gr, bsgenomeName = genomeName(object))
   sampleLabels(gr) <- sampleLabels(object)[samples]
   gr
 })
