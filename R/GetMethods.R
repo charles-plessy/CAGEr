@@ -396,9 +396,19 @@ setGeneric("CTSSnormalizedTpmGR", function(object, samples) {
 #' @rdname CTSSnormalizedTpm
 
 setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, samples) {
+  if (samples == "all") {
+    l <- lapply(seq_along(sampleLabels(object)), CTSStagCountGR, object = object)
+    return(GRangesList(l))
+  }
+  if (! (samples %in% sampleLabels(object) |
+         samples %in% seq_along(sampleLabels(object))))
+    stop(sQuote("samples"), " must be the name or number of a sample label.")
+  if (is.character(samples)) samples <- which(sampleLabels(object) == samples)
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSSnormalizedTpmDF(object)[[samples]]
-  gr[score(gr) != 0]
+  gr <- gr[score(gr) != 0]
+  sampleLabels(gr) <- sampleLabels(object)[samples]
+  gr
 })
 
 #' @name CTSSclusteringMethod
