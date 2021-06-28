@@ -154,6 +154,12 @@ setMethod("sampleList", "CAGEr", function (object) {
 #' @name validSamples
 #' @noRd
 #' @title Private function
+#' @examples
+#' CAGEr:::validSamples(exampleCAGEexp, 1)
+#' CAGEr:::validSamples(exampleCAGEexp, "Zf.high")
+#' CAGEr:::validSamples(exampleCAGEexp, sampleLabels(exampleCAGEexp))
+#' CAGEr:::validSamples(exampleCAGEexp, "all")
+#' CAGEr:::validSamples(exampleCAGEexp, NULL)
 #' @details Check if a vector of strings or numbers can be used to identify a sample.
 
 setGeneric("validSamples", function(object, x) standardGeneric("validSamples"))
@@ -163,6 +169,8 @@ setMethod("validSamples", "CAGEr", function (object, x){
   if(is.null(x))
       return(TRUE)
   if(inherits(x, "character"))
+    if (x == "all")
+      return(TRUE)
     if (all(x %in% sampleLabels(object)))
       return(TRUE)
   if(inherits(x, "integer") | inherits(x, "numeric"))

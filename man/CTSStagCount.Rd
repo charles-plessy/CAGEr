@@ -6,7 +6,7 @@
 \alias{CTSStagCountDA}
 \alias{CTSStagCountDA,CAGEr-method}
 \alias{CTSStagCountGR}
-\alias{CTSStagCountGR,CAGEr-method}
+\alias{CTSStagCountGR,CAGEexp-method}
 \alias{CTSStagCountSE}
 \alias{CTSStagCountSE,CAGEexp-method}
 \title{Raw CAGE TSSs expression counts}
@@ -21,7 +21,7 @@ CTSStagCountDA(object)
 
 CTSStagCountGR(object, samples)
 
-\S4method{CTSStagCountGR}{CAGEr}(object, samples)
+\S4method{CTSStagCountGR}{CAGEexp}(object, samples)
 
 CTSStagCountSE(object)
 
@@ -30,7 +30,8 @@ CTSStagCountSE(object)
 \arguments{
 \item{object}{A \code{CAGEexp} object.}
 
-\item{samples}{(For \code{CTSStagCountGR}.) Name(s) or number(s) identifying sample(s).}
+\item{samples}{For \code{CTSStagCountGR} only: name(s) or number(s) identifying
+sample(s) or "all" to return a \code{GRangesList} of all the samples.}
 }
 \value{
 Returns an object with number of CAGE tags supporting each TSS
@@ -41,7 +42,8 @@ function being called:
 \item \code{CTSStagCountDA}: A \code{\link{DelayedArray}} wrapping a \code{DataFrame} of \code{Rle} integers.
 \item \code{CTSStagCountSE}: A \code{\link{RangedSummarizedExperiment}}\verb{containing a}DataFrame\code{of}Rle` integers.
 \item \code{CTSStagCountGR}: A \code{CTSS} object (wrapping \code{GRanges}) containing a \code{score}
-column indicating expression values for a given sample.
+column indicating expression values for a given sample, or a
+\code{GRangesList} of \code{CTSS} objects.
 }
 }
 \description{
@@ -54,6 +56,7 @@ CTSStagCountDF(exampleCAGEexp)
 CTSStagCountDA(exampleCAGEexp)
 
 CTSStagCountGR(exampleCAGEexp, 1)
+CTSStagCountGR(exampleCAGEexp, "all")
  
 CTSStagCountSE(exampleCAGEexp)
 

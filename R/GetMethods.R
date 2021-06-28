@@ -299,7 +299,10 @@ setMethod("CTSStagCountDA", signature(object = "CAGEr"), function (object)
 #'  
 #' @export
 
-setGeneric("CTSStagCountGR", function(object, samples) standardGeneric("CTSStagCountGR"))
+setGeneric("CTSStagCountGR", function(object, samples) {
+  validSamples(object, samples)
+  standardGeneric("CTSStagCountGR")
+})
 
 #' @rdname CTSStagCount
 
@@ -308,9 +311,6 @@ setMethod( "CTSStagCountGR", "CAGEexp", function (object, samples) {
     l <- lapply(seq_along(sampleLabels(object)), CTSStagCountGR, object = object)
     return(GRangesList(l))
   }
-  if (! (samples %in% sampleLabels(object) |
-       samples %in% seq_along(sampleLabels(object))))
-  stop(sQuote("samples"), " must be the name or number of a sample label.")
   if (is.character(samples)) samples <- which(sampleLabels(object) == samples)
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSStagCountDF(object)[[samples]]
@@ -385,6 +385,7 @@ function (object){
 #' 
 #' @examples 
 #' CTSSnormalizedTpmGR(exampleCAGEexp, 1)
+#' exampleCAGEexp |> CTSSnormalizedTpmGR("all") 
 #'  
 #' @export
 
@@ -395,14 +396,11 @@ setGeneric("CTSSnormalizedTpmGR", function(object, samples) {
 
 #' @rdname CTSSnormalizedTpm
 
-setMethod( "CTSSnormalizedTpmGR", "CAGEr", function (object, samples) {
+setMethod( "CTSSnormalizedTpmGR", "CAGEexp", function (object, samples) {
   if (samples == "all") {
-    l <- lapply(seq_along(sampleLabels(object)), CTSStagCountGR, object = object)
+    l <- lapply(seq_along(sampleLabels(object)), CTSSnormalizedTpmGR, object = object)
     return(GRangesList(l))
   }
-  if (! (samples %in% sampleLabels(object) |
-         samples %in% seq_along(sampleLabels(object))))
-    stop(sQuote("samples"), " must be the name or number of a sample label.")
   if (is.character(samples)) samples <- which(sampleLabels(object) == samples)
   gr <- CTSScoordinatesGR(object)
   score(gr) <- CTSSnormalizedTpmDF(object)[[samples]]

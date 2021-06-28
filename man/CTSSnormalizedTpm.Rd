@@ -4,7 +4,7 @@
 \alias{CTSSnormalizedTpmDF}
 \alias{CTSSnormalizedTpmDF,CAGEexp-method}
 \alias{CTSSnormalizedTpmGR}
-\alias{CTSSnormalizedTpmGR,CAGEr-method}
+\alias{CTSSnormalizedTpmGR,CAGEexp-method}
 \title{Extracting normalized CAGE signal for TSSs from CAGEr objects}
 \usage{
 CTSSnormalizedTpmDF(object)
@@ -13,7 +13,7 @@ CTSSnormalizedTpmDF(object)
 
 CTSSnormalizedTpmGR(object, samples)
 
-\S4method{CTSSnormalizedTpmGR}{CAGEr}(object, samples)
+\S4method{CTSSnormalizedTpmGR}{CAGEexp}(object, samples)
 }
 \arguments{
 \item{object}{A \code{CAGEexp} object.}
@@ -32,6 +32,7 @@ in all CAGE datasets from \code{\link{CAGEexp}} objects.
 CTSSnormalizedTpmDF(exampleCAGEexp)
 
 CTSSnormalizedTpmGR(exampleCAGEexp, 1)
+exampleCAGEexp |> CTSSnormalizedTpmGR("all") 
  
 }
 \seealso{
