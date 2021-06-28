@@ -27,6 +27,7 @@ labels returned by expression clustering.
 }
 \examples{
 plotExpressionProfiles(exampleCAGEexp, what = "CTSS")
+exampleCAGEexp |> plotExpressionProfiles("consensusClusters")
 
 }
 \seealso{

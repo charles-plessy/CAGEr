@@ -51,6 +51,11 @@ within each cluster have to be calculated beforehand by calling
 \code{\link{quantilePositions}}.
 }
 \examples{
+
+plotInterquantileWidth( exampleCAGEexp, clusters = "tagClusters"
+                      , tpmThreshold = 50, qLow = 0.1, qUp = 0.9
+                      , xlim = c(2,200))
+                      
 plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
                       , tpmThreshold = 50, qLow = 0.1, qUp = 0.9
                       , xlim = c(2,200))
