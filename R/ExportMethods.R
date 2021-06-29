@@ -432,7 +432,8 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
 #' # FIXME exportToTrack(object = exampleCAGEexp, what = "CTSS", colorByExpressionProfile = TRUE)
 #' 
 #' ### exporting tag clusters in gene-like representation
-#' ### FIXME horribly slow exportToTrack( exampleCAGEexp, what = "tagClusters", qLow = 0.1, qUp = 0.9)
+#' exportToTrack(exampleCAGEexp, what = "tagClusters", qLow = 0.1, qUp = 0.9)
+#' tagClustersGR(exampleCAGEexp, 1) |> exportToTrack(qLow = 0.1, qUp = 0.9)
 #'            
 #' ### exporting consensus clusters
 #' exportToTrack( exampleCAGEexp, what = "consensusClusters")
@@ -476,7 +477,6 @@ setMethod( "exportToTrack", "GRangesList"
                   , qLow = qLow, qUp = qUp
                   , colorByExpressionProfile = colorByExpressionProfile
                   , oneTrack = FALSE)
-
   if (isTRUE(oneTrack)) {
     unlist(grl)
   } else {
@@ -489,30 +489,31 @@ setMethod( "exportToTrack", "GRangesList"
 
 setMethod( "exportToTrack", "GRanges",
 function(object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
-  .gr2blocks <- function(gr) {
-    bl <- IRangesList()
-    .line2blocks <- function(grline) {
-      # A GRanges line is a GRanges object of length 1
-      # This function computes a blocks value for each line
-      qLow_value <- mcols(grline)[,paste0("q_", qLow)] |> decode()
-      qUp_value  <- mcols(grline)[,paste0("q_", qUp)]  |> decode()
-      ir <- IRanges()                          |>
-        c( if(qLow_value != 1) IRanges(1)) |>
-        c( IRanges(qLow_value, qUp_value)) |>
-        c( if(qUp_value != width(grline)) IRanges(width(grline)))
-      ir
-    }
-    for (i in seq_along(gr)) {
-      bl[[i]] <- .line2blocks(gr[i])
-    }
-    bl
+  decoded.mat <-
+    rbind( width(object)
+         , mcols(object)[,paste0("q_", qLow)] |> decode()
+         , mcols(object)[,paste0("q_", qUp)]  |> decode()
+    )
+  
+  # See benchmarks/BED12-blockInfo-benchmark.md
+  f.mat.direct <- function(x) {
+    width_value <- x[1]
+    qLow_value  <- x[2]
+    qUp_value   <- x[3]
+    ir <- IRanges()                      |>
+      c( if(qLow_value != 1) IRanges(1)) |>
+      c( IRanges(qLow_value, qUp_value)) |>
+      c( if(qUp_value != width_value) IRanges(width_value))
   }
+
   if((! is.null(qLow)) & (! is.null(qUp)) ) {
-    object$blocks <- .gr2blocks(object)
+    object$blocks <- apply(decoded.mat, 2, f.mat.direct)
   }
   ucsc <- as(object, "UCSCData")
   score(ucsc) <- decode(score(ucsc))
-  ucsc@trackLine <- new("BasicTrackLine", name = "##FIXME", description = "###Fixme", visibility="full")
+  ucsc@trackLine <- new( "BasicTrackLine", name = "TC"
+                       , description = "CAGE Tag Clusters (TC)"
+                       , visibility="full")
   ucsc
 })
 
