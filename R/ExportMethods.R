@@ -429,7 +429,8 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
 #' exportToTrack(exampleCAGEexp, what = "CTSS", oneTrack = TRUE)
 #' 
 #' ### exporting CTSSs colored by expression class
-#' # FIXME exportToTrack(object = exampleCAGEexp, what = "CTSS", colorByExpressionProfile = TRUE)
+#' # Temporarly disabled
+#' # exportToTrack(exampleCAGEexp, what = "CTSS", colorByExpressionProfile = TRUE)
 #' 
 #' ### exporting tag clusters in gene-like representation
 #' exportToTrack(exampleCAGEexp, what = "tagClusters", qLow = 0.1, qUp = 0.9)
@@ -522,7 +523,7 @@ function(object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
 setMethod( "exportToTrack", "CTSS",
 function( object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
   if (isTRUE(colorByExpressionProfile)) {
-    stop("TODO FIXME when expression profiling is repaired")
+    stop("Coloring by expression profile is disabled for the moment.")
   } else {
     object$itemRgb <- ifelse(object$filteredCTSSidx, "black", "grey50")
   }
