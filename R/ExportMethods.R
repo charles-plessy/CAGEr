@@ -413,7 +413,8 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
 #' edit the bigDataUrl sections in the headers file to point to corresponding BigWig files.
 
 #' 
-#' @return Returns either a `rtracklayer` `UCSCData` object, or a list of them.
+#' @return Returns either a `rtracklayer` `UCSCData` object, or a `GRangesList`
+#' of them.
 #' 
 #' @author Vanja Haberle
 #' @author Charles Plessy
@@ -421,12 +422,19 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
 #' @family CAGEr export functions
 #' 
 #' @examples 
-#' ### exporting from CAGEexp object or from the clusters object directly
+#' # You can export from a CAGEexp object or from a cluster object directly:
 #' exportToTrack(exampleCAGEexp, what = "CTSS")  # Is same as:
 #' exportToTrack(CTSScoordinatesGR(exampleCAGEexp))  # Or:
 #' exampleCAGEexp |> CTSScoordinatesGR() |> exportToTrack()
 #' 
-#' exportToTrack(exampleCAGEexp, what = "CTSS", oneTrack = TRUE)
+#' Export a single sample, 
+#' exampleCAGEexp |> CTSStagCountGR(2)      |> exportToTrack()
+#' exampleCAGEexp |> CTSSnormalizedTpmGR(2) |> exportToTrack()
+#' 
+#' # Exporting multiple samples results in a GRangesList of UCSCData objects.
+#' exportToTrack(exampleCAGEexp, what = "CTSS", oneTrack = FALSE)
+#' exampleCAGEexp |> CTSStagCountGR("all")  |> exportToTrack()  ### FIXME: should it loop even though oneTrack is not set.
+#' exampleCAGEexp |> CTSSnormalizedTpmGR("all")  |> exportToTrack()  ### FIXME: should it loop even though oneTrack is not set.
 #' 
 #' ### exporting CTSSs colored by expression class
 #' # Temporarly disabled

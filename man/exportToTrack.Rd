@@ -90,8 +90,7 @@ color of their corresponding expression class.  Ignored when
 \code{what} equals\code{"tagClusters"}.}
 
 \item{oneTrack}{Logical, should the data be converted in an individual
-object or a list of objects? Ignored when \code{what = "CTSS"}, which by default
-produces only one track.}
+object or a list of objects?}
 }
 \value{
 Creates bedGraph or BigWig file(s) in the working directory that can be directly
@@ -109,7 +108,8 @@ is created, which contains track headers for all BigWig files. To use these head
 adding custom tracks to the UCSC Genome Browser, move the BigWig files to a web location and
 edit the bigDataUrl sections in the headers file to point to corresponding BigWig files.
 
-Returns either a \code{rtracklayer} \code{UCSCData} object, or a list of them.
+Returns either a \code{rtracklayer} \code{UCSCData} object, or a \code{GRangesList}
+of them.
 }
 \description{
 Converts \emph{CTSS}, \emph{tag clusters} or \emph{consensus clusters} to the
@@ -173,16 +173,27 @@ colors in which they are shown in the plot returned by the
 all consensus clusters are shown in black.
 }
 \examples{
-### exporting from CAGEexp object or from the clusters object directly
+# You can export from a CAGEexp object or from a cluster object directly:
 exportToTrack(exampleCAGEexp, what = "CTSS")  # Is same as:
 exportToTrack(CTSScoordinatesGR(exampleCAGEexp))  # Or:
 exampleCAGEexp |> CTSScoordinatesGR() |> exportToTrack()
 
+Export a single sample, 
+exampleCAGEexp |> CTSStagCountGR(2)      |> exportToTrack()
+exampleCAGEexp |> CTSSnormalizedTpmGR(2) |> exportToTrack()
+
+# Exporting multiple samples results in a GRangesList of UCSCData objects.
+exportToTrack(exampleCAGEexp, what = "CTSS", oneTrack = FALSE)
+exampleCAGEexp |> CTSStagCountGR("all")  |> exportToTrack()  ### FIXME: should it loop even though oneTrack is not set.
+exampleCAGEexp |> CTSSnormalizedTpmGR("all")  |> exportToTrack()  ### FIXME: should it loop even though oneTrack is not set.
+
 ### exporting CTSSs colored by expression class
-# FIXME exportToTrack(object = exampleCAGEexp, what = "CTSS", colorByExpressionProfile = TRUE)
+# Temporarly disabled
+# exportToTrack(exampleCAGEexp, what = "CTSS", colorByExpressionProfile = TRUE)
 
 ### exporting tag clusters in gene-like representation
-### FIXME horribly slow exportToTrack( exampleCAGEexp, what = "tagClusters", qLow = 0.1, qUp = 0.9)
+exportToTrack(exampleCAGEexp, what = "tagClusters", qLow = 0.1, qUp = 0.9)
+tagClustersGR(exampleCAGEexp, 1) |> exportToTrack(qLow = 0.1, qUp = 0.9)
            
 ### exporting consensus clusters
 exportToTrack( exampleCAGEexp, what = "consensusClusters")
