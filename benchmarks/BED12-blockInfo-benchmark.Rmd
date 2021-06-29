@@ -1,0 +1,93 @@
+---
+title: "Fastest way to calculate BED12 blocks for UCSCData objects"
+author: "Charles Plessy"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+In the [BED12 format](https://genome.ucsc.edu/FAQ/FAQformat.html#format1),
+the position of each box in the object is encoded in the `blockCount`,
+`blockSize` and `blockStarts` columns.
+
+In `UCSCData` track objects of the _rtracklayer_ package, the information is
+encoded as an `IRangesList` metadata column, where each element has one
+`IRanges` object representing the blocks.
+
+In _CAGEr_'s `TagClusters` objects, the position of the central blocks is
+represented by the quantile information columns.
+
+The problem here is to create this `IRanges` list in a computationally efficient
+way in _CAGEr_'s `exportToTrack` function.
+
+
+The best approach, `f.mat.direct` is not exactly fast, but is 5 × faster than my
+original attempt (`f.grline`).
+
+```{r setup, echo=FALSE}
+options(width=120)
+knitr::opts_chunk$set(cache  = TRUE, cache.lazy = FALSE)
+knitr::opts_knit$set(verbose = TRUE)
+```
+
+```{r create_data}
+suppressPackageStartupMessages(library("GenomicRanges"))
+suppressPackageStartupMessages(library("CAGEr"))
+tc <- CAGEr::exampleCAGEexp |> CAGEr::tagClustersGR(1)
+tcl <- split(tc, seq_along(tc))
+decoded.mat <- rbind(width(tc), decode(tc$q_0.1), decode(tc$q_0.9))
+```
+
+```{r declare_functions}
+
+# Operate directly on each line
+
+f.grline <- function(grline) {
+  # A GRanges line is a GRanges object of length 1
+  # This function computes a blocks value for each line
+  qLow_value <- decode(grline$q_0.1)
+  qUp_value  <- decode(grline$q_0.9)
+  ir <- IRanges()                      |>
+    c( if(qLow_value != 1) IRanges(1)) |>
+    c( IRanges(qLow_value, qUp_value)) |>
+    c( if(qUp_value != width(grline)) IRanges(width(grline)))
+  ir
+}
+
+# Decode the Rle objects once for all and loop on each entry
+
+f.mat.direct <- function(x) {
+  width_value <- x[1]
+  qLow_value <- x[2]
+  qUp_value  <- x[3]
+  ir <- IRanges()                      |>
+    c( if(qLow_value != 1) IRanges(1)) |>
+    c( IRanges(qLow_value, qUp_value)) |>
+    c( if(qUp_value != width_value) IRanges(width_value))
+}
+
+# Same but try to call the IRanges constructor only once.
+
+f.mat.viaString <- function(x) {
+  width_value <- x[1]
+  qLow_value <- x[2]
+  qUp_value  <- x[3]
+  str <- c(
+    c( if(qLow_value != 1) "1"),
+    c( paste0(qLow_value, "-", qUp_value)),
+    c( if(qUp_value != width_value) width_value)
+  )
+  IRanges(str)
+}
+```
+
+```{r benchmark}
+tc[1]
+microbenchmark::microbenchmark(f.grline(tcl[[1]]), f.mat.direct(decoded.mat[,1]), f.mat.viaString(decoded.mat[,1]), times = 100)
+
+tc[5]
+microbenchmark::microbenchmark(f.grline(tcl[[5]]), f.mat.direct(decoded.mat[,5]), f.mat.viaString(decoded.mat[,5]), times = 100)
+```
