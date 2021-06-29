@@ -528,9 +528,14 @@ function( object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
     object$itemRgb <- ifelse(object$filteredCTSSidx, "black", "grey50")
   }
   if (is.null(score(object))) score(object) <- 0L
-  exportToTrack( GRanges(object), qLow = qLow, qUp = qUp
-               , colorByExpressionProfile = colorByExpressionProfile
-               , oneTrack = oneTrack)
+  trk <- exportToTrack( GRanges(object), qLow = qLow, qUp = qUp
+                      , colorByExpressionProfile = colorByExpressionProfile
+                      , oneTrack = oneTrack)
+  sampleLabel <- sampleLabels(object)
+  if(is.null(sampleLabel)) sampleLabel <- "All samples pooled"
+  trk@trackLine@name <- paste0(sampleLabel, " (", trk@trackLine@name, ")")
+  trk@trackLine@description <- paste0(sampleLabel, " (", trk@trackLine@description, ")")
+  trk
 })
 
 #' @rdname exportToTrack
