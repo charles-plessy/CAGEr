@@ -604,46 +604,52 @@ CAGE data can be visualized in the genomic context by converting raw or
 normalized CAGE tag counts to a track object and exporting it to a file format
 such as _BED_, _bedGraph_ or _BigWig_ for uploading (or linking) to a genome
 browser`^[Note that the [ZENBU genome browser](http://fantom.gsc.riken.jp/zenbu)
-can also display natively data from BAMor BED files as coverage tracks.].
+can also display natively data from BAMor BED files as coverage tracks.].  The
+\Rfunction(exportToTrack) function can take a variety of inputs representing
+_CTSS_, _Tag Clusters_ or _Consensus Clusters_, with raw or normalised
+expression scores.  When asked to export multiple samples it will return
+a list of tracks.
 
 ```{r}
-# FIXME: export GrangesList of CTSSes, split them by strand, put strand name
-# set negative scores on negative strand,
-# in track name, and show how to loop on the object or provide a function for that
-# FIXME make CTSSnormalizedTpmGR it able to loop over samples, or create CTSSnormalizedTpmGRL
 trk <- exportToTrack(CTSSnormalizedTpmGR(ce, "Zf.30p.dome"))
-# export(trk[strand(trk) == "+"], con = "fixme", format = "ucsc", subformat = "bedGraph", append = TRUE)
-# Fixme: restore the function to do the aboce.
-#exportCTSStoBedGraph(ce, values = "normalized", format = "bedGraph", oneFile = TRUE)
+ce |> CTSSnormalizedTpmGR("all") |> exportToTrack(ce, oneTrack = FALSE)
 ```
 
-This will produce a single bedGraph file with multiple annotated tracks that can be directly
-visualized as custom tracks in the genome browser (Figure \@ref(fig:CTSSbedGraph)).
-
-There are two tracks per sample; one for TSSs on the plus strand and the other for the minus
-strand. Values for TSSs on minus strand are shown as negative and are pointing downwards in
-the browser.
-
-Alternatively, the tracks can be exported to a binary BigWig format:
+Some track file format, for instance _bigWig_ or _bedGraph_ require the `+` and
+`-` strands to be separated, because they do not allow overlapping ranges.
+This can be done with the \Rfunction(split) function like in the following
+example^[The `drop = TRUE` option is needed to remove the `*` level.].
 
 ```{r}
-## FIXME
-#exportCTSStoBedGraph(ce, values = "normalized", format = "BigWig")
+split(trk, strand(trk), drop = TRUE)
 ```
 
-which will produce two BigWig files per sample (one for TSSs on the plus strand and the other
-for the minus strand) and an accompanying text file with track headers.
+For _bigWig_ export, the \Rfunction(rtracklayer::export.bw) needs to be run
+on each element of the list returned by the \Rfunction(split) command.
+
+For _bedGraph_ export, the \Rfunction(rtracklayer::export.bedGraph) command
+can take the list as input and will produce a single file containing the
+two tracks.  (Figure \@ref(fig:CTSSbedGraph)) shows an example of _bedGraph_
+visualisation.
+
+For _BED_ export, the \Rfunction(rtracklayer::export.bed) can operate directly
+on the track object.
+
+Other export format probably operate in a way similar to one of the cases
+above.
 
 ```{r CTSSbedGraph, echo=FALSE, fig.cap="CAGE data bedGraph track visualized in the UCSC Genome Browser"}
 knitr::include_graphics("images/CTSSbedGraph.svg")
 ```
 
-Interquantile width can also be visualized in a gene-like representation in the UCSC genome
-browser by exporting the data into a BED file:
+Interquantile width can also be visualized in a gene-like representation in the
+genome browsers by passing quantile information during data conversion to
+the _UCSCData_ format and then exporting it into a _BED_ file:
 
 ```{r}
-### FIXME.... toooo slooooooowwwww !!!
-exportToTrack(ce, what = "tagClusters", qLow = 0.1, qUp = 0.9, oneTrack = TRUE)
+iqtrack <- exportToTrack(ce, what = "tagClusters", qLow = 0.1, qUp = 0.9, oneTrack = FALSE)
+iqtrack
+#rtracklayer::export.bed(iqtrack, "outputFileName.bed")
 ```
 
 In this gene-like representation (Figure \@ref(fig:tagClustersBed)), the oriented line shows the
@@ -676,7 +682,6 @@ ce <- getExpressionProfiles(ce, what = "consensusClusters", tpmThreshold = 10,
   nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
 
 consensusClustersGR(ce)$exprClass |> table(useNA = "always")
-
 ```
 
 Distribution of expression across samples for the 8 clusters returned by SOM can
@@ -692,7 +697,7 @@ plotExpressionProfiles(ce, what = "consensusClusters")
 knitr::include_graphics("images/ConsensusClustersExpressionProfiles.svg")
 ```
 
-FIXME! Each cluster is shown in different color and is marked by its label and the
+Each cluster is shown in different color and is marked by its label and the
 number of elements (promoters) in the cluster. We can extract promoters
 belonging to a specific cluster by typing commands like:
 
