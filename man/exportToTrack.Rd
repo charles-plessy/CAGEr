@@ -122,14 +122,6 @@ filled block showing interquantile range and a thick box denoting position of
 the dominant (most frequently) used \emph{TSS}.
 }
 \details{
-TODO
-
-Can rtracklayer store a BED12 information in a Bioc object ?
-If yes, convert TagCluster, CTSS and ConsensusClusters object
-to that format and let rtracklayer do the rest.
-Use rtraclkayer on the output of a non-broken version of CAGEr
-to study the format.
-
 The BED representations of \emph{CTSSs}, \emph{tag cluster} and
 \emph{consensus clusters} can be directly visualised in the ZENBU or UCSC Genome
 Browsers.
@@ -178,14 +170,14 @@ exportToTrack(exampleCAGEexp, what = "CTSS")  # Is same as:
 exportToTrack(CTSScoordinatesGR(exampleCAGEexp))  # Or:
 exampleCAGEexp |> CTSScoordinatesGR() |> exportToTrack()
 
-Export a single sample, 
+# Export a single sample, 
 exampleCAGEexp |> CTSStagCountGR(2)      |> exportToTrack()
 exampleCAGEexp |> CTSSnormalizedTpmGR(2) |> exportToTrack()
 
 # Exporting multiple samples results in a GRangesList of UCSCData objects.
 exportToTrack(exampleCAGEexp, what = "CTSS", oneTrack = FALSE)
-exampleCAGEexp |> CTSStagCountGR("all")  |> exportToTrack()  ### FIXME: should it loop even though oneTrack is not set.
-exampleCAGEexp |> CTSSnormalizedTpmGR("all")  |> exportToTrack()  ### FIXME: should it loop even though oneTrack is not set.
+exampleCAGEexp |> CTSStagCountGR("all")  |> exportToTrack()
+exampleCAGEexp |> CTSSnormalizedTpmGR("all")  |> exportToTrack()
 
 ### exporting CTSSs colored by expression class
 # Temporarly disabled
@@ -200,8 +192,6 @@ exportToTrack( exampleCAGEexp, what = "consensusClusters")
 exampleCAGEexp |>
   consensusClustersGR("Zf.high", qLow = .1, qUp = .9) |>
   exportToTrack(qLow = .1, qUp = .9)
-
-### FIXME  how about oneTrack = FALSE ?
 
 }
 \author{

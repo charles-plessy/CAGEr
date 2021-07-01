@@ -427,14 +427,14 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
 #' exportToTrack(CTSScoordinatesGR(exampleCAGEexp))  # Or:
 #' exampleCAGEexp |> CTSScoordinatesGR() |> exportToTrack()
 #' 
-#' Export a single sample, 
+#' # Export a single sample, 
 #' exampleCAGEexp |> CTSStagCountGR(2)      |> exportToTrack()
 #' exampleCAGEexp |> CTSSnormalizedTpmGR(2) |> exportToTrack()
 #' 
 #' # Exporting multiple samples results in a GRangesList of UCSCData objects.
 #' exportToTrack(exampleCAGEexp, what = "CTSS", oneTrack = FALSE)
-#' exampleCAGEexp |> CTSStagCountGR("all")  |> exportToTrack()  ### FIXME: should it loop even though oneTrack is not set.
-#' exampleCAGEexp |> CTSSnormalizedTpmGR("all")  |> exportToTrack()  ### FIXME: should it loop even though oneTrack is not set.
+#' exampleCAGEexp |> CTSStagCountGR("all")  |> exportToTrack()
+#' exampleCAGEexp |> CTSSnormalizedTpmGR("all")  |> exportToTrack()
 #' 
 #' ### exporting CTSSs colored by expression class
 #' # Temporarly disabled
@@ -449,8 +449,6 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
 #' exampleCAGEexp |>
 #'   consensusClustersGR("Zf.high", qLow = .1, qUp = .9) |>
 #'   exportToTrack(qLow = .1, qUp = .9)
-#' 
-#' ### FIXME  how about oneTrack = FALSE ?
 #' 
 #' @export
 
@@ -569,3 +567,30 @@ setMethod( "exportToTrack", "ConsensusClusters"
                  , colorByExpressionProfile = colorByExpressionProfile
                  , oneTrack = oneTrack)
 })
+
+#' This function might be used later to restore the capacity of assigning a
+#' color to each SOM cluster.
+
+.myColorMatrix <- function(color.mx, nrows, ncols, ...) {
+  .myColorRamp <- function (vec, color.low="green", color.high="red", color.mid=NULL, alpha=1, value.low=min(vec), value.high=max(vec), value.mid=(value.low+value.high)/2, ...) {
+    vec.01 <- rep(NA, length(vec))
+    vec.01[vec <= value.low] <- 0
+    vec.01[vec >= value.high] <- 1
+    vec.01[vec>value.low & vec<=value.mid] <- 0.5*(vec[vec>value.low & vec<=value.mid]-value.low)/(value.mid-value.low)
+    vec.01[vec>value.mid & vec<value.high] <- 0.5+ 0.5*(vec[vec>value.mid & vec<value.high]-value.mid)/(value.high-value.mid)
+      cr <- colorRamp(c(color.low, color.mid, color.high),...)
+      return(apply (cr(vec.01)/255, 1, function(x) rgb(x[1], x[2], x[3], alpha)))
+    }
+  top.row <- .myColorRamp(1:ncols,
+    color.low=color.mx[1,1],
+    color.mid=NULL,
+    color.high=color.mx[1,2], ...)
+  bottom.row <- .myColorRamp(1:ncols,
+    color.low=color.mx[2,1],
+    color.mid=NULL,
+    color.high=color.mx[2,2], ...)
+  sapply(1:ncols, function(i) .myColorRamp(1:nrows,
+    color.low=top.row[i],
+    color.mid=NULL,
+    color.high=bottom.row[i], ...))
+}
