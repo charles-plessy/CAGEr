@@ -498,25 +498,22 @@ setMethod( "exportToTrack", "GRangesList"
 
 setMethod( "exportToTrack", "GRanges",
 function(object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
-  decoded.mat <-
-    rbind( width(object)
-         , mcols(object)[,paste0("q_", qLow)] |> decode()
-         , mcols(object)[,paste0("q_", qUp)]  |> decode()
-    )
-  
-  # See benchmarks/BED12-blockInfo-benchmark.md
-  f.mat.direct <- function(x) {
-    width_value <- x[1]
-    qLow_value  <- x[2]
-    qUp_value   <- x[3]
-    ir <- IRanges()                      |>
-      c( if(qLow_value != 1) IRanges(1)) |>
-      c( IRanges(qLow_value, qUp_value)) |>
-      c( if(qUp_value != width_value) IRanges(width_value))
-  }
-
   if((! is.null(qLow)) & (! is.null(qUp)) ) {
-    object$blocks <- apply(decoded.mat, 2, f.mat.direct)
+    decoded.mat <-
+      rbind( width(object)
+           , mcols(object)[,paste0("q_", qLow)] |> decode()
+           , mcols(object)[,paste0("q_", qUp)]  |> decode()
+      )
+    object$blocks <- apply(decoded.mat, 2, \(x) {
+      # See benchmarks/BED12-blockInfo-benchmark.md
+      width_value <- x[1]
+      qLow_value  <- x[2]
+      qUp_value   <- x[3]
+      ir <- IRanges()                      |>
+        c( if(qLow_value != 1) IRanges(1)) |>
+        c( IRanges(qLow_value, qUp_value)) |>
+        c( if(qUp_value != width_value) IRanges(width_value))
+    })
   }
   ucsc <- as(object, "UCSCData")
   score(ucsc) <- decode(score(ucsc))
