@@ -489,7 +489,7 @@ setMethod( "exportToTrack", "GRangesList"
   if (isTRUE(oneTrack)) {
     unlist(grl)
   } else {
-    grl
+    GRangesList(grl, compress = FALSE) # Because rtracklayer::export.bed does not like compressed GRangesList...
   }
 })
 
@@ -504,7 +504,7 @@ function(object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
            , mcols(object)[,paste0("q_", qLow)] |> decode()
            , mcols(object)[,paste0("q_", qUp)]  |> decode()
       )
-    object$blocks <- apply(decoded.mat, 2, \(x) {
+    object$blocks <- IRangesList(apply(decoded.mat, 2, \(x) {
       # See benchmarks/BED12-blockInfo-benchmark.md
       width_value <- x[1]
       qLow_value  <- x[2]
@@ -513,7 +513,7 @@ function(object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
         c( if(qLow_value != 1) IRanges(1)) |>
         c( IRanges(qLow_value, qUp_value)) |>
         c( if(qUp_value != width_value) IRanges(width_value))
-    })
+    }))
   }
   ucsc <- as(object, "UCSCData")
   score(ucsc) <- decode(score(ucsc))
@@ -547,7 +547,7 @@ function( object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
 
 setMethod( "exportToTrack", "TagClusters",
 function( object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
-  object$thick <- object$dominant_ctss
+  object$thick <- IRanges(object$dominant_ctss)
   object$dominant_ctss <- NULL
  	names(object) <- NULL
  	object$name <- NA
