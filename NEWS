@@ -1,11 +1,31 @@
 Changes in version 1.99.0:
 
-BACKWARDS-INCOMPATIBLE CHANGES:
+BACKWARDS-INCOMPATIBLE CHANGES
 
     o The `CAGEset` class is removed.
     o Accessors using plain `data.frame` formats are removed.
     o Modifier functions return the object instead of silently modifying it
       in the global environment
+    o Removed export function that unconditionally wrote files to the
+      working directory, such as `exportCTSStoBedGraph`.  As a replacement a
+      new converter is provided, `exportToBrowserTrack`, that produces
+      `UCSCData` objects that the user can then wite to files using the
+      _rtracklayer_ package.
+    o Removed the `extractExpressionClass` function, as the information is
+      easily accessible from within the `CTSS` or `ConsensusClusters` objects.
+      
+NEW FEATURES
+
+    o `CTSSnormalizedTpmGR` and `CTSStagCountGR` now accept `"all"` as a special
+      sample name to return them all in a `GRangesList` object.
+    o Plot interquantile width and expression clusters with ggplot2.
+
+      
+BUG FIXES
+
+    o Corrected the `getExpressionProfiles` function to accept CAGEexp objects.
+    o Updated the `exampleCAGEexp` object to contain expression classes.
+
 
 Changes in version 1.34.0:
 
