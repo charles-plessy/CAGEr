@@ -2,9 +2,27 @@
 % Please edit documentation in R/ClusteringMethods.R
 \name{clusterCTSS}
 \alias{clusterCTSS}
+\alias{clusterCTSS,CAGEexp-method}
 \title{Cluster CTSSs into tag clusters}
 \usage{
 clusterCTSS(
+  object,
+  threshold = 1,
+  nrPassThreshold = 1,
+  thresholdIsTpm = TRUE,
+  method = c("distclu", "paraclu", "custom"),
+  maxDist = 20,
+  removeSingletons = FALSE,
+  keepSingletonsAbove = Inf,
+  minStability = 1,
+  maxLength = 500,
+  reduceToNonoverlapping = TRUE,
+  customClusters = NULL,
+  useMulticore = FALSE,
+  nrCores = NULL
+)
+
+\S4method{clusterCTSS}{CAGEexp}(
   object,
   threshold = 1,
   nrPassThreshold = 1,

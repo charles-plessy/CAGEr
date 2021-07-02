@@ -848,6 +848,8 @@ setMethod("expressionClasses", "CTSS", function (object) {
   classes
 })
 
+#' @rdname expressionClasses
+
 setMethod("expressionClasses", "ConsensusClusters", function (object) {
   classes <- object$exprClass
   if (is.null(classes)) stop("No expression clustering of consensus clusters has been done yet!")

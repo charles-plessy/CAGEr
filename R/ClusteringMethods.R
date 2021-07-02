@@ -111,6 +111,8 @@ setGeneric( "clusterCTSS"
                     , useMulticore = FALSE, nrCores = NULL)
               standardGeneric("clusterCTSS"))
 
+#' @rdname clusterCTSS
+
 setMethod( "clusterCTSS", "CAGEexp"
          , function( object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist
                    , removeSingletons, keepSingletonsAbove, minStability, maxLength

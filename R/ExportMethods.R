@@ -568,6 +568,8 @@ setMethod( "exportToTrack", "ConsensusClusters"
                  , oneTrack = oneTrack)
 })
 
+#' @name .myColorMatrix
+#' @noRd
 #' This function might be used later to restore the capacity of assigning a
 #' color to each SOM cluster.
 

@@ -3,11 +3,14 @@
 \name{expressionClasses}
 \alias{expressionClasses}
 \alias{expressionClasses,CTSS-method}
+\alias{expressionClasses,ConsensusClusters-method}
 \title{Extract labels of \emph{expression classes}}
 \usage{
 expressionClasses(object)
 
 \S4method{expressionClasses}{CTSS}(object)
+
+\S4method{expressionClasses}{ConsensusClusters}(object)
 }
 \arguments{
 \item{object}{A \code{\link{CAGEr}} object.}
