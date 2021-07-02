@@ -395,23 +395,6 @@ setMethod( "plotExpressionProfiles", "CAGEexp"
 #' colors in which they are shown in the plot returned by the
 #' `plotExpressionProfiles` function.  For `colorByExpressionProfile = FALSE`
 #' all consensus clusters are shown in black.
-
-
-#' @return Creates bedGraph or BigWig file(s) in the working directory that can be directly
-#' visualised as custom tracks in the UCSC Genome Browser.  If \code{format="bedGraph"} and
-#' \code{oneFile = TRUE} one bedGraph file containing multiple annotated tracks will be created,
-#' otherwise two files per CAGE dataset will be created, one for plus strand and one for minus
-#' strand CTSSs, and they will be named according to the labels of individual datasets.  All
-#' bedGraph files contain headers with track description and can be directly uploaded as custom
-#' tracks to the UCSC Genome Browser. 
-#' 
-#' When \code{format="bigWig"}, two binary BigWig files per CAGE dataset are created, one for
-#' plus strand and one for minus strand CTSSs. Since BigWig files cannot contain headers with
-#' track description, a separate file named "CTSS.normalized.all.samples.track.description.txt"
-#' is created, which contains track headers for all BigWig files. To use these headers for
-#' adding custom tracks to the UCSC Genome Browser, move the BigWig files to a web location and
-#' edit the bigDataUrl sections in the headers file to point to corresponding BigWig files.
-
 #' 
 #' @return Returns either a `rtracklayer` `UCSCData` object, or a `GRangesList`
 #' of them.
