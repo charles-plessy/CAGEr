@@ -9,7 +9,6 @@ Authors@R:
      person("Sarvesh", "Nikumbh",   email = "s.nikumbh@lms.mrc.ac.uk",       role = "ctb")
   )
 Imports:
-    beanplot,
     BiocGenerics,
     BiocParallel,
     BSgenome,
