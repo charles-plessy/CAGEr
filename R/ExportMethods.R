@@ -551,10 +551,8 @@ setMethod( "exportToTrack", "ConsensusClusters"
                  , oneTrack = oneTrack)
 })
 
-#' @name .myColorMatrix
-#' @noRd
-#' This function might be used later to restore the capacity of assigning a
-#' color to each SOM cluster.
+# This function might be used later to restore the capacity of assigning a
+# color to each SOM cluster.
 
 .myColorMatrix <- function(color.mx, nrows, ncols, ...) {
   .myColorRamp <- function (vec, color.low="green", color.high="red", color.mid=NULL, alpha=1, value.low=min(vec), value.high=max(vec), value.mid=(value.low+value.high)/2, ...) {
