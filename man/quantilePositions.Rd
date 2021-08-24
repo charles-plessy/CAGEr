@@ -2,7 +2,7 @@
 % Please edit documentation in R/QuantileWidthMethods.R
 \name{quantilePositions}
 \alias{quantilePositions}
-\alias{quantilePositions,CAGEr-method}
+\alias{quantilePositions,CAGEexp-method}
 \title{Determine CTSS quantile positions within clusters}
 \usage{
 quantilePositions(
@@ -14,7 +14,7 @@ quantilePositions(
   nrCores = NULL
 )
 
-\S4method{quantilePositions}{CAGEr}(
+\S4method{quantilePositions}{CAGEexp}(
   object,
   clusters = c("tagClusters", "consensusClusters"),
   qLow = 0.1,
@@ -24,40 +24,39 @@ quantilePositions(
 )
 }
 \arguments{
-\item{object}{A \code{\link{CAGEr}} object.}
+\item{object}{A CAGEexp object.}
 
 \item{clusters}{Either \code{tagClusters} or \code{consensusClusters}.}
 
 \item{qLow, qUp}{Which \dQuote{lower} or \dQuote{upper} quantiles should be
-calculated. Numeric vector of values in range \code{[0,1]}.}
+calculated. Numeric vector of values in range \verb{[0,1]}.}
 
-\item{useMulticore}{Logical, should multicore be used.
-\code{useMulticore = TRUE} has only effect on Unix-like platforms.}
+\item{useMulticore}{Logical, should multicore be used.  \code{useMulticore = TRUE}
+has only effect on Unix-like platforms.}
 
-\item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}.
-Default value \code{NULL} uses all detected cores.}
+\item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}.  Default
+value \code{NULL} uses all detected cores.}
 }
 \value{
-Returns the objects, in wich the positions of the quantiles are defined
-reliatively to the start point of their cluster, for more efficient
-\code{Rle} compression.  The quantile data for \emph{tag clusters} are stored
-in the \code{TagClusters} objects directly.  The quantile data for
-\emph{consensus clusters} are stored in \code{\link{integer}} matrices named
-\dQuote{q_\emph{x}}, where \emph{x} represents the quantile (for instance,
-\code{q_0.1}), and these matrices are \emph{assays} of the
-\code{consensusClusters} \code{\link{RangedSummarizedExperiment}}.
+Returns the objects, in which the positions of the quantiles are
+defined relatively to the start point of their cluster, for more efficient
+\code{Rle} compression.  The quantile data for \emph{tag clusters} are stored in the
+\code{TagClusters} objects directly.  The quantile data for \verb{consensus clusters}
+are stored in \code{\link{integer}} matrices named \dQuote{q_\emph{x}}, where \emph{x}
+represents the quantile (for instance, \code{q_0.1}), and these matrices are
+\emph{assays} of the \code{consensusClusters} \code{\link{RangedSummarizedExperiment}}.
 }
 \description{
 Calculates the positions of \dQuote{upper} and \dQuote{lower}
-quantiles of CAGE signal along \emph{tag clusters} or
-\emph{consensus clusters} in each sample of a  CAGEr object.
+quantiles of CAGE signal along \emph{tag clusters} or \emph{consensus clusters} in each
+sample of a \code{\link{CAGEexp}} object.
 }
 \details{
 From the 5' end the position, the position of a quantile \emph{q} is
-detemined as the first base in which of the cumulative expression is higher
+determined as the first base in which of the cumulative expression is higher
 or equal to \emph{q\%} of the total CAGE signal of that cluster.  Promoter
-\emph{interquantile width} is defined as the distance (in base pairs)
-between a \dQuote{lower} and an \dQuote{upper} quantile position.
+\emph{interquantile width} is defined as the distance (in base pairs) between a
+\dQuote{lower} and an \dQuote{upper} quantile position.
 }
 \examples{
 
@@ -92,6 +91,8 @@ Other CAGEr clusters functions:
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
 \concept{CAGEr clusters functions}
 \concept{CAGEr object modifiers}

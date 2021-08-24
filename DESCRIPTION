@@ -77,7 +77,6 @@ Collate:
     'NormalizationFunctions.R'
     'NormalizationMethods.R'
     'QCmethods.R'
-    'QuantileWidthFunctions.R'
     'QuantileWidthMethods.R'
     'Richness.R'
     'ShiftingFunctions.R'
