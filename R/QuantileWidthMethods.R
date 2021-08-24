@@ -54,7 +54,7 @@ setGeneric( "quantilePositions"
                     , clusters = c("tagClusters", "consensusClusters")
                     , qLow = 0.1, qUp = 0.9
                     , useMulticore = FALSE, nrCores = NULL)
-	standardGeneric("quantilePositions"))
+  standardGeneric("quantilePositions"))
 
 #' @rdname quantilePositions
 
@@ -71,8 +71,8 @@ setMethod( "quantilePositions", "CAGEexp"
       },
       BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
     ctss.clusters <- GRangesList(ctss.clusters)
-		tagClustersGR(object) <- ctss.clusters
-	} else if (clusters == "consensusClusters"){
+    tagClustersGR(object) <- ctss.clusters
+  } else if (clusters == "consensusClusters"){
     cons.clusters.l <- bplapply(sampleList(object), function(s) {
         message("\t-> ", s)
         .get.quant.pos( cum.sums  = CTSScumulativesCC(object, s)
@@ -83,7 +83,7 @@ setMethod( "quantilePositions", "CAGEexp"
     for (qName in paste("q", c(qLow, qUp), sep = "_")) {
       assays(consensusClustersSE(object), withDimnames=FALSE)[[qName]] <-
         DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
-	}
+  }
   object
 })
 
