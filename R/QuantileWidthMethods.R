@@ -65,7 +65,7 @@ setMethod( "quantilePositions", "CAGEexp"
   if (clusters == "tagClusters") {
     ctss.clusters <- bplapply(sampleList(object), function(s) {
         message("\t-> ", s)
-        .get.quant.pos( cumsums  = CTSScumulativesTagClusters(object, s)
+        .get.quant.pos( cum.sums  = CTSScumulativesTagClusters(object, s)
                       , clusters = tagClustersGR(object, s)
                       , q        = c(qLow, qUp))
       },
@@ -75,7 +75,7 @@ setMethod( "quantilePositions", "CAGEexp"
 	} else if (clusters == "consensusClusters"){
     cons.clusters.l <- bplapply(sampleList(object), function(s) {
         message("\t-> ", s)
-        .get.quant.pos( cumsums  = CTSScumulativesCC(object, s)
+        .get.quant.pos( cum.sums  = CTSScumulativesCC(object, s)
                       , clusters = consensusClustersGR(object)
                       , q        = c(qLow, qUp))
       },
@@ -92,7 +92,7 @@ setMethod( "quantilePositions", "CAGEexp"
 #' Private function that calculates position of quantiles for CTSS clusters
 #' based on distribution of tags within the clusters.
 #' 
-#' @param cumsums Named list of vectors containing cumulative sum for each
+#' @param cum.sums Named list of vectors containing cumulative sum for each
 #'        cluster (returned by the `CTSScumulativesTagClusters` or
 #'        `CTSScumulativesCC` function).
 #' @param clusters [`TagClusters`] or [`ConsensusClusters`] object representing
@@ -104,23 +104,25 @@ setMethod( "quantilePositions", "CAGEexp"
 #' quantile boundaries to the start position.
 #' 
 #' @examples 
-#' \dontrun{ #because it runs through quantilePositions() anyway.
-#' cumsums  <- CTSScumulativesTagClusters(exampleCAGEexp, 1)
-#' clusters <- tagClustersGR(exampleCAGEexp, 1)
-#' CAGEr:::.get.quant.pos(cumsums, clusters, c(.2, .8))
-#' }
+#' cum.sums  <- RleList(`1` = Rle(1), `2` = cumsum(Rle(c(1, 1, 1, 2, 4, 0, 1, 1))))
+#' clusters <- GRanges(c("chr1:100-101", "chr1:120-127"))
+#' CAGEr:::.get.quant.pos(cum.sums, clusters, c(.2, .8))
 
 #' @rdname QuantileWidthFunctions
 
-.get.quant.pos <- function(cumsums, clusters, q) {
-  getQuantilepos <- Vectorize(vectorize.args = "cumsum", function(q, cumsum) {
-    cumsum <- decode(cumsum)
-    max <- tail(cumsum,1)   # Max is last element since we x is a cumulative sums.
-    treshold <- max * q
-    which.max(cumsum >= treshold)
+.get.quant.pos <- function(cum.sums, clusters, q) {
+  # Vectorized function calculating one quantile position
+  # for each element of a list of cumulative sums.
+  getQuantilepos <- Vectorize(vectorize.args = "cum.sum", function(q, cum.sum) {
+    cum.sum <- decode(cum.sum) # A microbenchmark showed it it 3 times faster when applying decode() now
+    c.max <- tail(cum.sum,1) # Max is last element since x is a cumulative sums.
+    treshold <- c.max * q
+    which.max(cum.sum >= treshold)
   })
-  cluster.q <- lapply(q, getQuantilepos, cumsums)
+  # Calculate quantile positions for each quantile.
+  cluster.q <- lapply(q, getQuantilepos, cum.sums)
   names(cluster.q) = paste('q_', q, sep = '')
+  # Add one metadata column per quantile to the cluster object and return it.
   mcols(clusters)[, names(cluster.q)] <- DataFrame(lapply(cluster.q, Rle))
   clusters
 }

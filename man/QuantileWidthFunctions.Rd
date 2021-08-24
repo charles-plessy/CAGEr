@@ -4,10 +4,10 @@
 \alias{.get.quant.pos}
 \title{Get quantile positions}
 \usage{
-.get.quant.pos(cumsums, clusters, q)
+.get.quant.pos(cum.sums, clusters, q)
 }
 \arguments{
-\item{cumsums}{Named list of vectors containing cumulative sum for each
+\item{cum.sums}{Named list of vectors containing cumulative sum for each
 cluster (returned by the \code{CTSScumulativesTagClusters} or
 \code{CTSScumulativesCC} function).}
 
@@ -26,9 +26,7 @@ Private function that calculates position of quantiles for CTSS clusters
 based on distribution of tags within the clusters.
 }
 \examples{
-\dontrun{ #because it runs through quantilePositions() anyway.
-cumsums  <- CTSScumulativesTagClusters(exampleCAGEexp, 1)
-clusters <- tagClustersGR(exampleCAGEexp, 1)
-CAGEr:::.get.quant.pos(cumsums, clusters, c(.2, .8))
-}
+cum.sums  <- RleList(`1` = Rle(1), `2` = cumsum(Rle(c(1, 1, 1, 2, 4, 0, 1, 1))))
+clusters <- GRanges(c("chr1:100-101", "chr1:120-127"))
+CAGEr:::.get.quant.pos(cum.sums, clusters, c(.2, .8))
 }
