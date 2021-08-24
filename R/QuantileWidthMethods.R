@@ -82,7 +82,8 @@ setMethod( "quantilePositions", "CAGEexp"
       BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
     for (qName in paste("q", c(qLow, qUp), sep = "_")) {
       assays(consensusClustersSE(object), withDimnames=FALSE)[[qName]] <-
-        DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))}
+        DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))
+    }
   }
   object
 })
