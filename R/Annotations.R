@@ -429,6 +429,24 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
   object
 })
 
+#' @rdname annotateCTSS
+
+setMethod("annotateCTSS", c("CAGEexp", "TxDb"), function (object, ranges){
+  g <- genes(ranges)
+  g$gene_name <- g$gene_id
+  annotateCTSS(object, g)
+  CTSScoordinatesGR(object)$genes      <- ranges2genes(CTSScoordinatesGR(object), g)
+  CTSScoordinatesGR(object)$annotation <- txdb2annot(CTSScoordinatesGR(object), ranges)
+  
+  annot <- sapply( CTSStagCountDF(object)
+                   , function(X) tapply(X, CTSScoordinatesGR(object)$annotation, sum))
+  colData(object)[levels(CTSScoordinatesGR(object)$annotation)] <- DataFrame(t(annot))
+  
+  validObject(object)
+  object
+})
+
+
 #' @name annotateConsensusClusters
 #' 
 #' @rdname annotateCTSS
@@ -549,6 +567,34 @@ ranges2annot <- function(ranges, annot) {
     })
   }
 
+  annot <- factor(annot, levels = classes)
+  Rle(annot)
+}
+
+#' @name txdb2annot
+#' 
+#' @rdname ranges2annot
+#' 
+#' @importFrom GenomicFeatures promoters exons transcripts
+
+txdb2annot <- function(ranges, annot) {
+  findOverlapsBool <- function(A, B) {
+    overlap <- findOverlaps(A, B)
+    overlap <- as(overlap, "List")
+    any(overlap)
+  }
+  
+  classes <- c("promoter", "exon", "intron", "unknown")
+  p <- findOverlapsBool(ranges, trim(suppressWarnings(promoters(annot, 500, 500))))
+  e <- findOverlapsBool(ranges, exons(annot))
+  t <- findOverlapsBool(ranges, transcripts(annot))
+  annot <- sapply( 1:length(ranges), function(i) {
+    if      (p[i]) {classes[1]}
+    else if (e[i]) {classes[2]}
+    else if (t[i]) {classes[3]}
+    else           {classes[4]}
+  })
+  
   annot <- factor(annot, levels = classes)
   Rle(annot)
 }
