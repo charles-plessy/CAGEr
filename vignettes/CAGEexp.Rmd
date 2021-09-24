@@ -60,7 +60,7 @@ while allowing filtering out low-quality tags and removing technology-specific b
 performs normalization of raw CAGE tag count, clustering of TSSs into tag clusters (TC) and their
 aggregation across multiple CAGE experiments into promoters to construct the promoterome. Various
 methods for normalization and clustering of TSSs are supported. Exporting data into different types
-of track files allows various visualisations of TSSs and clusters (promoters) in the UCSC Genome
+of track objects allows export and various visualisations of TSSs and clusters (promoters) in the UCSC Genome
 Browser, which facilitate generation of hypotheses. _CAGEr_ manipulates multiple CAGE experiments 
 at once and performs analyses across datasets, including expression profiling and detection of
 differential TSS usage (promoter shifting). Multicore option for parallel processing is supported on
@@ -237,7 +237,7 @@ To actually read in the data into the object we use `getCTSS()` function, that w
 an experiment called `tagCountMatrix` to the _CAGEexp_ object.
 
 ```{r load_data}
-getCTSS(ce)
+ce <- getCTSS(ce)
 ce
 ```
 
@@ -259,16 +259,7 @@ be accessed directly using the native methods of the `MultiAssayExperiment` and
 CTSStagCountSE(ce)
 CTSScoordinatesGR(ce)
 CTSStagCountDF(ce)
-```
-
-For compatiblity with earlier CAGEr works using _CAGEset_ objects, and to provide simpler data
-formats, the coordinates and expression values can also be accessed as simple `data.frames`.
-Note howerver that with large data sets it can cause extreme performance issues.
-
-```{r}
-head(CTSScoordinates(ce))
-head(CTSStagCountDf(ce))
-head(CTSStagCount(ce))
+CTSStagCountGR(ce, 1)  # GRanges for one sample with expression count.
 ```
 
 Note that the samples are ordered in the way they were supplied when creating the _CAGEexp_ object
@@ -303,7 +294,7 @@ or any other input that has the same structure, see `help("annotateCTSS")` for d
 In this example, we will use a sample annotation for zebrafish (see `help("exampleZv9_annot")`).
 
 ```{r}
-annotateCTSS(ce, exampleZv9_annot)
+ce <- annotateCTSS(ce, exampleZv9_annot)
 ```
 
 The annotation results are stored as tag counts in the sample metadata, and as new
@@ -354,9 +345,9 @@ rearrange the samples in the temporal order of the zebrafish development (unfert
 the `mergeSamples()` function:
 
 ```{r}
-mergeSamples(ce, mergeIndex = c(3,2,4,4,1), 
-			mergedSampleLabels = c("zf_unfertilized_egg", "zf_high", "zf_30p_dome", "zf_prim6"))
-annotateCTSS(ce, exampleZv9_annot)
+ce <- mergeSamples(ce, mergeIndex = c(3,2,4,4,1), 
+                   mergedSampleLabels = c("Zf.unfertilized.egg", "Zf.high", "Zf.30p.dome", "Zf.prim6"))
+ce <- annotateCTSS(ce, exampleZv9_annot)
 ```
 
 The `mergeIndex` argument controls which samples will be merged and how the final dataset will be
@@ -415,7 +406,7 @@ one million to get normalized tags per million values.]
 To perform normalization we pass these parameters to the `normalizeTagCount` function.
 
 ```{r}
-normalizeTagCount(ce, method = "powerLaw", fitInRange = c(5, 1000), alpha = 1.2, T = 5*10^4)
+ce <- normalizeTagCount(ce, method = "powerLaw", fitInRange = c(5, 1000), alpha = 1.2, T = 5*10^4)
 ce[["tagCountMatrix"]]
 ```
 
@@ -467,24 +458,26 @@ between two neighbouring TSSs. Prior to clustering we will filter out low-fideli
 ones supported by less than 1 normalized tag counts in all of the samples.
 
 ```{r}
-clusterCTSS( object = ce
-           , threshold = 1
-           , thresholdIsTpm = TRUE
-           , nrPassThreshold = 1
-           , method = "distclu"
-           , maxDist = 20
-           , removeSingletons = TRUE
-           , keepSingletonsAbove = 5)
+ce <- clusterCTSS( ce
+                 , threshold = 1
+                 , thresholdIsTpm = TRUE
+                 , nrPassThreshold = 1
+                 , method = "distclu"
+                 , maxDist = 20
+                 , removeSingletons = TRUE
+                 , keepSingletonsAbove = 5)
 ```
 
 Our final set of tag clusters will not include singletons (clusters with only one TSS), unless the
 normalized signal is above 5, \emph{i.e.} it is a reasonably supported TSS.  The `clusterCTSS`
 function creates a set of clusters for each sample separately; for each cluster it returns the
 genomic coordinates, counts the number of TSSs within the cluster, determines the position of the
-most frequently used (dominant) TSS, calculates the total CAGE signal within the cluster and CAGE signal supporting the dominant TSS only.  We can extract tag clusters for a desired sample from `CAGEexp` object by calling the `tagClusters` function:
+most frequently used (dominant) TSS, calculates the total CAGE signal within the cluster and CAGE
+signal supporting the dominant TSS only.  We can extract tag clusters for a desired sample from
+`CAGEexp` object by calling the `tagClustersGR` function:
 
 ```{r}
-head(tagClusters(ce, sample = "zf_unfertilized_egg"))
+tagClustersGR(ce, sample = "Zf.unfertilized.egg")
 ```
 
 Promoter width
@@ -526,14 +519,14 @@ functions, which calculate cumulative distribution for every tag cluster in each
 samples and determine the positions of selected quantiles, respectively:
 
 ```{r}
-cumulativeCTSSdistribution(ce, clusters = "tagClusters", useMulticore = T)
-quantilePositions(ce, clusters = "tagClusters", qLow = 0.1, qUp = 0.9)
+ce <- cumulativeCTSSdistribution(ce, clusters = "tagClusters", useMulticore = T)
+ce <- quantilePositions(ce, clusters = "tagClusters", qLow = 0.1, qUp = 0.9)
 ```
 
 Tag clusters and their interquantile width can be retrieved by calling `tagClusters` function:
 
 ```{r}
-tagClustersGR( ce, "zf_unfertilized_egg"
+tagClustersGR( ce, "Zf.unfertilized.egg"
              , returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9)
 ```
 
@@ -561,7 +554,7 @@ be created.  This is done using the `aggregateTagClusters` function, which aggre
 from all samples into a single set of non-overlapping consensus clusters:
 
 ```{r}
-aggregateTagClusters(ce, tpmThreshold = 5, qLow = 0.1, qUp = 0.9, maxDist = 100)
+ce <- aggregateTagClusters(ce, tpmThreshold = 5, qLow = 0.1, qUp = 0.9, maxDist = 100)
 ce$outOfClusters / ce$librarySizes *100
 ```
 
@@ -585,9 +578,9 @@ the `clusters` parameter to `"consensusClusters"`.  Like the CTSS, the consensus
 also be annotated:
 
 ```{r}
-annotateConsensusClusters(ce, exampleZv9_annot)
-cumulativeCTSSdistribution(ce, clusters = "consensusClusters", useMulticore = TRUE)
-quantilePositions(ce, clusters = "consensusClusters", qLow = 0.1, qUp = 0.9, useMulticore = TRUE)
+ce <- annotateConsensusClusters(ce, exampleZv9_annot)
+ce <- cumulativeCTSSdistribution(ce, clusters = "consensusClusters", useMulticore = TRUE)
+ce <- quantilePositions(ce, clusters = "consensusClusters", qLow = 0.1, qUp = 0.9, useMulticore = TRUE)
 ```
 
 Although consensus clusters are created to represent consensus across all samples, they obviously
@@ -597,51 +590,66 @@ different samples.  Sample-specific information on consensus clusters can be ret
 tag clusters):
 
 ```{r}
-consensusClustersGR( ce, sample = "zf_unfertilized_egg"
+consensusClustersGR( ce, sample = "Zf.unfertilized.egg"
 		               , returnInterquantileWidth = TRUE,  qLow = 0.1, qUp = 0.9)
 ```
 
 This will, in addition to genomic coordinates of the consensus clusters, which are constant across all samples, also return the position of the dominant TSS, the CAGE signal (tpm) and the interquantile width specific for a given sample. Note that when specifying individual sample, only the consensus clusters that have some CAGE signal in that sample will be returned (which will be a subset of all consensus clusters).
 
 
-Data export for genome browsers
-------------------------------
+Track export for genome browsers
+--------------------------------
 
-CAGE data can be visualized in the genomic context by exporting raw or normalized CAGE tag counts
-to a bedGraph (or BigWig) file and uploading (or linking) the file to a genome browser. Positions
-of TSSs and tag counts supporting them are exported using `exportCTSStoBedGraph()`^[Note that
-the [ZENBU genome browser](http://fantom.gsc.riken.jp/zenbu) can display natively data from BAM
-or BED files as coverage tracks.]:
-
-```{r}
-exportCTSStoBedGraph(ce, values = "normalized", format = "bedGraph", oneFile = TRUE)
-```
-
-This will produce a single bedGraph file with multiple annotated tracks that can be directly
-visualized as custom tracks in the genome browser (Figure \@ref(fig:CTSSbedGraph)).
-
-There are two tracks per sample; one for TSSs on the plus strand and the other for the minus
-strand. Values for TSSs on minus strand are shown as negative and are pointing downwards in
-the browser.
-
-Alternatively, the tracks can be exported to a binary BigWig format:
+CAGE data can be visualized in the genomic context by converting raw or
+normalized CAGE tag counts to a track object and exporting it to a file format
+such as _BED_, _bedGraph_ or _BigWig_ for uploading (or linking) to a genome
+browser`^[Note that the [ZENBU genome browser](http://fantom.gsc.riken.jp/zenbu)
+can also display natively data from BAMor BED files as coverage tracks.].  The
+\Rfunction(exportToTrack) function can take a variety of inputs representing
+_CTSS_, _Tag Clusters_ or _Consensus Clusters_, with raw or normalised
+expression scores.  When asked to export multiple samples it will return
+a list of tracks.
 
 ```{r}
-exportCTSStoBedGraph(ce, values = "normalized", format = "BigWig")
+trk <- exportToTrack(CTSSnormalizedTpmGR(ce, "Zf.30p.dome"))
+ce |> CTSSnormalizedTpmGR("all") |> exportToTrack(ce, oneTrack = FALSE)
 ```
 
-which will produce two BigWig files per sample (one for TSSs on the plus strand and the other
-for the minus strand) and an accompanying text file with track headers.
+Some track file format, for instance _bigWig_ or _bedGraph_ require the `+` and
+`-` strands to be separated, because they do not allow overlapping ranges.
+This can be done with the \Rfunction(split) function like in the following
+example^[The `drop = TRUE` option is needed to remove the `*` level.].
+
+```{r}
+split(trk, strand(trk), drop = TRUE)
+```
+
+For _bigWig_ export, the \Rfunction(rtracklayer::export.bw) needs to be run
+on each element of the list returned by the \Rfunction(split) command.
+
+For _bedGraph_ export, the \Rfunction(rtracklayer::export.bedGraph) command
+can take the list as input and will produce a single file containing the
+two tracks.  (Figure \@ref(fig:CTSSbedGraph)) shows an example of _bedGraph_
+visualisation.
+
+For _BED_ export, the \Rfunction(rtracklayer::export.bed) can operate directly
+on the track object.
+
+Other export format probably operate in a way similar to one of the cases
+above.
 
 ```{r CTSSbedGraph, echo=FALSE, fig.cap="CAGE data bedGraph track visualized in the UCSC Genome Browser"}
 knitr::include_graphics("images/CTSSbedGraph.svg")
 ```
 
-Interquantile width can also be visualized in a gene-like representation in the UCSC genome
-browser by exporting the data into a BED file:
+Interquantile width can also be visualized in a gene-like representation in the
+genome browsers by passing quantile information during data conversion to
+the _UCSCData_ format and then exporting it into a _BED_ file:
 
 ```{r}
-exportToBed(object = ce, what = "tagClusters", qLow = 0.1, qUp = 0.9, oneFile = TRUE)
+iqtrack <- exportToTrack(ce, what = "tagClusters", qLow = 0.1, qUp = 0.9, oneTrack = FALSE)
+iqtrack
+#rtracklayer::export.bed(iqtrack, "outputFileName.bed")
 ```
 
 In this gene-like representation (Figure \@ref(fig:tagClustersBed)), the oriented line shows the
@@ -656,47 +664,45 @@ knitr::include_graphics("images/TagClustersBed.svg")
 Expression profiling
 --------------------
 
-Since CAGE signal reflects level of transcription from a given TSS or promoter it can be used
-for 5′ centered expression profiling.  Expression clustering can be done at level of individual
-CTSSs or at level of entire promoters (consensus clusters).  In the former case, feature vector
-containing log transformed and scaled normalized CAGE signal at individual TSS across multiple
-samples is used as input for clustering algorithm, whereas in the latter case CAGE signal
-within the entire consensus cluster is used.  _CAGEr_ supports two unsupervised clustering
-algorithms: kmeans and self-organizing maps (SOM).  Both algorithms require to specify a
-number of clusters in advance.
+The CAGE signal is a quantitative measure of promoter activity.  In _CAGEr_,
+normalised expression scores of individual CTSSs or consensus clusters can be
+clustered in _expression classes_.  Two unsupervised clustering algorithms are
+supported: kmeans and self-organizing maps (SOM).  Both require to specify a
+number of clusters in advance.  Results are stored in the `exprClass` _metadata
+column_ of the CTSS or consensus clusters genomic ranges, and the
+`expressionClass` accessor function is provided for convenience.
 
-We will perform expression clustering at the level of entire promoter using SOM algorithm and
-applying it only to promoters with normalized CAGE signal $>= 15$ in at least one sample.
+In the example below, we perform expression clustering at the level of entire
+promoters using SOM algorithm with 4 × 2 dimensions and applying it only to
+consensus clusters with a normalized CAGE signal of at least 10 TPM in at least
+one sample.
 
 ```{r}
-# Not supported yet for CAGEexp objects, sorry.
-# getExpressionProfiles(ce, what = "consensusClusters", tpmThreshold = 10, 
-# 		nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
+ce <- getExpressionProfiles(ce, what = "consensusClusters", tpmThreshold = 10, 
+  nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
+
+consensusClustersGR(ce)$exprClass |> table(useNA = "always")
 ```
 
-Distribution of expression across samples for 8 clusters returned by SOM (4 $\times$ 2 map) can
+Distribution of expression across samples for the 8 clusters returned by SOM can
 be visualized using the `plotExpressionProfiles` function 
 as shown in Figure \@ref(fig:ConsensusClustersExpressionProfiles):
 
-```{r}
-# Not supported yet for CAGEexp objects, sorry.
-# plotExpressionProfiles(ce, what = "consensusClusters")
+```{r ConsensusClustersExpressionProfiles}
+plotExpressionProfiles(ce, what = "consensusClusters")
 ```
 
 
-```{r ConsensusClustersExpressionProfiles, echo=FALSE, fig.align="center", fig.cap="Expression clusters"}
+```{r ConsensusClustersExpressionProfiles_svg, echo=FALSE, fig.align="center", fig.cap="Expression clusters"}
 knitr::include_graphics("images/ConsensusClustersExpressionProfiles.svg")
 ```
 
 Each cluster is shown in different color and is marked by its label and the
 number of elements (promoters) in the cluster. We can extract promoters
-belonging to a specific cluster by typing:
+belonging to a specific cluster by typing commands like:
 
 ```{r}
-# Not supported yet for CAGEexp objects, sorry.
-# class3_1 <- extractExpressionClass(ce, 
-# 		what = "consensusClusters", which = "3_1")
-# head(class3_1)
+consensusClustersGR(ce) |> subset(consensusClustersGR(ce)$exprClass ==  "0_1")
 ```
 
 Consensus clusters and information on their expression profile can be exported to a BED file, which allows visualization of the promoters in the 
@@ -751,7 +757,7 @@ shifting score calculation and statistical testing, we have to calculate
 cumulative distribution along all consensus clusters:
 
 ```{r}
-cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
+ce <- cumulativeCTSSdistribution(ce, clusters = "consensusClusters")
 ```
 
 Next, we calculate a shifting score and P-value of Kolmogorov-Smirnov test for
@@ -759,7 +765,7 @@ all promoters comparing two specified samples:
 
 ```{r}
 # Not supported yet for CAGEexp objects, sorry.
-# scoreShift(ce, groupX = "zf_unfertilized_egg", groupY = "zf_prim6",
+# scoreShift(ce, groupX = "Zf.unfertilized.egg", groupY = "zf_prim6",
 # 		testKS = TRUE, useTpmKS = FALSE)
 ```
 
@@ -851,12 +857,12 @@ An example of such data frame is shown below:
 TSS.df <- read.table(system.file( "extdata/Zf.unfertilized.egg.chr17.ctss"
                                 , package = "CAGEr"))
 # make sure the column names are as required
-colnames(TSS.df) <- c("chr", "pos", "strand", "zf_unfertilized_egg")
+colnames(TSS.df) <- c("chr", "pos", "strand", "Zf.unfertilized.egg")
 # make sure the column classes are as required
 TSS.df$chr <- as.character(TSS.df$chr)
 TSS.df$pos <- as.integer(TSS.df$pos)
 TSS.df$strand <- as.character(TSS.df$strand)
-TSS.df$zf_unfertilized_egg <- as.integer(TSS.df$zf_unfertilized_egg)
+TSS.df$Zf.unfertilized.egg <- as.integer(TSS.df$Zf.unfertilized.egg)
 head(TSS.df)
 ```
 
@@ -887,30 +893,22 @@ Please let me know your opinion about the names and scope of the accessors below
 
 Name                | Output 
 --------------------|------------------------------------------------------
-CTSScoordinates     | Coordinate table in ad-hoc data.frame format.
 CTSScoordinatesGR   | Coordinate table in GRanges format.
-CTSStagCount        | Raw CTSS counts in ad-hoc data.frame format (with coordinates).
 CTSStagCountDA      | Raw CTSS counts in DelayedArray format wrapping a integer Rle DataFrame.
 CTSStagCountDF      | Raw CTSS counts in integer Rle DataFrame format.
-CTSStagCountDf      | Raw CTSS counts in data.frame format (without coordinates).
 CTSStagCountGR      | Raw CTSS counts in GRanges format (single samples).
 CTSStagCountSE      | RangedSummarizedExperiment containing an assay for the Raw CTSS counts.
-CTSStagCountTable   | Returns CTSStagCount for CAGEsets and CTSStagCountDF for CAGEexps.
-CTSSnormalizedTpm   | Normalised CTSS values in ad-hoc data.frame format (with coordinates).
 CTSSnormalizedTpmDF | Normalised CTSS values in Rle DataFrame format.
-CTSSnormalizedTpmDf | Normalised CTSS values in ad-hoc data.frame format (without coordinates).
 CTSSnormalizedTpmGR | Normalised CTSS values in GRanges format (single samples).
 
 ### Cluster data
 
 Name                    | Output 
 ------------------------|------------------------------------------------------
-consensusClusters       | Consensus cluster coordinates in ad-hoc data.frame format.
 consensusClustersDESeq2 | Consensus cluster coordinates and expression matrix in DESeq2 format.
 consensusClustersGR     | Consensus cluster coordinates in GRanges format.
 consensusClustersSE     | Consensus cluster coordinates and expression matrix in RangedSummarizedExperiment format.
 consensusClustersTpm    | Consensus cluster coordinates and raw expression matrix.
-tagClusters             | Per-sample list of tag cluster coordinates in ad-hoc data.frame format.
 tagClustersGR           | Per-sample GRangesList of tag cluster coordinates.
 
 ### Gene data

@@ -159,7 +159,7 @@ setMethod("plotAnnot", "CAGEexp",
 #' 
 #' @importFrom gtools mixedorder
 #' @importFrom plyr ddply
-#' @importFrom reshape melt
+#' @importFrom reshape2 melt
 
 mapStats <- function( libs
                     , scope
@@ -219,8 +219,8 @@ mapStats <- function( libs
   mapstats.sd       <- data.frame(sapply(columns, doSd, simplify = FALSE))
   mapstats.sd$group <- rownames(mapstats.sd)
   
-  mapstats          <- reshape::melt(mapstats,    id.vars="group")
-  mapstats$sd       <- reshape::melt(mapstats.sd, id.vars="group")$value
+  mapstats          <- reshape2::melt(mapstats,    id.vars="group")
+  mapstats$sd       <- reshape2::melt(mapstats.sd, id.vars="group")$value
   
   value <- NULL # To silence "no visible binding for global variable" error in R CMD check.
   mapstats          <- plyr::ddply( mapstats
@@ -382,7 +382,7 @@ msScope_annotation <- function(libs) {
 #' @description `annotateCTSS` annotates the _CTSS_ of a [`CAGEexp`] object and
 #' computes annotation statistics.
 #' 
-#' @param object `CAGEexp` object (`CAGEset`s are not supported).
+#' @param object `CAGEexp` object.
 #'   
 #' @param ranges A [`GRanges`] object, optionally containing `gene_name`,
 #'   `type` and `transcript_type` metadata.
@@ -417,14 +417,7 @@ setGeneric("annotateCTSS", function(object, ranges) standardGeneric("annotateCTS
 
 #' @rdname annotateCTSS
 
-setMethod("annotateCTSS", "CAGEset", function (object, ranges){
-  stop("CAGEset objects not supported.")})
-
-#' @rdname annotateCTSS
-
 setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
-  objName <- deparse(substitute(object))
-  
   CTSScoordinatesGR(object)$genes      <- ranges2genes(CTSScoordinatesGR(object), ranges)
   CTSScoordinatesGR(object)$annotation <- ranges2annot(CTSScoordinatesGR(object), ranges)
   
@@ -432,10 +425,8 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges){
                  , function(X) tapply(X, CTSScoordinatesGR(object)$annotation, sum))
   colData(object)[levels(CTSScoordinatesGR(object)$annotation)] <- DataFrame(t(annot))
   
-  if (validObject(object)) {
-    assign(objName, object, envir = parent.frame())
-    invisible(1)
-  }
+  validObject(object)
+  object
 })
 
 #' @name annotateConsensusClusters
@@ -458,22 +449,14 @@ setGeneric("annotateConsensusClusters", function(object, ranges) standardGeneric
 
 #' @rdname annotateCTSS
 
-setMethod("annotateConsensusClusters", "CAGEset", function (object, ranges){
-  stop("CAGEset objects not supported.")})
-
-#' @rdname annotateCTSS
-
 setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object, ranges){
-  objName <- deparse(substitute(object))
   if(is.null(experiments(object)$tagCountMatrix))
-    stop(objName, " does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
+    stop("Input does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
   consensusClustersGR(object)$annotation <- ranges2annot(consensusClustersGR(object), ranges)
   if(!is.null(ranges$gene_name))
     consensusClustersGR(object)$genes    <- ranges2genes(consensusClustersGR(object), ranges)
-  if (validObject(object)) {
-    assign(objName, object, envir = parent.frame())
-    invisible(1)
-  }
+  validObject(object)
+  object
 })
 
 
@@ -519,7 +502,7 @@ setMethod("annotateConsensusClusters", c("CAGEexp", "GRanges"), function (object
 #' 
 #' ctss <- GenomicRanges::GRanges("chr1", IRanges::IPos(c(1,100,200,1500)), "+")
 #' ctss <- GenomicRanges::GPos(ctss, stitch = FALSE)
-#' ctss <- CAGEr:::.CTSS(ctss)
+#' ctss <- as(ctss, "CTSS")
 #' gr1   <- GenomicRanges::GRanges( "chr1"
 #'                                , IRanges::IRanges(c(650, 650, 1400), 2000), "+")
 #' CAGEr:::ranges2annot(ctss, gr1)
@@ -734,7 +717,7 @@ ranges2names <- function(rangesA, rangesB) {
 #' Make a gene expression table.
 #' 
 #' Add a gene expression table in the `GeneExpSE` experiment slot of an
-#' annotated [`CAGEexp`] object.  [`CAGEset`] objects are not supported.
+#' annotated [`CAGEexp`] object.
 #' 
 #' @param object A `CAGEexp` object that was annotated with the [annotateCTSS()]
 #'        function.
@@ -772,24 +755,16 @@ setGeneric("CTSStoGenes", function(object) standardGeneric("CTSStoGenes"))
 
 #' @rdname CTSStoGenes
 
-setMethod("CTSStoGenes", "CAGEset", function (object)
-  stop("Not supported for ", dQuote("CAGEset"), " objects."))
-
-#' @rdname CTSStoGenes
-
 setMethod("CTSStoGenes", "CAGEexp", function (object) {
-  objName <- deparse(substitute(object))
   if (is.null(CTSScoordinatesGR(object)$genes))
-    stop(objName, " is not annotated, see ", dQuote("annotateCTSS()"), ".")
-  genes <- rowsum(CTSStagCountDf(object), as.factor(CTSScoordinatesGR(object)$genes))
+    stop("Input is not annotated, see ", dQuote("annotateCTSS()"), ".")
+  genes <- rowsum(as.data.frame(CTSStagCountDF(object)), as.factor(CTSScoordinatesGR(object)$genes))
   object$unannotated <- unname(unlist(genes[1,]))
-  genes <- genes[-1,]
+  genes <- genes[-1, , drop = FALSE]
   GeneExpSE(object) <- SummarizedExperiment( assays  = SimpleList(counts = as.matrix(genes))
                                            , rowData = DataFrame(symbol = rownames(genes)))
   object$genes      <- colSums(assay(GeneExpSE(object)) > 0)
   # object$geneSymbols <- countSymbols(assay(GeneExpSE(object)) %>% as.data.frame)
-  if (validObject(object)) {
-    assign(objName, object, envir = parent.frame())
-    invisible(1)
-  }
+  validObject(object)
+  object
 })

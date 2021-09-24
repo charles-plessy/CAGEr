@@ -203,32 +203,6 @@ setGeneric( "plotCorrelation2"
 #' @importFrom graphics pairs
 #' @rdname plotCorrelation
 
-setMethod( "plotCorrelation2", "CAGEset"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
-  what   <- match.arg(what)
-  values <- match.arg(values)
-	if (what == "CTSS" & values == "raw")
-		expr.table <- CTSStagCountDf(object)
-  if (what == "CTSS" & values == "normalized")
-		expr.table <- CTSSnormalizedTpmDf(object)
-	if (what == "consensusClusters" & values == "raw")
-		stop("Raw consensus clusters not supported yet.")
-	if (what == "consensusClusters" & values == "normalized")
-		expr.table <- consensusClustersTpm(object)
- plotCorrelation2( expr.table
-                 , what               = what
-                 , values             = values
-                 , samples            = samples
-                 , method             = method
-                 , tagCountThreshold  = tagCountThreshold
-                 , applyThresholdBoth = applyThresholdBoth
-                 , digits             = digits)
-})
-
-#' @rdname plotCorrelation
-
 setMethod( "plotCorrelation2", "CAGEexp"
          , function( object, what, values, samples, method
                    , tagCountThreshold, applyThresholdBoth
@@ -414,9 +388,9 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
     nc <- ncol(x)
     if (nc < 2L) 
         stop("only one column in the argument to 'pairs'")
-    if (!all(horInd >= 1L && horInd <= nc)) 
+    if (!all(horInd >= 1L & horInd <= nc)) 
         stop("invalid argument 'horInd'")
-    if (!all(verInd >= 1L && verInd <= nc)) 
+    if (!all(verInd >= 1L & verInd <= nc)) 
         stop("invalid argument 'verInd'")
     if (doText) {
         if (missing(labels)) {

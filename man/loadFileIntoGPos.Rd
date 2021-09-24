@@ -4,10 +4,16 @@
 \alias{loadFileIntoGPos}
 \title{loadFileIntoGPos}
 \usage{
-loadFileIntoGPos(filepath, filetype = c("bam", "bamPairedEnd", "bed",
-  "bedctss", "bedScore", "CAGEscanMolecule", "ctss"),
-  sequencingQualityThreshold, mappingQualityThreshold, removeFirstG,
-  correctSystematicG, genome)
+loadFileIntoGPos(
+  filepath,
+  filetype = c("bam", "bamPairedEnd", "bed", "bedctss", "bedScore", "CAGEscanMolecule",
+    "ctss"),
+  sequencingQualityThreshold,
+  mappingQualityThreshold,
+  removeFirstG,
+  correctSystematicG,
+  genome
+)
 }
 \arguments{
 \item{filepath}{The path to the file to load.}
@@ -34,11 +40,14 @@ A private (non-exported) function to load from each file format supported by CAG
 \seealso{
 import.CTSS
 
-Other loadFileIntoGPos: \code{\link{bam2CTSS}},
-  \code{\link{import.CTSS}}, \code{\link{import.bam.ctss}},
-  \code{\link{import.bam}}, \code{\link{import.bedCTSS}},
-  \code{\link{import.bedScore}},
-  \code{\link{import.bedmolecule}},
-  \code{\link{moleculesGR2CTSS}}
+Other loadFileIntoGPos: 
+\code{\link{bam2CTSS}()},
+\code{\link{import.CTSS}()},
+\code{\link{import.bam.ctss}()},
+\code{\link{import.bam}()},
+\code{\link{import.bedCTSS}()},
+\code{\link{import.bedScore}()},
+\code{\link{import.bedmolecule}()},
+\code{\link{moleculesGR2CTSS}()}
 }
 \concept{loadFileIntoGPos}

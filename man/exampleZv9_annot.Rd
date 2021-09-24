@@ -4,7 +4,9 @@
 \name{exampleZv9_annot}
 \alias{exampleZv9_annot}
 \title{Example zebrafish annotation data}
-\format{An object of class \code{GRanges} of length 7467.}
+\format{
+An object of class \code{GRanges} of length 7467.
+}
 \usage{
 exampleZv9_annot
 }
