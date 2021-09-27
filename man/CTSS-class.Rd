@@ -3,46 +3,85 @@
 \docType{class}
 \name{CTSS-class}
 \alias{CTSS-class}
-\alias{.CTSS}
+\alias{show,CTSS-method}
+\alias{initialize,CTSS-method}
 \alias{CTSS}
+\alias{coerce,CTSS,GRanges-method}
+\alias{coerce,GRanges,CTSS-method}
 \alias{CTSS.chr-class}
-\alias{.CTSS.chr}
-\alias{CTSS.chr}
-\alias{ConsensusClusters}
-\alias{.ConsensusClusters}
-\alias{TagClusters}
-\alias{.TagClusters}
-\title{Classes for type safety.}
-\description{
-The \code{CTSS} class represents CAGE transcription start sites
-(CTSS) at single-nucleotide resolution, using \code{GPos} as base class.  It is
-used internally by \emph{CAGEr} for type safety.
+\title{CAGE Transcription Start Sites}
+\usage{
+\S4method{show}{CTSS}(object)
 
-The \code{ConsensusClusters} class represents consensus clusters.
-It is used internally by CAGEr for type safety.
+\S4method{initialize}{CTSS}(.Object, ..., bsgenomeName = NULL)
+
+CTSS(
+  seqnames = NULL,
+  pos = NULL,
+  strand = NULL,
+  ...,
+  seqinfo = NULL,
+  seqlengths = NULL,
+  bsgenomeName = NULL
+)
+
+\S4method{coerce}{CTSS,GRanges}(from, to = "GRanges", strict = TRUE)
+
+\S4method{coerce}{GRanges,CTSS}(from, to = "CTSS", strict = TRUE)
+}
+\arguments{
+\item{object}{See  \code{\link[methods:show]{methods::show}}}
+
+\item{.Object}{See  \code{\link[methods:new]{methods::new}}}
+
+\item{bsgenomeName}{String containing the name of a \emph{BSgenome} package.}
+
+\item{seqnames, pos, strand, seqinfo, seqlengths, ...}{See the documentation
+of \code{\link[GenomicRanges:GPos-class]{GenomicRanges::GPos}} for further details.}
+
+\item{from, to, strict}{See  \code{\link[methods:setAs]{methods::coerce}}.}
+}
+\description{
+The \code{CTSS} class represents CAGE transcription start sites (CTSS) at
+single-nucleotide resolution, using \code{\link[GenomicRanges:GPos-class]{GenomicRanges::UnstitchedGPos}} as base
+class.  It is used by \emph{CAGEr} for type safety.
+
+The \code{CTSS} constructor takes the same arguments as \code{\link[GenomicRanges:GPos-class]{GenomicRanges::GPos}},
+plus \code{bsgenomeName}, and minus \code{stitch}, which is hardcoded to \code{FALSE}.
+
+The \code{CTSS.chr} class represents a \code{CTSS} object that is
+guaranteed to be only on a single chromosome.  It is used internally by
+\emph{CAGEr} for type-safe polymorphic dispatch.
 }
 \details{
 The \code{genomeName} element of the \code{metadata} slot is used to store the
 name of the \emph{BSgenome} package used when constructing the \code{CAGEr} object.
-Be careful that calling the \code{CTSS} constructor twice in a row will erase
-the fist metadata (because the \code{\link{GPos}} constructor does so).  \emph{CAGEr}
-uses the \code{UnstitchedGPos} implementation of \code{GPos}.
 
-The \code{CTSS.chr} class represents a \link{CTSS} object that is guaranteed
-to be only on a single chromosome.  It is used internally by \emph{CAGEr} for type
-safety.
-
-Consensus clusters must not overlap, so that a single TSS in the
-genome can only be attributed to a single cluster.
-
-The \code{TagClusters} class represents tag clusters.
-It is used internally by CAGEr for type safety.
+Coercion from \code{GRanges} to \code{CTSS} loses information, but it seems
+to be fine, since other coercions like \code{as(1.2, "integer")} do the same.
 }
 \examples{
-ctss <- CAGEr:::.CTSS( CTSScoordinatesGR(exampleCAGEexp)
-                     , bsgenomeName = genomeName(exampleCAGEexp))
+# Convert an UnstitchedGPos object using the new() constructor.
+gp <- GPos("chr1:2:-", stitch = FALSE)
+ctss <- new("CTSS", gp, bsgenomeName = "BSgenome.Drerio.UCSC.danRer7")
 genomeName(ctss)
 
+# Create a new object using the CTSS() constructor.
+CTSS("chr1", 2, "-", bsgenomeName = "BSgenome.Drerio.UCSC.danRer7")
+
+# Coerce CTSS to GRanges
+as(ctss, "GRanges")
+
+# Coerce a GRanges object to CTSS using the as() method.
+gr <- GRanges("chr1:1-10:-")
+gr$seq <- "AAAAAAAAAA"
+seqlengths(gr) <- 100
+genome(gr) <- "foo"
+as(gr, "CTSS")
+identical(seqinfo(gr), seqinfo(as(gr, "CTSS")))
+as(as(gr, "CTSS"), "CTSS") # Make sure it works twice in a row
+
+# (internal use) Transform CTSS to CTSS.chr object
 ctss.chr <- as(CTSScoordinatesGR(exampleCAGEexp), "CTSS.chr")
 }
 \author{

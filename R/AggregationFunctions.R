@@ -28,8 +28,8 @@ setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minu
   # Annotate TCs with ID of the aggregated cluster they intersect with.
   gr.list <- endoapply( gr.list, function (gr) {
     o = findOverlaps(clusters.gr, gr)
-    gr$consensus.cluster <- queryHits(o)
-    gr$sample <- "tbd" # Can not retreive 
+    gr$consensus.cluster[subjectHits(o)] <- queryHits(o)
+    gr$sample <- "tbd" # Can not retrieve 
     gr
   })
   
@@ -40,22 +40,8 @@ setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minu
   unname(unlist(gr.list))
 })
 
-#' @name consensusClusterConvertors
+#' @title consensus Cluster convertors
 #' 
-#' @title Private functions to convert CC formats
-#' 
-#' @description  Interconvert consensus clusters (CC) formats used in classes CAGEset
-#' (\code{data.frame}) and CAGEexp (\code{GRanges}).
-#' 
-#' @examples 
-#' df <- consensusClusters(exampleCAGEset)
-#' head(df)
-#' gr <- CCdataframe2granges(df)
-#' gr
-#' # No round-trip because start and end were not integer in df.
-#' # identical(df, CCgranges2dataframe(gr))
-NULL
-
 #' @name CCgranges2dataframe
 #' 
 #' @rdname consensusClusterConvertors

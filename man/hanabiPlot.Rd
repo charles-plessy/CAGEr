@@ -4,8 +4,7 @@
 \alias{hanabiPlot}
 \title{hanabiPlot}
 \usage{
-hanabiPlot(x, group, col = NULL, legend.pos = "topleft", pch = 1,
-  ...)
+hanabiPlot(x, group, col = NULL, legend.pos = "topleft", pch = 1, ...)
 }
 \arguments{
 \item{x}{A hanabi object.}
@@ -44,17 +43,20 @@ hanabiPlot(h, group = 1:5, pch=1:5, col="purple")
 
 }
 \seealso{
-Other CAGEr richness functions: \code{\link{hanabi}},
-  \code{\link{plot.hanabi}}
+Other CAGEr richness functions: 
+\code{\link{hanabi}},
+\code{\link{plot.hanabi}()}
 
-Other CAGEr richness functions: \code{\link{hanabi}},
-  \code{\link{plot.hanabi}}
+Other CAGEr richness functions: 
+\code{\link{hanabi}},
+\code{\link{plot.hanabi}()}
 
-Other CAGEr plot functions: \code{\link{plotAnnot}},
-  \code{\link{plotCorrelation}},
-  \code{\link{plotExpressionProfiles}},
-  \code{\link{plotInterquantileWidth}},
-  \code{\link{plotReverseCumulatives}}
+Other CAGEr plot functions: 
+\code{\link{plotAnnot}()},
+\code{\link{plotCorrelation}()},
+\code{\link{plotExpressionProfiles}()},
+\code{\link{plotInterquantileWidth}()},
+\code{\link{plotReverseCumulatives}()}
 }
 \author{
 Charles Plessy

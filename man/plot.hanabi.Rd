@@ -6,9 +6,16 @@
 \alias{lines.hanabi}
 \title{Plotting Hanabi objects}
 \usage{
-\method{plot}{hanabi}(x, alpha = 0.5, col = "black",
-  xlab = "Total counts", ylab = "Unique features",
-  main = "Hanabi plot", pch = 1, ...)
+\method{plot}{hanabi}(
+  x,
+  alpha = 0.5,
+  col = "black",
+  xlab = "Total counts",
+  ylab = "Unique features",
+  main = "Hanabi plot",
+  pch = 1,
+  ...
+)
 
 \method{points}{hanabi}(x, ...)
 
@@ -37,8 +44,9 @@ S3 method to plot hanabi objects.  Used by the
 \code{\link{hanabiPlot}} function.
 }
 \seealso{
-Other CAGEr richness functions: \code{\link{hanabiPlot}},
-  \code{\link{hanabi}}
+Other CAGEr richness functions: 
+\code{\link{hanabiPlot}()},
+\code{\link{hanabi}}
 }
 \author{
 Charles Plessy

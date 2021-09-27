@@ -8,8 +8,8 @@
 \title{CAGEr class to hold all data and metadata about one CAGE experiment.}
 \description{
 The \code{\link{CAGEr}} class is a \code{\link{MultiAssayExperiment}} object containing all data
-and metadata about a set of CAGE libraries.  It is a replacement for the
-\code{\link{CAGEset}} class.  The main difference is that the expression data is stored
+and metadata about a set of CAGE libraries.  It replaced the CAGEset class
+in 2017.  The main difference is that the expression data is stored
 in \code{\link{DataFrame}} objects of \code{\link{Rle}}-encoded expression values, instead of plain
 \code{data.frame}s.  With large datasets, this saves considerable amounts of memory.
 }
@@ -56,7 +56,7 @@ exampleCAGEexp <-
 # Expression data is loaded by the getCTSS() function, that also calculates
 # library sizes and store them in the object's column data.
 
-getCTSS(exampleCAGEexp)
+exampleCAGEexp <- getCTSS(exampleCAGEexp)
 librarySizes(exampleCAGEexp)
 colData(exampleCAGEexp)
 
@@ -69,10 +69,10 @@ CTSStagCountDF(exampleCAGEexp)
 
 # Columns of the "colData" table are accessible directly via the "$" operator.
 
-exampleCAGEexp$l1 <- colSums(CTSStagCountDf(exampleCAGEexp) > 0)
+exampleCAGEexp$l1 <- CTSStagCountDF(exampleCAGEexp) |> sapply ( \(col) sum(col > 0) )
 exampleCAGEexp$l1
 
 }
 \seealso{
-\code{\linkS4class{CAGEset}}, \code{\link{make.names}}
+\code{\link{make.names}}
 }

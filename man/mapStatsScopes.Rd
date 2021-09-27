@@ -35,7 +35,7 @@ provides the order of the stacked bars of the \code{plotAnnot} function,
 }
 \description{
 Functions implementing the \code{scope} parameter of the
-\code{\link{mapStats}} function.
+\verb{\link{mapStats}} function.
 }
 \details{
 The \strong{\code{counts}} scope reports the number of molecules aligning in

@@ -4,8 +4,15 @@
 \alias{import.bam.ctss}
 \title{import.bam.ctss}
 \usage{
-import.bam.ctss(filepath, filetype, sequencingQualityThreshold,
-  mappingQualityThreshold, removeFirstG, correctSystematicG, genome)
+import.bam.ctss(
+  filepath,
+  filetype,
+  sequencingQualityThreshold,
+  mappingQualityThreshold,
+  removeFirstG,
+  correctSystematicG,
+  genome
+)
 }
 \arguments{
 \item{filepath}{The path to the BAM file.}
@@ -29,12 +36,14 @@ Returns a \link{CTSS} object.
 Imports CTSS data from a BAM file.
 }
 \seealso{
-Other loadFileIntoGPos: \code{\link{bam2CTSS}},
-  \code{\link{import.CTSS}}, \code{\link{import.bam}},
-  \code{\link{import.bedCTSS}},
-  \code{\link{import.bedScore}},
-  \code{\link{import.bedmolecule}},
-  \code{\link{loadFileIntoGPos}},
-  \code{\link{moleculesGR2CTSS}}
+Other loadFileIntoGPos: 
+\code{\link{bam2CTSS}()},
+\code{\link{import.CTSS}()},
+\code{\link{import.bam}()},
+\code{\link{import.bedCTSS}()},
+\code{\link{import.bedScore}()},
+\code{\link{import.bedmolecule}()},
+\code{\link{loadFileIntoGPos}()},
+\code{\link{moleculesGR2CTSS}()}
 }
 \concept{loadFileIntoGPos}

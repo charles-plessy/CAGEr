@@ -95,7 +95,7 @@ setMethod(".cluster.ctss.strand", "IPos", function(ctss.ipos.chr, max.dist) {
 #' @examples 
 #' 
 #' #.cluster.ctss.chr
-#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))
+#' ctss.chr <- as(CTSScoordinatesGR(exampleCAGEexp), "CTSS.chr")
 #' CAGEr:::.cluster.ctss.chr(ctss.chr, 20)
 
 setGeneric(".cluster.ctss.chr", function(ctss.chr, max.dist) standardGeneric(".cluster.ctss.chr"))
@@ -129,7 +129,7 @@ setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
 #' @examples 
 #' 
 #' # .ctss2clusters
-#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEexp))
+#' ctss <- CTSScoordinatesGR(exampleCAGEexp)
 #' score(ctss) <- CTSSnormalizedTpmDF(exampleCAGEexp)[[1]]
 #' seqnames(ctss)[rep(c(TRUE,FALSE), length(ctss) / 2)] <- "chr16"
 #' ctss
@@ -142,7 +142,7 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
   ctss <- sort(ctss)
   ctss <- ctss[score(ctss) != 0]
   ctss.list <- split(ctss, droplevels(seqnames(ctss)))
-  ctss.list <- lapply(ctss.list, .CTSS.chr)
+  ctss.list <- lapply(ctss.list, as, "CTSS.chr")
   ctss.list <- bplapply( ctss.list, .cluster.ctss.chr, max.dist = max.dist
                        , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	max.clust <- sapply(ctss.list, function(x) {max(x$id)})
@@ -241,8 +241,6 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, removeSi
 #' \dontrun{
 #' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEexp), useMulticore = TRUE)
 #' }
-#' 
-#' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEset))
 
 setGeneric(".distclu", function(se, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, useMulticore = FALSE, nrCores = NULL) standardGeneric(".distclu"))
 
@@ -251,7 +249,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
   ctss.cluster.list <- list()
   for(s in colnames(se)) {
     message("\t-> ", s)
-    d <- .CTSS(rowRanges(se))
+    d <- as(rowRanges(se), "CTSS")
     score(d) <- assays(se)[["normalizedTpmMatrix"]][[s]]
     d <- subset(d, score(d) > 0)
     clusters <- .ctss2clusters(ctss = d, max.dist = max.dist, useMulticore = useMulticore, nrCores = nrCores)
@@ -479,77 +477,3 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	return(ctss.cluster.list)
 	
 }
-
-#' @name tagClusterConvertors
-#' 
-#' @title Private functions to convert TC formats
-#' 
-#' @description Interconvert tag clusters (TC) formats used in classes CAGEset
-#' (\code{data.frame}) and CAGEexp (\code{GRanges}).
-#' 
-#' @details 
-#' The original format used in \code{\link{CAGEset}} objects follows BED
-#' ("0-based") conventsion for the start and end coordinates.  On the other
-#' hand, the GRanges objects used in \code{\link{CAGEexp}} objects follow
-#' the "1-based" convention.  Therefore a value of 1 has to be added or
-#' subtracted to the start positions when converting between both formats.
-#' 
-#' @family df2granges converters
-#' 
-#' @examples 
-#' df <- tagClusters(exampleCAGEset, 1)
-#' head(df)
-#' gr <- CAGEr:::TCdataframe2granges(df)
-#' gr
-#' head(CAGEr:::TCgranges2dataframe(gr))
-#' # No exact round-trip because start and end were not integer in df.
-#' identical(df, CAGEr:::TCgranges2dataframe(gr))
-#' if (! all(df == CAGEr:::TCgranges2dataframe(gr)))
-#'   stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
-#' 
-#' tagClustersGR(exampleCAGEexp)
-#' head(CAGEr:::TCgranges2dataframe(CAGEr:::tagClustersGR(exampleCAGEexp, 1)))
-NULL
-
-#' @name TCgranges2dataframe
-#' 
-#' @rdname tagClusterConvertors
-#' 
-#' @param gr Consensus clusters in \code{GRanges} format.
-
-TCgranges2dataframe <- function(gr) {
-  if (!is.null(gr$cluster)) {
-    df <- data.frame(cluster = gr$cluster)
-    gr$cluster <- NULL
-  } else {
-    df <- data.frame(cluster = as.integer(names(gr)))  # Make sure it does not sort lexically!
-  }
-  df <- cbind(df , data.frame( chr     = decode(seqnames(gr))
-                             , start   = start(gr) -1
-                             , end     = end(gr)
-                             , strand  = decode(droplevels(strand(gr)))))
-  if(is.null(gr$tpm))
-    df$tpm <- score(gr)
-  score(gr) <- NULL
-  df <- cbind(df, mcols(gr))
-  as.data.frame(df)
-}
-
-#' @name TCdataframe2granges
-#' @rdname tagClusterConvertors
-#' 
-#' @param df Consensus clusters in \code{data.frame} format.
-
-TCdataframe2granges <- function(df) {
-	gr <- GRanges( seqnames           = df$chr
-	             , ranges             = IRanges(df$start + 1, df$end)
- 	             , score              = df$tpm
-               , strand             = df$strand)
-	if(is.null(df[["cluster"]]))
-	  gr$cluster <- seq_along(gr)
-	mcols(gr) <- cbind( mcols(gr)
-	                  , df[,setdiff(colnames(df), c("chr", "start", "end", "strand")), drop = FALSE])
-	names(gr) <- rownames(df)
-	gr
-}
-

@@ -38,12 +38,9 @@
 #' downstream information will be reset.
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' 
 #' @examples 
-#' mergeSamples( exampleCAGEset
-#'             , mergeIndex = c(1,1,2)
-#'             , mergedSampleLabels = c("mergedSample1", "mergedSample2"))
-#' exampleCAGEset
 #' 
 #' mergeSamples( exampleCAGEexp
 #'             , mergeIndex = c(3,2,4,4,1)
@@ -55,11 +52,10 @@
 setGeneric("mergeSamples", function(object, mergeIndex, mergedSampleLabels)
 	standardGeneric("mergeSamples"))
 
-checkMergeOK <- function(object, objName, mergeIndex, mergedSampleLabels) {
+checkMergeOK <- function(object, mergeIndex, mergedSampleLabels) {
   if( length(mergeIndex) != length(sampleLabels(object)))
-    stop( "length of ", sQuote("mergeIndex"), " must match number of samples! See "
-        ,  sQuote(paste0('sampleLabels("', objName, '") '))
-        , "to list your CAGE samples.")
+    stop( "length of ", sQuote("mergeIndex"), " must match number of samples! See the "
+        ,  sQuote("sampleLabels()"), "function to list your CAGE samples.")
 
   if( length(unique(mergeIndex)) != length(mergedSampleLabels))
     stop( "numer of provided ", sQuote("mergedSampleLabels"), " must match number of unique values "
@@ -74,40 +70,16 @@ checkMergeOK <- function(object, objName, mergeIndex, mergedSampleLabels) {
 
 #' @rdname mergeSamples
 
-setMethod( "mergeSamples", c("CAGEset", mergeIndex = "numeric")
-         , function (object, mergeIndex, mergedSampleLabels) {
-	objName <- deparse(substitute(object))
-	sample.labels <- sampleLabels(object)
-	tag.count <- object@tagCountMatrix
-	lib.sizes <- object@librarySizes
-	
-	checkMergeOK(object, objName, mergeIndex, mergedSampleLabels)
-	
-	mergeIndex <- as.integer(mergeIndex)
-	tag.count.matrix.new <- sapply(sort(unique(mergeIndex)), function(x) {cols <- which(mergeIndex == x); a <- rowSums(tag.count[,cols,drop=F]); return(a)})
-	lib.sizes.new <- sapply(sort(unique(mergeIndex)), function(x) {cols <- which(mergeIndex == x); a <- sum(lib.sizes[cols]); return(a)})
-	names(lib.sizes.new) <- mergedSampleLabels
-	colnames(tag.count.matrix.new) <- mergedSampleLabels
-	names(mergedSampleLabels) <- rainbow(n = length(mergedSampleLabels))
-	
-	new.CAGE.set <- suppressWarnings(suppressMessages(new("CAGEset", genomeName = object@genomeName, inputFiles = paste(mergedSampleLabels, "_merged", sep = ""), inputFilesType = object@inputFilesType, sampleLabels = mergedSampleLabels, librarySizes = lib.sizes.new, CTSScoordinates = object@CTSScoordinates, tagCountMatrix = as.data.frame(tag.count.matrix.new))))
-	
-	assign(objName, new.CAGE.set, envir = parent.frame())
-	invisible(1)	
-})
-
-myRowSumsL <- function(l)
-  Reduce( f    = `+`
-        , x    = DataFrame(l)
-        , init = Rle(rep(0L, nrow(DataFrame(l)))))
-
-#' @rdname mergeSamples
-
 setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSampleLabels) {
-  objName <- deparse(substitute(object))
-  checkMergeOK(object, objName, mergeIndex, mergedSampleLabels)
+  checkMergeOK(object, mergeIndex, mergedSampleLabels)
 
-  tag.count.DF.new <- tapply(as.list(CTSStagCountDF(object)), mergeIndex, myRowSumsL)
+  tag.count.DF.new <- tapply(
+    as.list(CTSStagCountDF(object)),
+    mergeIndex,
+    \(l) Reduce( f    = `+`
+               , x    = DataFrame(l)
+               , init = l |> DataFrame() |> nrow() |> rep(x=0L) |> Rle())
+  )
   tag.count.DF.new <- DataFrame(do.call(list, tag.count.DF.new))
   colnames(tag.count.DF.new) <- mergedSampleLabels
 
@@ -124,13 +96,11 @@ setMethod( "mergeSamples", "CAGEexp", function (object, mergeIndex, mergedSample
   new.CAGE.exp <- CAGEexp( metadata = list(genomeName = genomeName(object))
                      , colData  = new.CAGE.exp)
   
-  setColors(new.CAGE.exp, rainbow(n = length(mergedSampleLabels)))
-
   CTSStagCountSE(new.CAGE.exp) <-
     SummarizedExperiment( rowRanges = rowRanges(CTSStagCountSE(object))
                         , assays    = SimpleList(counts = tag.count.DF.new))
   
-  assign(objName, new.CAGE.exp, envir = parent.frame())
-  invisible(1)
+  setColors(new.CAGE.exp, rainbow(n = length(mergedSampleLabels)))
+
+  new.CAGE.exp
 })
-  
