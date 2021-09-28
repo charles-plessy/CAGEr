@@ -615,6 +615,31 @@ setMethod( "getCTSS", "CAGEexp"
   object
 })
 
+#' FANTOM5 human samples
+#' 
+#' Lazy-loaded `data.frame` object, containing information about FANTOM5
+#' libraries.  Its use is described in more details in the vignette
+#' \dQuote{Use of CAGE resources with CAGEr}.
+#' 
+#' @format A `data.frame` with `sample`, `type`, `description`, `library_id`
+#' and `data_url` columns.
+#' 
+#' @family FANTOM data
+"FANTOM5humanSamples"
+
+#' FANTOM5 mouse samples
+#' 
+#' Lazy-loaded `data.frame` object, containing information about FANTOM5
+#' libraries.  Its use is described in more details in the vignette
+#' \dQuote{Use of CAGE resources with CAGEr}.
+#' 
+#' @format A `data.frame` with `sample`, `type`, `description`, `library_id`
+#' and `data_url` columns.
+#' 
+#' @family FANTOM data
+"FANTOM5mouseSamples"
+
+
 #' #' importPublicData
 #' #' @noRd
 #' #' @importFrom utils data
