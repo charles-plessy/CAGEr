@@ -72,16 +72,35 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 	setkeyv(v, "nr_tags")
 	v$V1 <- rev(cumsum(rev(v$V1)))
 	setnames(v, c('nr_tags', 'reverse_cumulative'))
+	
+	# check if range values are > 0
+	if(any(val.range < 1)){
+	  stop(paste("The range of values for fitting the power law",
+	             "arg 'fitInRange', expects integers > 0."))
+	}
+	
 	v <- v[nr_tags >= min(val.range) & nr_tags <= max(val.range)]
-
+	
+	# check if specified range values have at least 1 entry in v 
+	if(nrow(v) < 1){
+	  stop(paste("Selected range for fitting the power law does not contain any",
+	             "tag count values. Consider changing/increasing 'fitInRange'."))
+	}
 #	v <- aggregate(values, by = list(values), FUN = length)
 #	v$x <- rev(cumsum(rev(v$x)))
 #	colnames(v) <- c('nr_tags', 'reverse_cumulative')
 #	v <- subset(v, nr_tags >= min(val.range) & nr_tags <= max(val.range))
 	
 	lin.m <- lm(log(reverse_cumulative) ~ log(nr_tags), data = v)
+	
 	a <- coefficients(lin.m)[2]
 	b <- coefficients(lin.m)[1]
+	
+	# check if specified range values have >1 entries in v 
+	if(is.na(a) && b == 0){
+	  stop(paste("Selected range for fitting the power law does not", 
+	       "contain enough values. Consider changing/increasing 'fitInRange'."))
+	}
 	return(c(a, b))
 }
 
