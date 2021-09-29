@@ -127,15 +127,18 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
          , function ( object, tpmThreshold
                     , qLow, qUp, maxDist) {
   if (all( !is.null(qLow), !is.null(qUp))) {
+    fix <- "iqw"
     TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
-    TC.list <- endoapply(TC.list, function(x) {
-      end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x)
-      start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x)
-      x})
+    # TC.list <- endoapply(TC.list, function(x) {
+    #   end(x)   <- as.integer(mcols(x)[[paste0("q_", qUp) ]] + start(x) - 1)
+    #   start(x) <- as.integer(mcols(x)[[paste0("q_", qLow)]] + start(x) - 1)
+    #   x})
   } else {
     TC.list <- tagClustersGR(object)
+    fix <- "start"
   }
   consensus.clusters <- .make.consensus.clusters( TC.list = TC.list
+                                                  , fix.at = fix
                                                 , plus.minus = round(maxDist/2)
                                                 , tpm.th = tpmThreshold)
   consensus.clusters <- .clusterAggregateAndSum(consensus.clusters, "consensus.cluster")
@@ -156,6 +159,7 @@ setMethod( ".CCtoSE"
     if (is.null(rowRanges(se)$cluster))
       rowRanges(se)$cluster <- ranges2names(rowRanges(se), consensus.clusters)
     
+    # why is this happening?!
     if (tpmThreshold > 0)
       se <- se[rowSums(DelayedArray(assays(se)[["normalizedTpmMatrix"]])) > tpmThreshold,]
     

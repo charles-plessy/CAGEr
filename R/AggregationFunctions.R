@@ -10,27 +10,49 @@
 #' @importFrom S4Vectors endoapply
 
 setGeneric( ".make.consensus.clusters"
-          , function(TC.list, plus.minus = 0, tpm.th = 0)
+          , function(TC.list, fix.at = "iqw", plus.minus = 0, tpm.th = 0)
               standardGeneric(".make.consensus.clusters"))
 
-setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, plus.minus, tpm.th) {
+setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, fix.at, plus.minus, tpm.th) {
   # Filter out TCs with too low score.
   gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpm.th])
   
   # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)
+  # should I put actually this in a function, since I need to use it later again, shiting by quantile positions?!
+  if (fix.at == "iqw"){
+    end(clusters.gr)   <- as.integer(start(clusters.gr) +
+                                       mcols(clusters.gr)[[paste0("q_", qUp)]] - 1)
+    start(clusters.gr) <- as.integer(start(clusters.gr) +
+                                       mcols(clusters.gr)[[paste0("q_", qLow)]] - 1)  
+  suppressWarnings(start(clusters.gr) <- start(clusters.gr)  - plus.minus) # Suppress warnings
+  suppressWarnings(end(clusters.gr)   <- end(clusters.gr) + plus.minus) # because we trim later
+  
+  } else if (fix.at == "start"){
+    suppressWarnings(start(clusters.gr) <- start(clusters.gr) - plus.minus) # Suppress warnings
+    suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + plus.minus) # because we trim later
+    
+  } else{
+    error(
+      "The consensus clusters must be fixed either on the start or quntile positions")
+  }
   mcols(clusters.gr) <- NULL
   names(clusters.gr) <- NULL
-  suppressWarnings(start(clusters.gr) <- start(clusters.gr) - plus.minus) # Suppress warnings
-  suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + plus.minus) # because we trim later
   clusters.gr <- reduce(trim(clusters.gr))
   
   # Annotate TCs with ID of the aggregated cluster they intersect with.
   gr.list <- endoapply( gr.list, function (gr) {
-    o = findOverlaps(clusters.gr, gr)
-    gr$consensus.cluster[subjectHits(o)] <- queryHits(o)
-    gr$sample <- "tbd" # Can not retrieve 
-    gr
+    gro <- gr
+    if (fix.at == "iqw" ){
+      end(gro)   <- as.integer(start(gro) + mcols(gro)[[paste0("q_", qUp)]] - 1)
+      start(gro) <- as.integer(start(gro) + mcols(gro)[[paste0("q_", qLow)]] - 1)  
+    }
+    o = findOverlaps(clusters.gr, gro)
+    tmp <- gr[subjectHits(o)]
+    tmp$consensus.cluster <- queryHits(o)
+    #gr$consensus.cluster[subjectHits(o)] <- queryHits(o)
+    tmp$sample <- "tbd" # Can not retrieve 
+    tmp
   })
   
   # Add back the sample name.
