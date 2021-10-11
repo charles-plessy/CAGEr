@@ -611,7 +611,11 @@ setMethod( "consensusClustersGR", "CAGEexp"
     }
     cc$tpm <- cc$score <- consensusClustersTpm(object)[,sample]
   }
-  cc
+  # cc
+  ## Why no sorting here? Added now
+  gr <- sort(cc)
+  names(gr) <- seq_along(gr)
+  gr
 })
 
 

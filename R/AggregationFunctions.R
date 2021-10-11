@@ -15,7 +15,7 @@ setGeneric( ".make.consensus.clusters"
 
 setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, fix.at, plus.minus, tpm.th) {
   # Filter out TCs with too low score.
-  gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpm.th])
+  gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) > tpm.th])
   
   # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)

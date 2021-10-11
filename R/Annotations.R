@@ -627,6 +627,8 @@ ranges2names <- function(rangesA, rangesB) {
   names <- extractList(names(rangesB), names)
   names <- unique(names)
   names <- unstrsplit(names, ";")
+  # print("SAMARTH=== ranges2names")
+  # print(length(names))
   Rle(names)
 }
 
