@@ -10,12 +10,24 @@
 #' @importFrom S4Vectors endoapply
 
 setGeneric( ".make.consensus.clusters"
-          , function(TC.list, fix.at = "iqw", plus.minus = 0, tpm.th = 0)
+          , function(TC.list, fix.at = "iqw", qLow = NULL, qUp = NULL, plus.minus = 0, tpm.th = 0)#, exclSigBel.th = TRUE)
               standardGeneric(".make.consensus.clusters"))
 
-setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, fix.at, plus.minus, tpm.th) {
+setMethod(".make.consensus.clusters", "GRangesList", 
+          function(TC.list, fix.at, qLow, qUp, plus.minus, tpm.th
+                   # , exclSigBel.th
+                   ) {
   # Filter out TCs with too low score.
-  gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) > tpm.th])
+  
+  # Shouldn't this condition be >= instead of > ? The help mentions (verbatim)
+  # --
+  # First, TCs with signal >= tpmThreshold from all CAGE datasets are selected, 
+  # and their 5' and 3' boundaries are determined based on provided qLow and 
+  # qUp parameter (or the start and end coordinates, if they are set to NULL). 
+  # --
+  # Now changed from > to >=
+  # 
+  gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpm.th])
   
   # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)
@@ -43,22 +55,29 @@ setMethod(".make.consensus.clusters", "GRangesList", function(TC.list, fix.at, p
   # Annotate TCs with ID of the aggregated cluster they intersect with.
   gr.list <- endoapply( gr.list, function (gr) {
     gro <- gr
+    ## 
+    ## (snikumbh) Not clear why this is needed here? Because this restriction of TCs 
+    ## to quantiles as boundaries is already done above, right?
     if (fix.at == "iqw" ){
       end(gro)   <- as.integer(start(gro) + mcols(gro)[[paste0("q_", qUp)]] - 1)
-      start(gro) <- as.integer(start(gro) + mcols(gro)[[paste0("q_", qLow)]] - 1)  
+      start(gro) <- as.integer(start(gro) + mcols(gro)[[paste0("q_", qLow)]] - 1)
     }
     o = findOverlaps(clusters.gr, gro)
     tmp <- gr[subjectHits(o)]
     tmp$consensus.cluster <- queryHits(o)
     #gr$consensus.cluster[subjectHits(o)] <- queryHits(o)
-    tmp$sample <- "tbd" # Can not retrieve 
+    tmp$sample <- "tbd" # Can not retrieve
     tmp
+    # gr$consensus.cluster <- queryHits(o)
+    # gr$sample <- "tbd" # Can not retreive
+    # gr
   })
+
   
+  ####
   # Add back the sample name.
   for (i in seq_along(gr.list)) gr.list[[i]]$sample <- names(gr.list)[[i]]
-  
-  # Return a vector of TCs annotated with a cluster ID and their sample name.
+
   unname(unlist(gr.list))
 })
 
