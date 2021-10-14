@@ -98,43 +98,27 @@ setMethod( "aggregateTagClusters", "CAGEr"
                     , qLow, qUp, maxDist, useMulticore, nrCores) {
   objname <- deparse(substitute(object))
 
+  #
+  # At this call to .aggregateTagClustersGR, TCs with normalized 
+  # signal < tpmThreshold are filtered i.e. those >= tpmThreshold are selected
+  # The sums are computed irrespective of the excludeSignalBelowThreshold arg val
   consensus.clusters <- .aggregateTagClustersGR( object, tpmThreshold = tpmThreshold
                                                , qLow = qLow, qUp = qUp, maxDist = maxDist)
-  # print("samarth===cc from .aggregateTagClustersGR")
-  # print(consensus.clusters)
-  # print("sorted")
-  # print(sort(consensus.clusters))
-  # print("now excludingSignalBelowThreshold")
-  if (excludeSignalBelowThreshold) {
-    filter <- .filterCtss( object
-                         , threshold       = tpmThreshold
-                         , nrPassThreshold = 1
-                         , thresholdIsTpm  = TRUE)
-  } else filter <- TRUE
-	
-    # print(CTSScoordinatesGR(object))
-    CTSScoordinatesGR(object)$cluster <-
-      ranges2names(CTSScoordinatesGR(object), consensus.clusters)
-    # print(CTSScoordinatesGR(object))
-    # * filteredCTSSidx gives those filtered at clusterCTSS stage
-    # * filter gives those filtered above based on tpmThreshold arg of 
-    # aggregateTagClusters
-    se <- CTSStagCountSE(object)[filter & decode(filteredCTSSidx(object)), ]
-    # print("samarth === next to .CCtoSE")
-    # .CCtoSE has an arg tpmThreshold which is not explicitly set here
-    # so default value used which is 1 irrespective of what is set with function 
-    # call aggregateTagClusters
-    consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters)
-    # print("SAMARTH ==== BACK from .CCtoSE")
-    # print(assays(consensusClustersSE(object))[["normalized"]])
-    # print("assigned to score")
-    
-    ## .CCtoSE already computes the sums, right? Then this is not needed
-    # score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
-    
-    object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
-    object
+  
+  CTSScoordinatesGR(object)$cluster <-
+    ranges2names(CTSScoordinatesGR(object), consensus.clusters)
+  
+  consensusClustersSE(object) <- .CCtoSE2(object, consensus.clusters, 
+                                          excludeSignalBelowThreshold, 
+                                          tpm.th = tpmThreshold)
+  
+  score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
+  consensusClustersGR(object)$tpm <- score(consensusClustersGR(object))
+  
+  object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
+  object
 })
+
 
 
 setGeneric( ".aggregateTagClustersGR"
@@ -147,69 +131,41 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
                     , qLow, qUp, maxDist) {
   if (all( !is.null(qLow), !is.null(qUp))) {
     fix <- "iqw"
-    TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
-<<<<<<< Updated upstream
+    TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE, qLow = qLow, qUp = qUp)
+
     # TC.list <- endoapply(TC.list, function(x) {
     #   end(x)   <- as.integer(mcols(x)[[paste0("q_", qUp) ]] + start(x) - 1)
     #   start(x) <- as.integer(mcols(x)[[paste0("q_", qLow)]] + start(x) - 1)
     #   x})
-=======
-    TC.list <- endoapply(TC.list, function(x) {
-      end(x)   <- as.integer(mcols(x)[[paste0("q_", qUp) ]] + start(x) - 1)
-      start(x) <- as.integer(mcols(x)[[paste0("q_", qLow)]] + start(x) - 1)
-      x})
->>>>>>> Stashed changes
+
   } else {
     TC.list <- tagClustersGR(object)
     fix <- "start"
   }
-           
+  
   # filtering happening inside .make.consensus.clusters
   consensus.clusters <- .make.consensus.clusters( TC.list = TC.list
-                                                  , fix.at = fix
+                                                , fix.at = fix
+                                                , qLow = qLow
+                                                , qUp = qUp
                                                 , plus.minus = round(maxDist/2)
-                                                , tpm.th = tpmThreshold)
+                                                , tpm.th = tpmThreshold
+                                                )
   consensus.clusters <- .clusterAggregateAndSum(consensus.clusters, "consensus.cluster")
-  consensus.clusters <- GRanges(consensus.clusters)
   names(consensus.clusters) <- as.character(consensus.clusters)
   .ConsensusClusters(consensus.clusters)
 })
 
-
-setGeneric( ".CCtoSE" , function(se, consensus.clusters, tpmThreshold = 1)
+setGeneric( ".CCtoSE" , function(se, consensus.clusters, tpmThreshold = NULL)
           	  standardGeneric(".CCtoSE"))
 
 setMethod( ".CCtoSE"
          , c(se = "RangedSummarizedExperiment")
-         , function(se, consensus.clusters, tpmThreshold = 1) {
+         , function(se, consensus.clusters, tpmThreshold = NULL) {
     if (is.null(assays(se)[["normalizedTpmMatrix"]]))
       stop("Needs normalised data; run ", sQuote("normalizeTagCount()"), " first.")
-    # print(rowRanges(se))
     if (is.null(rowRanges(se)$cluster))
       rowRanges(se)$cluster <- ranges2names(rowRanges(se), consensus.clusters)
-    # print(rowRanges(se))
-    # print("samarth samarth")
-    # print(decode(rowRanges(se)$cluster))
-    # print(length(decode(rowRanges(se)$cluster)))
-    # print("samarth consenclusters again with lengths")
-    # print(consensus.clusters)
-    # print(length(consensus.clusters))
-    # if(length(rowRanges(se)$cluster) == length(consensus.clusters))
-    
-<<<<<<< Updated upstream
-    # why is this happening?!
-    if (tpmThreshold > 0)
-      se <- se[rowSums(DelayedArray(assays(se)[["normalizedTpmMatrix"]])) > tpmThreshold,]
-=======
-    # print("samarth===rowRamges=======$$$$$$$$$")
-    # print(length(decode(rowRanges(se)$cluster)))
-    # if two levels of filters have been applied already, is this filtering 
-    # needed again here?
-    # Especially, the call to this function doesn't explicitly set the arg
-    # tpmThreshold
-    # if (tpmThreshold > 0)
-    #   se <- se[rowSums(DelayedArray(assays(se)[["normalizedTpmMatrix"]])) > tpmThreshold,]
->>>>>>> Stashed changes
     
     .rowsumAsMatrix <- function(DF, names) {
       rs <- rowsum(as.matrix(DelayedArray(DF)), as.factor(names))
@@ -217,17 +173,66 @@ setMethod( ".CCtoSE"
         rs <- rs[-1, , drop = FALSE]
       rs
       }
-    
-    # print("now for counts")
     counts <- .rowsumAsMatrix(assays(se)[["counts"]], rowRanges(se)$cluster)
-    # print("now for normalized")
     ## Avoid the keyword norm as variable name
     normalized   <- .rowsumAsMatrix(assays(se)[["normalizedTpmMatrix"]], rowRanges(se)$cluster)
-    # print("HEY HEY")
+    # rownames(normalized) <- names(consensus.clusters)
 	  SummarizedExperiment( rowRanges = consensus.clusters[rownames(counts)]
 	                      , assays    = SimpleList( counts     = counts
 	                                              , normalized = normalized))
 })
+
+
+
+setGeneric( ".CCtoSE2" , function(object, consensus.clusters, 
+                                  excludeSignalBelowThreshold, tpm.th = 0
+                                  , useMulticore = FALSE, nrCores = NULL)
+  standardGeneric(".CCtoSE2"))
+
+setMethod( ".CCtoSE2" , "CAGEexp"
+           , function(object, consensus.clusters, excludeSignalBelowThreshold, tpm.th
+                      , useMulticore, nrCores) {
+    #############
+    gr.list <- tagClustersGR(object)
+    if(excludeSignalBelowThreshold){
+      gr.list <- endoapply(tagClustersGR(object),
+                          function (gr) gr <- gr[score(gr) >= tpm.th])
+    }
+    #############
+    .getTotalTagCountSample2 <- function( sam, obj, assay, cc, tc.list) {
+      o             <- findOverlaps(CTSStagCountSE(obj), tc.list[[sam]])
+      ctss.s        <- CTSStagCountSE(obj)[queryHits(o)]
+      ctss.s2       <- CTSS(rowRanges(ctss.s))
+      score(ctss.s2) <- assay(ctss.s, assay)[[sam]]
+      ctss.s2        <- ctss.s2[ctss.s2$filteredCTSSidx]
+      ctss.s2        <- ctss.s2[score(ctss.s2) > 0]
+      .getTotalTagCount(ctss = ctss.s2, ctss.clusters = cc)
+    }
+    #############
+    tpm.list <- bplapply( sampleList(object), .getTotalTagCountSample2,  obj = object
+                         , assay = "counts", cc = consensus.clusters
+                         , tc.list = gr.list
+                         , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+    
+    counts <- as.matrix(data.frame(tpm.list))
+    rownames(counts) <- names(consensus.clusters)
+    
+    #############
+    tpm.list <- bplapply( sampleList(object), .getTotalTagCountSample2,  obj = object
+                          , assay = "normalizedTpmMatrix", cc = consensus.clusters
+                          , tc.list = gr.list
+                          , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+    
+    normalized <- as.matrix(data.frame(tpm.list))
+    rownames(normalized) <- names(consensus.clusters)
+    #############
+    SummarizedExperiment( rowRanges = consensus.clusters
+                         , assays    = SimpleList( counts = counts
+                                                 , normalized = normalized)
+                        )
+})
+
+
 
 #' @name CustomConsensusClusters
 #' 
