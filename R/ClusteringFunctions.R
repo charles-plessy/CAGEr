@@ -292,9 +292,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 
 
 .paraclu2 <- function(ctss, min_density = -Inf, clusters.df = data.frame()) {
-	
+
 	if(nrow(ctss)>0){
-		
 		ctss <- ctss[order(ctss$pos),]
 		params <- .paraclu1(ctss)
 		br <- params[[1]]
@@ -304,10 +303,21 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 		
 		if(!(max_density == Inf)){
 			new_min <- max(min_density, max_density)
-			clusters.df <- rbind(.paraclu2(ctss = ctss[1:(br-1),], min_density = new_min, clusters.df = clusters.df), .paraclu2(ctss = ctss[br:nrow(ctss),], min_density = new_min, clusters.df = clusters.df))
+			clusters.df <- rbind(.paraclu2(ctss = ctss[1:(br-1),], min_density = new_min, clusters.df = clusters.df), 
+			                     .paraclu2(ctss = ctss[br:nrow(ctss),], min_density = new_min, clusters.df = clusters.df))
 		}
 		
-		return(rbind(clusters.df, data.frame(chr = ctss$chr[1], start = min(ctss$pos), end = max(ctss$pos), strand = ctss$strand[1], nr_ctss = sit, dominant_ctss = ctss$pos[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]], tpm = tot, tpm.dominant_ctss = ctss$tpm[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]], min_d = min_density, max_d= max_density)))
+		return(rbind(clusters.df, data.frame(chr = ctss$chr[1], 
+                    start = min(ctss$pos), 
+                    end = max(ctss$pos), 
+                    strand = ctss$strand[1], 
+                    nr_ctss = sit, 
+		                dominant_ctss = ctss$pos[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]], 
+		                tpm = tot, 
+		                tpm.dominant_ctss = ctss$tpm[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]],
+		                min_d = min_density, max_d= max_density)
+		             )
+		       )
 		
 	}else{
 		return(clusters.df)
@@ -321,9 +331,12 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	ctss.df.plus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "+")})
 	ctss.df.minus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "-")})
 	ctss.df.list <- append(ctss.df.plus.list, ctss.df.minus.list)
+	
 	clusters.list <- bplapply( ctss.df.list, .paraclu2
 	                         , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	
 	n <- length(clusters.list)/2
+
 	clusters.list <- lapply(as.list(c(1:n)), function(x) {rbind(clusters.list[[x]], clusters.list[[x+n]])})
 	
 	clusters <- do.call(rbind, clusters.list)
@@ -345,29 +358,74 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	rownames(clusters) <- c(1:nrow(clusters))
 	colnames(clusters)[which(colnames(clusters) == "min_d")] <- "min_density"
 	colnames(clusters)[which(colnames(clusters) == "max_d")] <- "max_density"
-	
 	return(clusters)
 	
 }
 
 
-.paraclu <- function(data, sample.labels, minStability = 1, maxLength = 500, removeSingletons = FALSE, keepSingletonsAbove = Inf, reduceToNonoverlapping = TRUE, useMulticore = FALSE, nrCores = NULL) {
-	
-	ctss.cluster.list <- list()
-	for(s in sample.labels) {
-		
-		message("\t-> ", s)
-		d <- data[,c("chr", "pos", "strand", s)]
-		colnames(d) <- c("chr", "pos", "strand", "tpm")
-		d <- d[d$tpm>0,]
-		ctss.cluster.df <- .paraclu3(ctss.df = d, minStability = minStability, maxLength = maxLength, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, reduceToNonoverlapping = reduceToNonoverlapping, useMulticore = useMulticore, nrCores = nrCores)
-		ctss.cluster.list[[s]] <- ctss.cluster.df
-		
-	}
-	
-	return(ctss.cluster.list)
-	
-}
+
+############## SAMARTH
+
+setGeneric(".paraclu", function(se, minStability = 1, maxLength = 500, 
+                                removeSingletons = FALSE, keepSingletonsAbove = Inf, 
+                                reduceToNonoverlapping = TRUE, 
+                                useMulticore = FALSE, nrCores = NULL) 
+  standardGeneric(".paraclu"))
+
+setMethod(".paraclu", "SummarizedExperiment", function(se, minStability = 1, maxLength = 500, removeSingletons, keepSingletonsAbove, reduceToNonoverlapping = TRUE, useMulticore, nrCores) {
+  
+  ctss.cluster.list <- list()
+  for(s in colnames(se)) {
+    message("\t-> ", s)
+    d <- as(rowRanges(se), "CTSS")
+    d$tpm <- assays(se)[["normalizedTpmMatrix"]][[s]]
+    d <- subset(d, d$tpm > 0)
+    d <- as.data.frame(d)
+    colnames(d) <- c("chr", "pos", "strand", "tpm")
+    clusters <- .paraclu3(ctss.df = as.data.frame(d), minStability = minStability, 
+                          maxLength = maxLength, 
+                          removeSingletons = removeSingletons, 
+                          keepSingletonsAbove = keepSingletonsAbove, 
+                          reduceToNonoverlapping = reduceToNonoverlapping, 
+                          useMulticore = useMulticore, nrCores = nrCores)
+    ctss.cluster.list[[s]] <- clusters
+  }
+  GRangesList(ctss.cluster.list)
+})
+
+
+##############
+
+# .paraclu <- function(data, sample.labels, minStability = 1, maxLength = 500, 
+#                      removeSingletons = FALSE, keepSingletonsAbove = Inf, 
+#                      reduceToNonoverlapping = TRUE, 
+#                      useMulticore = FALSE, nrCores = NULL) {
+# 	
+# 	ctss.cluster.list <- list()
+# 	for(s in sample.labels) {
+# 		
+# 		message("\t-> ", s)
+# 	  print(data)
+# 		d <- data[,c("chr", "pos", "strand", s)]
+# 		print("SAMARTH2")
+# 		colnames(d) <- c("chr", "pos", "strand", "tpm")
+# 		print("SAMARTH3")
+# 		d <- d[d$tpm>0,]
+# 		print("SAMARTH4--will now call paraclu3, filtering dpm>0 done")
+# 		ctss.cluster.df <- .paraclu3(ctss.df = d, minStability = minStability, 
+# 		                             maxLength = maxLength, 
+# 		                             removeSingletons = removeSingletons, 
+# 		                             keepSingletonsAbove = keepSingletonsAbove, 
+# 		                             reduceToNonoverlapping = reduceToNonoverlapping, 
+# 		                             useMulticore = useMulticore, nrCores = nrCores)
+# 		print("SAMARTH5--paraclu3 call done")
+# 		ctss.cluster.list[[s]] <- ctss.cluster.df
+# 		
+# 	}
+# 	
+# 	return(ctss.cluster.list)
+# 	
+# }
 
 
 #########################################################################
