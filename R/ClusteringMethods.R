@@ -101,7 +101,7 @@
 #' tagClustersGR(ce, "Zf.30p.dome")
 #' 
 #' # Using 'paraclu', notice arguments 'maxLength' and 'minStability'
-#' ce <- clusterCTSS( ce, threshold = 50, thresholdIsTpm = TRUE
+#' ce <- clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
 #'            , nrPassThreshold = 1, method = "paraclu"
 #'            , removeSingletons = TRUE, keepSingletonsAbove = 100
 #'            , maxLength = 500, minStability = 1
