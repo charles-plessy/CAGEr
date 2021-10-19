@@ -364,7 +364,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 
 
 
-############## SAMARTH
+############## 
 
 setGeneric(".paraclu", function(se, minStability = 1, maxLength = 500, 
                                 removeSingletons = FALSE, keepSingletonsAbove = Inf, 
@@ -381,13 +381,15 @@ setMethod(".paraclu", "SummarizedExperiment", function(se, minStability = 1, max
     d$tpm <- assays(se)[["normalizedTpmMatrix"]][[s]]
     d <- subset(d, d$tpm > 0)
     d <- as.data.frame(d)
-    colnames(d) <- c("chr", "pos", "strand", "tpm")
-    clusters <- .paraclu3(ctss.df = as.data.frame(d), minStability = minStability, 
+    # minor manipulation to colnames for downstream paraclu functions to run
+    colnames(d)[1] <- "chr"
+    clusters <- .paraclu3(ctss.df = d, minStability = minStability, 
                           maxLength = maxLength, 
                           removeSingletons = removeSingletons, 
                           keepSingletonsAbove = keepSingletonsAbove, 
                           reduceToNonoverlapping = reduceToNonoverlapping, 
                           useMulticore = useMulticore, nrCores = nrCores)
+    
     ctss.cluster.list[[s]] <- clusters
   }
   GRangesList(ctss.cluster.list)
