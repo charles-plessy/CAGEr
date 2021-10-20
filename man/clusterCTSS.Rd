@@ -122,10 +122,19 @@ consensus clusters by calling the \code{\link{aggregateTagClusters}} function.
 }
 \examples{
 
-clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
+# Using 'distclu', notice argument 'maxDist'
+ce <- clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
            , nrPassThreshold = 1, method = "distclu", maxDist = 20
            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-tagClustersGR(exampleCAGEexp, "Zf.30p.dome")
+tagClustersGR(ce, "Zf.30p.dome")
+
+# Using 'paraclu', notice arguments 'maxLength' and 'minStability'
+ce <- clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
+           , nrPassThreshold = 1, method = "paraclu"
+           , removeSingletons = TRUE, keepSingletonsAbove = 100
+           , maxLength = 500, minStability = 1
+           , reduceToNonoverlapping = TRUE)
+tagClustersGR(ce, "Zf.30p.dome")
 
 }
 \references{
