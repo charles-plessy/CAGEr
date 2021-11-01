@@ -1,3 +1,10 @@
+Changes in version 2.1.1:
+
+BUG FIXES
+
+    o Restore proper CTSS conversion from BAM files (bug introduced in v1.34.0)
+      while fixing issue #36.
+
 Changes in version 2.0.0:
 
 BACKWARDS-INCOMPATIBLE CHANGES
