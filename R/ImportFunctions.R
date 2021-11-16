@@ -202,5 +202,5 @@
   
   grl[["-"]] <- removeOnMinus(grl[["-"]])
 
-  as(unlist(grl), "CTSS")
+  CTSS(unlist(grl))
 }
