@@ -1,3 +1,10 @@
+Changes in version 2.1.2:
+
+BUG FIXES
+
+    o Restore object class consistency in if / else statement in private function
+      `bam2CTSS`.  Fixes #49.
+
 Changes in version 2.1.1:
 
 BUG FIXES
