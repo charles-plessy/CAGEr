@@ -4,8 +4,7 @@
 \alias{mapStats}
 \title{Process mapping statistics}
 \usage{
-mapStats(libs, scope, group = "default", facet = NULL,
-  normalise = TRUE)
+mapStats(libs, scope, group = "default", facet = NULL, normalise = TRUE)
 }
 \arguments{
 \item{libs}{A data frame with containing columns required by the \code{scope}
@@ -26,7 +25,7 @@ of \code{ggplot2}'s \link[ggplot2:facet_wrap]{facet_wrap} function).}
 \value{
 Returns a data frame with mean and standard deviation of normalised
 mapping statistics, plus absolute positions for the error bars.  The first
-column, \code{group}, is a vector of factors sorted with the \code{\link[gtools:mixedorder]{gtools::mixedorder()}}
+column, \code{group}, is a vector of factors sorted with the \code{\link[gtools:mixedsort]{gtools::mixedorder()}}
 function.  The facet column, if any, is always called \code{facet}.
 }
 \description{

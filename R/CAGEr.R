@@ -23,20 +23,12 @@ NULL
  
 #' CAGEr objects
 #' 
-#' The _CAGEr_ package provides two classes of objects to load, contain and
-#' process CAGE data:
-#' 
-#' * The [`CAGEset`] class is the original object format in _CAGEr_, as when
-#'   published in Haberle _et al._, 2015. 
-#'   
-#' * The [`CAGEexp`] class is a new class format in 2017, which is based on the
-#'   [`MultiAssayExperiment`] class.  In comparison with `CAGEset`, objects,
-#'   `CAGEexp` objects benefit from a a more efficient data storage, using
-#'   `DataFrame`s of run-length-encoded (`Rle`) integers, allowing for the
-#'   loading and use of much larger transcriptome datasets.
-#'  
-#' Most _CAGEr_ functions support both classes interchangabely, and the `CAGEr`
-#' class was created for methods that support both classes identically.
+#' The _CAGEr_ package provides one classe of objects to load, contain and
+#' process CAGE data: the [`CAGEexp`] class, introduced 2017, which is based on the
+#' [`MultiAssayExperiment`] class.  In comparison with the original `CAGEset`
+#' class (removed in 2021) `CAGEexp` objects benefit from a a more efficient data storage, using
+#' `DataFrame`s of run-length-encoded (`Rle`) integers, allowing for the
+#' loading and use of much larger transcriptome datasets.
 #' 
 #' @references Haberle V, Forrest ARR, Hayashizaki Y, Carninci P and Lenhard B
 #' (**2015**). \dQuote{CAGEr: precise TSS data retrieval and high-resolution
@@ -48,16 +40,20 @@ NULL
 #' @import BiocGenerics
 #' @exportClass CAGEr
 
-setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
+setClassUnion("CAGEr", c("CAGEexp"))  # Legacy of dual support for CAGEset before 2021
 
 
 #' @name getRefGenome
 #' 
-#' @title Attempt to load a BSgenome
+#' @title Return a BSgenome or throws an error
 #' 
-#' @details Internal function that retreives a BSgenome object or throws an error if not available.
+#' @details If the `reference.genome` object exists and is a BSgenome_, it will
+#' be returned.  This allows the user to run things like
+#' `seqlevelsStyle(BSgenome.Hsapiens.UCSC.hg19) <- "NCBI"` on the BSgenome
+#' object before running `getCTSS`.  If the `reference.genome` object does not
+#' exist, attempts to load it and return it, or throws an error if not available.
 #' 
-#' @return A BSgenome object
+#' @return A BSgenome object of the same name as the `reference.genome` argument.
 #' 
 #' @param reference.genome
 #' 
@@ -69,6 +65,11 @@ setClassUnion("CAGEr", c("CAGEset", "CAGEexp"))
 getRefGenome <- function(reference.genome) {
   if (is.null(reference.genome))
     stop("Can not run this function with a NULL genome; see ", sQuote('help("genomeName")'), ".")
+  if (exists(reference.genome))
+    if ("BSgenome" %in% class(get(reference.genome)))
+      return(get(reference.genome))
+    else
+      stop("The ", sQuote(reference.genome), " object in the namespace is not a BSgenome")
   if(reference.genome %in% rownames(installed.packages()) == FALSE)
     stop("Requested genome is not installed! Please install required BSgenome package before running CAGEr.")
   requireNamespace(reference.genome)
@@ -98,7 +99,7 @@ getRefGenome <- function(reference.genome) {
 #' @author Vanja Haberle
 #' 
 #' @examples 
-#' sampleLabels(exampleCAGEset)
+#' sampleLabels(exampleCAGEexp)
 #' 
 #' @family CAGEr accessor methods
 #' @seealso \code{\link{setColors}}
@@ -107,11 +108,6 @@ getRefGenome <- function(reference.genome) {
 #' @export
 
 setGeneric("sampleLabels", function(object) standardGeneric("sampleLabels"))
-
-#' @rdname sampleLabels
-
-setMethod("sampleLabels", "CAGEset", function (object)
-  object@sampleLabels)
 
 #' @rdname sampleLabels
 
@@ -140,7 +136,7 @@ setMethod("sampleLabels", "CTSS", function (object)
 #' element names will be sample names.
 #' 
 #' @examples 
-#' sampleList(exampleCAGEset)
+#' sampleList(exampleCAGEexp)
 #' 
 #' @export
 #' @rdname sampleLabels
@@ -158,6 +154,12 @@ setMethod("sampleList", "CAGEr", function (object) {
 #' @name validSamples
 #' @noRd
 #' @title Private function
+#' @examples
+#' CAGEr:::validSamples(exampleCAGEexp, 1)
+#' CAGEr:::validSamples(exampleCAGEexp, "Zf.high")
+#' CAGEr:::validSamples(exampleCAGEexp, sampleLabels(exampleCAGEexp))
+#' CAGEr:::validSamples(exampleCAGEexp, "all")
+#' CAGEr:::validSamples(exampleCAGEexp, NULL)
 #' @details Check if a vector of strings or numbers can be used to identify a sample.
 
 setGeneric("validSamples", function(object, x) standardGeneric("validSamples"))
@@ -167,6 +169,8 @@ setMethod("validSamples", "CAGEr", function (object, x){
   if(is.null(x))
       return(TRUE)
   if(inherits(x, "character"))
+    if (x == "all")
+      return(TRUE)
     if (all(x %in% sampleLabels(object)))
       return(TRUE)
   if(inherits(x, "integer") | inherits(x, "numeric"))
@@ -189,19 +193,23 @@ setMethod("validSamples", "CAGEr", function (object, x){
 setGeneric(".filterCtss", function( object
                                   , threshold       = 0
                                   , nrPassThreshold = 1
-                                  , thresholdIsTpm  = TRUE)
-  standardGeneric(".filterCtss"))
+                                  , thresholdIsTpm  = TRUE) {
+  if (threshold == 0) return(Rle(TRUE))
+  standardGeneric(".filterCtss")
+})
 
 setMethod(".filterCtss", "CAGEr", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
-	if (threshold == 0) return(Rle(TRUE))
   .filterCtss(CTSStagCountSE(object), threshold, nrPassThreshold, thresholdIsTpm)
 })
 
 setMethod(".filterCtss", "RangedSummarizedExperiment", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
-	if (threshold == 0) return(Rle(TRUE))
   assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
   if(assay == "normalizedTpmMatrix" & is.null(assays(object)[[assay]]))
     stop("Normalise the CAGEr object first with ", sQuote("normalizeTagCount()"), ".")
-  nr.pass.threshold <- rowSums(DelayedArray(assays(object)[[assay]]) >= threshold)
+  .filterCtss(DelayedArray(assays(object)[[assay]]), threshold, nrPassThreshold, thresholdIsTpm)
+})
+
+setMethod(".filterCtss", "DelayedArray", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
+  nr.pass.threshold <- rowSums(object >= threshold)
   Rle(nr.pass.threshold >= min(nrPassThreshold, ncol(object)))
 })

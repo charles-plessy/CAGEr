@@ -93,15 +93,13 @@ setMethod( "findStrandInvaders", "CAGEexp"
 
 setMethod( "removeStrandInvaders", "CAGEexp"
          , function (object, distance, barcode, linker) {
-  objName <- deparse(substitute(object))
   strandInvaders <- findStrandInvaders(object, distance, barcode, linker)
   se <- CTSStagCountSE(object)
   CTSStagCountSE(object) <- se[!decode(strandInvaders),]
   newcounts <- sapply(CTSStagCountDF(object), sum)
   object$strandInvaders <- object$librarySizes - newcounts
   object$librarySizes <- newcounts
-  assign(objName, object, envir = parent.frame())
-  invisible(1)
+  object
 })
 
 #' @rdname strandInvaders

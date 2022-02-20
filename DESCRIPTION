@@ -1,16 +1,20 @@
 Package: CAGEr
 Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for precise mapping of transcription start sites and promoterome mining
-Version: 1.29.2
-Date: 2020-03-18
-Author: Vanja Haberle <vanja.haberle@gmail.com>
-Maintainer: Vanja Haberle <vanja.haberle@gmail.com>, Charles Plessy <charles.plessy@oist.jp>, Damir Baranasic <damir.baranasic@lms.mrc.ac.uk>, Sarvesh Nikumbh <s.nikumbh@lms.mrc.ac.uk>
+Version: 2.1.2
+Date: 2021-11-17
+Authors@R:
+  c( person("Vanja",   "Haberle",   email = "vanja.haberle@gmail.com",       role = "aut"),
+     person("Charles", "Plessy",    email = "charles.plessy@oist.jp",        role = "cre"),
+     person("Damir",   "Baranasic", email = "damir.baranasic@lms.mrc.ac.uk", role = "ctb"),
+     person("Sarvesh", "Nikumbh",   email = "s.nikumbh@lms.mrc.ac.uk",       role = "ctb")
+  )
 Imports:
-    beanplot,
     BiocGenerics,
     BiocParallel,
     BSgenome,
     data.table,
     DelayedArray,
+    DelayedMatrixStats,
     formula.tools,
     GenomeInfoDb,
     GenomicAlignments,
@@ -22,9 +26,9 @@ Imports:
     memoise,
     plyr,
     Rsamtools,
-    reshape,
+    reshape2,
     rtracklayer,
-    S4Vectors,
+    S4Vectors (>= 0.27.5),
     som,
     stringdist,
     stringi,
@@ -35,7 +39,7 @@ Imports:
 Depends:
     methods,
     MultiAssayExperiment,
-    R (>= 3.5.0)
+    R (>= 4.1.0)
 Suggests:
     BSgenome.Drerio.UCSC.danRer7,
     DESeq2,
@@ -73,7 +77,6 @@ Collate:
     'NormalizationFunctions.R'
     'NormalizationMethods.R'
     'QCmethods.R'
-    'QuantileWidthFunctions.R'
     'QuantileWidthMethods.R'
     'Richness.R'
     'ShiftingFunctions.R'
@@ -81,6 +84,6 @@ Collate:
     'StrandInvaders.R'
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8

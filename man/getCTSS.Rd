@@ -3,24 +3,31 @@
 \docType{methods}
 \name{getCTSS}
 \alias{getCTSS}
-\alias{getCTSS,CAGEset-method}
 \alias{getCTSS,CAGEexp-method}
 \title{Reading CAGE data from input file(s) and detecting TSSs}
 \usage{
-getCTSS(object, sequencingQualityThreshold = 10,
-  mappingQualityThreshold = 20, removeFirstG = TRUE,
-  correctSystematicG = TRUE, useMulticore = FALSE, nrCores = NULL)
+getCTSS(
+  object,
+  sequencingQualityThreshold = 10,
+  mappingQualityThreshold = 20,
+  removeFirstG = TRUE,
+  correctSystematicG = TRUE,
+  useMulticore = FALSE,
+  nrCores = NULL
+)
 
-\S4method{getCTSS}{CAGEset}(object, sequencingQualityThreshold = 10,
-  mappingQualityThreshold = 20, removeFirstG = TRUE,
-  correctSystematicG = TRUE, useMulticore = FALSE, nrCores = NULL)
-
-\S4method{getCTSS}{CAGEexp}(object, sequencingQualityThreshold = 10,
-  mappingQualityThreshold = 20, removeFirstG = TRUE,
-  correctSystematicG = TRUE, useMulticore = FALSE, nrCores = NULL)
+\S4method{getCTSS}{CAGEexp}(
+  object,
+  sequencingQualityThreshold = 10,
+  mappingQualityThreshold = 20,
+  removeFirstG = TRUE,
+  correctSystematicG = TRUE,
+  useMulticore = FALSE,
+  nrCores = NULL
+)
 }
 \arguments{
-\item{object}{A \code{\link{CAGEset}} or a A \code{\link{CAGEexp}} object.}
+\item{object}{A \code{\link{CAGEexp}} object.}
 
 \item{sequencingQualityThreshold}{Only CAGE tags with average sequencing quality
 \code{>= sequencingQualityThreshold} and mapping quality \code{>=
@@ -66,13 +73,12 @@ CAGE tags, otherwise ignored.  See Details.}
 (set to \code{NULL} to use all detected cores).}
 }
 \value{
-For \code{\link{CAGEset}} objects, the slots \code{librarySizes}, \code{CTSScoordinates}
-and \code{tagCountMatrix} will be occupied by the information on CTSSs created from input CAGE
-files.  For \code{\link{CAGEexp}} objects, the \code{tagCountMatrix} experiment will be
-occupied by a \code{SummarizedExperiment} containing the expression data as a \code{DataFrame}
-of \code{Rle} integers, and the CTSS coordinates as a \code{GRanges} object.  In both cases
-the expression data can be retreived with \code{\link{CTSStagCount}} functions.  In addition,
-the library sizes are calculated and stored in the object.
+Returns the object, in which the \code{tagCountMatrix} experiment will be
+occupied by a \code{\link{RangedSummarizedExperiment}} containing the expression data
+as a \code{DataFrame} of \code{Rle} integers, and the CTSS coordinates as genomic
+ranges in a \code{\link{CTSS}} object.  The expression data can be retrieved with
+the \code{\link{CTSStagCountDF}} function.  In addition, the library sizes are
+calculated and stored in the object's sample data (see \code{\link{librarySizes}}).
 }
 \description{
 Reads input CAGE datasets into CAGEr object, constructs CAGE
@@ -107,10 +113,10 @@ pathsToInputFiles <- system.file("extdata", c("Zf.unfertilized.egg.chr17.ctss",
   
 labels <- paste("sample", seq(1,3,1), sep = "")
 
-myCAGEset <- new("CAGEset", genomeName = "BSgenome.Drerio.UCSC.danRer7",
+myCAGEexp <- new("CAGEexp", genomeName = "BSgenome.Drerio.UCSC.danRer7",
  inputFiles = pathsToInputFiles, inputFilesType = "ctss", sampleLabels = labels)
 
-getCTSS(myCAGEset)
+myCAGEexp <- getCTSS(myCAGEexp)
 
 }
 \references{
@@ -121,18 +127,18 @@ Carninci \emph{et al.} (2006) Genome-wide analysis of mammalian promoter archite
 evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
 }
 \seealso{
-\code{\link{CTSScoordinates}}, \code{\link{CTSStagCount}},
-\code{\link{CTSStagCountTable}}, \code{\link{inputFilesType}},
-\code{\link{librarySizes}}.
+\code{\link{inputFilesType}}, \code{\link{librarySizes}}.
 
-Other CAGEr object modifiers: \code{\link{CTSStoGenes}},
-  \code{\link{CustomConsensusClusters}},
-  \code{\link{aggregateTagClusters}},
-  \code{\link{annotateCTSS}}, \code{\link{clusterCTSS}},
-  \code{\link{cumulativeCTSSdistribution}},
-  \code{\link{normalizeTagCount}},
-  \code{\link{quantilePositions}},
-  \code{\link{summariseChrExpr}}
+Other CAGEr object modifiers: 
+\code{\link{CTSStoGenes}()},
+\code{\link{CustomConsensusClusters}()},
+\code{\link{aggregateTagClusters}()},
+\code{\link{annotateCTSS}()},
+\code{\link{clusterCTSS}()},
+\code{\link{cumulativeCTSSdistribution}()},
+\code{\link{normalizeTagCount}()},
+\code{\link{quantilePositions}()},
+\code{\link{summariseChrExpr}()}
 }
 \author{
 Vanja Haberle

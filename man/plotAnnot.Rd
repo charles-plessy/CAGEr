@@ -8,17 +8,13 @@
 \alias{plotAnnot,CAGEexp-method}
 \title{Plot annotation statistics}
 \usage{
-plotAnnot(x, scope, title, group = "default", facet = NULL,
-  normalise = TRUE)
+plotAnnot(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
 
-\S4method{plotAnnot}{data.frame}(x, scope, title, group = "default",
-  facet = NULL, normalise = TRUE)
+\S4method{plotAnnot}{data.frame}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
 
-\S4method{plotAnnot}{DataFrame}(x, scope, title, group = "default",
-  facet = NULL, normalise = TRUE)
+\S4method{plotAnnot}{DataFrame}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
 
-\S4method{plotAnnot}{CAGEexp}(x, scope, title, group = "default",
-  facet = NULL, normalise = TRUE)
+\S4method{plotAnnot}{CAGEexp}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
 }
 \arguments{
 \item{x}{An object from which can be extracted a table with columns named
@@ -69,15 +65,18 @@ plotAnnot(exampleCAGEexp, CAGEr:::msScope_counts , group = "myGroups")
 \seealso{
 \code{\link[=mapStats]{mapStats()}} for a list of \emph{scopes}.
 
-Other CAGEr annotation functions: \code{\link{annotateCTSS}},
-  \code{\link{ranges2annot}}, \code{\link{ranges2genes}},
-  \code{\link{ranges2names}}
+Other CAGEr annotation functions: 
+\code{\link{annotateCTSS}()},
+\code{\link{ranges2annot}()},
+\code{\link{ranges2genes}()},
+\code{\link{ranges2names}()}
 
-Other CAGEr plot functions: \code{\link{hanabiPlot}},
-  \code{\link{plotCorrelation}},
-  \code{\link{plotExpressionProfiles}},
-  \code{\link{plotInterquantileWidth}},
-  \code{\link{plotReverseCumulatives}}
+Other CAGEr plot functions: 
+\code{\link{hanabiPlot}()},
+\code{\link{plotCorrelation}()},
+\code{\link{plotExpressionProfiles}()},
+\code{\link{plotInterquantileWidth}()},
+\code{\link{plotReverseCumulatives}()}
 }
 \author{
 Charles Plessy

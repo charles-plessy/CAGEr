@@ -47,20 +47,16 @@
 #' of promoters that can be further used for expression profiling or detecting
 #'  "shifting" (differentially used) promoters between different CAGE samples.
 #' 
-#' @return For [`CAGEset`] objects, the `consensusClusters` slot will be
-#' populated with a data frame indicating the cluster name, chromosome, start
-#' and end coordinates, the strand, and the normalised expression score of the
-#' cluster.  This table is returned by the [`consensusClusters`] function.
-#' 
-#' For [`CAGEexp`] objects, the experiment `consensusClusters` will be occupied
-#' by a [`RangedSummarizedExperiment`] containing the cluster coodinates as row
-#' ranges, and their expression levels in the `counts` and `normalized` assays.
-#' These genomic ranges are returned by the [`consensusClustersGR`] function.
-#' The CTSS ranges of the `tagCountMatrix` experiment will gain a `cluster`
-#' column indicating which cluster they belong to.  Lastly, the number of
-#' CTSS outside clusters will be documented in the `outOfClusters` column data.
-#' This table is returned by the [`consensusClusters`] function.
-#' 
+#' @return Returns the object in which the _experiment_ `consensusClusters` will
+#' be occupied by a [`RangedSummarizedExperiment`] containing the cluster
+#' coordinates as row ranges, and their expression levels in the `counts` and
+#' `normalized` assays.  These genomic ranges are returned by the
+#' [`consensusClustersGR`] function and the whole object can be accessed with
+#' the [`consensusClustersSE`] function.  The CTSS ranges of the
+#' `tagCountMatrix` _experiment_ will gain a `cluster` column indicating which
+#' cluster they belong to.  Lastly, the number of CTSS outside clusters will be
+#' documented in the `outOfClusters` column data.
+#'  
 #' @author Vanja Haberle
 #' @author Charles Plessy
 #' 
@@ -70,14 +66,6 @@
 #' @importFrom data.table data.table setkeyv setnames
 #' 
 #' @examples
-#' head(consensusClusters(exampleCAGEset))
-#' aggregateTagClusters( exampleCAGEset, tpmThreshold = 50
-#'                     , excludeSignalBelowThreshold = FALSE, maxDist = 100)
-#' head(consensusClusters(exampleCAGEset))
-#' 
-#' aggregateTagClusters(object = exampleCAGEset, tpmThreshold = 50,
-#'   excludeSignalBelowThreshold = FALSE, qLow = 0.1, qUp = 0.9, maxDist = 100)
-#' head(consensusClusters(exampleCAGEset))
 #' 
 #' consensusClustersGR(exampleCAGEexp)
 #' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
@@ -120,34 +108,13 @@ setMethod( "aggregateTagClusters", "CAGEr"
                          , thresholdIsTpm  = TRUE)
   } else filter <- TRUE
 	
-	if (inherits(object, "CAGEset")) {
-	  filteredSE <- CTSStagCountSE(object)[filter,]
-	  .getTotalTagCountSample <- function(x) {
-      ctss.s        <- .CTSS(rowRanges(filteredSE))
-      score(ctss.s) <- assay(filteredSE, "normalizedTpmMatrix")[[x]]
-      ctss.s        <- ctss.s[ctss.s$filteredCTSSidx]
-      ctss.s        <- ctss.s[score(ctss.s) > 0]
-  	  .getTotalTagCount(ctss = ctss.s, ctss.clusters = consensus.clusters)}
-    tpm.list <- bplapply( sampleList(object), .getTotalTagCountSample
-                        , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
-		m <- as.matrix(data.frame(tpm.list))
-		rownames(m) <- 1:nrow(m)
-		consensus.clusters$tpm <- rowSums(m)
-	  object@consensusClustersTpmMatrix <- m
-	  consensusClusters(object) <- CCgranges2dataframe(consensus.clusters)
-	}
-	
-	if (inherits(object, "CAGEexp")) {
     CTSScoordinatesGR(object)$cluster <-
       ranges2names(CTSScoordinatesGR(object), consensus.clusters)
     se <- CTSStagCountSE(object)[filter & decode(filteredCTSSidx(object)), ]
     consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters)
     score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
     object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
-	}
-	
-	assign(objname, object, envir = parent.frame())
-	invisible(1)
+    object
 })
 
 
@@ -162,8 +129,8 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   if (all( !is.null(qLow), !is.null(qUp))) {
     TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
     TC.list <- endoapply(TC.list, function(x) {
+      end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x)
       start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x)
-      end(x)   <- mcols(x)[[paste0("q_", qUp)]]  + start(x)
       x})
   } else {
     TC.list <- tagClustersGR(object)
@@ -195,7 +162,7 @@ setMethod( ".CCtoSE"
     .rowsumAsMatrix <- function(DF, names) {
       rs <- rowsum(as.matrix(DelayedArray(DF)), as.factor(names))
       if (rownames(rs)[1] == "") # If some CTSS were not in clusters
-        rs <- rs[-1,]
+        rs <- rs[-1, , drop = FALSE]
       rs
       }
     
@@ -276,7 +243,6 @@ setMethod( "CustomConsensusClusters", c("CAGEexp", "GRanges")
                                         , clusters)
   score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
   object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
-  
-  assign(objname, object, envir = parent.frame())
-	invisible(object)
+
+  object
 })

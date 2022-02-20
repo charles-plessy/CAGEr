@@ -7,7 +7,7 @@
 #' by library size and stores the raw and normalised results in the
 #' \code{\link{CAGEr}} object.
 #' 
-#' @param object A \code{CAGEexp} object (\code{CAGEset} objects are not supported).
+#' @param object A `CAGEexp` object objects are not supported).
 #' 
 #' @return Modifies the \code{CAGEexp} by adding a \dQuote{seqNameTotals} experiment
 #' containing matrices where rows represent chromosomes and columns represent samples.
@@ -40,6 +40,5 @@ setMethod("summariseChrExpr", "CAGEexp", function(object) {
                                               , norm   = seqNameTotals.norm)
                         , rowData = DataFrame(as.data.frame(seqinfo(getRefGenome(genomeName(object))))))
   validObject(object)
-  assign(objname, object, envir = parent.frame())
-  invisible(1)
+  object
 })

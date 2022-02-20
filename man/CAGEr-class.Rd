@@ -6,22 +6,12 @@
 \alias{CAGEr}
 \title{CAGEr objects}
 \description{
-The \emph{CAGEr} package provides two classes of objects to load, contain and
-process CAGE data:
-}
-\details{
-\itemize{
-\item The \code{\link{CAGEset}} class is the original object format in \emph{CAGEr}, as when
-published in Haberle \emph{et al.}, 2015.
-\item The \code{\link{CAGEexp}} class is a new class format in 2017, which is based on the
-\code{\link{MultiAssayExperiment}} class.  In comparison with \code{CAGEset}, objects,
-\code{CAGEexp} objects benefit from a a more efficient data storage, using
+The \emph{CAGEr} package provides one classe of objects to load, contain and
+process CAGE data: the \code{\link{CAGEexp}} class, introduced 2017, which is based on the
+\code{\link{MultiAssayExperiment}} class.  In comparison with the original \code{CAGEset}
+class (removed in 2021) \code{CAGEexp} objects benefit from a a more efficient data storage, using
 \code{DataFrame}s of run-length-encoded (\code{Rle}) integers, allowing for the
 loading and use of much larger transcriptome datasets.
-}
-
-Most \emph{CAGEr} functions support both classes interchangabely, and the \code{CAGEr}
-class was created for methods that support both classes identically.
 }
 \references{
 Haberle V, Forrest ARR, Hayashizaki Y, Carninci P and Lenhard B

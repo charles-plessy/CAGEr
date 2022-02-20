@@ -95,7 +95,7 @@ setMethod(".cluster.ctss.strand", "IPos", function(ctss.ipos.chr, max.dist) {
 #' @examples 
 #' 
 #' #.cluster.ctss.chr
-#' ctss.chr <- CAGEr:::.CTSS.chr(CTSScoordinatesGR(exampleCAGEexp))
+#' ctss.chr <- as(CTSScoordinatesGR(exampleCAGEexp), "CTSS.chr")
 #' CAGEr:::.cluster.ctss.chr(ctss.chr, 20)
 
 setGeneric(".cluster.ctss.chr", function(ctss.chr, max.dist) standardGeneric(".cluster.ctss.chr"))
@@ -129,7 +129,7 @@ setMethod(".cluster.ctss.chr", "CTSS.chr", function(ctss.chr, max.dist) {
 #' @examples 
 #' 
 #' # .ctss2clusters
-#' ctss <- CAGEr:::.CTSS(CTSScoordinatesGR(exampleCAGEexp))
+#' ctss <- CTSScoordinatesGR(exampleCAGEexp)
 #' score(ctss) <- CTSSnormalizedTpmDF(exampleCAGEexp)[[1]]
 #' seqnames(ctss)[rep(c(TRUE,FALSE), length(ctss) / 2)] <- "chr16"
 #' ctss
@@ -142,7 +142,7 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
   ctss <- sort(ctss)
   ctss <- ctss[score(ctss) != 0]
   ctss.list <- split(ctss, droplevels(seqnames(ctss)))
-  ctss.list <- lapply(ctss.list, .CTSS.chr)
+  ctss.list <- lapply(ctss.list, as, "CTSS.chr")
   ctss.list <- bplapply( ctss.list, .cluster.ctss.chr, max.dist = max.dist
                        , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	max.clust <- sapply(ctss.list, function(x) {max(x$id)})
@@ -215,8 +215,9 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, removeSi
                , dominant_ctss = clusters$dominant_ctss
                , tpm.dominant_ctss = Rle(clusters$tpm.dominant_ctss)
   )
+  gr <- sort(gr)
   names(gr) <- seq_along(gr)
-  sort(gr)
+  gr
 })
 
 
@@ -240,8 +241,6 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, removeSi
 #' \dontrun{
 #' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEexp), useMulticore = TRUE)
 #' }
-#' 
-#' CAGEr:::.distclu(CTSStagCountSE(exampleCAGEset))
 
 setGeneric(".distclu", function(se, max.dist = 20, removeSingletons = FALSE, keepSingletonsAbove = Inf, useMulticore = FALSE, nrCores = NULL) standardGeneric(".distclu"))
 
@@ -250,7 +249,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
   ctss.cluster.list <- list()
   for(s in colnames(se)) {
     message("\t-> ", s)
-    d <- .CTSS(rowRanges(se))
+    d <- as(rowRanges(se), "CTSS")
     score(d) <- assays(se)[["normalizedTpmMatrix"]][[s]]
     d <- subset(d, score(d) > 0)
     clusters <- .ctss2clusters(ctss = d, max.dist = max.dist, useMulticore = useMulticore, nrCores = nrCores)
@@ -293,9 +292,8 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 
 
 .paraclu2 <- function(ctss, min_density = -Inf, clusters.df = data.frame()) {
-	
+
 	if(nrow(ctss)>0){
-		
 		ctss <- ctss[order(ctss$pos),]
 		params <- .paraclu1(ctss)
 		br <- params[[1]]
@@ -305,10 +303,21 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 		
 		if(!(max_density == Inf)){
 			new_min <- max(min_density, max_density)
-			clusters.df <- rbind(.paraclu2(ctss = ctss[1:(br-1),], min_density = new_min, clusters.df = clusters.df), .paraclu2(ctss = ctss[br:nrow(ctss),], min_density = new_min, clusters.df = clusters.df))
+			clusters.df <- rbind(.paraclu2(ctss = ctss[1:(br-1),], min_density = new_min, clusters.df = clusters.df), 
+			                     .paraclu2(ctss = ctss[br:nrow(ctss),], min_density = new_min, clusters.df = clusters.df))
 		}
 		
-		return(rbind(clusters.df, data.frame(chr = ctss$chr[1], start = min(ctss$pos), end = max(ctss$pos), strand = ctss$strand[1], nr_ctss = sit, dominant_ctss = ctss$pos[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]], tpm = tot, tpm.dominant_ctss = ctss$tpm[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]], min_d = min_density, max_d= max_density)))
+		return(rbind(clusters.df, data.frame(chr = ctss$chr[1], 
+                    start = min(ctss$pos), 
+                    end = max(ctss$pos), 
+                    strand = ctss$strand[1], 
+                    nr_ctss = sit, 
+		                dominant_ctss = ctss$pos[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]], 
+		                tpm = tot, 
+		                tpm.dominant_ctss = ctss$tpm[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]],
+		                min_d = min_density, max_d= max_density)
+		             )
+		       )
 		
 	}else{
 		return(clusters.df)
@@ -322,9 +331,12 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	ctss.df.plus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "+")})
 	ctss.df.minus.list <-lapply(as.list(unique(ctss.df$chr)), function(x) {subset(ctss.df, ctss.df$chr == x & strand == "-")})
 	ctss.df.list <- append(ctss.df.plus.list, ctss.df.minus.list)
+	
 	clusters.list <- bplapply( ctss.df.list, .paraclu2
 	                         , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	
 	n <- length(clusters.list)/2
+
 	clusters.list <- lapply(as.list(c(1:n)), function(x) {rbind(clusters.list[[x]], clusters.list[[x+n]])})
 	
 	clusters <- do.call(rbind, clusters.list)
@@ -346,29 +358,76 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	rownames(clusters) <- c(1:nrow(clusters))
 	colnames(clusters)[which(colnames(clusters) == "min_d")] <- "min_density"
 	colnames(clusters)[which(colnames(clusters) == "max_d")] <- "max_density"
-	
 	return(clusters)
 	
 }
 
 
-.paraclu <- function(data, sample.labels, minStability = 1, maxLength = 500, removeSingletons = FALSE, keepSingletonsAbove = Inf, reduceToNonoverlapping = TRUE, useMulticore = FALSE, nrCores = NULL) {
-	
-	ctss.cluster.list <- list()
-	for(s in sample.labels) {
-		
-		message("\t-> ", s)
-		d <- data[,c("chr", "pos", "strand", s)]
-		colnames(d) <- c("chr", "pos", "strand", "tpm")
-		d <- d[d$tpm>0,]
-		ctss.cluster.df <- .paraclu3(ctss.df = d, minStability = minStability, maxLength = maxLength, removeSingletons = removeSingletons, keepSingletonsAbove = keepSingletonsAbove, reduceToNonoverlapping = reduceToNonoverlapping, useMulticore = useMulticore, nrCores = nrCores)
-		ctss.cluster.list[[s]] <- ctss.cluster.df
-		
-	}
-	
-	return(ctss.cluster.list)
-	
-}
+
+############## 
+
+setGeneric(".paraclu", function(se, minStability = 1, maxLength = 500, 
+                                removeSingletons = FALSE, keepSingletonsAbove = Inf, 
+                                reduceToNonoverlapping = TRUE, 
+                                useMulticore = FALSE, nrCores = NULL) 
+  standardGeneric(".paraclu"))
+
+setMethod(".paraclu", "SummarizedExperiment", function(se, minStability = 1, maxLength = 500, removeSingletons, keepSingletonsAbove, reduceToNonoverlapping = TRUE, useMulticore, nrCores) {
+  
+  ctss.cluster.list <- list()
+  for(s in colnames(se)) {
+    message("\t-> ", s)
+    d <- as(rowRanges(se), "CTSS")
+    d$tpm <- assays(se)[["normalizedTpmMatrix"]][[s]]
+    d <- subset(d, d$tpm > 0)
+    d <- as.data.frame(d)
+    # minor manipulation to colnames for downstream paraclu functions to run
+    colnames(d)[1] <- "chr"
+    clusters <- .paraclu3(ctss.df = d, minStability = minStability, 
+                          maxLength = maxLength, 
+                          removeSingletons = removeSingletons, 
+                          keepSingletonsAbove = keepSingletonsAbove, 
+                          reduceToNonoverlapping = reduceToNonoverlapping, 
+                          useMulticore = useMulticore, nrCores = nrCores)
+    
+    ctss.cluster.list[[s]] <- clusters
+  }
+  GRangesList(ctss.cluster.list)
+})
+
+
+##############
+
+# .paraclu <- function(data, sample.labels, minStability = 1, maxLength = 500, 
+#                      removeSingletons = FALSE, keepSingletonsAbove = Inf, 
+#                      reduceToNonoverlapping = TRUE, 
+#                      useMulticore = FALSE, nrCores = NULL) {
+# 	
+# 	ctss.cluster.list <- list()
+# 	for(s in sample.labels) {
+# 		
+# 		message("\t-> ", s)
+# 	  print(data)
+# 		d <- data[,c("chr", "pos", "strand", s)]
+# 		print("SAMARTH2")
+# 		colnames(d) <- c("chr", "pos", "strand", "tpm")
+# 		print("SAMARTH3")
+# 		d <- d[d$tpm>0,]
+# 		print("SAMARTH4--will now call paraclu3, filtering dpm>0 done")
+# 		ctss.cluster.df <- .paraclu3(ctss.df = d, minStability = minStability, 
+# 		                             maxLength = maxLength, 
+# 		                             removeSingletons = removeSingletons, 
+# 		                             keepSingletonsAbove = keepSingletonsAbove, 
+# 		                             reduceToNonoverlapping = reduceToNonoverlapping, 
+# 		                             useMulticore = useMulticore, nrCores = nrCores)
+# 		print("SAMARTH5--paraclu3 call done")
+# 		ctss.cluster.list[[s]] <- ctss.cluster.df
+# 		
+# 	}
+# 	
+# 	return(ctss.cluster.list)
+# 	
+# }
 
 
 #########################################################################
@@ -478,77 +537,3 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
 	return(ctss.cluster.list)
 	
 }
-
-#' @name tagClusterConvertors
-#' 
-#' @title Private functions to convert TC formats
-#' 
-#' @description Interconvert tag clusters (TC) formats used in classes CAGEset
-#' (\code{data.frame}) and CAGEexp (\code{GRanges}).
-#' 
-#' @details 
-#' The original format used in \code{\link{CAGEset}} objects follows BED
-#' ("0-based") conventsion for the start and end coordinates.  On the other
-#' hand, the GRanges objects used in \code{\link{CAGEexp}} objects follow
-#' the "1-based" convention.  Therefore a value of 1 has to be added or
-#' subtracted to the start positions when converting between both formats.
-#' 
-#' @family df2granges converters
-#' 
-#' @examples 
-#' df <- tagClusters(exampleCAGEset, 1)
-#' head(df)
-#' gr <- CAGEr:::TCdataframe2granges(df)
-#' gr
-#' head(CAGEr:::TCgranges2dataframe(gr))
-#' # No exact round-trip because start and end were not integer in df.
-#' identical(df, CAGEr:::TCgranges2dataframe(gr))
-#' if (! all(df == CAGEr:::TCgranges2dataframe(gr)))
-#'   stop("No round-trip between TCdataframe2granges and TCgranges2dataframe")
-#' 
-#' tagClustersGR(exampleCAGEexp)
-#' head(CAGEr:::TCgranges2dataframe(CAGEr:::tagClustersGR(exampleCAGEexp, 1)))
-NULL
-
-#' @name TCgranges2dataframe
-#' 
-#' @rdname tagClusterConvertors
-#' 
-#' @param gr Consensus clusters in \code{GRanges} format.
-
-TCgranges2dataframe <- function(gr) {
-  if (!is.null(gr$cluster)) {
-    df <- data.frame(cluster = gr$cluster)
-    gr$cluster <- NULL
-  } else {
-    df <- data.frame(cluster = as.integer(names(gr)))  # Make sure it does not sort lexically!
-  }
-  df <- cbind(df , data.frame( chr     = decode(seqnames(gr))
-                             , start   = start(gr) -1
-                             , end     = end(gr)
-                             , strand  = decode(droplevels(strand(gr)))))
-  if(is.null(gr$tpm))
-    df$tpm <- score(gr)
-  score(gr) <- NULL
-  df <- cbind(df, mcols(gr))
-  as.data.frame(df)
-}
-
-#' @name TCdataframe2granges
-#' @rdname tagClusterConvertors
-#' 
-#' @param df Consensus clusters in \code{data.frame} format.
-
-TCdataframe2granges <- function(df) {
-	gr <- GRanges( seqnames           = df$chr
-	             , ranges             = IRanges(df$start + 1, df$end)
- 	             , score              = df$tpm
-               , strand             = df$strand)
-	if(is.null(df[["cluster"]]))
-	  gr$cluster <- seq_along(gr)
-	mcols(gr) <- cbind( mcols(gr)
-	                  , df[,setdiff(colnames(df), c("chr", "start", "end", "strand")), drop = FALSE])
-	names(gr) <- rownames(df)
-	gr
-}
-

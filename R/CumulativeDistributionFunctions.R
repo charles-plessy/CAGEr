@@ -5,13 +5,11 @@
 #' @examples 
 #' library(GenomicRanges)
 #' library(IRanges)
-#' ctss <- CAGEr:::.CTSS(
-#'           GPos( stitch = FALSE
-#'               , GRanges( seqnames=Rle("chr1")
-#'                        , IRanges(c(1,3,4,12,14,25,28,31,35), w=1)
-#'                        , strand = "+")))
+#' ctss <- CTSS( seqnames = "chr1"
+#'             , IRanges(c(1,3,4,12,14,25,28,31,35), w=1)
+#'             , strand = "+")
 #' score(ctss) <- 1
-#' ctss.chr <- CAGEr:::.CTSS.chr(ctss)
+#' ctss.chr <- as(ctss, "CTSS.chr")
 #' clusters <- GRanges( seqnames = Rle("chr1")
 #'                    , ranges = IRanges(c(1,12,25,31,32), c(4,14,28,31,33))
 #'                    , strand = "+")
@@ -60,7 +58,7 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
   clusters.chr <- clusters[seqnames(clusters) == chrom & strand(clusters) == str]
   ctss.chr <- ctss[seqnames(ctss) == chrom & strand(ctss) == str]
   if (length(clusters.chr) > 0 & length(ctss) > 0) {
-    .getCAGEsignalCoverage(ctss.chr = .CTSS.chr(ctss.chr), clusters = clusters.chr)
+    .getCAGEsignalCoverage(ctss.chr = as(ctss.chr, "CTSS.chr"), clusters = clusters.chr)
   } else {
     return()
   }
@@ -79,17 +77,6 @@ setMethod(".getCumsumChr2", c("GRanges", "CTSS"), function(clusters, ctss, chrom
 #' components corespond to the name of the corresponding cluster) v.
 #'
 #' @examples 
-#' ctss      <- CTSSnormalizedTpmGR(exampleCAGEset, "sample1")
-#' ctss      <- ctss[ctss$filteredCTSSidx]
-#' clusters  <- tagClustersGR(exampleCAGEset, "sample1")
-#' clusters.cumsum <- RleList(CAGEr:::.getCumsum(ctss, clusters))
-#' identical( lapply(exampleCAGEset@CTSScumulativesTagClusters[[1]],decode)
-#'          , lapply(clusters.cumsum, decode))
-#' # Not identical if not decoded because Rle method is attached to S4Vectors in one case
-#' # and to IRanges in the other case.
-#' decode(clusters.cumsum[[1]])
-#' ctss[queryHits(findOverlaps(ctss, clusters[1]))]
-#' clusters[1]
 #' 
 #' ctss      <- CTSSnormalizedTpmGR(exampleCAGEexp, "Zf.30p.dome")
 #' ctss      <- ctss[ctss$filteredCTSSidx]

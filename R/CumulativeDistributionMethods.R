@@ -16,11 +16,7 @@
 #' @param nrCores Number of cores to use when `useMulticore = TRUE`
 #'        (set to `NULL` to use all detected cores).
 #' 
-#' @return For `CAGEset` objects, the slot `CTSScumulativesTagClusters`
-#' (when `clusters = "tagClusters"`) or `CTSScumulativesConsensusClusters`
-#' (when `clusters = "consensusClusters"`) of the will be occupied by the
-#' list containing cumulative sum of the CAGE signal along genomic regions per
-#' CAGE experiment.  In `CAGEexp` objects, cumulative sums are stored
+#' @return In `CAGEexp` objects, cumulative sums are stored
 #' in the metadata slot using the `RleList` class.
 #' 
 #' @author Vanja Haberle
@@ -29,10 +25,8 @@
 #' @family CAGEr clusters functions
 #' 
 #' @examples
-#' CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
-#' cumulativeCTSSdistribution(object = exampleCAGEset, clusters = "tagClusters")
-#' CTSScumulativesTagClusters(exampleCAGEset)[[1]][1:6]
-#' cumulativeCTSSdistribution(exampleCAGEset, clusters = "consensusClusters")
+#' CTSScumulativesTagClusters(exampleCAGEexp)[[1]][1:6]
+#' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "consensusClusters")
 #' 
 #' clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
 #'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
@@ -54,7 +48,6 @@ setGeneric( "cumulativeCTSSdistribution"
 
 setMethod( "cumulativeCTSSdistribution", "CAGEr"
          , function (object, clusters, useMulticore, nrCores) {
-  objName <- deparse(substitute(object))
   message("\nCalculating cumulative sum of CAGE signal along clusters...")
   clusters <- match.arg(clusters)
   getClusters <- switch( clusters
@@ -75,6 +68,5 @@ setMethod( "cumulativeCTSSdistribution", "CAGEr"
 	if (inherits(object, "CAGEexp"))
     samples.cumsum.list <- lapply(samples.cumsum.list, RleList)
 	object <- setClusters(object, samples.cumsum.list)
-  assign(objName, object, envir = parent.frame())
-  invisible(1)
+    object
 })

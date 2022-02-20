@@ -3,3 +3,4 @@
 vignettes/CAGEexp_cache
 benchmarks
 ^\.httr-oauth$
+^\.github$

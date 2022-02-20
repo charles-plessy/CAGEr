@@ -1,8 +1,8 @@
 #' CAGEr class to hold all data and metadata about one CAGE experiment.
 #' 
 #' The [`CAGEr`] class is a [`MultiAssayExperiment`] object containing all data
-#' and metadata about a set of CAGE libraries.  It is a replacement for the
-#' [`CAGEset`] class.  The main difference is that the expression data is stored
+#' and metadata about a set of CAGE libraries.  It replaced the CAGEset class
+#' in 2017.  The main difference is that the expression data is stored
 #' in [`DataFrame`] objects of [`Rle`]-encoded expression values, instead of plain
 #' `data.frame`s.  With large datasets, this saves considerable amounts of memory.
 #' 
@@ -44,7 +44,7 @@
 #' # Expression data is loaded by the getCTSS() function, that also calculates
 #' # library sizes and store them in the object's column data.
 #' 
-#' getCTSS(exampleCAGEexp)
+#' exampleCAGEexp <- getCTSS(exampleCAGEexp)
 #' librarySizes(exampleCAGEexp)
 #' colData(exampleCAGEexp)
 #' 
@@ -57,10 +57,10 @@
 #' 
 #' # Columns of the "colData" table are accessible directly via the "$" operator.
 #' 
-#' exampleCAGEexp$l1 <- colSums(CTSStagCountDf(exampleCAGEexp) > 0)
+#' exampleCAGEexp$l1 <- CTSStagCountDF(exampleCAGEexp) |> sapply ( \(col) sum(col > 0) )
 #' exampleCAGEexp$l1
 #' 
-#' @seealso [`CAGEset-class`], [`make.names`]
+#' @seealso [`make.names`]
 #' 
 #' @rdname CAGEexp-class
 #' @aliases CAGEexp-class
@@ -161,24 +161,27 @@ setMethod( "initialize", "CAGEexp"
 #'          , inputFiles     = pathsToInputFiles
 #'          , inputFilesType = "ctss"
 #'          , sampleLabels   = sub( ".chr17.ctss", "", basename(pathsToInputFiles)))
-#' getCTSS(exampleCAGEexp)
+#' exampleCAGEexp <- getCTSS(exampleCAGEexp)
 #' librarySizes(exampleCAGEexp)
 #' colData(exampleCAGEexp)
 #' exampleCAGEexp$l1 <- NULL
 #' exampleCAGEexp <- exampleCAGEexp[,c(5, 2, 1, 3, 4)] # Non-aplhabetic order may help catch bugs
 #' CTSStagCountSE(exampleCAGEexp) <- CTSStagCountSE(exampleCAGEexp)[1:5000,]  # Slim the object
 #' exampleCAGEexp$librarySizes <- sapply(CTSStagCountDF(exampleCAGEexp), sum) # Repair metadata
-#' summariseChrExpr(exampleCAGEexp)
-#' annotateCTSS(exampleCAGEexp, exampleZv9_annot)
-#' CTSStoGenes(exampleCAGEexp)
-#' normalizeTagCount(exampleCAGEexp)
-#' clusterCTSS(exampleCAGEexp)
-#' cumulativeCTSSdistribution(exampleCAGEexp, "tagClusters")
-#' quantilePositions(exampleCAGEexp, "tagClusters")
-#' aggregateTagClusters(exampleCAGEexp)
-#' annotateConsensusClusters(exampleCAGEexp, exampleZv9_annot)
-#' cumulativeCTSSdistribution(exampleCAGEexp, "consensusClusters")
-#' quantilePositions(exampleCAGEexp, "consensusClusters")
+#' exampleCAGEexp <- 
+#'   summariseChrExpr(exampleCAGEexp)                |>
+#'   annotateCTSS(exampleZv9_annot)                  |>
+#'   CTSStoGenes()                                   |>
+#'   normalizeTagCount()                             |>
+#'   getExpressionProfiles("CTSS")                   |>
+#'   clusterCTSS()                                   |>
+#'   cumulativeCTSSdistribution("tagClusters")       |>
+#'   quantilePositions("tagClusters")                |>
+#'   aggregateTagClusters()                          |>
+#'   annotateConsensusClusters(exampleZv9_annot)     |>
+#'   cumulativeCTSSdistribution("consensusClusters") |>
+#'   quantilePositions("consensusClusters")          |>
+#'   getExpressionProfiles("consensusClusters")
 #' save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
 #' }
 
@@ -230,11 +233,12 @@ setAs("data.frame", "CAGEexp", function(from){
                                 , inputFilesType = "CTSStable"
                                 , row.names      = sample.labels))
 
-  object$librarySizes <- as.integer(colSums(from[,4:ncol(from),drop=FALSE]))
-  
   CTSStagCountSE(object) <-
     SummarizedExperiment( rowRanges = gr
                         , assays    = SimpleList(counts = counts))
+  
+  object$librarySizes <- as.integer(colSums(from[,4:ncol(from),drop=FALSE]))
+  
   
   return(object)
 })
