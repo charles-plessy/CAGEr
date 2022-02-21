@@ -64,6 +64,7 @@
 #' @family CAGEr clusters functions
 #' 
 #' @importFrom IRanges reduce
+#' @importFrom GenomicRanges granges
 #' @importFrom S4Vectors endoapply mcols
 #' 
 #' @examples
