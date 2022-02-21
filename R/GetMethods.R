@@ -1,4 +1,4 @@
-#' @include AggregationFunctions.R ClusteringFunctions.R CAGEr.R CTSS.R
+#' @include ClusteringFunctions.R CAGEr.R CTSS.R
 
 ################################################################
 # Functions for retrieving data from CAGEexp objects

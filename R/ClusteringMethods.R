@@ -169,55 +169,6 @@ setMethod( "clusterCTSS", "CAGEexp"
   object
 })
 
-#' @name .clusterAggregateAndSum
-#' @rdname clusterAggregateAndSum
-#' 
-#' @param clusters Clusters to be aggregated.  `data.frame`, or
-#' `GRanges`, which will be coerced to `data.frame`.
-#' 
-#' @param key Name of the column containing the factor used to aggregate
-#' the clusters.
-#' 
-#' @title Aggregate identical clusters and sum their scores.
-#' 
-#' @description Private function using `data.table` objects to preform grouping
-#' operations at a high performance.  These functions use _non-standard
-#' evaluation_ in a context that raises warnings in `R CMD check`.  By
-#' separating these functions from the rest of the code, I hope to make the
-#' workarounds easier to manage.
-
-setGeneric(".clusterAggregateAndSum", function (clusters, key) standardGeneric(".clusterAggregateAndSum"))
-
-#' @rdname clusterAggregateAndSum
-#' @importFrom data.table setkeyv setnames
-
-setMethod(".clusterAggregateAndSum", "data.table", function (clusters, key) {
-  setkeyv(clusters, key)
-  chr <- min <- max <- strand <- tpm <- NULL
-	clusters <- clusters[ , list( chr[1]
-	                            , min(start)
-	                            , max(end)
-	                            , strand[1]
-	                            , sum(tpm))
-	                      , by = key]
-	setnames(clusters, c(key, "chr", "start", "end", "strand", "tpm"))
-	setkeyv(clusters, key)
-})
-
-#' @rdname clusterAggregateAndSum
-#' @importFrom data.table data.table
-
-setMethod(".clusterAggregateAndSum", "data.frame", function (clusters, key) {
-  as.data.frame(.clusterAggregateAndSum(data.table(clusters), key))
-})
-
-#' @rdname clusterAggregateAndSum
-
-setMethod(".clusterAggregateAndSum", "GRanges", function (clusters, key) {
-  CCdataframe2granges(.clusterAggregateAndSum(CCgranges2dataframe(clusters), key))
-})
-
-
 #' @rdname byCtss
 #' 
 #' @title Apply functions to identical CTSSes.

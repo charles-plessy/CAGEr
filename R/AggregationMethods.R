@@ -35,7 +35,7 @@
 #' @details Since the tag clusters (TCs) returned by the [`clusterCTSS`]
 #' function are constructed separately for every CAGE sample within the CAGEr
 #' object, they can differ between samples in both their number, genomic
-#' coordinates, position of dominant TSS and #' overall signal.  To be able to
+#' coordinates, position of dominant TSS and overall signal.  To be able to
 #' compare all samples at the level of clusters of TSSs, TCs from all CAGE
 #' datasets are aggregated into a single set of consensus clusters.  First, TCs
 #' with signal `>= tpmThreshold` from all CAGE datasets are selected, and their
@@ -63,23 +63,24 @@
 #' @family CAGEr object modifiers
 #' @family CAGEr clusters functions
 #' 
-#' @importFrom data.table data.table setkeyv setnames
+#' @importFrom IRanges reduce
+#' @importFrom S4Vectors endoapply mcols
 #' 
 #' @examples
 #' 
 #' consensusClustersGR(exampleCAGEexp)
-#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-#'                     , excludeSignalBelowThreshold = FALSE, maxDist = 100)
-#' consensusClustersGR(exampleCAGEexp)
+#' ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
+#'                           , excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' consensusClustersGR(ce)
 #' 
-#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-#'                     , excludeSignalBelowThreshold = TRUE, maxDist = 100)
-#' consensusClustersGR(exampleCAGEexp)
+#' ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
+#'                           , excludeSignalBelowThreshold = TRUE, maxDist = 100)
+#' consensusClustersGR(ce)
 #' 
-#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-#'                     , excludeSignalBelowThreshold = TRUE, maxDist = 100
-#'                     , qLow = 0.1, qUp = 0.9)
-#' consensusClustersGR(exampleCAGEexp)
+#' ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
+#'                           , excludeSignalBelowThreshold = TRUE, maxDist = 100
+#'                           , qLow = 0.1, qUp = 0.9)
+#' consensusClustersGR(ce)
 #' 
 #' @export
 
@@ -135,13 +136,46 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   } else {
     TC.list <- tagClustersGR(object)
   }
-  consensus.clusters <- .make.consensus.clusters( TC.list = TC.list
-                                                , plus.minus = round(maxDist/2)
-                                                , tpm.th = tpmThreshold)
-  consensus.clusters <- .clusterAggregateAndSum(consensus.clusters, "consensus.cluster")
-  consensus.clusters <- GRanges(consensus.clusters)
-  names(consensus.clusters) <- as.character(consensus.clusters)
-  .ConsensusClusters(consensus.clusters)
+
+  # Filter out TCs with too low score.
+  gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpmThreshold])
+  
+  # Aggregate clusters by expanding and merging TCs from all samples.
+  clusters.gr <- unlist(gr.list)
+  suppressWarnings(start(clusters.gr) <- start(clusters.gr) - round(maxDist/2)) # Suppress warnings
+  suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + round(maxDist/2)) # because we trim later
+  clusters.gr <- reduce(trim(clusters.gr))  # By definition of `reduce`, they will not overlap
+  # Note that the clusters are temporarily too broad, because we added `maxDist)` to the TCs…
+  
+  # CTSS with score that is sum od all samples
+  ctss <- CTSScoordinatesGR(object)
+  score(ctss) <- rowSums(CTSSnormalizedTpmDF(object) |> DelayedArray::DelayedArray() )
+  
+  # See `benchmarks/dominant_ctss.md`.
+  o <- findOverlaps(clusters.gr, ctss)
+  
+  rl <- rle(queryHits(o))$length
+  cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
+  grouped_scores <- extractList(score(ctss), o)
+  grouped_pos    <- extractList(pos(ctss), o)
+  
+  find.dominant.idx <- function (x) {
+    # which.max is breaking ties by taking the last, but this will give slightly
+    # different biases on plus an minus strands.
+    w <- which(x == max(x))
+    w[ceiling(length(w)/2)]
+  }
+  local_max_idx <- sapply(grouped_scores, find.dominant.idx) -1  # Start at zero
+  global_max_ids <- cluster_start_idx + local_max_idx
+  start(clusters.gr) <- min(grouped_pos)
+  end  (clusters.gr) <- max(grouped_pos)
+  score(clusters.gr) <- sum(grouped_scores)
+  clusters.gr$dominant_ctss <- granges(ctss)[subjectHits(o)][global_max_ids]
+  clusters.gr$tpm.dominant_ctss <- score(ctss)[subjectHits(o)][global_max_ids]
+  clusters.gr
+
+  names(clusters.gr) <- as.character(clusters.gr)
+  .ConsensusClusters(clusters.gr)
 })
 
 
