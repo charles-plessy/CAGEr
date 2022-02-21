@@ -1,0 +1,140 @@
+---
+title: "Fastest way to find dominant CTSS"
+author: "Charles Plessy"
+date: 'February 21, 2022'
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+# Purpose
+
+We use `data.table` to find the _dominant CTSS_ in _tag clusters_.  I am
+implementing a similar function for _consensus clusters_.  Shall I do it
+with Bioconductor core functions, `data.table` or `dplyr`?
+
+# Setup
+
+We have CTSSes and clusters.  The clusters may overlap with each other.
+
+```{r}
+library(CAGEr) |> suppressPackageStartupMessages()
+ce <- exampleCAGEexp
+ctss <- CTSScoordinatesGR(ce)
+score(ctss) <- CTSSnormalizedTpmDF(ce) |> DelayedArray::DelayedArray() |> rowSums()
+clusters <- consensusClustersGR(ce)
+clusters$annotation <- clusters$genes <- clusters$exprClass <- NULL # Simplify
+```
+
+The functions are given a lookup table associating CTSSes with clusters, and
+a function to find the dominant CTSS and break ties by selecting the one
+at the center.
+
+```{r}
+o <- findOverlaps(clusters, ctss)
+
+find.dominant.idx <- function (x) {
+  # which.max is breaking ties by taking the last, but this will give slightly
+  # different biases on plus an minus strands.
+  w <- which(x == max(x))
+  w[ceiling(length(w)/2)]
+}
+```
+
+## _Bioconductor_ way
+
+```{r bioc_way}
+bioC <- function () {
+  s <- extractList(score(ctss), o)
+  m <- sapply(s, find.dominant.idx)
+  grl <- extractList(granges(ctss), o)
+  dom <- mapply(`[`, grl, m) |> GRangesList() |> unlist()
+  clusters$dominant_ctss <- dom
+  clusters$tpm.dominant_ctss <- max(s)
+  clusters
+}
+
+bioC() -> bioC_results
+```
+
+## _Bioconductor_ plus base `R`
+
+```{r bioc_way2}
+bioC2 <- function () {
+  rl <- rle(queryHits(o))$length
+  cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
+  grouped_scores <- extractList(score(ctss), o)
+  local_max_idx <- sapply(grouped_scores, find.dominant.idx) -1  # Start at zero
+  global_max_ids <- cluster_start_idx + local_max_idx
+  clusters$dominant_ctss <- granges(ctss)[subjectHits(o)][global_max_ids]
+  clusters$tpm.dominant_ctss <- score(ctss)[subjectHits(o)][global_max_ids]
+  clusters
+}
+
+bioC2() -> bioC_results2
+```
+
+## `data.table` way
+
+```{r dt_way}
+library("data.table") |> suppressPackageStartupMessages()
+dataTable <- function() {
+  dt <- ctss |> as.data.frame() |> data.table::as.data.table()
+  dt$id <- dt$cluster |> as.factor() |> as.integer()
+  dom <- dt[ , list( seqnames[1]
+                   , strand[1]
+                   , pos[find.dominant.idx(score)]
+                   , sum(score)
+                   , max(score))
+            , by = id]
+  setnames(dom, c( "cluster", "chr", "strand"
+                 , "dominant_ctss", "tpm", "tpm.dominant_ctss"))
+  
+  # Let's be really sure we do not mix up things
+  stopifnot(identical(clusters$consensus.cluster, dom$cluster))
+  clusters$dominant_ctss <- GRanges(dom$chr, dom$dominant_ctss, dom$strand)
+  seqinfo(clusters$dominant_ctss) <- seqinfo(ctss)
+  clusters$tpm.dominant_ctss <- dom$tpm.dominant_ctss
+  clusters  
+}
+
+dataTable() -> dataTable_results
+```
+
+## `dplyr` way
+
+```{r dplyr_way}
+dplyr <- function() {
+  tb <- ctss |> as.data.frame() |> tibble::as_tibble()
+  tb$id <- tb$cluster |> as.factor() |> as.integer()
+  dom <- tb |> dplyr::group_by(id) |>
+      dplyr::summarise(seqnames = unique(seqnames), strand = unique(strand),
+                       tpm.dominant_ctss = max(score), dominant_ctss = pos[find.dominant.idx(score)])
+  clusters$dominant_ctss <- GRanges(dom$seqnames, dom$dominant_ctss, dom$strand)
+  seqinfo(clusters$dominant_ctss) <- seqinfo(ctss)
+  clusters$tpm.dominant_ctss <- dom$tpm.dominant_ctss
+  clusters
+}
+
+dplyr() -> dplyr_results
+```
+
+# Checks and benchmark
+
+```{r}
+bioC_results
+identical(bioC_results, bioC_results2)
+identical(bioC_results, dataTable_results)
+identical(bioC_results, dplyr_results)
+
+microbenchmark::microbenchmark(bioC(), bioC2(), dataTable(), dplyr())
+```
+
+The approach combining `findOverlaps` from _Bionductor_ and cumulative sums from
+base _R_ works the best on test data, with comparable performance with `dplyr`
+and `data.table`.  This opens the way to the removal of the dependency to
+`data.table`.  In the future, if we start to import `dplyr` for reasons related
+to `ggplot2` or `plyranges`, we may might replace the _Bioc + base R_ version
+with a `dplyr` one, that is probably easier to read for most contributors. 
