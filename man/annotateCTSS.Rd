@@ -47,7 +47,6 @@ computes annotation statistics.
 of a CAGEr object.
 }
 \examples{
-library(SummarizedExperiment)
 annotateCTSS(exampleCAGEexp, exampleZv9_annot)
 colData(exampleCAGEexp)
 

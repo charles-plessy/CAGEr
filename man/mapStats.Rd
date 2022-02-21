@@ -39,7 +39,6 @@ help page for details on what the scopes are.
 See \url{http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2} about stacked barplot.
 }
 \examples{
-library(SummarizedExperiment)
 CAGEr:::mapStats(as.data.frame(colData(exampleCAGEexp)), "counts", sampleLabels(exampleCAGEexp))
 CAGEr:::mapStats(as.data.frame(colData(exampleCAGEexp)), "counts", c("A", "A", "B", "B", "C"))
 
