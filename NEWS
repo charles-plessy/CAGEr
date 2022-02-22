@@ -1,3 +1,7 @@
+Upcoming changes
+
+    o Compute dominant TSS information for _consensus clusters_ (Fixes #1).
+
 Changes in version 2.1.2:
 
 BUG FIXES
