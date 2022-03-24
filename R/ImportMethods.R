@@ -344,7 +344,13 @@ bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
   gr <- coerceInBSgenome(gr, genome)
   if(removeFirstG == TRUE) {
     message("\t-> Removing the first base of the reads if 'G' and not aligned to the genome...")
-    gp <- .remove.added.G.CTSS(gr, genome, correctSystematicG = correctSystematicG)
+    if (isFALSE(correctSystematicG)) {
+      gp <- .remove.added.G.CTSS(gr, genome, correctSystematicG = FALSE)
+    } else {
+      # Using the old CAGEset function that returns a data.table
+      gp <- .remove.added.G(gr, genome, correctSystematicG = TRUE, "score")
+      return(gp)
+    }
   } else {
     gp <- CTSS(promoters(gr, 0, 1))
   }
@@ -556,6 +562,8 @@ setMethod( "getCTSS", "CAGEexp"
                     , sequencingQualityThreshold, mappingQualityThreshold
                     , removeFirstG, correctSystematicG
                     , useMulticore, nrCores) {
+  if(isFALSE(removeFirstG) & isTRUE(correctSystematicG))
+    stop("correctSystematicG can not be TRUE while removeFirstG is FALSE")
 
   # Step 0: Test existance of each file before spending time loading them.
   
