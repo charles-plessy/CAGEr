@@ -165,6 +165,8 @@ setMethod( "clusterCTSS", "CAGEexp"
   }
   
   CTSSclusteringMethod(ctss.cluster.list) <- method
+  seqlevels(ctss.cluster.list) <- seqlevels(CTSStagCountSE(object))
+  seqinfo(ctss.cluster.list)   <- seqinfo(CTSStagCountSE(object))
   metadata(object)$tagClusters <- ctss.cluster.list
   object
 })
