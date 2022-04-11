@@ -2,6 +2,7 @@ Changes in version 2.2.0:
 
 BUG FIXES
 
+    o Restore the `correctSystematicG` option in `getCTSS()`.  See #61.
     o Restore object class consistency in if / else statement in private function
       `bam2CTSS`.  Fixes #49.
     o Restore proper CTSS conversion from BAM files (bug introduced in v1.34.0)
