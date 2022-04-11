@@ -71,8 +71,6 @@
 
 .remove.added.G <- function(reads.GRanges, genome, correctSystematicG = TRUE, sample.label) {
 
-	message("\t-> Removing the first base of the reads if 'G' and not aligned to the genome...")
-  
   reads.GRanges.plus  <- reads.GRanges[strand(reads.GRanges) == "+"]
   reads.GRanges.minus <- reads.GRanges[strand(reads.GRanges) == "-"]
 	
@@ -80,7 +78,7 @@
 	G.reads.minus <- which(substr(reads.GRanges.minus$seq, start = reads.GRanges.minus$read.length, stop = reads.GRanges.minus$read.length) == "C")
 	
 	if(length(G.reads.plus)>0){
-        G.mismatch.reads.plus <- G.reads.plus[getSeq(genome, resize(reads.GRanges.plus[G.reads.plus], width = 1, fix = "start"), as.character = TRUE) != "G"]
+        G.mismatch.reads.plus <- G.reads.plus[getSeq(getRefGenome(genome), resize(reads.GRanges.plus[G.reads.plus], width = 1, fix = "start"), as.character = TRUE) != "G"]
         reads.GRanges.plus$removedG <- FALSE
         reads.GRanges.plus$removedG[G.mismatch.reads.plus] <- TRUE
         start(reads.GRanges.plus)[G.mismatch.reads.plus] <- start(reads.GRanges.plus)[G.mismatch.reads.plus] + as.integer(1)
@@ -91,7 +89,7 @@
 	}
 	
 	if(length(G.reads.minus)>0){
-        G.mismatch.reads.minus <- G.reads.minus[getSeq(genome, resize(reads.GRanges.minus[G.reads.minus], width = 1, fix = "start"), as.character = TRUE) != "G"]
+        G.mismatch.reads.minus <- G.reads.minus[getSeq(getRefGenome(genome), resize(reads.GRanges.minus[G.reads.minus], width = 1, fix = "start"), as.character = TRUE) != "G"]
         reads.GRanges.minus$removedG <- FALSE
         reads.GRanges.minus$removedG[G.mismatch.reads.minus] <- TRUE
         end(reads.GRanges.minus)[G.mismatch.reads.minus] <- end(reads.GRanges.minus)[G.mismatch.reads.minus] - as.integer(1)
@@ -159,7 +157,10 @@
 	}
   setnames(CTSS, c("chr", "pos", "strand", sample.label)) 
   setkeyv(CTSS, cols = c("chr", "pos", "strand"))
-	return(CTSS)
+
+  gp <- CTSS(CTSS$chr, CTSS$pos, CTSS$strand, bsgenomeName = genome)
+  score(gp) <- CTSS$score
+  gp
 }
 
 
@@ -178,7 +179,7 @@
 #' @importFrom BSgenome getSeq
 
 .remove.added.G.CTSS <- function(gr, genome, correctSystematicG = FALSE) {
-    if(correctSystematicG == TRUE) stop ("correctSystematicG not supported yet for CAGEexp objects")
+    if(correctSystematicG == TRUE) stop ("correctSystematicG not supported in this function, use .remove.added.G instead.")
   gr <- promoters(gr, 0, 1)
   gr$genomeSeq <- getSeq(getRefGenome(genome), gr, as.character = TRUE)
   
