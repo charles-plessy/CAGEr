@@ -3,6 +3,7 @@ title: "CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data anal
 author:
  - "Vanja Haberle"
  - "Charles Plessy"
+ - "Sarvesh Nikumbh"
 package: CAGEr
 output: 
   BiocStyle::html_document:
