@@ -544,16 +544,20 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
 #' @param object A [`CAGEr`] object.
 #' 
 #' @param sample Optional. Label of the CAGE dataset (experiment, sample) for
-#'        which to extract sample-specific information on consensus clusters.
+#'        which to extract sample-specific information on consensus clusters. 
+#'        When no sample is specified (NULL), sample-agnostic information 
+#'        on consensus clusters is provided. This includes the `dominant_ctss` 
+#'        and `tpm.dominant_ctss` for each consensus cluster.
 #' 
 #' @param returnInterquantileWidth Should the interquantile width of consensus
-#'        clusters in specified sample be returned.  Used only when `sample`
-#'        argument is specified, otherwise ignored.
+#'        clusters be returned?  When `sample` argument is specified, the 
+#'        interquantile widths of the consensus clusters in that specified 
+#'        sample are returned, otherwise, the (sample-agnostic) interquantile 
+#'        width of the consensus cluster itself is returned.
 #' 
 #' @param qLow,qUp Position of which quantile should be used as a left (lower)
 #'        or right (upper) boundary when calculating interquantile width.  Used
-#'        only when `sample` argument is specified and
-#'        `returnInterquantileWidth = TRUE`, otherwise ignored.
+#'        only when `returnInterquantileWidth = TRUE`, otherwise ignored.
 #' 
 #' @return `consensusClustersGR` returns a [`ConsensusClusters`] object, which
 #' wraps the [`GRanges`] class.  The `score` columns indicates the
@@ -565,7 +569,8 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
 #' column contains CAGE signal of consensus clusters in that specific sample.
 #' When `returnInterquantileWidth = TRUE`, additional sample-specific information
 #' is returned, including position of the dominant TSS, and interquantile width
-#' of the consensus clusters in the specified sample.
+#' of the consensus clusters in the specified sample or otherwise, 
+#' sample-agnostic information is returned.
 #' 
 #' @author Vanja Haberle
 #' @author Charles Plessy
@@ -595,6 +600,9 @@ setGeneric( "consensusClustersGR"
 setMethod( "consensusClustersGR", "CAGEexp"
          , function (object, sample, returnInterquantileWidth, qLow, qUp) {
   cc <- rowRanges(consensusClustersSE(object))
+  ## Comment and edits added: 2022-OCT-06
+  ## If sample is NULL, provide sample-agnostic information.
+  ## When not NULL, provide sample-specific information
   if(!is.null(sample)) {
     if (!is.null(qLow))
       mcols(cc)[[paste0("q_", qLow)]] <-
@@ -610,9 +618,59 @@ setMethod( "consensusClustersGR", "CAGEexp"
                                            mcols(cc)[[paste0("q_", qLow)]] + 1
     }
     cc$tpm <- cc$score <- consensusClustersTpm(object)[,sample]
+    
+  }
+  else{
+    ## sample agnostic information on IQW and dominantCTSS
+    ctss <- CTSScoordinatesGR(object)
+    score(ctss) <- CTSSnormalizedTpmDF(object) |>
+                  DelayedArray() |> rowSums()
+    ctss2 <- ctss[ctss$filteredCTSSidx]
+    hits <- findOverlaps(query = cc, subject = ctss2)
+    cc <- bioC2_cc_iqw(o = hits, clusters = cc, ctss = ctss2,
+      qLow = qLow, qUp = qUp, return_iqw = returnInterquantileWidth)
   }
   cc
 })
+
+## Used information from the benchmark to pick a function that is fast
+bioC2_cc_iqw <- function(o, clusters, ctss, qLow = 0.1, qUp = 0.9, 
+                          return_iqw = TRUE) {
+    rl <- rle(queryHits(o))$length
+    
+    cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
+    grouped_scores <- extractList(score(ctss), o)
+    ##
+    grouped_scores_cumsum <- sapply(grouped_scores, cumsum)
+    
+    if (return_iqw) {
+      qLowName <- paste0("q_", qLow)
+      qUpName  <- paste0("q_", qUp)
+      if (is.null(qLow) | is.null(qUp))
+        stop( "Set ", sQuote("qLow"), " and ", sQuote("qUp")
+          , " to specify the quantile positions used to calculate width.")
+      
+      if(!is.null(qLow)) 
+        clusters <- .get.quant.pos(cum.sums = grouped_scores_cumsum,
+          clusters = clusters, q = c(qLow))
+      if(!is.null(qUp)) 
+        clusters <- .get.quant.pos(cum.sums = grouped_scores_cumsum,
+          clusters = clusters, q = c(qUp))
+      
+      mcols(clusters)[["interquantile_width"]] <- 
+        mcols(clusters)[[qUpName]] -
+        mcols(clusters)[[qLowName]] + 1
+    }
+    
+    ##
+    local_max_idx <- sapply(grouped_scores, find.dominant.idx) -1 # Start at zero
+    global_max_ids <- cluster_start_idx + local_max_idx
+    clusters$dominant_ctss <- granges(ctss)[subjectHits(o)][global_max_ids]
+    clusters$tpm.dominant_ctss <-
+      score(ctss)[subjectHits(o)][global_max_ids]
+    
+    clusters
+}
 
 
 #' @name consensusClustersSE
