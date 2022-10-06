@@ -601,7 +601,7 @@ is provided.
 This includes the interquantile width and dominant TSS information for each 
 consensus cluster independent of the samples. 
 Again, specifying interquantile boundaries, qLow and qUp, has a similar 
-behaviour for `returnInterquantileWidth = TRUE`.
+behaviour for `returnInterquantileWidth = TRUE`. 
 
 
 
