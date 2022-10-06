@@ -619,7 +619,7 @@ ranges2genes <- function(ranges, genes) {
 
 ranges2names <- function(rangesA, rangesB) {
   if (is.null(names(rangesB)))
-    stop(sQuote("rangesB"), " must contain have names.")
+    stop(sQuote("rangesB"), " must have names.")
   names <- findOverlaps(rangesA, rangesB)
   names <- as(names, "List")
   names <- extractList(names(rangesB), names)
