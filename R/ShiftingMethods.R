@@ -84,6 +84,7 @@
 #' \code{\link{getShiftingPromoters}} function.
 #' 
 #' @author Vanja Haberle
+#' @author Sarvesh Nikumbh
 #' 
 #' @seealso \code{\link{cumulativeCTSSdistribution}}
 #' @family CAGEr promoter shift functions
@@ -299,27 +300,35 @@ setMethod( "scoreShift", "CAGEexp"
 		  sort = FALSE)
 	}
 	
-	prior_rowdata <- rowData(consensusClustersSE(object))
 	
-	use_df <- DataFrame(score = prior_rowdata$score,
-	                    consensus.cluster = clusters.info$consensus.cluster,
-	                    tpm = prior_rowdata$tpm,
-	                    shifting.score = clusters.info$shifting.score,
-	                    groupX.pos = clusters.info$groupX.pos,
-	                    groupY.pos = clusters.info$groupY.pos,
-	                    groupX.tpm = clusters.info$groupX.tpm,
-	                    groupY.tpm = clusters.info$groupY.tpm)
+	
+	temp_df <- DataFrame(
+	  shifting.score = clusters.info$shifting.score,
+	  groupX.pos = clusters.info$groupX.pos,
+	  groupY.pos = clusters.info$groupY.pos,
+	  groupX.tpm = clusters.info$groupX.tpm,
+	  groupY.tpm = clusters.info$groupY.tpm)
+	
+	## adjust all colnames in temp_df at this point
+	colnames(temp_df) <- c(paste("shifting.score", groupX, groupY, sep="."),
+	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("pos", 2), sep="."),
+	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("tpm", 2), sep=".")
+	)
+	
 	if(testKS){
-	  use_df$pvalue.KS <- clusters.info$pvalue.KS
-	  use_df$fdr.KS <- clusters.info$fdr.KS
+	    temp_df2 <- DataFrame(pvalue.KS = clusters.info$pvalue.KS,
+	                          fdr.KS  = clusters.info$fdr.KS)
+	    ## adjust colnames for columns in temp_df2
+	    colnames(temp_df2) <- paste(c("pvalue.KS", "fdr.KS"), groupX, groupY, sep=".")
+	    temp_df <- cbind.DataFrame(temp_df, temp_df2)
 	}
-	colnames(use_df)[5:8] <- c(paste0("groupX.", groupX, ".pos"),
-	                      paste0("groupY.", groupY, ".pos"),
-                    	  paste0("groupX.", groupX, ".tpm"),
-                    	  paste0("groupY.", groupY, ".tpm")
-	  )
+  
+	prior_rowdata <- rowData(consensusClustersSE(object))
+	use_df <- cbind.DataFrame(prior_rowdata, temp_df)
+	
 	rownames(use_df) <- rownames(rowData(consensusClustersSE(object)))
 	rowData(consensusClustersSE(object)) <- use_df
+	message("Done")
 	object
 })
 
@@ -339,7 +348,7 @@ setMethod( "scoreShift", "CAGEexp"
 #' @param scoreThreshold Consensus clusters with shifting score \code{>= scoreThreshold}
 #'        will be returned. The default value \code{-Inf} returns all consensus clusters
 #'        (for which score could be calculated, \emph{i.e.} the ones that have at least
-#'        one tag in each of the comapred samples).
+#'        one tag in each of the compared samples).
 #' 
 #' @param fdrThreshold Consensus clusters with adjusted P-value (FDR) from
 #'        Kolmogorov-Smirnov test \code{>= fdrThreshold} will be returned. The default
@@ -352,6 +361,7 @@ setMethod( "scoreShift", "CAGEexp"
 #' with shifting score and adjusted P-value (FDR).
 #' 
 #' @author Vanja Haberle
+#' @author Sarvesh Nikumbh
 #' 
 #' @family CAGEr promoter shift functions
 #' 
@@ -362,27 +372,65 @@ setMethod( "scoreShift", "CAGEexp"
 #' @export
 
 setGeneric( "getShiftingPromoters"
-          , function( object, tpmThreshold = 0, scoreThreshold = -Inf, fdrThreshold = 1)
+          , function( object, groupX, groupY, tpmThreshold = 0, scoreThreshold = -Inf, fdrThreshold = 1)
               standardGeneric("getShiftingPromoters"))
 
 #' @rdname getShiftingPromoters
 
 setMethod( "getShiftingPromoters", "CAGEexp"
-         , function (object, tpmThreshold, scoreThreshold, fdrThreshold) {
+         , function (object, groupX, groupY, tpmThreshold, scoreThreshold,
+           fdrThreshold) {
 
-	shifting.scores <- object@consensusClustersShiftingScores
-	clusters <- object@consensusClusters
+  
+           
+  shiftSc_cname <- paste("shifting.score", groupX, groupY, sep=".")
+	shifting.scores <- mcols(consensusClustersGR(object))
 	
-	sig.shifting <- shifting.scores[ ( shifting.scores$groupX.tpm >= tpmThreshold &
-	                                   shifting.scores$groupY.tpm >= tpmThreshold   ) &
-	                                  shifting.scores$shifting.score >= scoreThreshold
-	                                , ]
-
-	if("fdr.KS" %in% colnames(shifting.scores)){
-		sig.shifting <- sig.shifting[sig.shifting$fdr.KS <= fdrThreshold,]
+	## check if the group pairs supplied have shifting scores calculated
+	if(!shiftSc_cname %in% colnames(shifting.scores)){
+	    stop("Shifting score for the supplied groups is not calculated yet. ", 
+	      "Please use ", sQuote("scoreShift()"), "first.")
 	}
 	
-	sig.shifting <- merge(clusters[,c(1:5)], sig.shifting, by.x = "consensus.cluster", by.y = "consensus.cluster", all.x = F, all.y = T)
+	clusters <- rowData(consensusClustersSE(object)) #consensusClustersGR(object)
+	gXtpm_cname <- paste("groupX", groupX, "tpm", sep=".")
+	gYtpm_cname <- paste("groupY", groupY, "tpm", sep=".")
 	
+	## Useful to only keep relevant columns in the final data.frame
+	sel_cnames <- c("consensus.cluster", "score", "tpm",
+	  paste("shifting.score", groupX, groupY, sep="."),
+	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("pos", 2), sep="."),
+	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("tpm", 2), sep=".")
+	)
+	
+	fdr_cname <- paste("fdr.KS", groupX, groupY, sep=".")
+	if(fdr_cname %in% colnames(shifting.scores)){
+	  message("Note: P-values and FDR columns available") 
+	  sel_cnames <- c(sel_cnames, paste(c("pvalue.KS", "fdr.KS"), groupX, groupY, sep="."))
+	}else{
+	  message("Note: P-values and FDR columns not available")  
+	}
+	
+	## find which columns are relevant?
+	sig.shifting <- 
+	  shifting.scores[ ( shifting.scores[, gXtpm_cname] >= tpmThreshold &
+	                     shifting.scores[, gYtpm_cname] >= tpmThreshold) &
+	                     !is.na(shifting.scores[, shiftSc_cname])
+	                                , sel_cnames]
+
+	## leave-out where score is NA
+	sig.shifting <- sig.shifting[sig.shifting[, shiftSc_cname] >= scoreThreshold, ]
+	
+	## 
+	
+	
+	if(fdr_cname %in% colnames(shifting.scores)){
+		sig.shifting <- sig.shifting[sig.shifting[, fdr_cname] <= fdrThreshold,]
+	}
+	
+	## This merging may no longer be needed
+	# sig.shifting <- merge(shifting.scores, sig.shifting, by = "consensus.cluster", 
+	#   all.x = F, all.y = T)
+	# 
 	return(sig.shifting)
 })
