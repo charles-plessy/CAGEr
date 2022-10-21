@@ -286,9 +286,10 @@ setMethod( "scoreShift", "CAGEexp"
   			tag.count.m.new <- cbind(groupX = rowSums(tag.count.m[,groupX,drop=F]), 
   			                        groupY = rowSums(tag.count.m[,groupY,drop=F]))
   			n <- (tag.count.m.new[,"groupX"] * tag.count.m.new[,"groupY"])/(tag.count.m.new[,"groupX"] + tag.count.m.new[,"groupY"])
-  			
+  			names(n) <- names(cumsum.matrices.groups.f)
 		}
 		
+	  
 		ks.stat <- unlist(bplapply(cumsum.matrices.groups.f, function(x) {ks.s <- .ksStat(x)}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores)))
 		
 		p.vals <- .ksPvalue(d = ks.stat, n = n[names(cumsum.matrices.groups.f)])
@@ -418,18 +419,20 @@ setMethod( "getShiftingPromoters", "CAGEexp"
 	## find which columns are relevant?
 	sig.shifting <- 
 	  shifting.scores[ ( shifting.scores[, gXtpm_cname] >= tpmThreshold &
-	                     shifting.scores[, gYtpm_cname] >= tpmThreshold) &
-	                     !is.na(shifting.scores[, shiftSc_cname])
+	                     shifting.scores[, gYtpm_cname] >= tpmThreshold &
+	                     !is.na(shifting.scores[, shiftSc_cname]))
 	                                , sel_cnames]
 
 	## leave-out where score is NA
 	sig.shifting <- sig.shifting[sig.shifting[, shiftSc_cname] >= scoreThreshold, ]
 	
 	## 
-	
-	
+
 	if(fdr_cname %in% colnames(shifting.scores)){
+	  sig.shifting <- sig.shifting[
+	                      !is.na(sig.shifting[, fdr_cname]), sel_cnames] 
 		sig.shifting <- sig.shifting[sig.shifting[, fdr_cname] <= fdrThreshold,]
+		
 	}
 	
 	## This merging may no longer be needed
