@@ -797,7 +797,7 @@ ECDFs.  These are derived either from raw tag counts, _i.e._ exact number of
 times each TSS in the cluster was sampled during sequencing (when
 `useTpmKS = FALSE`), or from normalized tpm values (when `useTpmKS = TRUE`).
 P-values obtained from K-S tests are further corrected for multiple testing
-using Benjamini and Hochenberg (BH) method and for each P-value a corresponding
+using Benjamini and Hochberg (BH) method and for each P-value a corresponding
 false-discovery rate (FDR) is also reported.
 
 ```{r ShiftingScore, echo=FALSE, fig.cap="Calculation of shifting score"}
