@@ -342,6 +342,10 @@ setMethod( "scoreShift", "CAGEexp"
 #' 
 #' @param object A \code{\link{CAGEexp}} object.
 #' 
+#' @param groupX,groupY Character vector of the one or more CAGE dataset labels in the first
+#' (\code{groupX}) and in the second group (\code{groupY}). Shifting promoters for the specified 
+#' group pair are returned. 
+#' 
 #' @param tpmThreshold Consensus clusters with total CAGE signal \code{>= tpmThreshold}
 #'        in each of the compared groups will be returned.
 #' 
