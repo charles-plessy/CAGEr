@@ -117,7 +117,10 @@ setMethod( "scoreShift", "CAGEexp"
 	}
 	
 	message("\nCalculating shifting score...")
-	a <- object@CTSScumulativesConsensusClusters
+	# a <- object@CTSScumulativesConsensusClusters
+	
+	
+	a <- metadata(object)$CTSScumulativesConsensusClusters
 	
 	# Problem: originally, CTSScumulativesConsensusClusters were in 0-based
 	# coordinates, meaning that the first Rle value was always 0.
@@ -147,19 +150,26 @@ setMethod( "scoreShift", "CAGEexp"
 	# -- end of ugly hack ---
 	
 	a <- a[names(a) %in% c(groupX, groupY)]
-	b <- object@consensusClusters
+	# b <- object@consensusClusters
+	b <- rowRanges(consensusClustersSE(object))
+	
 	cumsum.list <- bplapply(a, function(x) {
 	  n <- names(x)
-	  y <- subset(b, !(b$consensus.cluster %in% as.integer(names(x))))
-	  if (nrow(y)>0) {
-	    nulls <- lapply(as.list(c(1:nrow(y))), function(t) {
-	      Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))
+	  # y <- subset(b, !(b$consensus.cluster %in% as.integer(names(x))))
+	  y <- subset(b, !(names(b) %in% names(x)))
+	  
+	  if (length(y)>0) {
+	    nulls <- lapply(as.list(c(1:length(y))), function(t) {
+	      # Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))
+	      Rle(rep(0, end(y)[t] - start(y[t] + 1) ))
 	    })
 	    x <- append(x, nulls)
 	  }
-	  names(x) <- c(n, as.character(y$consensus.cluster))
+	  # names(x) <- c(n, as.character(y$consensus.cluster))
+	  # names(x) <- y$consensus.cluster
 	  return(x)
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
+	
 	
 	cumsum.list.r <- bplapply( cumsum.list, .reverse.cumsum
 	                         , useMulticore = useMulticore, nrCores = nrCores
@@ -169,6 +179,7 @@ setMethod( "scoreShift", "CAGEexp"
 	  sapply(names(cumsum.list), function(y) {as.numeric(cumsum.list[[y]][[x]])})
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
+	
 	cumsum.matrices.list.r <- bplapply(as.list(names(cumsum.list.r[[1]])), function(x) {
 	  m <- matrix(ncol = length(names(cumsum.list.r)), sapply(names(cumsum.list.r), function(y) {
 	    as.numeric(cumsum.list.r[[y]][[x]])
@@ -177,13 +188,14 @@ setMethod( "scoreShift", "CAGEexp"
 	  return(m)
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
+	
   .poolGroups <- function(x) {
     if (!is.matrix(x))
       x <- t(x) # Clusters of length 1 produced vectors instead of matrices...
     cbind( groupX = rowSums(x[, groupX, drop = FALSE])
          , groupY = rowSums(x[, groupY, drop = FALSE]))
   }
-	
+  
 	cumsum.matrices.groups.f <- bplapply( cumsum.matrices.list.f, .poolGroups
 	                                    , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
@@ -194,77 +206,120 @@ setMethod( "scoreShift", "CAGEexp"
 	names(cumsum.matrices.groups.r) <- names(cumsum.list[[1]])
 	
 	dominant.ctss.pos <- bplapply(as.list(names(cumsum.matrices.groups.f)), function(x) {
-	  sapply(c("groupX", "groupY"), function(y) {.get.dominant.ctss(cumsum.matrices.groups.f[[x]][,y], isCumulative = T)})
+	  sapply(c("groupX", "groupY"), function(y) {
+	    .get.dominant.ctss(cumsum.matrices.groups.f[[x]][,y], isCumulative = TRUE)})
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
-	dominant.ctss.pos <- data.frame(consensus.cluster = as.integer(names(cumsum.matrices.groups.f)), do.call(rbind, dominant.ctss.pos))
-	dominant.ctss.pos <- dominant.ctss.pos[order(dominant.ctss.pos$consensus.cluster),]
+	# dominant.ctss.pos <- data.frame(consensus.cluster = names(cumsum.matrices.groups.f), do.call(rbind, dominant.ctss.pos))
+	dominant.ctss.pos <- data.frame(consensus.cluster = as.data.frame(b)$consensus.cluster, do.call(rbind, dominant.ctss.pos))
+	
+	## Is this ordering really needed? 
+	## With the new names, this ordering does not work!
+	# dominant.ctss.pos <- dominant.ctss.pos[order(dominant.ctss.pos$consensus.cluster),]
 	colnames(dominant.ctss.pos) <- c("consensus.cluster", "groupX.pos", "groupY.pos")
-
-	clusters.info <- merge(b[,c(1:5)], dominant.ctss.pos, by.x = "consensus.cluster", by.y = "consensus.cluster")
+	
+	
+	# clusters.info <- merge(b[,c(1:5)], dominant.ctss.pos, by.x = "consensus.cluster", by.y = "consensus.cluster")
+	clusters.info <- merge(as.data.frame(b), dominant.ctss.pos, by.x = "consensus.cluster", by.y = "consensus.cluster", sort=FALSE)
 	clusters.info$groupX.pos <- clusters.info$groupX.pos + clusters.info$start
 	clusters.info$groupY.pos <- clusters.info$groupY.pos + clusters.info$start
 
-	n <- names(cumsum.matrices.groups.f)
+	# n <- names(cumsum.matrices.groups.f)
+	
 	cumsum.matrices.groups.f <- lapply(cumsum.matrices.groups.f, function(x) {x[-1,,drop=F]})
 	
-	scores.f <- .score.promoter.shifting(cumsum.matrices.groups.f, useMulticore = useMulticore, nrCores = nrCores)
-	scores.r <- .score.promoter.shifting(cumsum.matrices.groups.r, useMulticore = useMulticore, nrCores = nrCores)
+	scores.f <- .score.promoter.shifting(cumsum.matrices.groups.f, 
+	  useMulticore = useMulticore, nrCores = nrCores)
+	scores.r <- .score.promoter.shifting(cumsum.matrices.groups.r, 
+	  useMulticore = useMulticore, nrCores = nrCores)
 	
 	scores <- pmax(scores.f, scores.r)
-	names(scores) <- n
-
+	names(scores) <- dominant.ctss.pos$consensus.cluster
+	
+	
 	groupX.tpm <- unlist(lapply(cumsum.matrices.groups.f, function(x) {max(x[,"groupX"])}))
 	groupY.tpm <- unlist(lapply(cumsum.matrices.groups.f, function(x) {max(x[,"groupY"])}))
-	scores.df <- data.frame(consensus.cluster = as.integer(names(scores)), shifting.score = scores, groupX.tpm = groupX.tpm, groupY.tpm = groupY.tpm)
+	scores.df <- data.frame(consensus.cluster = names(scores), 
+	  shifting.score = scores, groupX.tpm = groupX.tpm, groupY.tpm = groupY.tpm)
 	
-	clusters.info <- merge(clusters.info, scores.df, by.x = "consensus.cluster", by.y = "consensus.cluster")
+	clusters.info <- merge(clusters.info, scores.df, sort = FALSE, by.x = "consensus.cluster", by.y = "consensus.cluster")
 	clusters.info <- clusters.info[,c("consensus.cluster", "shifting.score", "groupX.pos", "groupY.pos", "groupX.tpm", "groupY.tpm")]
 	
 	
 	if(testKS){
-		
-		message("Testing for significance using Kolmogorov-Smirnov test...\n")
+	  
 		if(useTpmKS){
-		
-			n <- (clusters.info$groupX.tpm * clusters.info$groupY.tpm)/(clusters.info$groupX.tpm + clusters.info$groupY.tpm)
-			names(n) <- clusters.info$consensus.cluster
-			
+  		  
+  			n <- (clusters.info$groupX.tpm * clusters.info$groupY.tpm)/(clusters.info$groupX.tpm + clusters.info$groupY.tpm)
+  			names(n) <- names(cumsum.matrices.groups.f)
+			  
 		}else{
-			template.tagcount <- rep(0L, length(consensusClustersGR(object)))
-			names(template.tagcount) <- consensusClustersGR(object)$consensus.cluster
-			tag.count.list <- list()
-		
-			for(s in c(groupX, groupY)) {
-				ctss          <- CTSStagCountGR(object, s)
-				ctss          <- ctss[ctss$filteredCTSSidx]
-				ctss.clusters <- consensusClustersGR(object, s)
-				tag.count     <- .getTotalTagCount(ctss, ctss.clusters)
-				tag.count.new <- template.tagcount
-				tag.count.new[ctss.clusters$consensus.cluster] <- as.integer(tag.count)  # for some reason at this step the vector is converted to list when run within this function (does not happen when run normally outside the function)!!!
-				tag.count.list[[s]] <- unlist(tag.count.new)
-				invisible(gc())
-			}
-			
-			tag.count.m <- do.call(cbind, tag.count.list)
-			tag.count.m.new <- cbind(groupX = rowSums(tag.count.m[,groupX,drop=F]), groupY = rowSums(tag.count.m[,groupY,drop=F]))
-			n <- (tag.count.m.new[,"groupX"] * tag.count.m.new[,"groupY"])/(tag.count.m.new[,"groupX"] + tag.count.m.new[,"groupY"])
-			names(n) <- rownames(tag.count.m.new)
-		
+  		  
+  			template.tagcount <- rep(0L, length(consensusClustersGR(object)))
+  			names(template.tagcount) <- consensusClustersGR(object)$consensus.cluster
+  			
+  			tag.count.list <- list()
+  		
+  			for(s in c(groupX, groupY)) {
+  				ctss          <- CTSStagCountGR(object, s)
+  				ctss          <- ctss[ctss$filteredCTSSidx]
+  				
+  				ctss.clusters <- consensusClustersGR(object, s)
+  				
+  				tag.count     <- .getTotalTagCount(ctss, ctss.clusters)
+  				
+  				tag.count.new <- template.tagcount
+  				
+  				# tag.count.new[ctss.clusters$consensus.cluster] <- 
+  				#   as.integer(tag.count)  
+  				tag.count.new <- tag.count
+  				
+  				# for some reason at this step the vector is converted to list when 
+  				# run within this function (does not happen when run normally outside the function)!!!
+  				tag.count.list[[s]] <- unlist(tag.count.new)
+  				invisible(gc())
+  			}
+  			
+  			tag.count.m <- do.call(cbind, tag.count.list)
+  			
+  			tag.count.m.new <- cbind(groupX = rowSums(tag.count.m[,groupX,drop=F]), 
+  			                        groupY = rowSums(tag.count.m[,groupY,drop=F]))
+  			n <- (tag.count.m.new[,"groupX"] * tag.count.m.new[,"groupY"])/(tag.count.m.new[,"groupX"] + tag.count.m.new[,"groupY"])
+  			
 		}
+		
 		ks.stat <- unlist(bplapply(cumsum.matrices.groups.f, function(x) {ks.s <- .ksStat(x)}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores)))
+		
 		p.vals <- .ksPvalue(d = ks.stat, n = n[names(cumsum.matrices.groups.f)])
 		fdr <- p.adjust(p.vals, method = "BH")
-		p.vals <- data.frame(consensus.cluster = as.integer(names(cumsum.matrices.groups.f)), pvalue.KS = p.vals, fdr.KS = fdr)
-
-		clusters.info <- merge(clusters.info, p.vals, by.x = "consensus.cluster", by.y = "consensus.cluster")
-
+		
+		p.vals <- data.frame(consensus.cluster = clusters.info$consensus.cluster, pvalue.KS = p.vals, fdr.KS = fdr)
+		
+		clusters.info <- merge(clusters.info, p.vals, by.x = "consensus.cluster", by.y = "consensus.cluster", 
+		  sort = FALSE)
 	}
 	
+	prior_rowdata <- rowData(consensusClustersSE(object))
 	
-	object@consensusClustersShiftingScores <- clusters.info
-	object@shiftingGroupX <- groupX
-	object@shiftingGroupY <- groupY
+	use_df <- DataFrame(score = prior_rowdata$score,
+	                    consensus.cluster = clusters.info$consensus.cluster,
+	                    tpm = prior_rowdata$tpm,
+	                    shifting.score = clusters.info$shifting.score,
+	                    groupX.pos = clusters.info$groupX.pos,
+	                    groupY.pos = clusters.info$groupY.pos,
+	                    groupX.tpm = clusters.info$groupX.tpm,
+	                    groupY.tpm = clusters.info$groupY.tpm)
+	if(testKS){
+	  use_df$pvalue.KS <- clusters.info$pvalue.KS
+	  use_df$fdr.KS <- clusters.info$fdr.KS
+	}
+	colnames(use_df)[5:8] <- c(paste0("groupX.", groupX, ".pos"),
+	                      paste0("groupY.", groupY, ".pos"),
+                    	  paste0("groupX.", groupX, ".tpm"),
+                    	  paste0("groupY.", groupY, ".tpm")
+	  )
+	rownames(use_df) <- rownames(rowData(consensusClustersSE(object)))
+	rowData(consensusClustersSE(object)) <- use_df
 	object
 })
 
