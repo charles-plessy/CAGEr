@@ -1,3 +1,11 @@
+Changes in version 2.5.0:
+
+NEW FEATURES
+
+    o Inter-quantile width is also computed when no sample is selected.
+
+No changes in version 2.4.0
+
 Changes in version 2.2.0:
 
 BUG FIXES
