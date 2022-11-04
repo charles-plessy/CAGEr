@@ -53,14 +53,13 @@ Description: Preprocessing of CAGE sequencing data, identification and
 License: GPL-3
 biocViews: Preprocessing, Sequencing, Normalization, FunctionalGenomics, Transcription, GeneExpression, Clustering, Visualization
 Collate: 
+    'Multicore.R'
     'CTSS.R'
+    'ClusteringFunctions.R'
+    'ClusteringMethods.R'
     'CAGEexp.R'
     'AllClasses.R'
     'CAGEr.R'
-    'AggregationFunctions.R'
-    'Multicore.R'
-    'ClusteringFunctions.R'
-    'ClusteringMethods.R'
     'Annotations.R'
     'AggregationMethods.R'
     'CorrelationMethods.R'

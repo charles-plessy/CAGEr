@@ -3,12 +3,15 @@ Changes in version 2.5.0:
 BUG FIXES
 
     o Re-enable the promoter shift functions (Fixes #4).
+    o Compute dominant TSS information for _consensus clusters_ (Fixes #1).
 
 NEW FEATURES
 
     o Inter-quantile width is also computed when no sample is selected.
 
-No changes in version 2.4.0
+Changes in version 2.4.0:
+
+    o No changes
 
 Changes in version 2.2.0:
 
