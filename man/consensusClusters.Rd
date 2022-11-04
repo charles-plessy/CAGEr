@@ -31,16 +31,20 @@ consensusClustersSE(object)
 \item{object}{A \code{\link{CAGEr}} object.}
 
 \item{sample}{Optional. Label of the CAGE dataset (experiment, sample) for
-which to extract sample-specific information on consensus clusters.}
+which to extract sample-specific information on consensus clusters.
+When no sample is specified (NULL), sample-agnostic information
+on consensus clusters is provided. This includes the \code{dominant_ctss}
+and \code{tpm.dominant_ctss} for each consensus cluster.}
 
 \item{returnInterquantileWidth}{Should the interquantile width of consensus
-clusters in specified sample be returned.  Used only when \code{sample}
-argument is specified, otherwise ignored.}
+clusters be returned?  When \code{sample} argument is specified, the
+interquantile widths of the consensus clusters in that specified
+sample are returned, otherwise, the (sample-agnostic) interquantile
+width of the consensus cluster itself is returned.}
 
 \item{qLow, qUp}{Position of which quantile should be used as a left (lower)
 or right (upper) boundary when calculating interquantile width.  Used
-only when \code{sample} argument is specified and
-\code{returnInterquantileWidth = TRUE}, otherwise ignored.}
+only when \code{returnInterquantileWidth = TRUE}, otherwise ignored.}
 }
 \value{
 \code{consensusClustersGR} returns a \code{\link{ConsensusClusters}} object, which
@@ -53,7 +57,8 @@ returned in the \code{tpm} column.  When \code{sample} argument is specified, th
 column contains CAGE signal of consensus clusters in that specific sample.
 When \code{returnInterquantileWidth = TRUE}, additional sample-specific information
 is returned, including position of the dominant TSS, and interquantile width
-of the consensus clusters in the specified sample.
+of the consensus clusters in the specified sample or otherwise,
+sample-agnostic information is returned.
 
 \code{consensusClustersSE} returns the \code{\link{SummarizedExperiment}} stored
 in the \code{consensusClusters} experiment slot of the CAGEexp object.

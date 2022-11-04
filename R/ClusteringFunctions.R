@@ -184,11 +184,6 @@ setMethod(".ctss2clusters", "CTSS", function(ctss, max.dist, useMulticore, nrCor
 setGeneric(".summarize.clusters", function(ctss.clustered, removeSingletons = FALSE, keepSingletonsAbove = Inf) standardGeneric(".summarize.clusters"))
 
 setMethod(".summarize.clusters", "data.table", function(ctss.clustered, removeSingletons, keepSingletonsAbove) {
-
-  find.dominant.idx <- function (x) {
-    w <- which(x == max(x))
-    w[ceiling(length(w)/2)]
-  }
 	
   chr <- pos <- tpm <- cluster <- id <- NULL  # To keep R CMD check happy.
   clusters <- ctss.clustered[ , list( chr[1]
@@ -219,6 +214,12 @@ setMethod(".summarize.clusters", "data.table", function(ctss.clustered, removeSi
   names(gr) <- seq_along(gr)
   gr
 })
+
+
+find.dominant.idx <- function (x) {
+  w <- which(x == max(x))
+  w[ceiling(length(w)/2)]
+}
 
 
 #' @name .distclu

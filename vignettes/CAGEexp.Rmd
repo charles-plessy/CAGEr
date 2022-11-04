@@ -3,6 +3,7 @@ title: "CAGEr: an R package for CAGE (Cap Analysis of Gene Expression) data anal
 author:
  - "Vanja Haberle"
  - "Charles Plessy"
+ - "Sarvesh Nikumbh"
 package: CAGEr
 output: 
   BiocStyle::html_document:
@@ -595,6 +596,13 @@ consensusClustersGR( ce, sample = "Zf.unfertilized.egg"
 ```
 
 This will, in addition to genomic coordinates of the consensus clusters, which are constant across all samples, also return the position of the dominant TSS, the CAGE signal (tpm) and the interquantile width specific for a given sample. Note that when specifying individual sample, only the consensus clusters that have some CAGE signal in that sample will be returned (which will be a subset of all consensus clusters).
+When setting `sample = NULL` sample-agnostic information per consensus cluster 
+is provided. 
+This includes the interquantile width and dominant TSS information for each 
+consensus cluster independent of the samples. 
+Again, specifying interquantile boundaries, qLow and qUp, has a similar 
+behaviour for `returnInterquantileWidth = TRUE`. 
+
 
 
 Track export for genome browsers
