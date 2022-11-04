@@ -585,6 +585,7 @@ setMethod("filteredCTSSidx", "CAGEexp", function (object){
 #'                    , returnInterquantileWidth = TRUE
 #'                    , qLow = 0.1, qUp = 0.9)
 #' 
+#' @importFrom GenomicRanges granges
 #' @export
 
 setGeneric( "consensusClustersGR"
