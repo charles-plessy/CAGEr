@@ -158,7 +158,8 @@ methods.  The expression data is stored in _CAGEexp_ using
 To load the _CAGEr_ package and the other libraries into your R envirnoment type:
 
 ```{r load_CAGEr}
-library(CAGEr)
+# library(CAGEr)
+devtools::load_all()
 ```
 
 Creating a _CAGEexp_ object {#create-CAGEexp}
@@ -773,8 +774,8 @@ all promoters comparing two specified samples:
 
 ```{r}
 # Not supported yet for CAGEexp objects, sorry.
-# scoreShift(ce, groupX = "Zf.unfertilized.egg", groupY = "zf_prim6",
-# 		testKS = TRUE, useTpmKS = FALSE)
+ce <- scoreShift(ce, groupX = "Zf.unfertilized.egg", groupY = "Zf.prim6",
+		testKS = TRUE, useTpmKS = FALSE)
 ```
 
 This function will calculate shifting score as illustrated in
@@ -804,7 +805,7 @@ ECDFs.  These are derived either from raw tag counts, _i.e._ exact number of
 times each TSS in the cluster was sampled during sequencing (when
 `useTpmKS = FALSE`), or from normalized tpm values (when `useTpmKS = TRUE`).
 P-values obtained from K-S tests are further corrected for multiple testing
-using Benjamini and Hochenberg (BH) method and for each P-value a corresponding
+using Benjamini and Hochberg (BH) method and for each P-value a corresponding
 false-discovery rate (FDR) is also reported.
 
 ```{r ShiftingScore, echo=FALSE, fig.cap="Calculation of shifting score"}
@@ -815,10 +816,11 @@ We can select a subset of promoters with shifting score and/or FDR above specifi
 
 ```{r}
 # Not supported yet for CAGEexp objects, sorry.
-# shifting.promoters <- getShiftingPromoters(ce, 
-# 		tpmThreshold = 5, scoreThreshold = 0.6,
-# 		fdrThreshold = 0.01)
-# head(shifting.promoters)
+shifting.promoters <- getShiftingPromoters(ce, 
+    groupX = "Zf.unfertilized.egg", groupY = "Zf.prim6",
+		tpmThreshold = 5, scoreThreshold = 0.6,
+		fdrThreshold = 0.01)
+head(shifting.promoters)
 ```
 
 The `getShiftingPromoters` function returns genomic coordinates, shifting score
