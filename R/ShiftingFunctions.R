@@ -35,7 +35,11 @@
 
 #####
 # Function that calculates total tag count in CAGE clusters
-# ARGUMENTS: ctss.df - data frame with one row per CTSS containing at least four columns, *chr (chromosome) *pos (genomic position of CTSSs) *strand (genomic strand) *tagcount (raw CAGE tag count)
+# ARGUMENTS: ctss.df - data frame with one row per CTSS containing at least four columns, 
+# *chr (chromosome) 
+# *pos (genomic position of CTSSs) 
+# *strand (genomic strand) 
+# *tagcount (raw CAGE tag count)
 #            ctss.clusters - data frame with one row per cluster containing at least 6 columns, *cluster (cluster ID) *chr (chromosome) *start (start position of the cluster) *end (end position of the cluster) *strand (strand) *dominant_ctss (position of dominant peak)
 # RETURNS: integer vector of total tag count per cluster 
 
@@ -46,12 +50,15 @@ setGeneric( ".getTotalTagCount"
 
 setMethod( ".getTotalTagCount", "CTSS"
          , function(ctss, ctss.clusters) {
-	o <- findOverlaps(ctss.clusters, ctss)
+	
+  o <- findOverlaps(ctss.clusters, ctss)
 	totalCount <- tapply( decode(score(ctss)[subjectHits(o)])
-	                    , ctss.clusters$consensus.cluster[queryHits(o)]
+	                    , queryHits(o)
 	                    , sum)
+	
 	ctss.clusters$total <- 0
-	mcols(ctss.clusters)[as.numeric(names(totalCount)),"total"] <- totalCount
+	mcols(ctss.clusters)[as.numeric(names(totalCount)),"total"] <-  
+	                          totalCount
 	ctss.clusters$total
 })
 
