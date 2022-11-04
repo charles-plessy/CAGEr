@@ -1,5 +1,9 @@
 Changes in version 2.5.0:
 
+BUG FIXES
+
+    o Re-enable the promoter shift functions (Fixes #4).
+
 NEW FEATURES
 
     o Inter-quantile width is also computed when no sample is selected.
