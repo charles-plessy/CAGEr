@@ -155,7 +155,7 @@ specific functions.  The _CAGEexp_ objects are an extension of the
 methods.  The expression data is stored in _CAGEexp_ using
 `r Biocpkg("SummarizedExperiment")` objects, and can also access their methods.
 
-To load the _CAGEr_ package and the other libraries into your R envirnoment type:
+To load the _CAGEr_ package and the other libraries into your R environment type:
 
 ```{r load_CAGEr}
 library(CAGEr)
@@ -208,7 +208,7 @@ inputFiles = list.files( system.file("extdata", package = "CAGEr")
 
 ### Creating the object
 
-The _CAGEexp_ object is crated with the `CAGEexp` contstructor, that requries
+The _CAGEexp_ object is crated with the `CAGEexp` constructor, that requires
 information on file path an type, sample names and reference genome name.
 
 ```{r create_CAGEexp}
@@ -503,7 +503,7 @@ calculated as following:
 
  1. Cumulative distribution of CAGE signal along the cluster is calculated.
  2. A "lower" (`qLow`) and an "upper" (`qUp`) quantile are selected by the user.
- 3. From the 5′ end the position, the position of a quantile $q$ is detemined as
+ 3. From the 5′ end the position, the position of a quantile $q$ is determined as
     the first base in which of the cumulative expression is higher or equal to
     $q\%$ of the total CAGE signal of that cluster.
  4. Promoter _interquantile width_ is defined as the distance (in base pairs)
@@ -612,7 +612,7 @@ CAGE data can be visualized in the genomic context by converting raw or
 normalized CAGE tag counts to a track object and exporting it to a file format
 such as _BED_, _bedGraph_ or _BigWig_ for uploading (or linking) to a genome
 browser`^[Note that the [ZENBU genome browser](http://fantom.gsc.riken.jp/zenbu)
-can also display natively data from BAMor BED files as coverage tracks.].  The
+can also display natively data from BAM or BED files as coverage tracks.].  The
 \Rfunction(exportToTrack) function can take a variety of inputs representing
 _CTSS_, _Tag Clusters_ or _Consensus Clusters_, with raw or normalised
 expression scores.  When asked to export multiple samples it will return
@@ -967,9 +967,9 @@ Name              | Comment
 ------------------|-------------------------------------------------------------------------
 CAGEset           | The original CAGEr class, based on data frames and matrices.
 CAGEexp           | The new CAGEr class, based on GRanges, DataFrames, etc.
-CAGEr             | Union classs for functions that accept both CAGEset and CAGEexp.
+CAGEr             | Union class for functions that accept both CAGEset and CAGEexp.
 CTSS              | Wraps GRanges and guarantees that width equals 1.
-CTSS.chr          | Same as CTSS but also guaranteers the there is only one chromosome (useful in some loops)
+CTSS.chr          | Same as CTSS but also guarantees the there is only one chromosome (useful in some loops)
 TagClusters       | Wraps GRanges, represents the fact that each sample has their own tag clusters.
 ConsensusClusters | Wraps GRanges, represents the fact that they are valid for all the samples.
 CAGErCluster      | Union class for functions that accept both TagClusters and ConsensusClusters.
