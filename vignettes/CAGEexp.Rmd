@@ -158,8 +158,7 @@ methods.  The expression data is stored in _CAGEexp_ using
 To load the _CAGEr_ package and the other libraries into your R envirnoment type:
 
 ```{r load_CAGEr}
-# library(CAGEr)
-devtools::load_all()
+library(CAGEr)
 ```
 
 Creating a _CAGEexp_ object {#create-CAGEexp}
