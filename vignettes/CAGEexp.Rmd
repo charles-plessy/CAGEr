@@ -209,7 +209,7 @@ inputFiles <- list.files( system.file("extdata", package = "CAGEr")
 ### Creating the object
 
 The _CAGEexp_ object is crated with the `CAGEexp` constructor, that requires
-information on file path an type, sample names and reference genome name.
+information on file path and type, sample names and reference genome name.
 
 ```{r create_CAGEexp}
 ce <- CAGEexp( genomeName     = "BSgenome.Drerio.UCSC.danRer7"
@@ -225,8 +225,12 @@ To display the created object type:
 ce
 ```
 
-The supplied information can be seen in the _Input data information_ section, whereas all other
+The supplied information can be seen with the `colData` accessor, whereas all other
 slots are still empty, since no data has been read yet and no analysis conducted.
+
+```{r show_colData}
+colData(ce)
+```
 
 
 Reading in the data
