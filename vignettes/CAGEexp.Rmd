@@ -29,7 +29,7 @@ Introduction
 ============
 
 This document describes how to use `r Biocpkg("CAGEr")` _CAGEr_, a Bioconductor package designed
-to process, analyse and visualise Cap Analysis of Gene Expression (CAGE)sequencing data.
+to process, analyse and visualise Cap Analysis of Gene Expression (CAGE) sequencing data.
 CAGE [@Kodzius:2006] is a high-throughput method for transcriptome analysis that utilizes
 _cap trapping_ [@Carninci:1996], a technique based on the biotinylation of the 7-methylguanosine
 cap of Pol II transcripts, to pulldown the 5′-complete cDNAs reversely transcribed from
@@ -101,7 +101,7 @@ publicly available CAGE data produced by major consortia including FANTOM and EN
 available from <http://promshift.genereg.net/CAGEr/>. In addition, direct fetching of TSS data from
 FANTOM5 web resource (the largest collection of TSS data for human and mouse) from within _CAGEr_ is
 also available. These are all valuable resources of genome-wide TSSs in various tissue/cell types
-for various model organisms that can be used directly in R. Section 5 in this vignette describes how
+for various model organisms that can be used directly in R.  A separate vignette describes how
 these public datasets can be included into a workflow provided by _CAGEr_. For further
 information on the content of the data packages and the list of available CAGE datasets please refer
 to the vignette of the corresponding data package.
@@ -133,12 +133,12 @@ _CAGEr_ package supports three types of CAGE data input:
    subset of these data can be used as input for \Rpackage{CAGEr}.
 
 The type and the format of the input files is specified at the beginning of the workflow, when the
-`CAGEset` object is created (section 4.2). This is done by setting the `inputFilesType` argument,
+`CAGEset` object is created (section 3.2). This is done by setting the `inputFilesType` argument,
 which accepts the following self-explanatory options referring to formats mentioned above:
 `"bam", "bamPairedEnd", "bed", "ctss", "CTSStable"`.
 
 In addition, the package provides a method for coercing a `data.frame` object containing single
-base-pair TSS information into a `CAGEset` object (as described in section 4.2.1), which can be
+base-pair TSS information into a `CAGEset` object (as described in section 4.1), which can be
 further used in the workflow described below. 
 
 
