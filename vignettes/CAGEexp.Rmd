@@ -201,9 +201,9 @@ replicas). The data in files is organized in four tab-separated columns as
 described above in section \@ref(input-formats).
 
 ```{r specify_input_files}
-inputFiles = list.files( system.file("extdata", package = "CAGEr")
-                       , "ctss$"
-                       , full.names = TRUE)
+inputFiles <- list.files( system.file("extdata", package = "CAGEr")
+                        , "ctss$"
+                        , full.names = TRUE)
 ```
 
 ### Creating the object
