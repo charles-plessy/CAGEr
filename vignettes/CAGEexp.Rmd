@@ -28,7 +28,7 @@ set.seed(0xdada)
 Introduction
 ============
 
-This document briefly how to use `r Biocpkg("CAGEr")` _CAGEr_, a Bioconductor package designed
+This document describes how to use `r Biocpkg("CAGEr")` _CAGEr_, a Bioconductor package designed
 to process, analyse and visualise Cap Analysis of Gene Expression (CAGE)sequencing data.
 CAGE [@Kodzius:2006] is a high-throughput method for transcriptome analysis that utilizes
 _cap trapping_ [@Carninci:1996], a technique based on the biotinylation of the 7-methylguanosine
