@@ -173,19 +173,19 @@ It will be automatically loaded by _CAGEr_ commands when needed.
 
 In case the data is mapped to a genome that is not readily available through
 _BSgenome_ package (not in the list returned by `BSgenome::available.genomes()`
-function), a custom _BSgenome_ package has to be build and installed first.
+function), a custom _BSgenome_ package can be build and installed first.
 (See the vignette within the _BSgenome_ package for instructions on how to build
 a custom genome package). The `genomeName` argument can then be set to the name
 of the build genome package when creating a `CAGEexp` object (see the section
-_Creating `CAGEexp` object_ below).
+_Creating `CAGEexp` object_ below).  It can also be set to `NULL` as a last
+resort when no _BSgenome_ package is available.
 
-The _BSgenome_ package is used to access information about the chromosomes
-(sequence, length, circularity).  By default, _CAGEr_ will discard alignments
-that are not on chromosomes named in the _BSgenome_ package.  The `genomeName`
-argument can be set to `NULL` in order to suppress this behaviour, or as a last
-resort when no _BSgenome_ package is available.  However, _CAGEr_ functions that
-need access to the genome sequence, for instance for _G-correction_ will not
-work in that case.
+The _BSgenome_ package is required by the _CAGEr_ functions that need access to
+the genome sequence, for instance for _G-correction_.  It is also used provide
+`seqinfo` information to the various Bioconductor objects produced by _CAGEr_.
+For this reason, _CAGEr_ will discard alignments that are not on chromosomes
+named in the _BSgenome_ package.  If this is not desirable, set `genomeName`
+to `NULL`.
 
 ### Specifying input files
 
