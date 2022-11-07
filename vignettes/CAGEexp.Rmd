@@ -717,13 +717,15 @@ belonging to a specific cluster by typing commands like:
 consensusClustersGR(ce) |> subset(consensusClustersGR(ce)$exprClass ==  "0_1")
 ```
 
-Consensus clusters and information on their expression profile can be exported to a BED file, which allows visualization of the promoters in the 
-genome browser colored in the color of the expression cluster they belong to (Figure \@ref(fig:ConsensusClustersBed):
+Consensus clusters and information on their expression profile can be exported
+to a BED file, which allows visualization of the promoters in the genome browser
+colored in the color of the expression cluster they belong to
+(Figure \@ref(fig:ConsensusClustersBed):
 
 ```{r}
-# Not supported yet for CAGEexp objects, sorry.
-# exportToBed(ce, what = "consensusClusters", 
-# 		colorByExpressionProfile = TRUE)
+cc_iqtrack <- exportToTrack(ce, what = "consensusClusters", colorByExpressionProfile = TRUE)
+cc_iqtrack
+#rtracklayer::export.bed(cc_iqtrack, "outputFileName.bed")
 ```
 
 ```{r ConsensusClustersBed, echo=FALSE, fig.align="center", fig.cap="Consensus clusters colored by expression profile in the genome browser"}
