@@ -148,8 +148,7 @@ setMethod( "scoreShift", "CAGEexp"
 	# -- end of ugly hack ---
 	
 	a <- a[names(a) %in% c(groupX, groupY)]
-	# b <- object@consensusClusters
-	b <- rowRanges(consensusClustersSE(object))
+	b <- consensusClustersGR(object)
 	
 	cumsum.list <- bplapply(a, function(x) {
 	  n <- names(x)
