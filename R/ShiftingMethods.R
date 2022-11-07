@@ -180,7 +180,7 @@ setMethod( "scoreShift", "CAGEexp"
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
 	# dominant.ctss.pos <- data.frame(consensus.cluster = names(cumsum.matrices.groups.f), do.call(rbind, dominant.ctss.pos))
-	dominant.ctss.pos <- data.frame(consensus.cluster = as.data.frame(b)$consensus.cluster, do.call(rbind, dominant.ctss.pos))
+	dominant.ctss.pos <- data.frame(consensus.cluster = as.data.frame(names(b)), do.call(rbind, dominant.ctss.pos))
 	
 	## Is this ordering really needed? 
 	## With the new names, this ordering does not work!
@@ -189,7 +189,7 @@ setMethod( "scoreShift", "CAGEexp"
 	
 	
 	# clusters.info <- merge(b[,c(1:5)], dominant.ctss.pos, by.x = "consensus.cluster", by.y = "consensus.cluster")
-	clusters.info <- merge(as.data.frame(b), dominant.ctss.pos, by.x = "consensus.cluster", by.y = "consensus.cluster", sort=FALSE)
+	clusters.info <- cbind(as.data.frame(b), dominant.ctss.pos)
 	clusters.info$groupX.pos <- clusters.info$groupX.pos + clusters.info$start
 	clusters.info$groupY.pos <- clusters.info$groupY.pos + clusters.info$start
 
@@ -358,6 +358,7 @@ setMethod( "getShiftingPromoters", "CAGEexp"
            
   shiftSc_cname <- paste("shifting.score", groupX, groupY, sep=".")
 	shifting.scores <- mcols(consensusClustersGR(object))
+	shifting.scores$consensus.cluster <- rownames(shifting.scores)
 	
 	## check if the group pairs supplied have shifting scores calculated
 	if(!shiftSc_cname %in% colnames(shifting.scores)){
@@ -370,7 +371,7 @@ setMethod( "getShiftingPromoters", "CAGEexp"
 	gYtpm_cname <- paste("groupY", groupY, "tpm", sep=".")
 	
 	## Useful to only keep relevant columns in the final data.frame
-	sel_cnames <- c("consensus.cluster", "score", "tpm",
+	sel_cnames <- c("consensus.cluster", "score", "score",
 	  paste("shifting.score", groupX, groupY, sep="."),
 	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("pos", 2), sep="."),
 	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("tpm", 2), sep=".")
