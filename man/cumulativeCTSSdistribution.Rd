@@ -35,7 +35,7 @@ In \code{CAGEexp} objects, cumulative sums are stored
 in the metadata slot using the \code{RleList} class.
 }
 \description{
-Calculates the cumulative sum of raw CAGE counts along each tag
+Calculates the cumulative sum of normalised CAGE counts along each tag
 cluster or consensus cluster in every sample within a CAGEr object.
 }
 \examples{

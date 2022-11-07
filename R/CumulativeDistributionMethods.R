@@ -4,7 +4,7 @@
 #' 
 #' @title Cumulative sums of CAGE counts along genomic regions
 #' 
-#' @description Calculates the cumulative sum of raw CAGE counts along each tag
+#' @description Calculates the cumulative sum of normalised CAGE counts along each tag
 #' cluster or consensus cluster in every sample within a CAGEr object.
 #' 
 #' @param object A [`CAGEr`] object
