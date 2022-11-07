@@ -25,16 +25,10 @@
 #' @family CAGEr clusters functions
 #' 
 #' @examples
+#' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "tagClusters")
 #' CTSScumulativesTagClusters(exampleCAGEexp)[[1]][1:6]
 #' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "consensusClusters")
-#' 
-#' clusterCTSS( exampleCAGEexp, threshold = 50, thresholdIsTpm = TRUE
-#'            , nrPassThreshold = 1, method = "distclu", maxDist = 20
-#'            , removeSingletons = TRUE, keepSingletonsAbove = 100)
-#' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "tagClusters")
-#' aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-#'                     , excludeSignalBelowThreshold = FALSE, maxDist = 100)
-#' cumulativeCTSSdistribution(exampleCAGEexp, clusters = "consensusClusters")
+#' CTSScumulativesCC(exampleCAGEexp)[[1]][1:6]
 #'            
 #' @importFrom IRanges RleList
 #' @export
