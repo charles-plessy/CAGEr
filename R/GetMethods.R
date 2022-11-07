@@ -826,6 +826,7 @@ setMethod("CTSScumulativesTagClusters", "CAGEexp", function (object, samples){
 })
 
 #' @rdname CTSScumulativesTagClusters
+#' @export
 
 setGeneric("CTSScumulativesCC", function(object, samples = NULL) {
   validSamples(object, samples)

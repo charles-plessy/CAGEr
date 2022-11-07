@@ -118,10 +118,7 @@ setMethod( "scoreShift", "CAGEexp"
 	}
 	
 	message("\nCalculating shifting score...")
-	# a <- object@CTSScumulativesConsensusClusters
-	
-	
-	a <- metadata(object)$CTSScumulativesConsensusClusters
+	a <- CTSScumulativesCC(object)
 	
 	# Problem: originally, CTSScumulativesConsensusClusters were in 0-based
 	# coordinates, meaning that the first Rle value was always 0.
