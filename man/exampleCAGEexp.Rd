@@ -45,7 +45,10 @@ exampleCAGEexp <-
   annotateConsensusClusters(exampleZv9_annot)     |>
   cumulativeCTSSdistribution("consensusClusters") |>
   quantilePositions("consensusClusters")          |>
-  getExpressionProfiles("consensusClusters")
+  getExpressionProfiles("consensusClusters")      |>
+  scoreShift( groupX = c("Zf.unfertilized.egg")
+            , groupY = "Zf.30p.dome"
+            , testKS = TRUE, useTpmKS = FALSE)
 save(exampleCAGEexp, file = "data/exampleCAGEexp.RData", compress = "xz")
 }
 }
