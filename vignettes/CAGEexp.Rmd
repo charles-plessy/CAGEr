@@ -476,7 +476,7 @@ ce <- clusterCTSS( ce
 Our final set of tag clusters will not include singletons (clusters with only one TSS), unless the
 normalized signal is above 5, \emph{i.e.} it is a reasonably supported TSS.  The `clusterCTSS`
 function creates a set of clusters for each sample separately; for each cluster it returns the
-genomic coordinates, counts the number of TSSs within the cluster, determines the position of the
+genomic coordinates, counts the number of TSSs within the cluster, determines the (1-based) position of the
 most frequently used (dominant) TSS, calculates the total CAGE signal within the cluster and CAGE
 signal supporting the dominant TSS only.  We can extract tag clusters for a desired sample from
 `CAGEexp` object by calling the `tagClustersGR` function:
