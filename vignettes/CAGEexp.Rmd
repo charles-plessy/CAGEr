@@ -778,7 +778,6 @@ Next, we calculate a shifting score and P-value of Kolmogorov-Smirnov test for
 all promoters comparing two specified samples:
 
 ```{r}
-# Not supported yet for CAGEexp objects, sorry.
 ce <- scoreShift(ce, groupX = "Zf.unfertilized.egg", groupY = "Zf.prim6",
 		testKS = TRUE, useTpmKS = FALSE)
 ```

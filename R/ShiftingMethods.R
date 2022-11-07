@@ -90,11 +90,10 @@
 #' @family CAGEr promoter shift functions
 #' 
 #' @examples
-#'# scoreShift( exampleCAGEexp
-#'#           , groupX = c("sample1", "sample2")
-#'#           , groupY = "sample3"
-#'#           , testKS = TRUE, useTpmKS = FALSE)
-#'# head(getShiftingPromoters(exampleCAGEexp))
+#' scoreShift( exampleCAGEexp
+#'           , groupX = c("Zf.unfertilized.egg")
+#'           , groupY = "Zf.30p.dome"
+#'           , testKS = TRUE, useTpmKS = FALSE)
 #'
 #' @importFrom stats p.adjust
 #' @importFrom utils head
@@ -339,8 +338,9 @@ setMethod( "scoreShift", "CAGEexp"
 #' @family CAGEr promoter shift functions
 #' 
 #' @examples 
-#' #head(getShiftingPromoters( exampleCAGEexp, tpmThreshold = 100
-#' #                         , scoreThreshold = 0.4, fdrThreshold = 0.01))
+#' getShiftingPromoters( exampleCAGEexp
+#'                     , groupX = "Zf.unfertilized.egg"
+#'                     , groupY = "Zf.30p.dome") |> head()
 #' 
 #' @export
 
