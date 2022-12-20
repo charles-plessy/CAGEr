@@ -1,4 +1,4 @@
-#' @include CTSS.R
+#' @include CAGEexp.R CTSS.R
 
 ####################################################################################
 # Implementation of simple distance-based clustering of data attached to sequences
