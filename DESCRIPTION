@@ -12,6 +12,7 @@ Imports:
     BiocGenerics,
     BiocParallel,
     BSgenome,
+    CAGEfightR,
     data.table,
     DelayedArray,
     DelayedMatrixStats,
@@ -62,6 +63,7 @@ Collate:
     'CAGEr.R'
     'Annotations.R'
     'AggregationMethods.R'
+    'CAGEfightR.R'
     'CorrelationMethods.R'
     'CumulativeDistributionFunctions.R'
     'GetMethods.R'
