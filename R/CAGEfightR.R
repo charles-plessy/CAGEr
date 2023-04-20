@@ -27,6 +27,7 @@
 #' 
 #' @importFrom CAGEfightR quickEnhancers
 #' 
+#' @aliases quickEnhancers
 #' @export
 
 setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {

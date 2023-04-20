@@ -2,6 +2,7 @@
 % Please edit documentation in R/CAGEfightR.R
 \name{quickEnhancers,CAGEexp-method}
 \alias{quickEnhancers,CAGEexp-method}
+\alias{quickEnhancers}
 \title{Identify and quantify enhancers.}
 \usage{
 \S4method{quickEnhancers}{CAGEexp}(object)
