@@ -12,6 +12,7 @@ Imports:
     BiocGenerics,
     BiocParallel,
     BSgenome,
+    CAGEfightR,
     data.table,
     DelayedArray,
     DelayedMatrixStats,
@@ -55,13 +56,14 @@ biocViews: Preprocessing, Sequencing, Normalization, FunctionalGenomics, Transcr
 Collate: 
     'Multicore.R'
     'CTSS.R'
+    'CAGEexp.R'
     'ClusteringFunctions.R'
     'ClusteringMethods.R'
-    'CAGEexp.R'
     'AllClasses.R'
     'CAGEr.R'
     'Annotations.R'
     'AggregationMethods.R'
+    'CAGEfightR.R'
     'CorrelationMethods.R'
     'CumulativeDistributionFunctions.R'
     'GetMethods.R'

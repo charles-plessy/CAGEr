@@ -37,7 +37,8 @@ Other CAGEr object modifiers:
 \code{\link{cumulativeCTSSdistribution}()},
 \code{\link{getCTSS}()},
 \code{\link{normalizeTagCount}()},
-\code{\link{quantilePositions}()}
+\code{\link{quantilePositions}()},
+\code{\link{quickEnhancers}()}
 }
 \author{
 Charles Plessy
