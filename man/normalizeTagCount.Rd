@@ -95,6 +95,7 @@ Other CAGEr object modifiers:
 \code{\link{cumulativeCTSSdistribution}()},
 \code{\link{getCTSS}()},
 \code{\link{quantilePositions}()},
+\code{\link{quickEnhancers}()},
 \code{\link{summariseChrExpr}()}
 }
 \author{

@@ -138,6 +138,7 @@ Other CAGEr object modifiers:
 \code{\link{cumulativeCTSSdistribution}()},
 \code{\link{normalizeTagCount}()},
 \code{\link{quantilePositions}()},
+\code{\link{quickEnhancers}()},
 \code{\link{summariseChrExpr}()}
 }
 \author{
