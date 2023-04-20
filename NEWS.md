@@ -9,6 +9,8 @@ BUG FIXES
 NEW FEATURES
 
 -   Inter-quantile width is also computed when no sample is selected.
+-   Enhancer detection using a wrapper to the _CAGEfighter_ package's
+    function `quickEnhancers()`.
 
 # No changes in version 2.4.0 (2/11/2022)
 
