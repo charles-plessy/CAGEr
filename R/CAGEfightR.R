@@ -17,18 +17,20 @@
 #' how to attach it to the experiment list of a `CAGEexp` object.
 #' 
 #' @family CAGEfightR
+#' @family CAGEr object modifiers
 #' 
 #' @examples
-#' # The CAGEfightR package needs to be installed before running the command.
+#' # Can not run as long as the test data has nothing on the minus strand!
 #' \dontrun{
-#' enhancers <- quickEnhancers(ce)
-#' ce <- c(enhancers = enhancers, ce)
+#' quickEnhancers(exampleCAGEexp)
 #' }
 #' 
 #' @importFrom CAGEfightR quickEnhancers
 #' 
-#' @aliases quickEnhancers
 #' @export
+
+setGeneric("quickEnhancers", function(object)
+  standardGeneric("quickEnhancers"))
 
 setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {
   se <- CTSStagCountSE(object)
@@ -36,5 +38,6 @@ setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {
   rowRanges(se) <- as(rowRanges(se), "StitchedGPos")
   colData(se)$Name <- colData(se)$sampleLabels
   assays(se) <- List(counts=as(as.matrix(as.data.frame(assay(se))), "dgCMatrix"))
-  quickEnhancers(se)
+  enhancers <- quickEnhancers(se)
+  c(enhancers = enhancers, object)
 })
