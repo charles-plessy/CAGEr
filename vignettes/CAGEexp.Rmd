@@ -838,6 +838,20 @@ promoters.
 knitr::include_graphics("images/ShiftingPromoter.svg")
 ```
 
+Enhancers
+---------
+
+The FANTOM5 project reported that “_enhancer activity can be detected through
+the presence of balanced bidirectional capped transcripts_”  [@Andersson:2014].
+The _CAGEr_ package is providing a wrapper to the _CAGEfightR_ package's
+function `quickEnhancers` so that it can run directly on _CAGEexp_ objects.
+The wrapper returns a modified _CAGEexp_ object in which the results are stored
+in its `enhancers` experiment slot.
+
+```{r }
+ce <- quickEnhancers(ce)
+ce[["enhancers"]]
+```
 
 Appendix
 ========
