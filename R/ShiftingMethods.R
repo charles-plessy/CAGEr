@@ -184,11 +184,17 @@ setMethod( "scoreShift", "CAGEexp"
 	## Is this ordering really needed? 
 	## With the new names, this ordering does not work!
 	# dominant.ctss.pos <- dominant.ctss.pos[order(dominant.ctss.pos$consensus.cluster),]
+	
 	colnames(dominant.ctss.pos) <- c("consensus.cluster", "groupX.pos", "groupY.pos")
 	
 	
-	# clusters.info <- merge(b[,c(1:5)], dominant.ctss.pos, by.x = "consensus.cluster", by.y = "consensus.cluster")
-	clusters.info <- cbind(as.data.frame(b), dominant.ctss.pos)
+	
+	clusters.info <- cbind(as.data.frame(b), 
+	  dominant.ctss.pos[, 2:ncol(dominant.ctss.pos)])
+	
+	stopifnot(nrow(clusters.info) == nrow(dominant.ctss.pos))
+	clusters.info$consensus.cluster <- dominant.ctss.pos$consensus.cluster
+	
 	clusters.info$groupX.pos <- clusters.info$groupX.pos + clusters.info$start
 	clusters.info$groupY.pos <- clusters.info$groupY.pos + clusters.info$start
 
@@ -209,20 +215,22 @@ setMethod( "scoreShift", "CAGEexp"
 	groupY.tpm <- unlist(lapply(cumsum.matrices.groups.f, function(x) {max(x[,"groupY"])}))
 	scores.df <- data.frame(consensus.cluster = names(scores), 
 	  shifting.score = scores, groupX.tpm = groupX.tpm, groupY.tpm = groupY.tpm)
+
 	
 	clusters.info <- merge(clusters.info, scores.df, sort = FALSE, by.x = "consensus.cluster", by.y = "consensus.cluster")
-	clusters.info <- clusters.info[,c("consensus.cluster", "shifting.score", "groupX.pos", "groupY.pos", "groupX.tpm", "groupY.tpm")]
 	
+
+	clusters.info <- clusters.info[,c("consensus.cluster", "shifting.score", "groupX.pos", "groupY.pos", "groupX.tpm", "groupY.tpm")]
 	
 	if(testKS){
 	  
 		if(useTpmKS){
-  		  
+		  
   			n <- (clusters.info$groupX.tpm * clusters.info$groupY.tpm)/(clusters.info$groupX.tpm + clusters.info$groupY.tpm)
   			names(n) <- names(cumsum.matrices.groups.f)
-			  
+  			
 		}else{
-  		  
+		  
   			template.tagcount <- rep(0L, length(consensusClustersGR(object)))
   			names(template.tagcount) <- consensusClustersGR(object)$consensus.cluster
   			
@@ -246,6 +254,7 @@ setMethod( "scoreShift", "CAGEexp"
   				# run within this function (does not happen when run normally outside the function)!!!
   				tag.count.list[[s]] <- unlist(tag.count.new)
   				invisible(gc())
+  				
   			}
   			
   			tag.count.m <- do.call(cbind, tag.count.list)
@@ -254,6 +263,7 @@ setMethod( "scoreShift", "CAGEexp"
   			                        groupY = rowSums(tag.count.m[,groupY,drop=F]))
   			n <- (tag.count.m.new[,"groupX"] * tag.count.m.new[,"groupY"])/(tag.count.m.new[,"groupX"] + tag.count.m.new[,"groupY"])
   			names(n) <- names(cumsum.matrices.groups.f)
+  			
 		}
 		
 	  
@@ -267,7 +277,7 @@ setMethod( "scoreShift", "CAGEexp"
 		clusters.info <- merge(clusters.info, p.vals, by.x = "consensus.cluster", by.y = "consensus.cluster", 
 		  sort = FALSE)
 	}
-	
+	## if(testKS) ENDS HERE
 	
 	
 	temp_df <- DataFrame(
@@ -277,26 +287,40 @@ setMethod( "scoreShift", "CAGEexp"
 	  groupX.tpm = clusters.info$groupX.tpm,
 	  groupY.tpm = clusters.info$groupY.tpm)
 	
+	
 	## adjust all colnames in temp_df at this point
-	colnames(temp_df) <- c(paste("shifting.score", groupX, groupY, sep="."),
-	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("pos", 2), sep="."),
-	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("tpm", 2), sep=".")
+	group_x_str <- paste(groupX, collapse="-")
+	group_y_str <- paste(groupY, collapse="-")
+	colnames(temp_df) <- c(
+	  paste("shifting.score", group_x_str, group_y_str, sep="."),
+	  paste(c("groupX.pos", "groupY.pos"), c(group_x_str, group_y_str), sep="."),
+	  paste(c("groupX.tpm", "groupY.tpm"), c(group_x_str, group_y_str), sep=".")
 	)
+	
 	
 	if(testKS){
 	    temp_df2 <- DataFrame(pvalue.KS = clusters.info$pvalue.KS,
 	                          fdr.KS  = clusters.info$fdr.KS)
 	    ## adjust colnames for columns in temp_df2
-	    colnames(temp_df2) <- paste(c("pvalue.KS", "fdr.KS"), groupX, groupY, sep=".")
+	    colnames(temp_df2) <- paste(c("pvalue.KS", "fdr.KS"), 
+	                    group_x_str, group_y_str, sep=".")
 	    temp_df <- cbind.DataFrame(temp_df, temp_df2)
 	}
-  
+	
+	
 	prior_rowdata <- rowData(consensusClustersSE(object))
+	
+
 	use_df <- cbind.DataFrame(prior_rowdata, temp_df)
+  
+	## manage duplicate columns
+	use_df <- use_df[ , !duplicated(colnames(use_df))]
+	##
 	
 	rownames(use_df) <- rownames(rowData(consensusClustersSE(object)))
 	rowData(consensusClustersSE(object)) <- use_df
-	message("Done")
+	
+	##
 	object
 })
 
@@ -354,9 +378,13 @@ setMethod( "getShiftingPromoters", "CAGEexp"
          , function (object, groupX, groupY, tpmThreshold, scoreThreshold,
            fdrThreshold) {
 
-  
+  group_x_str <- paste(groupX, collapse="-")
+  group_y_str <- paste(groupY, collapse="-")
            
-  shiftSc_cname <- paste("shifting.score", groupX, groupY, sep=".")
+  shiftSc_cname <- paste("shifting.score", group_x_str, group_y_str, sep=".")
+  
+  
+  
 	shifting.scores <- mcols(consensusClustersGR(object))
 	shifting.scores$consensus.cluster <- rownames(shifting.scores)
 	
@@ -366,37 +394,43 @@ setMethod( "getShiftingPromoters", "CAGEexp"
 	      "Please use ", sQuote("scoreShift()"), "first.")
 	}
 	
-	clusters <- rowData(consensusClustersSE(object)) #consensusClustersGR(object)
-	gXtpm_cname <- paste("groupX", groupX, "tpm", sep=".")
-	gYtpm_cname <- paste("groupY", groupY, "tpm", sep=".")
+	group_x_str <- paste(groupX, collapse="-")
+	group_y_str <- paste(groupY, collapse="-")
 	
+	# clusters <- rowData(consensusClustersSE(object)) #consensusClustersGR(object)
+	gXtpm_cname <- paste("groupX.tpm", group_x_str, sep=".")
+	gYtpm_cname <- paste("groupY.tpm", group_y_str, sep=".")
+	
+
 	## Useful to only keep relevant columns in the final data.frame
 	sel_cnames <- c("consensus.cluster", "score", "score",
-	  paste("shifting.score", groupX, groupY, sep="."),
-	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("pos", 2), sep="."),
-	  paste(c("groupX", "groupY"), c(groupX, groupY), rep("tpm", 2), sep=".")
+	  paste("shifting.score", group_x_str, group_y_str, sep="."),
+	  paste(c("groupX.pos", "groupY.pos"), c(group_x_str, group_y_str), sep="."),
+	  paste(c("groupX.tpm", "groupY.tpm"), c(group_x_str, group_y_str), sep=".")
 	)
 	
-	fdr_cname <- paste("fdr.KS", groupX, groupY, sep=".")
+	fdr_cname <- paste("fdr.KS", group_x_str, group_y_str, sep=".")
 	if(fdr_cname %in% colnames(shifting.scores)){
 	  message("Note: P-values and FDR columns available") 
-	  sel_cnames <- c(sel_cnames, paste(c("pvalue.KS", "fdr.KS"), groupX, groupY, sep="."))
+	  sel_cnames <- c(sel_cnames, paste(c("pvalue.KS", "fdr.KS"), group_x_str
+	    , group_y_str, sep="."))
 	}else{
 	  message("Note: P-values and FDR columns not available")  
 	}
 	
-	## find which columns are relevant?
+	
+	## find which rows are relevant?
 	sig.shifting <- 
 	  shifting.scores[ ( shifting.scores[, gXtpm_cname] >= tpmThreshold &
 	                     shifting.scores[, gYtpm_cname] >= tpmThreshold &
 	                     !is.na(shifting.scores[, shiftSc_cname]))
 	                                , sel_cnames]
-
+  
 	## leave-out where score is NA
 	sig.shifting <- sig.shifting[sig.shifting[, shiftSc_cname] >= scoreThreshold, ]
 	
 	## 
-
+	
 	if(fdr_cname %in% colnames(shifting.scores)){
 	  sig.shifting <- sig.shifting[
 	                      !is.na(sig.shifting[, fdr_cname]), sel_cnames] 
