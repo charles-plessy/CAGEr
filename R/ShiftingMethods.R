@@ -203,8 +203,8 @@ setMethod( "scoreShift", "CAGEexp"
 	
 	scores <- pmax(scores.f, scores.r)
 	
-	groupX.tpm <- unlist(lapply(cumsum.matrices.groups.f, function(x) {max(x[,"groupX"])}))
-	groupY.tpm <- unlist(lapply(cumsum.matrices.groups.f, function(x) {max(x[,"groupY"])}))
+	groupX.tpm <- sapply(cumsum.matrices.groups.f, function(x) max(x[,"groupX"]))
+	groupY.tpm <- sapply(cumsum.matrices.groups.f, function(x) max(x[,"groupY"]))
 	scores.df <- data.frame(consensus.cluster = names(scores), 
 	  shifting.score = scores, groupX.tpm = groupX.tpm, groupY.tpm = groupY.tpm)
 
