@@ -129,8 +129,7 @@ setMethod( "scoreShift", "CAGEexp"
 	}
 	
 	message("\nCalculating shifting score...")
-	a <- CTSScumulativesCC(object)
-	a <- a[names(a) %in% c(groupX, groupY)]
+	a <- CTSScumulativesCC(object)[c(groupX, groupY)]
 	b <- consensusClustersGR(object)
 	
 	cumsum.list <- bplapply(a, function(x) {
