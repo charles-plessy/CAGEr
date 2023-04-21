@@ -109,6 +109,7 @@
 #'
 #' @importFrom stats p.adjust
 #' @importFrom utils head
+#' @importFrom S4Vectors cbind.DataFrame
 #' @export
 
 setGeneric( "scoreShift"
@@ -117,6 +118,8 @@ setGeneric( "scoreShift"
               standardGeneric("scoreShift"))
 
 #' @rdname scoreShift
+#' @aliases scoreShift,CAGEexp-method
+#' @aliases scoreShift,matrix
 
 setMethod( "scoreShift", "CAGEexp"
          , function (object, groupX, groupY, testKS, useTpmKS, useMulticore, nrCores) {
@@ -324,6 +327,10 @@ setMethod( "scoreShift", "CAGEexp"
 	object
 })
 
+
+#' @rdname scoreShift
+#' @aliases scoreShift,matrix
+#' 
 # Input: a matrix of two columns contaning the cumulative distributions for
 # groupX and groupY
 setMethod( "scoreShift", "matrix",

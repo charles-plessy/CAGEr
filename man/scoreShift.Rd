@@ -3,6 +3,8 @@
 \name{scoreShift}
 \alias{scoreShift}
 \alias{scoreShift,CAGEexp-method}
+\alias{scoreShift,matrix}
+\alias{scoreShift,matrix-method}
 \title{Calculate promoter shifting score}
 \usage{
 scoreShift(
@@ -16,6 +18,16 @@ scoreShift(
 )
 
 \S4method{scoreShift}{CAGEexp}(
+  object,
+  groupX,
+  groupY,
+  testKS = TRUE,
+  useTpmKS = TRUE,
+  useMulticore = F,
+  nrCores = NULL
+)
+
+\S4method{scoreShift}{matrix}(
   object,
   groupX,
   groupY,
