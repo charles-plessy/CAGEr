@@ -178,7 +178,7 @@ setMethod( "scoreShift", "CAGEexp"
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
 	# dominant.ctss.pos <- data.frame(consensus.cluster = names(cumsum.matrices.groups.f), do.call(rbind, dominant.ctss.pos))
-	dominant.ctss.pos <- data.frame(consensus.cluster = as.data.frame(names(b)), do.call(rbind, dominant.ctss.pos))
+	dominant.ctss.pos <- data.frame(names(b), do.call(rbind, dominant.ctss.pos))
 	
 	## Is this ordering really needed? 
 	## With the new names, this ordering does not work!
