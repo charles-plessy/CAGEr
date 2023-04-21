@@ -202,8 +202,6 @@ setMethod( "scoreShift", "CAGEexp"
 	  useMulticore = useMulticore, nrCores = nrCores)
 	
 	scores <- pmax(scores.f, scores.r)
-	names(scores) <- dominant.ctss.pos$consensus.cluster
-	
 	
 	groupX.tpm <- unlist(lapply(cumsum.matrices.groups.f, function(x) {max(x[,"groupX"])}))
 	groupY.tpm <- unlist(lapply(cumsum.matrices.groups.f, function(x) {max(x[,"groupY"])}))
