@@ -1,4 +1,4 @@
-# Changes in version 2.5.0
+# Changes in version 2.6.0
 
 BUG FIXES
 
