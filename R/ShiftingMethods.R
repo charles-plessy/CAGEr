@@ -186,13 +186,8 @@ setMethod( "scoreShift", "CAGEexp"
 	
 	colnames(dominant.ctss.pos) <- c("consensus.cluster", "groupX.pos", "groupY.pos")
 	
-	
-	
-	clusters.info <- cbind(as.data.frame(b), 
-	  dominant.ctss.pos[, 2:ncol(dominant.ctss.pos)])
-	
-	stopifnot(nrow(clusters.info) == nrow(dominant.ctss.pos))
-	clusters.info$consensus.cluster <- dominant.ctss.pos$consensus.cluster
+	stopifnot(nrow(b) == nrow(dominant.ctss.pos))
+	clusters.info <- cbind(as.data.frame(b), dominant.ctss.pos)
 	
 	clusters.info$groupX.pos <- clusters.info$groupX.pos + clusters.info$start
 	clusters.info$groupY.pos <- clusters.info$groupY.pos + clusters.info$start
