@@ -194,7 +194,7 @@ setMethod( "scoreShift", "CAGEexp"
 
 	# n <- names(cumsum.matrices.groups.f)
 	
-	cumsum.matrices.groups.f <- lapply(cumsum.matrices.groups.f, function(x) {x[-1,,drop=F]})
+	cumsum.matrices.groups.f <- lapply(cumsum.matrices.groups.f, tail, -1)
 	
 	scores.f <- .score.promoter.shifting(cumsum.matrices.groups.f, 
 	  useMulticore = useMulticore, nrCores = nrCores)
