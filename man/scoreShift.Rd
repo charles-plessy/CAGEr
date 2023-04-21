@@ -48,6 +48,15 @@ supported only on Unix-like platforms.}
 \item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}.  Default value
 \code{NULL} uses all detected cores.}
 }
+\value{
+A \code{\link{CAGEexp}} object in which the \code{consensusClusters} experiment slot
+was updated to contain new metadata columns giving information on the
+\emph{shifting score}, and its \emph{significance}, and the \emph{position} and
+\emph{expression value} of the dominant CTSS for the shifting groups X and Y.  The
+column names are constructed by pasting sample names to \code{shifting.score},
+\code{fdr.KS}, \code{pvalue.KS}, \code{groupX.pos}, \code{groupY.pos}, \code{groupX.tmp} and
+\code{groupY.tpm}.
+}
 \description{
 Calculates the shifting score for all consensus clusters (promoters) between
 two specified (groups of) CAGE datasets.  Shifting score is a measure of differential
@@ -100,12 +109,8 @@ Since calculation of shifting scores and Kolmogorov-Smirnov test require cumulat
 along consensus clusters, they have to be calculated beforehand by calling
 \code{\link{cumulativeCTSSdistribution}} function.
 
-The slots \code{shiftingGroupX}, \code{shiftingGroupY} and
-\code{consensusClustersShiftingScores} of the provided \code{\link{CAGEexp}} object will
-be occupied by the information on the groups of CAGE datasets that have been compared and
-shifting scores of all consensus clusters.  Consensus clusters (promoters) with shifting
-score and/or FDR above specified threshold can be extracted by calling
-\code{\link{getShiftingPromoters}} function.
+Consensus clusters (promoters) with shifting score and/or FDR above specified
+threshold can be extracted by calling \code{\link{getShiftingPromoters}} function.
 }
 \examples{
 scoreShift( exampleCAGEexp

@@ -76,12 +76,16 @@
 #' along consensus clusters, they have to be calculated beforehand by calling
 #' \code{\link{cumulativeCTSSdistribution}} function.
 #' 
-#' The slots \code{shiftingGroupX}, \code{shiftingGroupY} and
-#' \code{consensusClustersShiftingScores} of the provided \code{\link{CAGEexp}} object will
-#' be occupied by the information on the groups of CAGE datasets that have been compared and
-#' shifting scores of all consensus clusters.  Consensus clusters (promoters) with shifting
-#' score and/or FDR above specified threshold can be extracted by calling
-#' \code{\link{getShiftingPromoters}} function.
+#' Consensus clusters (promoters) with shifting score and/or FDR above specified
+#' threshold can be extracted by calling [`getShiftingPromoters`] function.
+#' 
+#' @return A [`CAGEexp`] object in which the `consensusClusters` experiment slot
+#' was updated to contain new metadata columns giving information on the
+#' _shifting score_, and its _significance_, and the _position_ and
+#' _expression value_ of the dominant CTSS for the shifting groups X and Y.  The
+#' column names are constructed by pasting sample names to `shifting.score`,
+#' `fdr.KS`, `pvalue.KS`, `groupX.pos`, `groupY.pos`, `groupX.tmp` and
+#' `groupY.tpm`.  
 #' 
 #' @author Vanja Haberle
 #' @author Sarvesh Nikumbh
@@ -137,11 +141,13 @@ setMethod( "scoreShift", "CAGEexp"
 	  return(x)
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
-	
+	# Reverse the cumulative sums.
 	cumsum.list.r <- bplapply( cumsum.list, .reverse.cumsum
 	                         , useMulticore = useMulticore, nrCores = nrCores
 	                         , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
+	# Transform the list of clusters grouped by samples into a
+	# list of matrices grouped by clusters
 	cumsum.matrices.list.f <- bplapply(names(cumsum.list[[1]]), function(x) {
 	  sapply(names(cumsum.list), function(y) {as.numeric(cumsum.list[[y]][[x]])})
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
@@ -177,7 +183,6 @@ setMethod( "scoreShift", "CAGEexp"
 	    .get.dominant.ctss(cumsum.matrices.groups.f[[x]][,y], isCumulative = TRUE)})
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
-	# dominant.ctss.pos <- data.frame(consensus.cluster = names(cumsum.matrices.groups.f), do.call(rbind, dominant.ctss.pos))
 	dominant.ctss.pos <- data.frame(names(b), do.call(rbind, dominant.ctss.pos))
 	
 	## Is this ordering really needed? 
