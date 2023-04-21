@@ -26,11 +26,13 @@
 #' }
 #' 
 #' @importFrom CAGEfightR quickEnhancers
-#' 
-#' @export
 
 setGeneric("quickEnhancers", function(object)
   standardGeneric("quickEnhancers"))
+
+#' @export
+#' @rdname quickEnhancers
+#' @aliases quickEnhancers,CAGEexp-method
 
 setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {
   se <- CTSStagCountSE(object)

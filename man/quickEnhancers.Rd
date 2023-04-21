@@ -2,9 +2,12 @@
 % Please edit documentation in R/CAGEfightR.R
 \name{quickEnhancers}
 \alias{quickEnhancers}
+\alias{quickEnhancers,CAGEexp-method}
 \title{Identify and quantify enhancers.}
 \usage{
 quickEnhancers(object)
+
+\S4method{quickEnhancers}{CAGEexp}(object)
 }
 \arguments{
 \item{object}{A \code{CAGEexp} object}
