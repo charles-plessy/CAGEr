@@ -122,18 +122,18 @@ setMethod( "scoreShift", "CAGEexp"
 	b <- consensusClustersGR(object)
 	
 	cumsum.list <- bplapply(a, function(x) {
-	  # y <- subset(b, !(b$consensus.cluster %in% as.integer(names(x))))
+	  # This function checks if come consensus clusters of `b` are absent in an
+	  # element of `a`, in which case it adds them with a cumulative expression
+	  # of zero.
 	  y <- subset(b, !(names(b) %in% names(x)))
 	  
 	  if (length(y)>0) {
 	    nulls <- lapply(seq_along(y), function(t) {
-	      # Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))
 	      Rle(rep(0, end(y)[t] - start(y[t] + 1) ))
 	    })
 	    x <- append(x, nulls)
 	  }
-	  # names(x) <- c(n, as.character(y$consensus.cluster))
-	  # names(x) <- y$consensus.cluster
+	  
 	  return(x)
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
