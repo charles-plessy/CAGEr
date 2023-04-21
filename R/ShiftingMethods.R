@@ -129,14 +129,14 @@ setMethod( "scoreShift", "CAGEexp"
 	}
 	
 	message("\nCalculating shifting score...")
-	a <- CTSScumulativesCC(object)[c(groupX, groupY)]
-	b <- consensusClustersGR(object)
+	cumsum.list <- CTSScumulativesCC(object)[c(groupX, groupY)]
+	ccs.gr <- consensusClustersGR(object)
 	
-	cumsum.list <- bplapply(a, function(x) {
-	  # This function checks if come consensus clusters of `b` are absent in an
-	  # element of `a`, in which case it adds them with a cumulative expression
+	cumsum.list <- bplapply(cumsum.list, function(x) {
+	  # This function checks if come consensus clusters of `ccs.gr` are absent in an
+	  # element of `cumsum.list`, in which case it adds them with a cumulative expression
 	  # of zero.
-	  y <- subset(b, !(names(b) %in% names(x)))
+	  y <- subset(ccs.gr, !(names(ccs.gr) %in% names(x)))
 	  
 	  if (length(y)>0) {
 	    nulls <- lapply(seq_along(y), function(t) {
@@ -190,7 +190,7 @@ setMethod( "scoreShift", "CAGEexp"
 	    .get.dominant.ctss(cumsum.matrices.groups.f[[x]][,y], isCumulative = TRUE)})
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
-	dominant.ctss.pos <- data.frame(names(b), do.call(rbind, dominant.ctss.pos))
+	dominant.ctss.pos <- data.frame(names(ccs.gr), do.call(rbind, dominant.ctss.pos))
 	
 	## Is this ordering really needed? 
 	## With the new names, this ordering does not work!
@@ -198,8 +198,8 @@ setMethod( "scoreShift", "CAGEexp"
 	
 	colnames(dominant.ctss.pos) <- c("consensus.cluster", "groupX.pos", "groupY.pos")
 	
-	stopifnot(nrow(b) == nrow(dominant.ctss.pos))
-	clusters.info <- cbind(as.data.frame(b), dominant.ctss.pos)
+	stopifnot(nrow(ccs.gr) == nrow(dominant.ctss.pos))
+	clusters.info <- cbind(as.data.frame(ccs.gr), dominant.ctss.pos)
 	
 	clusters.info$groupX.pos <- clusters.info$groupX.pos + clusters.info$start
 	clusters.info$groupY.pos <- clusters.info$groupY.pos + clusters.info$start
