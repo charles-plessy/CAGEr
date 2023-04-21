@@ -126,7 +126,7 @@ setMethod( "scoreShift", "CAGEexp"
 	  y <- subset(b, !(names(b) %in% names(x)))
 	  
 	  if (length(y)>0) {
-	    nulls <- lapply(as.list(c(1:length(y))), function(t) {
+	    nulls <- lapply(seq_along(y), function(t) {
 	      # Rle(rep(0, y[t, "end"] - y[t, "start"] + 1))
 	      Rle(rep(0, end(y)[t] - start(y[t] + 1) ))
 	    })
