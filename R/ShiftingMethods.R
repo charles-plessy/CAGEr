@@ -205,8 +205,6 @@ setMethod( "scoreShift", "CAGEexp"
 	clusters.info$groupX.pos <- clusters.info$groupX.pos + clusters.info$start
 	clusters.info$groupY.pos <- clusters.info$groupY.pos + clusters.info$start
 
-	# n <- names(cumsum.matrices.groups.f)
-	
 	cumsum.matrices.groups.f <- lapply(cumsum.matrices.groups.f, tail, -1)
 	
 	scores.f <- sapply(cumsum.matrices.groups.f, scoreShift)
