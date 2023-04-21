@@ -209,10 +209,8 @@ setMethod( "scoreShift", "CAGEexp"
 	
 	cumsum.matrices.groups.f <- lapply(cumsum.matrices.groups.f, tail, -1)
 	
-	scores.f <- .score.promoter.shifting(cumsum.matrices.groups.f, 
-	  useMulticore = useMulticore, nrCores = nrCores)
-	scores.r <- .score.promoter.shifting(cumsum.matrices.groups.r, 
-	  useMulticore = useMulticore, nrCores = nrCores)
+	scores.f <- sapply(cumsum.matrices.groups.f, scoreShift)
+	scores.r <- sapply(cumsum.matrices.groups.r, scoreShift)
 	
 	scores <- pmax(scores.f, scores.r)
 	
@@ -327,6 +325,18 @@ setMethod( "scoreShift", "CAGEexp"
 	
 	##
 	object
+})
+
+# Input: a matrix of two columns contaning the cumulative distributions for
+# groupX and groupY
+setMethod( "scoreShift", "matrix",
+           function (object, groupX, groupY, testKS, useTpmKS, useMulticore, nrCores) {
+  less.tpm <- which(object[nrow(object),] == min(object[nrow(object),]))[1]
+  if (max(object[,less.tpm]) > 0) {
+    max(object[,less.tpm] - object[,(3-less.tpm)])/max(object[,less.tpm])
+  } else {
+    NA
+  }
 })
 
 #' Select consensus clusters with shifting score above threshold

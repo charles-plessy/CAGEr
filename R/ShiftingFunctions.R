@@ -29,18 +29,6 @@
   idx
 }
 
-.score.promoter.shifting <- function(cum.sum.stages, useMulticore = F, nrCores = NULL) {
-  unlist(bplapply(cum.sum.stages, function(x) {
-    less.tpm <- which(x[nrow(x),] == min(x[nrow(x),]))[1]
-      if (max(x[,less.tpm]) > 0) {
-        max(x[,less.tpm] - x[,(3-less.tpm)])/max(x[,less.tpm])
-      } else {
-        NA
-      }
-  }, BPPARAM = CAGEr_Multicore(useMulticore, nrCores)))
-}
-
-
 #####
 # Function that calculates total tag count in CAGE clusters
 # ARGUMENTS: ctss.df - data frame with one row per CTSS containing at least four columns, 
