@@ -142,12 +142,12 @@ setMethod( "scoreShift", "CAGEexp"
 	                         , useMulticore = useMulticore, nrCores = nrCores
 	                         , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
-	cumsum.matrices.list.f <- bplapply(as.list(names(cumsum.list[[1]])), function(x) {
+	cumsum.matrices.list.f <- bplapply(names(cumsum.list[[1]]), function(x) {
 	  sapply(names(cumsum.list), function(y) {as.numeric(cumsum.list[[y]][[x]])})
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
 	
 	
-	cumsum.matrices.list.r <- bplapply(as.list(names(cumsum.list.r[[1]])), function(x) {
+	cumsum.matrices.list.r <- bplapply(names(cumsum.list.r[[1]]), function(x) {
 	  m <- matrix(ncol = length(names(cumsum.list.r)), sapply(names(cumsum.list.r), function(y) {
 	    as.numeric(cumsum.list.r[[y]][[x]])
 	  }))
@@ -172,7 +172,7 @@ setMethod( "scoreShift", "CAGEexp"
 	names(cumsum.matrices.groups.f) <- names(cumsum.list[[1]])
 	names(cumsum.matrices.groups.r) <- names(cumsum.list[[1]])
 	
-	dominant.ctss.pos <- bplapply(as.list(names(cumsum.matrices.groups.f)), function(x) {
+	dominant.ctss.pos <- bplapply(names(cumsum.matrices.groups.f), function(x) {
 	  sapply(c("groupX", "groupY"), function(y) {
 	    .get.dominant.ctss(cumsum.matrices.groups.f[[x]][,y], isCumulative = TRUE)})
 	}, BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
