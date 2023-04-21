@@ -122,7 +122,6 @@ setMethod( "scoreShift", "CAGEexp"
 	b <- consensusClustersGR(object)
 	
 	cumsum.list <- bplapply(a, function(x) {
-	  n <- names(x)
 	  # y <- subset(b, !(b$consensus.cluster %in% as.integer(names(x))))
 	  y <- subset(b, !(names(b) %in% names(x)))
 	  
