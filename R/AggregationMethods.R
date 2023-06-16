@@ -91,7 +91,7 @@ setGeneric( "aggregateTagClusters"
                     , qLow = NULL, qUp = NULL
                     , maxDist = 100
                     , useMulticore = FALSE, nrCores = NULL)
-          	  standardGeneric("aggregateTagClusters"))
+            standardGeneric("aggregateTagClusters"))
 
 #' @rdname aggregateTagClusters
 
@@ -127,7 +127,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
                          , nrPassThreshold = 1
                          , thresholdIsTpm  = TRUE)
   } else filter <- TRUE
-	
+
     CTSScoordinatesGR(object)$cluster <-
       ranges2names(CTSScoordinatesGR(object), consensus.clusters)
     se <- CTSStagCountSE(object)[filter & decode(filteredCTSSidx(object)), ]
@@ -182,7 +182,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
 }
 
 setGeneric( ".CCtoSE" , function(se, consensus.clusters, tpmThreshold = 1)
-          	  standardGeneric(".CCtoSE"))
+            standardGeneric(".CCtoSE"))
 
 setMethod( ".CCtoSE"
          , c(se = "RangedSummarizedExperiment")
@@ -205,9 +205,9 @@ setMethod( ".CCtoSE"
     counts <- .rowsumAsMatrix(assays(se)[["counts"]], rowRanges(se)$cluster)
     norm   <- .rowsumAsMatrix(assays(se)[["normalizedTpmMatrix"]], rowRanges(se)$cluster)
 
-	  SummarizedExperiment( rowRanges = consensus.clusters[rownames(counts)]
-	                      , assays    = SimpleList( counts     = counts
-	                                              , normalized = norm))
+    SummarizedExperiment( rowRanges = consensus.clusters[rownames(counts)]
+                        , assays    = SimpleList( counts     = counts
+                                                , normalized = norm))
 })
 
 #' @name CustomConsensusClusters
@@ -257,7 +257,7 @@ setGeneric( "CustomConsensusClusters"
                     , threshold       = 0
                     , nrPassThreshold = 1
                     , thresholdIsTpm  = TRUE)
-          	  standardGeneric("CustomConsensusClusters"))
+            standardGeneric("CustomConsensusClusters"))
 
 #' @rdname CustomConsensusClusters
 
