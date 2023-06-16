@@ -145,6 +145,11 @@ setMethod( "aggregateTagClusters", "CAGEr"
   ctss <- CTSScoordinatesGR(CAGEexp_obj)
   score(ctss) <- rowSums(CTSSnormalizedTpmDF(CAGEexp_obj) |> DelayedArray::DelayedArray() )
   
+  # Stop if some TCs do not overlap with any CTSS, because the rest of the code
+  # is not robust against that.
+  if (any(countOverlaps(clusters.gr, ctss) == 0))
+    stop("Some TCs do not overlap any CTSS!")
+  
   # See `benchmarks/dominant_ctss.md`.
   o <- findOverlaps(clusters.gr, ctss)
   
