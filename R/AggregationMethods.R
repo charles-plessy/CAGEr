@@ -98,7 +98,6 @@ setGeneric( "aggregateTagClusters"
 setMethod( "aggregateTagClusters", "CAGEr"
          , function ( object, tpmThreshold, excludeSignalBelowThreshold
                     , qLow, qUp, maxDist, useMulticore, nrCores) {
-  objname <- deparse(substitute(object))
 
   consensus.clusters <- .aggregateTagClustersGR( object, tpmThreshold = tpmThreshold
                                                , qLow = qLow, qUp = qUp, maxDist = maxDist)
@@ -263,8 +262,7 @@ setGeneric( "CustomConsensusClusters"
 setMethod( "CustomConsensusClusters", c("CAGEexp", "GRanges")
          , function (object, clusters
                     , threshold, nrPassThreshold, thresholdIsTpm  = TRUE) {
-  objname <- deparse(substitute(object))
-  
+
   clusters <- .ConsensusClusters(clusters)
   
   filter <- .filterCtss( object
