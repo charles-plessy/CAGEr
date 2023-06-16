@@ -131,7 +131,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
     CTSScoordinatesGR(object)$cluster <-
       ranges2names(CTSScoordinatesGR(object), consensus.clusters)
     se <- CTSStagCountSE(object)[filter & decode(filteredCTSSidx(object)), ]
-    consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters)
+    consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters, tpmThreshold = tpmThreshold)
     score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
     object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
     object
