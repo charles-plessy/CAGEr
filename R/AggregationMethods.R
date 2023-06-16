@@ -103,9 +103,13 @@ setMethod( "aggregateTagClusters", "CAGEr"
   if (all( !is.null(qLow), !is.null(qUp))) {
    # If using quantiles, correct start and end.
    TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
+   # Define start and and according to quantile positions.
+   # Quantile coordinates are relative to start position: a value of "1" means
+   # "first base of the cluster".  Therefore, 1 base must be subtracted in the
+   # function below
    TC.list <- endoapply(TC.list, function(x) {
-     end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x)
-     start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x)
+     end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x) - 1
+     start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x) - 1
      x})
   } else {
    TC.list <- tagClustersGR(object)
