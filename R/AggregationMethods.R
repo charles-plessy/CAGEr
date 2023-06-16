@@ -98,9 +98,24 @@ setGeneric( "aggregateTagClusters"
 setMethod( "aggregateTagClusters", "CAGEr"
          , function ( object, tpmThreshold, excludeSignalBelowThreshold
                     , qLow, qUp, maxDist, useMulticore, nrCores) {
-
-  consensus.clusters <- .aggregateTagClustersGR( object, tpmThreshold = tpmThreshold
-                                               , qLow = qLow, qUp = qUp, maxDist = maxDist)
+  
+  # Prepare the GRangesList object containing the TCs.
+  if (all( !is.null(qLow), !is.null(qUp))) {
+   # If using quantiles, correct start and end.
+   TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
+   TC.list <- endoapply(TC.list, function(x) {
+     end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x)
+     start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x)
+     x})
+  } else {
+   TC.list <- tagClustersGR(object)
+  }
+  # Filter out TCs with too low score.
+  TC.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpmThreshold])
+  
+  # Compute consensus clusters
+  consensus.clusters <-
+    .aggregateTagClustersGRL(gr.list = TC.list, CAGEexp_obj = object, maxDist = maxDist)
   
   if (excludeSignalBelowThreshold) {
     filter <- .filterCtss( object
@@ -118,28 +133,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
     object
 })
 
-
-setGeneric( ".aggregateTagClustersGR"
-          , function( object, tpmThreshold = 5
-                    , qLow = NULL, qUp = NULL, maxDist = 100)
-          	  standardGeneric(".aggregateTagClustersGR"))
-
-setMethod( ".aggregateTagClustersGR", "CAGEr"
-         , function ( object, tpmThreshold
-                    , qLow, qUp, maxDist) {
-  if (all( !is.null(qLow), !is.null(qUp))) {
-    TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
-    TC.list <- endoapply(TC.list, function(x) {
-      end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x)
-      start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x)
-      x})
-  } else {
-    TC.list <- tagClustersGR(object)
-  }
-
-  # Filter out TCs with too low score.
-  gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpmThreshold])
-  
+.aggregateTagClustersGRL <- function ( gr.list, CAGEexp_obj, maxDist) {
   # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)
   suppressWarnings(start(clusters.gr) <- start(clusters.gr) - round(maxDist/2)) # Suppress warnings
@@ -147,9 +141,9 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   clusters.gr <- reduce(trim(clusters.gr))  # By definition of `reduce`, they will not overlap
   # Note that the clusters are temporarily too broad, because we added `maxDist)` to the TCs…
   
-  # CTSS with score that is sum od all samples
-  ctss <- CTSScoordinatesGR(object)
-  score(ctss) <- rowSums(CTSSnormalizedTpmDF(object) |> DelayedArray::DelayedArray() )
+  # CTSS with score that is sum of all samples
+  ctss <- CTSScoordinatesGR(CAGEexp_obj)
+  score(ctss) <- rowSums(CTSSnormalizedTpmDF(CAGEexp_obj) |> DelayedArray::DelayedArray() )
   
   # See `benchmarks/dominant_ctss.md`.
   o <- findOverlaps(clusters.gr, ctss)
@@ -170,14 +164,13 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   start(clusters.gr) <- min(grouped_pos)
   end  (clusters.gr) <- max(grouped_pos)
   score(clusters.gr) <- sum(grouped_scores)
-  clusters.gr$dominant_ctss <- granges(ctss)[subjectHits(o)][global_max_ids]
-  clusters.gr$tpm.dominant_ctss <- score(ctss)[subjectHits(o)][global_max_ids]
+  clusters.gr$dominant_ctss     <- granges(ctss)[subjectHits(o)][global_max_ids]
+  clusters.gr$tpm.dominant_ctss <- score(ctss)  [subjectHits(o)][global_max_ids]
   clusters.gr
 
   names(clusters.gr) <- as.character(clusters.gr)
   .ConsensusClusters(clusters.gr)
-})
-
+}
 
 setGeneric( ".CCtoSE" , function(se, consensus.clusters, tpmThreshold = 1)
           	  standardGeneric(".CCtoSE"))
