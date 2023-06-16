@@ -252,8 +252,7 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
     message("\t-> ", s)
     d <- as(rowRanges(se), "CTSS")
     score(d) <- assays(se)[["normalizedTpmMatrix"]][[s]]
-    clusters <- .ctss2clusters(ctss = d, max.dist = max.dist, useMulticore = useMulticore, nrCores = nrCores)
-    ctss.cluster.list[[s]] <- clusters
+    ctss.cluster.list[[s]] <- .ctss2clusters(ctss = d, max.dist = max.dist, useMulticore = useMulticore, nrCores = nrCores)
   }
   ctss.cluster.list <- bplapply( ctss.cluster.list, .summarize.clusters
                                , removeSingletons = removeSingletons
