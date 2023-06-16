@@ -108,8 +108,8 @@ setMethod( "aggregateTagClusters", "CAGEr"
    # "first base of the cluster".  Therefore, 1 base must be subtracted in the
    # function below
    TC.list <- endoapply(TC.list, function(x) {
-     end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x) - 1
-     start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x) - 1
+     end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x) - 1L
+     start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x) - 1L
      x})
   } else {
    TC.list <- tagClustersGR(object)
