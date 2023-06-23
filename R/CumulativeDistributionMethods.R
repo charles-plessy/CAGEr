@@ -13,6 +13,7 @@
 #'        
 #' @param useMulticore Logical, should multicore be used.
 #'        `useMulticore = TRUE` has no effect on non-Unix-like platforms.
+#' 
 #' @param nrCores Number of cores to use when `useMulticore = TRUE`
 #'        (set to `NULL` to use all detected cores).
 #' 
@@ -20,6 +21,7 @@
 #' in the metadata slot using the `RleList` class.
 #' 
 #' @author Vanja Haberle
+#' @author Charles Plessy
 #' 
 #' @family CAGEr object modifiers
 #' @family CAGEr clusters functions
@@ -40,7 +42,7 @@ setGeneric( "cumulativeCTSSdistribution"
 
 #' @rdname cumulativeCTSSdistribution
 
-setMethod( "cumulativeCTSSdistribution", "CAGEr"
+setMethod( "cumulativeCTSSdistribution", "CAGEexp"
          , function (object, clusters, useMulticore, nrCores) {
   message("\nCalculating cumulative sum of CAGE signal along clusters...")
   clusters <- match.arg(clusters)
@@ -55,12 +57,10 @@ setMethod( "cumulativeCTSSdistribution", "CAGEr"
     ctss <- CTSSnormalizedTpmGR(object, s)
     if (!is.null(ctss$filteredCTSSidx))
       ctss <- ctss[ctss$filteredCTSSidx]
-		.getCumsum( ctss         = ctss
+    .getCumsum( ctss         = ctss
               , clusters     = getClusters(object, s)
               , useMulticore = useMulticore, nrCores = nrCores)
-	})
-	if (inherits(object, "CAGEexp"))
-    samples.cumsum.list <- lapply(samples.cumsum.list, RleList)
-	object <- setClusters(object, samples.cumsum.list)
-    object
+  })
+  samples.cumsum.list <- lapply(samples.cumsum.list, RleList)
+  setClusters(object, samples.cumsum.list)
 })

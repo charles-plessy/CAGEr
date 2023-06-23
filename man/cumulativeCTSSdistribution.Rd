@@ -2,7 +2,7 @@
 % Please edit documentation in R/CumulativeDistributionMethods.R
 \name{cumulativeCTSSdistribution}
 \alias{cumulativeCTSSdistribution}
-\alias{cumulativeCTSSdistribution,CAGEr-method}
+\alias{cumulativeCTSSdistribution,CAGEexp-method}
 \title{Cumulative sums of CAGE counts along genomic regions}
 \usage{
 cumulativeCTSSdistribution(
@@ -12,7 +12,7 @@ cumulativeCTSSdistribution(
   nrCores = NULL
 )
 
-\S4method{cumulativeCTSSdistribution}{CAGEr}(
+\S4method{cumulativeCTSSdistribution}{CAGEexp}(
   object,
   clusters = c("tagClusters", "consensusClusters"),
   useMulticore = FALSE,
@@ -72,6 +72,8 @@ Other CAGEr clusters functions:
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
 \concept{CAGEr clusters functions}
 \concept{CAGEr object modifiers}
