@@ -656,14 +656,17 @@ setMethod( "getCTSS", "CAGEexp"
 #' @export
 
 setGeneric("importPublicData",
-           function(source, dataset, group, sample)
+           function(source = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"),
+                    dataset,
+                    group,
+                    sample)
              standardGeneric("importPublicData"))
 
-setMethod("importPublicData",
-signature(source = "character", dataset = "character", sample = "character"),
-.importPublicData (source, dataset, group, sample))
+setMethod("importPublicData", signature(source = "character", dataset = "character", sample = "character"),
+          .importPublicData(source, dataset, group, sample))
 
-.importPublicData <- function (source, dataset, group, sample){
+.importPublicData <- function(source = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"), dataset, group, sample) {
+  source <- match.arg(source)
 
 	if(source == "ENCODE"){
 
@@ -972,10 +975,7 @@ signature(source = "character", dataset = "character", sample = "character"),
 		}
 
 
-	}else{
-		stop("Currently only the following public CAGE data resources are supported: 'FANTOM5', 'FANTOM3and4', 'ENCODE', 'ZebrafishDevelopment'. Refer to CAGEr vignette on how to use those resources!")
 	}
-
     rownames(ctssTable) <- c(1:nrow(ctssTable))
 
 	sample.labels <- colnames(ctssTable)[4:ncol(ctssTable)]
