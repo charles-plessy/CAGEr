@@ -946,36 +946,8 @@ setMethod("importPublicData", signature(source = "character", dataset = "charact
 		ctssTable <- data.frame(ctss.table, stringsAsFactors = F, check.names = F)
 
 
-	}else if (source == "ZebrafishDevelopment"){
-
-		if("ZebrafishDevelopmentalCAGE" %in% rownames(installed.packages()) == FALSE){
-			stop("Requested CAGE data package is not installed! Please install and load the ZebrafishDevelopmentalCAGE package, which is available for download from http://promshift.genereg.net/CAGEr/PackageSource/.")
-		}else if(!("package:ZebrafishDevelopmentalCAGE" %in% search())){
-			stop("Requested CAGE data package is not loaded! Please load the data package by calling 'library(ZebrafishDevelopmentalCAGE)'")
-		}
-
-	  ZebrafishSamples <- NULL
-		data("ZebrafishSamples", envir = environment())
-		if(dataset == "ZebrafishCAGE"){
-			if(group == "development"){
-				if(!(all(sample %in% ZebrafishSamples$sample))){
-					stop("Some sample names cannot be found for the specified dataset! Call data(ZebrafishSamples) and check the 'sample' column for valid sample names!")
-				}else{
-					genome.name <- "BSgenome.Drerio.UCSC.danRer7"
-					ZebrafishCAGE <- NULL
-					data("ZebrafishCAGE", envir = environment())
-					ctssTable <- ZebrafishCAGE[["development"]][,c("chr", "pos", "strand", sample)]
-                    ctssTable <- ctssTable[apply(ctssTable[,4:ncol(ctssTable),drop=FALSE], 1, function(x) {any(x>0)}),]
-				}
-			}else{
-				stop("Invalid group name! There is only one group in this dataset named 'development'.")
-			}
-		}else{
-			stop("Invalid dataset name! There is only one available dataset named 'ZebrafishCAGE'.")
-		}
-
-
-	}
+	} else if (source == "ZebrafishDevelopment") .importPublicData_ZF (group = group, sample = sample)
+  
     rownames(ctssTable) <- c(1:nrow(ctssTable))
 
 	sample.labels <- colnames(ctssTable)[4:ncol(ctssTable)]
@@ -987,4 +959,44 @@ setMethod("importPublicData", signature(source = "character", dataset = "charact
 
 	return(myCAGEset)
 
+}
+
+.importPublicData_ZF <- function(group = "development", sample = NULL) {
+  if (group != "development")
+    stop("Invalid group name! There is only one group in this dataset named 'development'.")
+  if (! requireNamespace("ZebrafishDevelopmentalCAGE"))
+    stop ("This function requires the ", dQuote("ZebrafishDevelopmentalCAGE"),
+          " package; please install it from http://promshift.genereg.net/CAGEr/PackageSource/.")
+  if (! requireNamespace("BSgenome.Drerio.UCSC.danRer7"))
+    stop ("This function requires the ", dQuote("BSgenome.Drerio.UCSC.danRer7"), " package.")
+
+  ZebrafishSamples <- NULL
+  data("ZebrafishSamples", package = "ZebrafishDevelopmentalCAGE", envir = environment())
+  
+  validSampleNames <- levels(ZebrafishSamples$sample)
+  if (is.null(sample )) sample <- validSampleNames
+  if ( ! all(sample %in% validSampleNames))
+    stop("At least one sample name is not valid. ",
+         "Valid sample names are: ", paste(validSampleNames, collapse = ", "), ".")
+  
+  genome.name <- "BSgenome.Drerio.UCSC.danRer7"
+  ZebrafishCAGE <- NULL
+  data("ZebrafishCAGE", package = "ZebrafishDevelopmentalCAGE", envir = environment())
+  # The vignette of ZebrafishDevelopmentalCAGE states that the provided coordinates are 1-based.
+  ctssRanges <- CTSS(ZebrafishCAGE[["development"]]$chr,
+                     ZebrafishCAGE[["development"]]$pos,
+                     ZebrafishCAGE[["development"]]$strand,
+                     seqinfo = seqinfo(BSgenome.Drerio.UCSC.danRer7:::BSgenome.Drerio.UCSC.danRer7))
+  ctssDF <- lapply(ZebrafishCAGE[["development"]][ , sample], Rle) |> DataFrame()
+  ctssSE <- SummarizedExperiment(c(counts = ctssDF), ctssRanges)
+  ctssSE <- ctssSE[rowSums(ZebrafishCAGE[["development"]][ , sample]) > 0,]
+  ctssSE <- sort(ctssSE)
+  ce <- CAGEexp(genomeName = "BSgenome.Drerio.UCSC.danRer7",
+                colData = DataFrame( sampleLabels = sample,
+                                     inputFiles = NA,
+                                     inputFilesType = 'ctss',
+                                     librarySizes = sapply(assay(ctssSE), sum),
+                                     row.names = sample))
+  CTSStagCountSE(ce) <- ctssSE
+  ce
 }
