@@ -1,3 +1,14 @@
+# Changes in version 2.6.1
+
+BUG FIXES
+
+-   Correct quantile positions, which were shifted by one base.  This bug may
+    have been introduced in version 1.22 or later.
+-   Ensure cluster objects are properly sorted.  Fixes #79, introduced in
+    version 2.6.0 and causing crashes or incorrect quantile calculations.
+-   Apply fix for #77 (aggregateTagClusters losing TCs), which slipped out of
+    2.6.0 because of Git branch mixup.
+
 # Changes in version 2.6.0
 
 BUG FIXES
