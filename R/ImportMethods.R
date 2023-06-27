@@ -652,7 +652,134 @@ setMethod( "getCTSS", "CAGEexp"
 
 
 #' importPublicData
-#' @noRd
+#' 
+#' Imports CAGE data from different sources into a [`CAGEexp`] object.  After
+#' the object has been created the data can be further manipulated and
+#' visualized using other functions available in the _CAGEr_ package and
+#' integrated with other analyses in R.  Available resources include:
+#' 
+#'   - FANTOM5 datasets (Forrest _et al.,_ Nature 2014) for numerous human and
+#'   mouse samples (primary cells, cell lines and tissues), which are fetched
+#'   directly from FANTOM5 online resource at
+#'   \href{https://fantom.gsc.riken.jp/5/data}{https://fantom.gsc.riken.jp/5/data}.
+#'   
+#'   - FANTOM3 and 4 datasets (Carninci _et al., _ Science 2005, Faulkner
+#'   _et al.,_ Nature Genetics 2009, Suzuki _et al._ Nature Genetics 2009) from
+#'   _FANTOM3and4CAGE_ data package available from Bioconductor.
+#'   
+#'   - ENCODE datasets (Djebali _et al._ Nature 2012) for numerous human cell
+#'   lines from _ENCODEprojectCAGE_ data package, which is available for
+#'   download from \href{http://promshift.genereg.net/CAGEr/}{http://promshift.genereg.net/CAGEr/}.
+#'   
+#'   - Zebrafish (_Danio rerio_) developmental timecourse datasets (Nepal _et al._ Genome
+#'   Research 2013) from \emph{ZebrafishDevelopmentalCAGE} data package, which
+#'   is available for download from
+#'   \href{http://promshift.genereg.net/CAGEr/}{http://promshift.genereg.net/CAGEr/}.
+#' 
+#' @param origin Character vector specifying one of the available resources for
+#'        CAGE data (`"FANTOM5"`, `"FANTOM3and4"`, `"ENCODE"` or `"ZebrafishDevelopment"`).
+#'        
+#' @param dataset Character vector specifying one or more of the datasets
+#'        available in the selected resource. For FANTOM5 it can be either
+#'        `"human"` or  `"mouse"`, and only one of them can be specified at a
+#'        time. For other resources please refer to the vignette of the
+#'        corresponding data package for the list of available datasets.
+#'        Multiple datasets mapped to the same genome can be specified to
+#'        combine selected samples from each.
+#'        
+#' @param group Character string specifying one or more groups within specified
+#'        dataset(s), from which the samples should be selected.  The `group`
+#'        argument is used only when importing TSSs from data packages and
+#'        ignored for "FANTOM5".  For available groups in each dataset please
+#'        refer to the vignette of the corresponding data package. Either only
+#'        one group has to be specified (if all selected samples belong to the
+#'        same group) or one group per sample (if samples belong to different
+#'        groups).  In the latter case, the number of elements in `group` must
+#'        match the number of elements in `sample`.
+#'        
+#' @param sample Character string specifying one or more CAGE samples.  Check
+#'        the corresponding data package for available samples within each group
+#'        and their labels. For FANTOM5 resource, list of all human (~1000) and
+#'        mouse (~) samples can be obtained in _CAGEr_ by loading
+#'        `data(FANTOM5humanSamples)` and `data(FANTOM5mouseSamples)`,
+#'        respectively.  Use the names from the \code{sample} column to specify
+#'        which samples should be imported.
+#' 
+#' @return A [`CAGEexp`] object is returned, containing information on library
+#' size, CTSS coordinates and tag count matrix.  The object is ready for _CAGEr_
+#' analysis (normalisation, tag clustering, …).
+#' 
+#' @references 
+#' 
+#'  - Carninci _et al.,_ (2005). _The Transcriptional Landscape of the Mammalian
+#'  Genome_. Science **309**(5740):1559-1563.
+#'  
+#'  - Djebali _et al.,_ (2012). _Landscape of transcription in human cells._
+#'  Nature **488**(7414):101-108.
+#'  
+#'  - Faulkner _et al.,_ (2009). _The regulated retrotransposon transcriptome of
+#'  mammalian cells._, Nature Genetics **41**:563-571.
+#'  
+#'  - Forrest _et al.,_ (2014). _A promoter-level mammalian expression atlas._
+#'  Nature **507**(7493):462-470.
+#'  
+#'  - Nepal _et al.,_ (2013). _Dynamic regulation of the transcription
+#'  initiation landscape at single nucleotide resolution during vertebrate
+#'  embryogenesis_. Genome Research **23**(11):1938-1950.
+#'  
+#'  - Suzuki_et al.,_ (2009). The transcriptional network that controls growth
+#'  arrest and differentiation in a human myeloid leukemia cell line_. Nature
+#'  Genetics **41**:553-562.
+#'  
+#' @author Vanja Haberle
+#' @author Charles Plessy
+#' 
+#' @family FANTOM data
+#' 
+#' @examples 
+#' \dontrun{
+#' ### importing FANTOM5 data
+#' 
+#' # list of FANTOM5 human tissue samples
+#' 
+#' data(FANTOM5humanSamples)
+#' head(subset(FANTOM5humanSamples, type == "tissue"))
+#' 
+#' # import selected samples
+#' f5 <- importPublicData(
+#'   origin="FANTOM5", dataset = "human",
+#'   sample = c("adipose_tissue__adult__pool1", "adrenal_gland__adult__pool1",
+#'              "aorta__adult__pool1"))
+#' 
+#' CTSScoordinatesGR(f5)
+#' 
+#' ### importing FANTOM3/4 data from a data package
+#' 
+#' library(FANTOM3and4CAGE)
+#' 
+#' # list of mouse datasets available in this package
+#' 
+#' data(FANTOMmouseSamples)
+#' unique(FANTOMmouseSamples$dataset)
+#' head(subset(FANTOMmouseSamples, dataset == "FANTOMtissueCAGEmouse"))
+#' head(subset(FANTOMmouseSamples, dataset == "FANTOMtimecourseCAGEmouse"))
+#' 
+#' # import selected samples from two different mouse datasets
+#' 
+#' f34 <- importPublicData(
+#'   origin="FANTOM3and4", dataset = c("FANTOMtissueCAGEmouse", "FANTOMtimecourseCAGEmouse"),
+#'   group = c("brain", "adipogenic_induction"),
+#'   sample = c("CCL-131_Neuro-2a_treatment_for_6hr_with_MPP+", "DFAT-D1_preadipocytes_2days"))
+#' 
+#' f34 <- importPublicData(
+#'   origin="FANTOM3and4", dataset = c("FANTOMtissueCAGEmouse"),
+#'   group = c("brain"),
+#'   sample = c("CCL-131_Neuro-2a_treatment_for_6hr_with_MPP+"))
+#' 
+#' CTSScoordinatesGR(f34)
+#' 
+#' }
+#' 
 #' @importFrom utils data
 #' @export
 
@@ -844,6 +971,8 @@ setGeneric("importPublicData",
   CTSStagCountSE(ce) <- ctssSE
   ce
 }
+
+#' @rdname importPublicData
 
 setMethod("importPublicData", signature(origin = "character", dataset = "character", sample = "character"),
           .importPublicData)

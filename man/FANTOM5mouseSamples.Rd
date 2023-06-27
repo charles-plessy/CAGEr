@@ -18,7 +18,8 @@ libraries.  Its use is described in more details in the vignette
 }
 \seealso{
 Other FANTOM data: 
-\code{\link{FANTOM5humanSamples}}
+\code{\link{FANTOM5humanSamples}},
+\code{\link{importPublicData}()}
 }
 \concept{FANTOM data}
 \keyword{datasets}
