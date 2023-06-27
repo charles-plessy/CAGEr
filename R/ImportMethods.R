@@ -667,7 +667,7 @@ setGeneric("importPublicData",
   ctssRanges <- CTSS(df$chr,
                      df$pos,
                      df$strand,
-                     seqinfo = seqinfo(CAGEr:::getRefGenome(genome.name)),
+                     seqinfo = seqinfo(getRefGenome(genome.name)),
                      bsgenomeName = genome.name)
   ctssDF <- lapply(df[ , sample], Rle) |> DataFrame()
   colnames(ctssDF) <- make.names(colnames(ctssDF))
@@ -866,7 +866,6 @@ setGeneric("importPublicData",
     data("FANTOM5humanSamples", package = "CAGEr", envir = environment())
     samples.info <- FANTOM5humanSamples
     genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
-    genome.obj <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
   } else {
     if (! requireNamespace("BSgenome.Mmusculus.UCSC.mm9"))
       stop ("This function requires the ", dQuote("BSgenome.Mmusculus.UCSC.mm9"), " package.")
@@ -874,7 +873,6 @@ setGeneric("importPublicData",
     data("FANTOM5mouseSamples", package = "CAGEr", envir = environment())
     samples.info <- FANTOM5mouseSamples
     genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
-    genome.obj <- BSgenome.Mmusculus.UCSC.mm9::BSgenome.Mmusculus.UCSC.mm9
   }
   
   validSampleNames <- samples.info$sample
