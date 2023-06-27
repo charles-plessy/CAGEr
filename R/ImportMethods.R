@@ -121,7 +121,8 @@ setGeneric( "getCTSS"
 
 checkFilesExist <- function(paths) {
   for (f in paths)
-    if (! file.exists(f)) stop("Could not locate input file ", f)
+    if (isFALSE(grepl("^http", f)))
+      if (! file.exists(f)) stop("Could not locate input file ", f)
 }
 
 #' toCTSSdt
