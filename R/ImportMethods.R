@@ -663,6 +663,18 @@ setGeneric("importPublicData",
                     sample)
              standardGeneric("importPublicData"))
 
+.df2SE <- function(df, sample, genome.name) {
+  ctssRanges <- CTSS(df$chr,
+                     df$pos,
+                     df$strand,
+                     seqinfo = seqinfo(CAGEr:::getRefGenome(genome.name)),
+                     bsgenomeName = genome.name)
+  ctssDF <- lapply(df[ , sample], Rle) |> DataFrame()
+  ctssSE <- SummarizedExperiment(c(counts = ctssDF), ctssRanges)
+  ctssSE <- ctssSE[rowSums(df[ , sample]) > 0,]
+  sort(ctssSE)
+}
+
 .importPublicData <- function(origin = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"), dataset, group, sample) {
  # origin <- match.arg(origin)
 
@@ -958,15 +970,7 @@ setGeneric("importPublicData",
   ZebrafishCAGE <- NULL
   data("ZebrafishCAGE", package = "ZebrafishDevelopmentalCAGE", envir = environment())
   # The vignette of ZebrafishDevelopmentalCAGE states that the provided coordinates are 1-based.
-  ctssRanges <- CTSS(ZebrafishCAGE[["development"]]$chr,
-                     ZebrafishCAGE[["development"]]$pos,
-                     ZebrafishCAGE[["development"]]$strand,
-                     seqinfo = seqinfo(BSgenome.Drerio.UCSC.danRer7:::BSgenome.Drerio.UCSC.danRer7),
-                     bsgenomeName = "BSgenome.Drerio.UCSC.danRer7")
-  ctssDF <- lapply(ZebrafishCAGE[["development"]][ , sample], Rle) |> DataFrame()
-  ctssSE <- SummarizedExperiment(c(counts = ctssDF), ctssRanges)
-  ctssSE <- ctssSE[rowSums(ZebrafishCAGE[["development"]][ , sample]) > 0,]
-  ctssSE <- sort(ctssSE)
+  ctssSE <- .df2SE(ZebrafishCAGE$development, sample, "BSgenome.Drerio.UCSC.danRer7")
   ce <- CAGEexp(genomeName = "BSgenome.Drerio.UCSC.danRer7",
                 colData = DataFrame( sampleLabels = sample,
                                      inputFiles = NA,
