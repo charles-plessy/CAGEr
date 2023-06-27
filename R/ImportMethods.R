@@ -657,19 +657,16 @@ setMethod( "getCTSS", "CAGEexp"
 #' @export
 
 setGeneric("importPublicData",
-           function(source = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"),
+           function(origin = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"),
                     dataset,
                     group,
                     sample)
              standardGeneric("importPublicData"))
 
-setMethod("importPublicData", signature(source = "character", dataset = "character", sample = "character"),
-          .importPublicData(source, dataset, group, sample))
+.importPublicData <- function(origin = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"), dataset, group, sample) {
+ # origin <- match.arg(origin)
 
-.importPublicData <- function(source = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"), dataset, group, sample) {
-  source <- match.arg(source)
-
-	if(source == "ENCODE"){
+	if(origin == "ENCODE"){
 
 		if("ENCODEprojectCAGE" %in% rownames(installed.packages()) == FALSE){
 			stop("Requested CAGE data package is not installed! Please install and load the ENCODEprojectCAGE package, which is available for download from http://promshift.genereg.net/CAGEr/PackageSource/.")
@@ -787,7 +784,7 @@ setMethod("importPublicData", signature(source = "character", dataset = "charact
 		}
 
 
-	}else if(source == "FANTOM3and4"){
+	}else if(origin == "FANTOM3and4"){
 
 		if("FANTOM3and4CAGE" %in% rownames(installed.packages()) == FALSE){
 			stop("Requested CAGE data package is not installed! Please install and load the FANTOM3and4CAGE package available from Bioconductor.")
@@ -900,66 +897,47 @@ setMethod("importPublicData", signature(source = "character", dataset = "charact
 
 
 
-	}else if (source == "FANTOM5"){
-
-		if(length(dataset) != 1){
-			stop("For FANTOM5 only one dataset can be specified and it can be either 'human' or 'mouse'!")
-		}else if(!(dataset %in% c("human", "mouse"))){
-			stop("For FANTOM5, dataset can be either 'human' or 'mouse'!")
-		}
-		if(dataset == "human"){
-		  FANTOM5humanSamples <- NULL
-			data("FANTOM5humanSamples", envir = environment())
-			samples.info <- FANTOM5humanSamples
-			genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
-		}else if(dataset == "mouse"){
-		  FANTOM5mouseSamples <- NULL
-			data("FANTOM5mouseSamples", envir = environment())
-			samples.info <- FANTOM5mouseSamples
-			genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
-		}
-
-		if(!(all(sample %in% samples.info$sample))){
-			stop(paste("Some sample names cannot be found for the specified dataset! Call data(FANTOM5", dataset, "Samples) and check the 'sample' column for valid sample names!", sep = ""))
-		}
-
-
-
-		for(i in c(1:length(sample))){
-
-			message("Fetching sample: ", sample[i], "...")
-			sample.url <- samples.info[samples.info$sample == sample[i], "data_url"]
-			con <- gzcon(url(paste(sample.url)))
-			ctss <- scan(con, what = list(character(), NULL, integer(), NULL, integer(), character()))
-			ctss.df <- data.table(chr = ctss[[1]], pos = ctss[[3]], strand = ctss[[6]], tagCount = ctss[[5]])
-			setnames(ctss.df, c("chr", "pos", "strand", sample[i]))
-			setkeyv(ctss.df, cols = c("chr", "pos", "strand"))
-			if(i == 1){
-				ctss.table <- ctss.df
-			}else{
-				message("Adding sample to CTSS table...\n")
-				ctss.table <- merge(ctss.table, ctss.df, all.x = T, all.y = T)
-				ctss.table[is.na(ctss.table)] <- 0
-			}
-
-		}
-
-		ctssTable <- data.frame(ctss.table, stringsAsFactors = F, check.names = F)
-
-
-	} else if (source == "ZebrafishDevelopment") .importPublicData_ZF (group = group, sample = sample)
+	}else if (origin == "FANTOM5") {
+	  .importPublicData_F5 (dataset = dataset, group = group, sample = sample)
+	}else if (origin == "ZebrafishDevelopment") .importPublicData_ZF (group = group, sample = sample)
   
     rownames(ctssTable) <- c(1:nrow(ctssTable))
 
 	sample.labels <- colnames(ctssTable)[4:ncol(ctssTable)]
 	names(sample.labels) <- rainbow(n = length(sample.labels))
-	myCAGEset <- new("CAGEset", genomeName = genome.name, inputFiles = paste(source, sample.labels, sep = "__"), inputFilesType = source, sampleLabels = sample.labels)
+	myCAGEset <- new("CAGEset", genomeName = genome.name, inputFiles = paste(origin, sample.labels, sep = "__"), inputFilesType = origin, sampleLabels = sample.labels)
 	myCAGEset@librarySizes <- as.integer(colSums(ctssTable[,4:ncol(ctssTable),drop=FALSE]))
 	myCAGEset@CTSScoordinates <- ctssTable[, c("chr", "pos", "strand")]
 	myCAGEset@tagCountMatrix <- ctssTable[,4:ncol(ctssTable),drop=FALSE]
 
 	return(myCAGEset)
 
+}
+
+.importPublicData_F5 <- function(dataset = c("human", "mouse"), group = NULL, sample = NULL) {
+  dataset <- match.arg(dataset)
+  if (dataset == "human") {
+    if (! requireNamespace("BSgenome.Hsapiens.UCSC.hg19"))
+      stop ("This function requires the ", dQuote("BSgenome.Hsapiens.UCSC.hg19"), " package.")
+    FANTOM5humanSamples <- NULL
+    data("FANTOM5humanSamples", package = "CAGEr", envir = environment())
+    samples.info <- FANTOM5humanSamples
+    genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
+    genome.obj <- BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19
+  } else {
+    if (! requireNamespace("BSgenome.Mmusculus.UCSC.mm9"))
+      stop ("This function requires the ", dQuote("BSgenome.Mmusculus.UCSC.mm9"), " package.")
+    FANTOM5mouseSamples <- NULL
+    data("FANTOM5mouseSamples", envir = environment())
+    samples.info <- FANTOM5mouseSamples
+    genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
+    genome.obj <- BSgenome.Mmusculus.UCSC.mm9::BSgenome.Mmusculus.UCSC.mm9
+  }
+  ce <- CAGEexp(genomeName = genome.name,
+          inputFiles = samples.info[samples.info$sample %in% sample,"data_url"],
+          inputFilesType = "bedScore",
+          sampleLabels = sample)
+  getCTSS(ce)
 }
 
 .importPublicData_ZF <- function(group = "development", sample = NULL) {
@@ -1001,3 +979,6 @@ setMethod("importPublicData", signature(source = "character", dataset = "charact
   CTSStagCountSE(ce) <- ctssSE
   ce
 }
+
+setMethod("importPublicData", signature(origin = "character", dataset = "character", sample = "character"),
+          .importPublicData)
