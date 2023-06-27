@@ -678,126 +678,9 @@ setGeneric("importPublicData",
 
 .importPublicData <- function(origin = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"), dataset, group, sample) {
  # origin <- match.arg(origin)
-
-	if(origin == "ENCODE"){
-
-		if("ENCODEprojectCAGE" %in% rownames(installed.packages()) == FALSE){
-			stop("Requested CAGE data package is not installed! Please install and load the ENCODEprojectCAGE package, which is available for download from http://promshift.genereg.net/CAGEr/PackageSource/.")
-		}else if(!("package:ENCODEprojectCAGE" %in% search())){
-			stop("Requested CAGE data package is not loaded! Please load the data package by calling 'library(ENCODEprojectCAGE)'")
-		}
-
-		if(dataset[1] == "ENCODEtissueCAGEfly"){
-			genome.name <- "BSgenome.Dmelanogaster.UCSC.dm3"
-			ENCODEtissueCAGEfly <- NULL
-			data("ENCODEtissueCAGEfly", envir = environment())
-			if(group == "embryo"){
-				if(sample == "mixed_embryos_0-24hr"){
-
-					ctssTable <- ENCODEtissueCAGEfly[["embryo"]]
-
-				}else{
-					stop("Specified sample not valid! The dataset 'ENCODEtissueCAGEfly' containes only one sample named 'mixed_embryos_0-24hr'!")
-				}
-			}else{
-				stop("Specified group not valid! The dataset 'ENCODEtissueCAGEfly' containes only one group named 'embryo'!")
-			}
-
-		}else{
-			genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
-			ENCODEhumanCellLinesSamples <- NULL
-			data("ENCODEhumanCellLinesSamples", envir = environment())
-			info.df <- ENCODEhumanCellLinesSamples
-
-			if(!(all(dataset %in% info.df$dataset))){
-				stop("Specified dataset(s) not found! Call data(ENCODEhumanCellLinesSamples) and check 'dataset' column for available ENCODE datasets!")
-			}
-			if(length(dataset) == 1){
-
-				if(!(all(group %in% info.df[info.df$dataset == dataset,"group"]))){
-					stop("Some of the provided groups cannot be found in the specified dataset!")
-				}
-				if(length(group) == 1){
-					if(!(all(sample %in% info.df[info.df$group == group,"sample"]))){
-						stop("Some of the provided samples cannot be found in the specified group!")
-					}
-				}else if(length(group) == length(sample)){
-					if(!all(sapply(c(1:length(group)), function(x) {sample[x] %in% info.df[info.df$group == group[x],"sample"]}))){
-						stop("Provided 'group' and 'sample' do not match! Some of the provided samples cannot be found in the corresponding groups!")
-					}
-				}else{
-					stop("Number of elements in the 'group' must be either 1 or must match the number of elements in the 'sample'!")
-				}
-
-
-			}else if(length(dataset) == length(group)){
-				if(!all(sapply(c(1:length(dataset)), function(x) {group[x] %in% info.df[info.df$dataset == dataset[x],"group"]}))){
-					stop("Provided 'dataset' and 'group' do not match! Some of the provided groups cannot be found in the corresponding datasets!")
-				}
-				if(length(group) == length(sample)){
-					if(!all(sapply(c(1:length(group)), function(x) {sample[x] %in% info.df[info.df$group == group[x],"sample"]}))){
-						stop("Provided 'group' and 'sample' do not match! Some of the provided samples cannot be found in the corresponding groups!")
-					}
-				}else{
-					stop("Number of elements in the 'group' must match the number of elements in the 'sample'!")
-				}
-
-
-			}else{
-				stop("Number of elements in the 'dataset' must be either 1 or must match the number of elements in the 'group' and in the 'sample'!")
-			}
-
-			data(list = dataset, envir = environment())
-
-			if(length(unique(dataset))>1){
-
-				for(i in 1:length(unique(dataset))){
-					dset <- get(unique(dataset)[i])
-					for(j in 1:length(unique(group[which(dataset == unique(dataset)[i])]))){
-						g <- unique(group[which(dataset == unique(dataset)[i])])[j]
-						ctss <- dset[[g]][, c("chr", "pos", "strand", sample[which((group == g) & (dataset == unique(dataset)[i]))])]
-						discard <- apply(ctss[, c(4:ncol(ctss)), drop = F], 1, function(x) {sum(x > 0)}) >= 1
-						ctss <- data.table(ctss[discard,])
-						setkeyv(ctss, cols = c("chr", "pos", "strand"))
-						if(i == 1 & j == 1){
-							ctssTable <- ctss
-						}else{
-							ctssTable <- merge(ctssTable, ctss, all.x = T, all.y = T)
-						}
-					}
-				}
-				ctssTable[is.na(ctssTable)] <- 0
-
-			}else{
-
-				selected.dataset <- get(dataset)
-				if(length(unique(group))>1){
-
-					for(i in 1:length(unique(group))){
-						g <- unique(group)[i]
-						ctss <- selected.dataset[[g]][, c("chr", "pos", "strand", sample[which(group == g)])]
-						discard <- apply(ctss[, c(4:ncol(ctss)), drop = F], 1, function(x) {sum(x > 0)}) >= 1
-						ctss <- data.table(ctss[discard,])
-						setkeyv(ctss, cols = c("chr", "pos", "strand"))
-						if(i == 1){
-							ctssTable <- ctss
-						}else{
-							ctssTable <- merge(ctssTable, ctss, all.x = T, all.y = T)
-						}
-					}
-
-					ctssTable[is.na(ctssTable)] <- 0
-
-				}else{
-					ctssTable <- selected.dataset[[group]][,c("chr", "pos", "strand", sample)]
-				}
-			}
-
-			ctssTable <- data.frame(ctssTable, stringsAsFactors = F, check.names = F)
-		}
-
-
-  } else if (origin == "FANTOM3and4") {
+	if (origin == "ENCODE") {
+	  ce <- .importPublicData_ENCODE (dataset = dataset, group = group, sample = sample)
+	} else if (origin == "FANTOM3and4") {
     ce <- .importPublicData_F34 (dataset = dataset, group = group, sample = sample)
   } else if (origin == "FANTOM5") {
     ce <- .importPublicData_F5 (dataset = dataset, group = group, sample = sample)
@@ -806,6 +689,47 @@ setGeneric("importPublicData",
   }
   ce
 }
+
+.importPublicData_ENCODE <- function (dataset, group = NULL, sample = NULL) {
+  if (length(unique(dataset))>1) stop ("Merging datasets not supported yet.")
+  if (! requireNamespace("ENCODEprojectCAGE"))
+    stop ("This function requires the ", dQuote("ENCODEprojectCAGE"), " package.",
+          " package; please install it from http://promshift.genereg.net/CAGEr/PackageSource/.")
+  if (dataset == "ENCODEtissueCAGEfly") {
+    if (group != "embryo") stop("Only 'embryo' is allowed as group for dataset 'ENCODEtissueCAGEfly'.")
+    if (sample != "mixed_embryos_0-24hr") stop("Only 'mixed_embryos_0-24hr' is allowed as sample for dataset 'ENCODEtissueCAGEfly'.")
+    if (! requireNamespace("BSgenome.Dmelanogaster.UCSC.dm3"))
+      stop ("This function requires the ", dQuote("BSgenome.Dmelanogaster.UCSC.dm3"), " package.")
+    genome.name <- "BSgenome.Dmelanogaster.UCSC.dm3"
+    ENCODEtissueCAGEfly <- NULL
+    data("ENCODEtissueCAGEfly", package = "ENCODEprojectCAGE", envir = environment())
+    df <- ENCODEtissueCAGEfly$embryo
+  } else {
+    if (! requireNamespace("BSgenome.Hsapiens.UCSC.hg19"))
+      stop ("This function requires the ", dQuote("BSgenome.Hsapiens.UCSC.hg19"), " package.")
+    genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
+    ENCODEhumanCellLinesSamples <- NULL
+    data("ENCODEhumanCellLinesSamples", package = "ENCODEprojectCAGE", envir = environment())
+    info.df <- ENCODEhumanCellLinesSamples
+    if(!(all(dataset %in% info.df$dataset)))
+      stop("Specified dataset(s) not found! Call data(ENCODEhumanCellLinesSamples) and check 'dataset' column for available ENCODE datasets!")
+    if(!(all(group %in% info.df[info.df$dataset == dataset,"group"])))
+      stop("Some of the provided groups cannot be found in the specified dataset!")
+    if(!(all(sample %in% info.df[,"sample"])))
+      stop("Some of the provided samples cannot be found!")
+    data(list= dataset, package = "ENCODEprojectCAGE", envir = environment())
+    df <- get(dataset)[[group]]
+  }
+  se <- .df2SE(df, sample, genome.name)
+  ce <- CAGEexp(genomeName = genome.name,
+                colData = DataFrame( sampleLabels = make.names(sample),
+                                     inputFiles = NA,
+                                     inputFilesType = 'ctss',
+                                     librarySizes = sapply(assay(se), sum),
+                                     row.names = make.names(sample)))
+  CTSStagCountSE(ce) <- se
+  ce
+} 
 
 .importPublicData_F34 <- function (dataset, group = NULL, sample = NULL) {
   if (length(unique(dataset))>1) stop("merging datasets not supported yet.")
