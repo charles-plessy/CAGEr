@@ -980,14 +980,14 @@ setMethod("importPublicData", signature(source = "character", dataset = "charact
     stop("At least one sample name is not valid. ",
          "Valid sample names are: ", paste(validSampleNames, collapse = ", "), ".")
   
-  genome.name <- "BSgenome.Drerio.UCSC.danRer7"
   ZebrafishCAGE <- NULL
   data("ZebrafishCAGE", package = "ZebrafishDevelopmentalCAGE", envir = environment())
   # The vignette of ZebrafishDevelopmentalCAGE states that the provided coordinates are 1-based.
   ctssRanges <- CTSS(ZebrafishCAGE[["development"]]$chr,
                      ZebrafishCAGE[["development"]]$pos,
                      ZebrafishCAGE[["development"]]$strand,
-                     seqinfo = seqinfo(BSgenome.Drerio.UCSC.danRer7:::BSgenome.Drerio.UCSC.danRer7))
+                     seqinfo = seqinfo(BSgenome.Drerio.UCSC.danRer7:::BSgenome.Drerio.UCSC.danRer7),
+                     bsgenomeName = "BSgenome.Drerio.UCSC.danRer7")
   ctssDF <- lapply(ZebrafishCAGE[["development"]][ , sample], Rle) |> DataFrame()
   ctssSE <- SummarizedExperiment(c(counts = ctssDF), ctssRanges)
   ctssSE <- ctssSE[rowSums(ZebrafishCAGE[["development"]][ , sample]) > 0,]
