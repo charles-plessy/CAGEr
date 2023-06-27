@@ -895,23 +895,12 @@ setGeneric("importPublicData",
 
 		ctssTable <- data.frame(ctssTable, stringsAsFactors = F, check.names = F)
 
-
-
-	}else if (origin == "FANTOM5") {
-	  .importPublicData_F5 (dataset = dataset, group = group, sample = sample)
-	}else if (origin == "ZebrafishDevelopment") .importPublicData_ZF (group = group, sample = sample)
-  
-    rownames(ctssTable) <- c(1:nrow(ctssTable))
-
-	sample.labels <- colnames(ctssTable)[4:ncol(ctssTable)]
-	names(sample.labels) <- rainbow(n = length(sample.labels))
-	myCAGEset <- new("CAGEset", genomeName = genome.name, inputFiles = paste(origin, sample.labels, sep = "__"), inputFilesType = origin, sampleLabels = sample.labels)
-	myCAGEset@librarySizes <- as.integer(colSums(ctssTable[,4:ncol(ctssTable),drop=FALSE]))
-	myCAGEset@CTSScoordinates <- ctssTable[, c("chr", "pos", "strand")]
-	myCAGEset@tagCountMatrix <- ctssTable[,4:ncol(ctssTable),drop=FALSE]
-
-	return(myCAGEset)
-
+  } else if (origin == "FANTOM5") {
+    ce <- .importPublicData_F5 (dataset = dataset, group = group, sample = sample)
+  } else if (origin == "ZebrafishDevelopment") {
+    ce <- .importPublicData_ZF (group = group, sample = sample)
+  }
+  ce
 }
 
 .importPublicData_F5 <- function(dataset = c("human", "mouse"), group = NULL, sample = NULL) {
@@ -928,7 +917,7 @@ setGeneric("importPublicData",
     if (! requireNamespace("BSgenome.Mmusculus.UCSC.mm9"))
       stop ("This function requires the ", dQuote("BSgenome.Mmusculus.UCSC.mm9"), " package.")
     FANTOM5mouseSamples <- NULL
-    data("FANTOM5mouseSamples", envir = environment())
+    data("FANTOM5mouseSamples", package = "CAGEr", envir = environment())
     samples.info <- FANTOM5mouseSamples
     genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
     genome.obj <- BSgenome.Mmusculus.UCSC.mm9::BSgenome.Mmusculus.UCSC.mm9
