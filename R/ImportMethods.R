@@ -922,6 +922,14 @@ setGeneric("importPublicData",
     genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
     genome.obj <- BSgenome.Mmusculus.UCSC.mm9::BSgenome.Mmusculus.UCSC.mm9
   }
+  
+  validSampleNames <- samples.info$sample
+  if (is.null(sample)) sample <- validSampleNames
+  if ( ! all(sample %in% validSampleNames))
+    stop("At least one sample name is not valid. ",
+         "Call data('FANTOM5humanSamples', package='CAGEr') or ",
+         "data('FANTOM5mouseSamples', package='CAGEr') to check valid names.")
+  
   ce <- CAGEexp(genomeName = genome.name,
           inputFiles = samples.info[samples.info$sample %in% sample,"data_url"],
           inputFilesType = "bedScore",
