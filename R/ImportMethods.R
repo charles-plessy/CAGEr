@@ -885,7 +885,7 @@ setGeneric("importPublicData",
   ce <- CAGEexp(genomeName = genome.name,
           inputFiles = samples.info[samples.info$sample %in% sample,"data_url"],
           inputFilesType = "bedScore",
-          sampleLabels = sample)
+          sampleLabels = make.names(sample))
   getCTSS(ce)
 }
 
