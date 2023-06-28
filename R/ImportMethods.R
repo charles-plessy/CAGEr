@@ -796,10 +796,14 @@ setGeneric("importPublicData",
                      df$strand,
                      seqinfo = seqinfo(getRefGenome(genome.name)),
                      bsgenomeName = genome.name)
-  ctssDF <- lapply(df[ , sample], Rle) |> DataFrame()
+  ctssDF <- lapply(df[ , sample, drop = FALSE], Rle) |> DataFrame()
   colnames(ctssDF) <- make.names(colnames(ctssDF))
   ctssSE <- SummarizedExperiment(c(counts = ctssDF), ctssRanges)
-  ctssSE <- ctssSE[rowSums(df[ , sample]) > 0,]
+  if (ncol(ctssDF) == 1) {
+    ctssSE <- ctssSE[        df[ , sample]  > 0,]
+  } else {
+    ctssSE <- ctssSE[rowSums(df[ , sample]) > 0,]
+  }
   sort(ctssSE)
 }
 
