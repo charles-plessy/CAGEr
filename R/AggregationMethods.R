@@ -140,10 +140,8 @@ setMethod( "aggregateTagClusters", "CAGEr"
 .aggregateTagClustersGRL <- function ( gr.list, CAGEexp_obj, maxDist) {
   # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)
-  clusters.gr <- suppressWarnings(clusters.gr + round(maxDist/2)) # Suppress warnings because we trim later
-  clusters.gr <- reduce(trim(clusters.gr))  # By definition of `reduce`, they will not overlap
-  # Note that the clusters are temporarily too broad, because we added `maxDist)` to the TCs…
-  
+  clusters.gr <- reduce(clusters.gr, min.gapwidth = maxDist)
+
   # CTSS with score that is sum of all samples
   ctss <- CTSScoordinatesGR(CAGEexp_obj)
   score(ctss) <- rowSums(CTSSnormalizedTpmDF(CAGEexp_obj) |> DelayedArray::DelayedArray() )
@@ -159,7 +157,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
   rl <- rle(queryHits(o))$length
   cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
   grouped_scores <- extractList(score(ctss), o)
-  grouped_pos    <- extractList(pos(ctss), o)
+  # grouped_pos    <- extractList(pos(ctss), o)
   
   find.dominant.idx <- function (x) {
     # which.max is breaking ties by taking the last, but this will give slightly
@@ -169,8 +167,8 @@ setMethod( "aggregateTagClusters", "CAGEr"
   }
   local_max_idx <- sapply(grouped_scores, find.dominant.idx) -1  # Start at zero
   global_max_ids <- cluster_start_idx + local_max_idx
-  start(clusters.gr) <- min(grouped_pos)
-  end  (clusters.gr) <- max(grouped_pos)
+  # start(clusters.gr) <- min(grouped_pos)
+  # end  (clusters.gr) <- max(grouped_pos)
   score(clusters.gr) <- sum(grouped_scores)
   clusters.gr$dominant_ctss     <- granges(ctss)[subjectHits(o)][global_max_ids]
   clusters.gr$tpm.dominant_ctss <- score(ctss)  [subjectHits(o)][global_max_ids]
