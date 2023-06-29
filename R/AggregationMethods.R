@@ -140,8 +140,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
 .aggregateTagClustersGRL <- function ( gr.list, CAGEexp_obj, maxDist) {
   # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)
-  suppressWarnings(start(clusters.gr) <- start(clusters.gr) - round(maxDist/2)) # Suppress warnings
-  suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + round(maxDist/2)) # because we trim later
+  clusters.gr <- suppressWarnings(clusters.gr + round(maxDist/2)) # Suppress warnings because we trim later
   clusters.gr <- reduce(trim(clusters.gr))  # By definition of `reduce`, they will not overlap
   # Note that the clusters are temporarily too broad, because we added `maxDist)` to the TCs…
   
