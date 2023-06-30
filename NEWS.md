@@ -8,6 +8,12 @@ BUG FIXES
     version 2.6.0 and causing crashes or incorrect quantile calculations.
 -   Apply fix for #77 (aggregateTagClusters losing TCs), which slipped out of
     2.6.0 because of Git branch mixup.
+-   Fixe _consensus cluster_ coordinates, where the `maxDist` padding was
+    erroneously remaining in some parts of the computation.
+
+NEW FEATURES
+
+-   Allow URLs to files in `getCTSS()` (Fixes #50)
 
 # Changes in version 2.6.0
 
