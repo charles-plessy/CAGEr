@@ -31,8 +31,10 @@ cumulativeCTSSdistribution(
 (set to \code{NULL} to use all detected cores).}
 }
 \value{
-In \code{CAGEexp} objects, cumulative sums are stored
-in the metadata slot using the \code{RleList} class.
+In \code{CAGEexp} objects, cumulative sums for the \emph{tag clusters} are
+stored in the metadata slot using the \code{RleList} class.  For \emph{consensus
+clusters}, they are stored in \emph{assays} of the \code{consensusClusters} experiment
+slot of the \code{CAGEexp} object.
 }
 \description{
 Calculates the cumulative sum of normalised CAGE counts along each tag

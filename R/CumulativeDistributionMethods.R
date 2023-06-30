@@ -17,8 +17,10 @@
 #' @param nrCores Number of cores to use when `useMulticore = TRUE`
 #'        (set to `NULL` to use all detected cores).
 #' 
-#' @return In `CAGEexp` objects, cumulative sums are stored
-#' in the metadata slot using the `RleList` class.
+#' @return In `CAGEexp` objects, cumulative sums for the _tag clusters_ are
+#' stored in the metadata slot using the `RleList` class.  For _consensus
+#' clusters_, they are stored in _assays_ of the `consensusClusters` experiment
+#' slot of the `CAGEexp` object.
 #' 
 #' @author Vanja Haberle
 #' @author Charles Plessy
