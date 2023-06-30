@@ -8,6 +8,8 @@ BUG FIXES
     version 2.6.0 and causing crashes or incorrect quantile calculations.
 -   Apply fix for #77 (aggregateTagClusters losing TCs), which slipped out of
     2.6.0 because of Git branch mixup.
+-   Corrected on-the-fly cumulative sum computation for consensus clusters when
+    `sample = NULL`.  The bug was causing incorrectly short quantile ranges.
 
 # Changes in version 2.6.0
 
