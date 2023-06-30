@@ -1,0 +1,65 @@
+---
+title: "rowSums on Rle DataFrames"
+author: "Charles Plessy"
+date: "2023-06-30"
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+## Purpose
+
+There is no native `rowSums` function for `DataFrame`s of `Rle`-encoded
+numerical values.  What is the best strategy for an implementation ?
+
+## Setup
+
+```{r setup}
+library("CAGEr")   |> suppressPackageStartupMessages()
+library("ggplot2") |> suppressPackageStartupMessages()
+
+# DF <- CTSStagCountDF(exampleCAGEexp)
+DF <- ZebrafishDevelopmentalCAGE::ZebrafishCAGE |> assay()
+
+f_Reduce_native         <- function(DF) Reduce(`+`, DF, Rle(0))
+f_decode_reduce         <- function(DF) Rle(Reduce(`+`, lapply(DF, decode), 0))
+f_rowSums_as.data.frame <- function(DF) Rle(rowSums(as.data.frame(DF)))
+f_rowSums_decode        <- function(DF) Rle(rowSums(data.frame(lapply(DF, decode))))
+f_rowSums_delayedarray  <- function(DF) Rle(rowSums(DelayedArray::DelayedArray(DF)))
+```
+
+## Benchmark
+
+```{r benchmark}
+(microbench_out <- microbenchmark::microbenchmark(times = 100,
+  f_Reduce_native(DF),
+  f_decode_reduce(DF),
+  f_rowSums_as.data.frame(DF),
+  f_rowSums_decode(DF),
+  f_rowSums_delayedarray(DF)))
+# https://statisticsglobe.com/microbenchmark-package-r
+ggplot(microbench_out, aes(x = time, y = expr, color = expr)) +  # Plot performance comparison
+  geom_boxplot() + 
+  scale_x_log10("time (miliseconds)")
+```
+
+## Result
+
+The winner is:
+
+```
+f_decode_reduce <- function(DF) Rle(Reduce(`+`, lapply(DF, decode), 0))
+```
+
+Explained with more verbose code:
+
+```
+f_decode_reduce <- function(DF) {
+  list_of_numerical_vectors <- lapply(DF, decode)
+  parallel_sum              <- Reduce(`+`, list_of_numerical_vectors, 0)
+  result                    <- Rle(parallel_sum)
+  return(result)
+}
+```
