@@ -993,6 +993,22 @@ TagClusters       | Wraps GRanges, represents the fact that each sample has thei
 ConsensusClusters | Wraps GRanges, represents the fact that they are valid for all the samples.
 CAGErCluster      | Union class for functions that accept both TagClusters and ConsensusClusters.
 
+Paired-end CAGE read alignment with the _nf-core/rnaseq_ pipeline
+-----------------------------------------------------------------
+
+The modern CAGE protocols starting from _nAnTi-CAGE_ [@Murata:2014] onward can be
+sequenced paired-end when they are random-primed.  Many aligners can map the
+read pairs but it is important to pay attention to the way they encode the
+existence of unmapped extra G bases in their output (typically in BAM format).
+
+_CAGEr_ is able to read the BAM files of the HiSAT2 aligner produced by the
+[_nf-co.re/rnaseq_ pipeline](https://nf-co.re/rnaseq).  One of the benefits of
+using a full pipeline to produce the alignment files is that the results will
+include some quality controls that can be used to identify defects before
+investing more time in the _CAGEr_ analysis.  Optionally, the first 6 or 9 bases
+(depending on the protocol) of Read 2 may be clipped, as they originate from the
+random primer and not from the RNA.  However, forgetting to do so has very
+little impact on the results.
 
 Session info {.unnumbered}
 ==========================
