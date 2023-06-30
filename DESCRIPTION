@@ -80,6 +80,7 @@ Collate:
     'QCmethods.R'
     'QuantileWidthMethods.R'
     'Richness.R'
+    'RleDataFrame.R'
     'ShiftingFunctions.R'
     'ShiftingMethods.R'
     'StrandInvaders.R'
