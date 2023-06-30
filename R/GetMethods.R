@@ -642,7 +642,7 @@ bioC2_cc_iqw <- function(o, clusters, ctss, qLow = 0.1, qUp = 0.9,
     cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
     grouped_scores <- extractList(score(ctss), o)
     ##
-    grouped_scores_cumsum <- sapply(grouped_scores, cumsum)
+    grouped_scores_cumsum <- .getCumsum(ctss, clusters)
     
     if (return_iqw) {
       qLowName <- paste0("q_", qLow)
