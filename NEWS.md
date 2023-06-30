@@ -10,6 +10,8 @@ BUG FIXES
     2.6.0 because of Git branch mixup.
 -   Fixe _consensus cluster_ coordinates, where the `maxDist` padding was
     erroneously remaining in some parts of the computation.
+-   Corrected on-the-fly cumulative sum computation for consensus clusters when
+    `sample = NULL`.  The bug was causing incorrectly short quantile ranges.
 
 NEW FEATURES
 
