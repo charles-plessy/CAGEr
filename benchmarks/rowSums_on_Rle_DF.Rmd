@@ -23,8 +23,8 @@ library("ggplot2") |> suppressPackageStartupMessages()
 # DF <- CTSStagCountDF(exampleCAGEexp)
 DF <- ZebrafishDevelopmentalCAGE::ZebrafishCAGE |> assay()
 
-f_Reduce_native         <- function(DF) Reduce(`+`, DF, Rle(0))
-f_decode_reduce         <- function(DF) Rle(Reduce(`+`, lapply(DF, decode), 0))
+f_Reduce_native         <- function(DF) Reduce(`+`, DF, Rle(0L))
+f_decode_reduce         <- function(DF) Rle(Reduce(`+`, lapply(DF, decode), 0L))
 f_rowSums_as.data.frame <- function(DF) Rle(rowSums(as.data.frame(DF)))
 f_rowSums_decode        <- function(DF) Rle(rowSums(data.frame(lapply(DF, decode))))
 f_rowSums_delayedarray  <- function(DF) Rle(rowSums(DelayedArray::DelayedArray(DF)))
@@ -50,7 +50,7 @@ ggplot(microbench_out, aes(x = time, y = expr, color = expr)) +  # Plot performa
 The winner is:
 
 ```
-f_decode_reduce <- function(DF) Rle(Reduce(`+`, lapply(DF, decode), 0))
+f_decode_reduce <- function(DF) Rle(Reduce(`+`, lapply(DF, decode), 0L))
 ```
 
 Explained with more verbose code:
@@ -58,7 +58,7 @@ Explained with more verbose code:
 ```
 f_decode_reduce <- function(DF) {
   list_of_numerical_vectors <- lapply(DF, decode)
-  parallel_sum              <- Reduce(`+`, list_of_numerical_vectors, 0)
+  parallel_sum              <- Reduce(`+`, list_of_numerical_vectors, 0L)
   result                    <- Rle(parallel_sum)
   return(result)
 }
