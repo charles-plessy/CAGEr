@@ -24,10 +24,15 @@ library("ggplot2") |> suppressPackageStartupMessages()
 The DataFrame encodes counts of CAGE tags mapped on the zebrafish genome.
 
 ```{r define_data}
-(DF <- CTSStagCountDF(exampleCAGEexp))
-DF[[1]]
+# (DF <- CTSStagCountDF(exampleCAGEexp))
+# DF[[1]]
+# 
+# (names <- CTSScoordinatesGR(exampleCAGEexp)$cluster)
 
-(names <- CTSScoordinatesGR(exampleCAGEexp)$cluster)
+(DF <- ZebrafishDevelopmentalCAGE::ZebrafishCAGE |> assay())
+DF[[1]]
+# Artificial example.
+(names <- rep(CTSScoordinatesGR(exampleCAGEexp)$cluster, 711)[1:nrow(DF)])
 ```
 
 The functions:
@@ -62,6 +67,15 @@ The functions:
 .rowsum.decodeSplitAsList <- function(x, group, reorder=TRUE, ...)
     lapply(lapply(x, decode), function(col) sum(splitAsList(col, group))) |> DataFrame()
 .rowsum.decodeSplitAsList(DF, decode(names), reorder = FALSE) |> head()
+
+# This one I thought about after asking ChatGPT for a splitAsList alternative
+.rowsum.splitAndColSums <- function(x, group, reorder=TRUE, ...) {
+  l <- split(x, group)
+  ll <- lapply(l, \(l) sapply(l, sum))
+  do.call(rbind, ll) |> DataFrame()
+}
+.rowsum.splitAndColSums(DF, decode(names), reorder = FALSE) |> head()
+.rowsum.splitAndColSums(endoapply(DF, decode), decode(names), reorder = FALSE) |> head()
 ```
 
 ## Benchmark
@@ -73,7 +87,9 @@ The functions:
   .rowsumDelayedArrayAsdataframe = .rowsumDelayedArrayAsdataframe(DF, decode(names), reorder = FALSE),
   .rowsumDecodeAsDF = .rowsumDecodeAsDF(DF, decode(names), reorder = FALSE),
   .rowsum.splitAsList = .rowsum.splitAsList(DF, decode(names), reorder = FALSE),
-  .rowsum.decodeSplitAsList = .rowsum.decodeSplitAsList(DF, decode(names), reorder = FALSE)
+  .rowsum.decodeSplitAsList = .rowsum.decodeSplitAsList(DF, decode(names), reorder = FALSE) #,
+  # Interesting, # .rowsum.splitAndColSums = .rowsum.splitAndColSums(DF, decode(names), reorder = FALSE),
+  # but too slow # .rowsum.DecodeSplitAndColSums = .rowsum.splitAndColSums(endoapply(DF, decode), decode(names), reorder = FALSE)
 ))
 # https://statisticsglobe.com/microbenchmark-package-r
 ggplot(microbench_out, aes(x = time / 1e9, y = expr, color = expr)) +  # Plot performance comparison
@@ -86,22 +102,35 @@ ggplot(microbench_out, aes(x = time / 1e9, y = expr, color = expr)) +  # Plot pe
 The winner is:
 
 ```
-f_decode_reduce <- function(DF) Rle(Reduce(`+`, lapply(DF, decode), 0L))
+.rowsumDecodeAsDF <- function(x, group, reorder = TRUE)
+  rowsum(
+    as.data.frame(lapply(x, decode)),
+    group,
+    reorder = reorder) |> DataFrame()
 ```
 
-Explained with more verbose code:
-
-```
-f_decode_reduce <- function(DF) {
-  list_of_numerical_vectors <- lapply(DF, decode)
-  parallel_sum              <- Reduce(`+`, list_of_numerical_vectors, 0L)
-  result                    <- Rle(parallel_sum)
-  return(result)
-}
-```
+Needless to say, the `reorder` argument needs to be implemented with care.
 
 ## Session information
 
 ```{r sessionInfo}
 sessionInfo()
 ```
+
+## ChatGPT
+
+Charles Plessy  7:52 PM
+
+> Good evening ChatGPT, can you tell me an alternative to the Bioconductor function `splitAsList` ?
+
+Sidekick APP  7:52 PM
+
+> An alternative to the `splitAsList` function from Bioconductor in R could be the combination of the `split` and `as.list` functions from base R. Here's an example:
+
+```
+r
+# Assuming 'df' is your data frame and 'group' is the column you want to split by
+split_list = as.list(split(df, df$group))
+```
+
+> This will give you a list of data frames, split by the 'group' column, similar to what `splitAsList` would do.
