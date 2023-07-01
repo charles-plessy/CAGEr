@@ -37,22 +37,31 @@ The functions:
   rowsum(
     as.matrix(DelayedArray::DelayedArray(x)),
     group,
-    reorder = reorder)
+    reorder = reorder) |> DataFrame()
 .rowsumDelayedArrayAsMatrix(DF, decode(names), reorder = FALSE) |> head()
 
 .rowsumDelayedArrayAsdataframe <- function(x, group, reorder = TRUE)
   rowsum(
     as.data.frame(DelayedArray::DelayedArray(x)),
     group,
-    reorder = reorder)
+    reorder = reorder) |> DataFrame()
 .rowsumDelayedArrayAsdataframe(DF, decode(names), reorder = FALSE) |> head()
 
 .rowsumDecodeAsDF <- function(x, group, reorder = TRUE)
   rowsum(
     as.data.frame(lapply(x, decode)),
     group,
-    reorder = reorder)
+    reorder = reorder) |> DataFrame()
 .rowsumDecodeAsDF(DF, decode(names), reorder = FALSE) |> head()
+
+# https://support.bioconductor.org/p/99960/#100034
+.rowsum.splitAsList <- function(x, group, reorder=TRUE, ...)
+    lapply(x, function(col) sum(splitAsList(col, group))) |> DataFrame()
+.rowsum.splitAsList(DF, decode(names), reorder = FALSE) |> head()
+
+.rowsum.decodeSplitAsList <- function(x, group, reorder=TRUE, ...)
+    lapply(lapply(x, decode), function(col) sum(splitAsList(col, group))) |> DataFrame()
+.rowsum.decodeSplitAsList(DF, decode(names), reorder = FALSE) |> head()
 ```
 
 ## Benchmark
@@ -60,9 +69,11 @@ The functions:
 ```{r benchmark, fig.height=3, fig.width=9}
 (microbench_out <- microbenchmark::microbenchmark(
   times = 100,
-  .rowsumDelayedArrayAsMatrix = .rowsumDelayedArrayAsMatrix(DF, as.factor(names), reorder = FALSE),
-  .rowsumDelayedArrayAsdataframe = .rowsumDelayedArrayAsdataframe(DF, as.factor(names), reorder = FALSE),
-  .rowsumDecodeAsDF = .rowsumDecodeAsDF(DF, as.factor(names), reorder = FALSE)
+  .rowsumDelayedArrayAsMatrix = .rowsumDelayedArrayAsMatrix(DF, decode(names), reorder = FALSE),
+  .rowsumDelayedArrayAsdataframe = .rowsumDelayedArrayAsdataframe(DF, decode(names), reorder = FALSE),
+  .rowsumDecodeAsDF = .rowsumDecodeAsDF(DF, decode(names), reorder = FALSE),
+  .rowsum.splitAsList = .rowsum.splitAsList(DF, decode(names), reorder = FALSE),
+  .rowsum.decodeSplitAsList = .rowsum.decodeSplitAsList(DF, decode(names), reorder = FALSE)
 ))
 # https://statisticsglobe.com/microbenchmark-package-r
 ggplot(microbench_out, aes(x = time / 1e9, y = expr, color = expr)) +  # Plot performance comparison
