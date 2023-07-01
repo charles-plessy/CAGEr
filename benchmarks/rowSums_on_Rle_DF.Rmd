@@ -19,20 +19,35 @@ numerical values.  What is the best strategy for an implementation ?
 ```{r setup}
 library("CAGEr")   |> suppressPackageStartupMessages()
 library("ggplot2") |> suppressPackageStartupMessages()
+```
 
+The DataFrame encodes counts of CAGE tags mapped on the zebrafish genome.
+
+```{r define_DataFrame}
 # DF <- CTSStagCountDF(exampleCAGEexp)
 DF <- ZebrafishDevelopmentalCAGE::ZebrafishCAGE |> assay()
+DF
+DF[[1]]
+```
 
+The functions:
+
+```{r define_functions}
 f_Reduce_native         <- function(DF) Reduce(`+`, DF, Rle(0L))
+f_Reduce_native(DF)
 f_decode_reduce         <- function(DF) Rle(Reduce(`+`, lapply(DF, decode), 0L))
+f_decode_reduce(DF)
 f_rowSums_as.data.frame <- function(DF) Rle(rowSums(as.data.frame(DF)))
+f_rowSums_as.data.frame(DF)
 f_rowSums_decode        <- function(DF) Rle(rowSums(data.frame(lapply(DF, decode))))
+f_rowSums_decode(DF)
 f_rowSums_delayedarray  <- function(DF) Rle(rowSums(DelayedArray::DelayedArray(DF)))
+f_rowSums_delayedarray(DF)
 ```
 
 ## Benchmark
 
-```{r benchmark}
+```{r benchmark, fig.height=3, fig.width=8}
 (microbench_out <- microbenchmark::microbenchmark(times = 100,
   f_Reduce_native(DF),
   f_decode_reduce(DF),
@@ -40,9 +55,9 @@ f_rowSums_delayedarray  <- function(DF) Rle(rowSums(DelayedArray::DelayedArray(D
   f_rowSums_decode(DF),
   f_rowSums_delayedarray(DF)))
 # https://statisticsglobe.com/microbenchmark-package-r
-ggplot(microbench_out, aes(x = time, y = expr, color = expr)) +  # Plot performance comparison
+ggplot(microbench_out, aes(x = time / 1e9, y = expr, color = expr)) +  # Plot performance comparison
   geom_boxplot() + 
-  scale_x_log10("time (miliseconds)")
+  scale_x_log10("time (seconds)")
 ```
 
 ## Result
@@ -62,6 +77,12 @@ f_decode_reduce <- function(DF) {
   result                    <- Rle(parallel_sum)
   return(result)
 }
+```
+
+## Session information
+
+```{r sessionInfo}
+sessionInfo()
 ```
 
 ## Appendix: asking ChatGPT
