@@ -28,6 +28,11 @@ of \emph{CAGEr} for the alternatives that were considered.
 \examples{
 exampleCAGEexp |> CTSStagCountDF() |> rowSums.RleDataFrame(na.rm = TRUE)
 }
+\seealso{
+Other Rle DataFrames: 
+\code{\link{rowsum.RleDataFrame}()}
+}
 \author{
 Charles Plessy
 }
+\concept{Rle DataFrames}
