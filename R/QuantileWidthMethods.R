@@ -112,14 +112,11 @@ setMethod( "quantilePositions", "CAGEexp"
 #' @rdname QuantileWidthFunctions
 
 .get.quant.pos <- function(cum.sums, clusters, q) {
-  # Vectorized function calculating one quantile position
-  # for each element of a list of cumulative sums.
-  getQuantilepos <- Vectorize(vectorize.args = "cum.sum", function(q, cum.sum) {
-    cum.sum <- decode(cum.sum) # A microbenchmark showed it it 3 times faster when applying decode() now
-    c.max <- tail(cum.sum,1) # Max is last element since x is a cumulative sums.
-    treshold <- c.max * q
-    which.max(cum.sum >= treshold)
-  })
+  # See benchmarks/quantile_position.Rmd in the source repository
+  getQuantilepos <- function(q, cum.sums) {
+    nl <- as(cum.sums, "NumericList")
+    min(which(nl >= max(nl) * q))
+  }
   # Calculate quantile positions for each quantile.
   cluster.q <- lapply(q, getQuantilepos, cum.sums)
   names(cluster.q) = paste('q_', q, sep = '')
