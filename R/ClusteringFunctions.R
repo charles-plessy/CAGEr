@@ -263,6 +263,55 @@ setMethod(".distclu", "SummarizedExperiment", function(se, max.dist, removeSingl
   GRangesList(ctss.cluster.list)
 })
 
+setGeneric(".distclu2",
+  function(
+    object,
+    max.dist = 20,
+    removeSingletons = FALSE,
+    keepSingletonsAbove = Inf,
+    useMulticore = FALSE, nrCores = NULL
+    ) standardGeneric(".distclu2"))
+
+setMethod(".distclu2", "SummarizedExperiment",
+          function(object, max.dist, removeSingletons, keepSingletonsAbove, useMulticore, nrCores) {
+  ctss.cluster.list <- GRangesList()
+  for(s in colnames(object)) {
+    message("\t-> ", s)
+    d <- as(rowRanges(object), "CTSS")
+    score(d) <- assays(object)[["normalizedTpmMatrix"]][[s]]
+    d <- subset(d, score(d) > 0)
+    ctss.cluster.list[[s]] <-
+      .distclu2(d, max.dist = max.dist,
+                removeSingletons = removeSingletons,
+                keepSingletonsAbove = keepSingletonsAbove)
+  }
+  ctss.cluster.list
+})
+
+.distclu2_CTSS <- function(object, max.dist, removeSingletons, keepSingletonsAbove, useMulticore, nrCores) {
+  clusters <- reduce(GRanges(object), min = max.dist)
+  o <- findOverlaps(clusters, object)
+  find.dominant.idx <- function (x) {
+    w <- which(x == max(x))
+    w[ceiling(length(w)/2)]
+  }
+  rl <- rle(queryHits(o))$length
+  cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
+  grouped_scores <- extractList(score(object), o)
+  local_max_idx <- sapply(grouped_scores, find.dominant.idx) -1  # Start at zero
+  global_max_ids <- cluster_start_idx + local_max_idx
+  clusters$dominant_ctss     <- granges(object)[subjectHits(o)][global_max_ids]
+  clusters$tpm.dominant_ctss <-   score(object)[subjectHits(o)][global_max_ids]
+  score(clusters) <- Rle(sum(grouped_scores))
+  clusters$nr_ctss <- countOverlaps(clusters, object)
+  if(removeSingletons)
+    clusters <- subset(clusters, clusters$nr_ctss > 1 | score(clusters) >= keepSingletonsAbove)
+  names(clusters) <- seq_along(clusters)
+  clusters
+}
+
+setMethod(".distclu2", "CTSS", .distclu2_CTSS)
+
 
 #################################################################################################################
 # Implementation of Paraclu - parametric clustering of data attached to sequences (http://www.cbrc.jp/paraclu/) 
