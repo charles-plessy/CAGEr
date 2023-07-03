@@ -193,11 +193,11 @@ setMethod( ".CCtoSE"
       se <- se[rowSums(DelayedArray(assays(se)[["normalizedTpmMatrix"]])) > tpmThreshold,]
     
     .rowsumAsMatrix <- function(DF, names) {
-      rs <- rowsum(as.matrix(DelayedArray(DF)), as.factor(names))
+      rs <- rowsum(as.data.frame(DF), as.factor(names))
       if (rownames(rs)[1] == "") # If some CTSS were not in clusters
         rs <- rs[-1, , drop = FALSE]
-      rs
-      }
+      as.matrix(rs)
+    }
     
     counts <- .rowsumAsMatrix(assays(se)[["counts"]], rowRanges(se)$cluster)
     norm   <- .rowsumAsMatrix(assays(se)[["normalizedTpmMatrix"]], rowRanges(se)$cluster)
