@@ -1,0 +1,136 @@
+---
+title: "rowsum on Rle DataFrames"
+author: "Charles Plessy"
+date: "2023-06-30"
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+## Purpose
+
+There is no native `rowsum` function for `DataFrame`s of `Rle`-encoded
+numerical values.  What is the best strategy for an implementation ?
+
+## Setup
+
+```{r setup}
+library("CAGEr")   |> suppressPackageStartupMessages()
+library("ggplot2") |> suppressPackageStartupMessages()
+```
+
+The DataFrame encodes counts of CAGE tags mapped on the zebrafish genome.
+
+```{r define_data}
+# (DF <- CTSStagCountDF(exampleCAGEexp))
+# DF[[1]]
+# 
+# (names <- CTSScoordinatesGR(exampleCAGEexp)$cluster)
+
+(DF <- ZebrafishDevelopmentalCAGE::ZebrafishCAGE |> assay())
+DF[[1]]
+# Artificial example.
+(names <- rep(CTSScoordinatesGR(exampleCAGEexp)$cluster, 711)[1:nrow(DF)])
+```
+
+The functions:
+
+```{r define_functions}
+.rowsumDelayedArrayAsMatrix <- function(x, group, reorder = TRUE)
+  rowsum(
+    as.matrix(DelayedArray::DelayedArray(x)),
+    group,
+    reorder = reorder) |> DataFrame()
+.rowsumDelayedArrayAsMatrix(DF, decode(names), reorder = FALSE) |> head()
+
+.rowsumDelayedArrayAsdataframe <- function(x, group, reorder = TRUE)
+  rowsum(
+    as.data.frame(DelayedArray::DelayedArray(x)),
+    group,
+    reorder = reorder) |> DataFrame()
+.rowsumDelayedArrayAsdataframe(DF, decode(names), reorder = FALSE) |> head()
+
+.rowsumDecodeAsDF <- function(x, group, reorder = TRUE)
+  rowsum(
+    as.data.frame(lapply(x, decode)),
+    group,
+    reorder = reorder) |> DataFrame()
+.rowsumDecodeAsDF(DF, decode(names), reorder = FALSE) |> head()
+
+# https://support.bioconductor.org/p/99960/#100034
+.rowsum.splitAsList <- function(x, group, reorder=TRUE, ...)
+    lapply(x, function(col) sum(splitAsList(col, group))) |> DataFrame()
+.rowsum.splitAsList(DF, decode(names), reorder = FALSE) |> head()
+
+.rowsum.decodeSplitAsList <- function(x, group, reorder=TRUE, ...)
+    lapply(lapply(x, decode), function(col) sum(splitAsList(col, group))) |> DataFrame()
+.rowsum.decodeSplitAsList(DF, decode(names), reorder = FALSE) |> head()
+
+# This one I thought about after asking ChatGPT for a splitAsList alternative
+.rowsum.splitAndColSums <- function(x, group, reorder=TRUE, ...) {
+  l <- split(x, group)
+  ll <- lapply(l, \(l) sapply(l, sum))
+  do.call(rbind, ll) |> DataFrame()
+}
+.rowsum.splitAndColSums(DF, decode(names), reorder = FALSE) |> head()
+.rowsum.splitAndColSums(endoapply(DF, decode), decode(names), reorder = FALSE) |> head()
+```
+
+## Benchmark
+
+```{r benchmark, fig.height=3, fig.width=9}
+(microbench_out <- microbenchmark::microbenchmark(
+  times = 100,
+  .rowsumDelayedArrayAsMatrix = .rowsumDelayedArrayAsMatrix(DF, decode(names), reorder = FALSE),
+  .rowsumDelayedArrayAsdataframe = .rowsumDelayedArrayAsdataframe(DF, decode(names), reorder = FALSE),
+  .rowsumDecodeAsDF = .rowsumDecodeAsDF(DF, decode(names), reorder = FALSE),
+  .rowsum.splitAsList = .rowsum.splitAsList(DF, decode(names), reorder = FALSE),
+  .rowsum.decodeSplitAsList = .rowsum.decodeSplitAsList(DF, decode(names), reorder = FALSE) #,
+  # Interesting, # .rowsum.splitAndColSums = .rowsum.splitAndColSums(DF, decode(names), reorder = FALSE),
+  # but too slow # .rowsum.DecodeSplitAndColSums = .rowsum.splitAndColSums(endoapply(DF, decode), decode(names), reorder = FALSE)
+))
+# https://statisticsglobe.com/microbenchmark-package-r
+ggplot(microbench_out, aes(x = time / 1e9, y = expr, color = expr)) +  # Plot performance comparison
+  geom_boxplot() + 
+  scale_x_log10("time (seconds)")
+```
+
+## Result
+
+The winner is:
+
+```
+.rowsumDecodeAsDF <- function(x, group, reorder = TRUE)
+  rowsum(
+    as.data.frame(lapply(x, decode)),
+    group,
+    reorder = reorder) |> DataFrame()
+```
+
+Needless to say, the `reorder` argument needs to be implemented with care.
+
+## Session information
+
+```{r sessionInfo}
+sessionInfo()
+```
+
+## ChatGPT
+
+Charles Plessy  7:52 PM
+
+> Good evening ChatGPT, can you tell me an alternative to the Bioconductor function `splitAsList` ?
+
+Sidekick APP  7:52 PM
+
+> An alternative to the `splitAsList` function from Bioconductor in R could be the combination of the `split` and `as.list` functions from base R. Here's an example:
+
+```
+r
+# Assuming 'df' is your data frame and 'group' is the column you want to split by
+split_list = as.list(split(df, df$group))
+```
+
+> This will give you a list of data frames, split by the 'group' column, similar to what `splitAsList` would do.

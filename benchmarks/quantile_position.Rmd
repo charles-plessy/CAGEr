@@ -1,0 +1,279 @@
+---
+title: "Quantile positions in cumulative sums"
+author: "Charles Plessy"
+date: "2023-06-30"
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+## Purpose
+
+The function to determine quantile positions is one of the slowest in CAGEr.
+Can we speed it up?
+
+## Setup
+
+```{r setup}
+library("CAGEr")   |> suppressPackageStartupMessages()
+library("ggplot2") |> suppressPackageStartupMessages()
+```
+
+### Example data
+
+```{r define_data}
+cum.sums <- CTSScumulativesTagClusters(exampleCAGEexp)[[1]]
+clusters <- tagClustersGR(exampleCAGEexp)[[1]]
+```
+
+## Current implementation at the time the benchmark was written.
+
+```{r current_function}
+getQuantilepos_Vectorized_tail_decoded <- Vectorize(vectorize.args = "cum.sum", function(q, cum.sum) {
+  cum.sum <- decode(cum.sum) # A microbenchmark showed it it 3 times faster when applying decode() now
+  c.max <- tail(cum.sum,1) # Max is last element since x is a cumulative sums.
+  treshold <- c.max * q
+  which.max(cum.sum >= treshold)
+})
+getQuantilepos_Vectorized_tail_decoded(.9, cum.sums) |> head()
+```
+
+## Alternative functions.
+
+```{r define_functions}
+getQuantilepos_Vectorized_tail <- Vectorize(vectorize.args = "cum.sum", function(q, cum.sum) {
+  c.max <- tail(cum.sum,1) # Max is last element since x is a cumulative sums.
+  treshold <- c.max * q
+  which.max(cum.sum >= treshold)
+})
+getQuantilepos_Vectorized_tail(.9, cum.sums) |> head()
+
+getQuantilepos_Vectorized_max_decoded <- Vectorize(vectorize.args = "cum.sum", function(q, cum.sum) {
+  cum.sum <- decode(cum.sum) 
+  c.max <- max(cum.sum) # Max is last element since x is a cumulative sums.
+  treshold <- c.max * q
+  which.max(cum.sum >= treshold)
+})
+getQuantilepos_Vectorized_max_decoded(.9, cum.sums) |> head()
+
+getQuantilepos_Vectorized_max <- Vectorize(vectorize.args = "cum.sum", function(q, cum.sum) {
+  c.max <- max(cum.sum) # Max is last element since x is a cumulative sums.
+  treshold <- c.max * q
+  which.max(cum.sum >= treshold)
+})
+getQuantilepos_Vectorized_max(.9, cum.sums) |> head()
+
+getQuantilepos_lapply <- function(q, cum.sums, decode = FALSE) {
+  if (isTRUE(decode)) cum.sums <- lapply(cum.sums, decode)
+  l <- sapply(cum.sums, \(cum.sum) {
+  c.max <- tail(cum.sum,1) # Max is last element since x is a cumulative sums.
+  treshold <- c.max * q
+  which.max(cum.sum >= treshold)})
+  l
+}
+getQuantilepos_lapply(.9, cum.sums) |> head()
+
+getQuantilepos_Rle_native <- function(q, cum.sums) {
+  (cum.sums >= max(cum.sums) * q )|> sapply(which.max)
+}
+getQuantilepos_Rle_native(.9, cum.sums) |> head()
+
+getQuantilepos_NL_native <- function(q, cum.sums) {
+  nl <- as(cum.sums, "NumericList")
+  min(which(nl >= max(nl) * q))
+}
+getQuantilepos_NL_native(.9, cum.sums) |> head()
+
+getQuantilepos_ChatGPT  <- function(q, cum.sums, decode = FALSE) {
+  if (isTRUE(decode)) cum.sums <- lapply(cum.sums, decode)
+  find_quantile_and_index <- function(x, q) {
+    # Interestingly ChatGPT's definition of quantiles appears more sound,
+    # quantile_value <- quantile(x, q)
+    # But the definition below is the one orgiginally used in CAGEr.
+    quantile_value <- max(x) * q
+    which(x >= quantile_value)[1]
+  }
+  sapply(cum.sums, find_quantile_and_index, q)
+}
+getQuantilepos_ChatGPT(.9, cum.sums) |> head()
+```
+
+## Benchmark
+
+```{r benchmark, fig.height=3, fig.width=9}
+(microbench_out <- microbenchmark::microbenchmark(
+  times = 100,
+  Vectorized_tail_decoded = getQuantilepos_Vectorized_tail_decoded(.9, cum.sums),
+  Vectorized_tail         = getQuantilepos_Vectorized_tail(.9, cum.sums),
+  Vectorized_max_decoded  = getQuantilepos_Vectorized_max_decoded(.9, cum.sums),
+  Vectorized_max          = getQuantilepos_Vectorized_max(.9, cum.sums),
+  lapply                  = getQuantilepos_lapply(.9, cum.sums),
+  lapply_decoded          = getQuantilepos_lapply(.9, cum.sums, decode = TRUE),
+  Rle_native              = getQuantilepos_Rle_native(.9, cum.sums),
+  NL_native               = getQuantilepos_NL_native(.9, cum.sums),
+  ChatGPT                 = getQuantilepos_ChatGPT(.9, cum.sums),
+  ChatGPT_decoded         = getQuantilepos_ChatGPT(.9, cum.sums, decode = TRUE)
+))
+# https://statisticsglobe.com/microbenchmark-package-r
+ggplot(microbench_out, aes(x = time / 1e9, y = expr, color = expr)) +  # Plot performance comparison
+  geom_boxplot() + 
+  scale_x_log10("time (seconds)")
+```
+
+## Result
+
+The winner is 20 times faster!
+
+```
+getQuantilepos_NL_native <- function(q, cum.sums) {
+  nl <- as(cum.sums, "NumericList")
+  min(which(nl >= max(nl) * q))
+}
+```
+
+```{r}
+identical(
+  getQuantilepos_Vectorized_tail_decoded(.9, cum.sums),
+  getQuantilepos_NL_native(.9, cum.sums)
+)
+```
+
+## Session information
+
+```{r sessionInfo}
+sessionInfo()
+```
+
+## ChatGPT
+
+Charles  10:15 AM
+
+> Good morning ChatGPT
+
+APP  10:15 AM
+
+> Good morning! How can I assist you today?
+
+Charles   10:17 AM
+
+> Using the R programming language, I want to find in a list of vectors of sorted numerical values the index where the value exceeds a given quantile.
+
+APP  10:17 AM
+
+> In R programming, you can use the `which` function in combination with the `quantile` function to find the index in a list of sorted numerical vectors where the value exceeds a given quantile. Here's an example:
+
+```
+r
+# Assume 'v' is your sorted numerical vector
+v <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+# Define your quantile, for example, the 50th percentile (median)
+q <- quantile(v, 0.5)
+
+# Find the indices where the value exceeds the quantile
+indices <- which(v > q)
+
+# Print the indices
+print(indices)
+```
+
+> This will give you the indices of the values in the vector 'v' that are greater than the 50th percentile. You can adjust the quantile value as needed.
+
+Charles  10:18 AM
+
+> Thanks, the vectors are in a list, and I need to run the function on each of them in an efficient way.  Can you write a vectorized function?
+
+APP  10:18 AM
+
+> In R programming, you can use the `lapply` function in combination with which and quantile to create a vectorized function that finds the index in each vector of a list `where` the value exceeds a given `quantile.` Here's an example:
+
+```
+r
+# Define your list of vectors
+list_of_vectors <- list(c(1,2,3,4,5), c(6,7,8,9,10), c(11,12,13,14,15))
+
+# Define the quantile
+q <- 0.75
+
+# Define the function
+find_index <- function(x, q) {
+  return(which(x > quantile(x, q)))
+}
+
+# Apply the function to each vector in the list
+result <- lapply(list_of_vectors, find_index, q)
+
+# Print the result
+print(result)
+```
+
+> In this example, `find_index` is a function that takes a vector and a quantile as input, and returns the indices of the vector where the value exceeds the given quantile. The `lapply` function applies this function to each vector in the list. The result is a list of vectors, where each vector contains the indices where the value exceeds the given quantile.
+
+Charles  10:19 AM
+
+> Thanks, we are almost there. I want the function to compute the quantile specifically on each vector.
+
+APP  10:19 AM
+
+> In R programming, you can use the `lapply()` function to apply a function to each element of a list. If you want to compute the quantile for each vector in the list, you can do it like this:
+
+```
+r
+# Assuming 'my_list' is your list of vectors
+result <- lapply(my_list, function(x) quantile(x, probs = c(0.25, 0.5, 0.75)))
+```
+
+> This will return a new list where each element is the 25th, 50th, and 75th percentile of the corresponding vector in the original list. You can modify the `probs` parameter to compute different quantiles.
+
+Charles 10:21 AM
+
+> Sorry, but what I mean is: I have a list of vectors, and for each vector of that list I need to find a given quantile, and the first index as which the value in the vector exceed the quantile.
+
+APP  10:21 AM
+
+> In R, you can use the `lapply` function to apply a function to each element in a list. Here's how you can find for each vector in a list, a given quantile, and the first index at which the value in the vector exceeds the quantile:
+
+```
+r
+# Assume 'lst' is your list of vectors and 'q' is your quantile
+lst <- list(c(1,2,3,4,5), c(6,7,8,9,10), c(11,12,13,14,15))
+q <- 0.5
+
+# Function to calculate quantile and find the first index exceeding the quantile
+find_quantile_and_index <- function(x, q) {
+  quantile_value <- quantile(x, q)
+  index <- which(x > quantile_value)[1]
+  return(list("quantile" = quantile_value, "index" = index))
+}
+
+# Apply the function to each vector in the list
+result <- lapply(lst, find_quantile_and_index, q)
+
+# Print the result
+print(result)
+```
+
+> This will return a list of lists, where each sub-list contains the quantile and the first index at which the value in the vector exceeds the quantile for each vector in the original list.
+
+Charles  10:29 AM
+
+> Thanks, but it is too slow in my benchmark. Can you propose me a faster version ?
+APP  10:29 AM
+
+> To optimize your function in R, you can use the `lapply` function which is faster than loops. Here's an example:
+
+```
+r
+# Assuming 'lst' is your list of vectors and 'q' is your quantile
+results <- lapply(lst, function(x) {
+  quantile_val <- quantile(x, q)
+  index <- which(x > quantile_val)[1]
+  return(list("quantile" = quantile_val, "index" = index))
+})
+```
+
+> This function applies the anonymous function to each vector in the list. The function calculates the quantile, finds the first index where the value exceeds the quantile, and returns them as a list. The result is a list of these lists.
+
+> Remember, R is vectorized which means it's more efficient to apply a function to a whole vector at once rather than element by element. Functions like `lapply` take advantage of this. Also, using `which` with the condition directly is faster than looping through the vector to find the index.
