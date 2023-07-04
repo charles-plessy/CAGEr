@@ -113,7 +113,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
     CTSScoordinatesGR(object)$cluster <-
       ranges2names(CTSScoordinatesGR(object), consensus.clusters)
     se <- CTSStagCountSE(object)[filter & decode(filteredCTSSidx(object)), ]
-    consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters)
+    consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters, tpmThreshold = tpmThreshold)
     score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
     object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
     object
@@ -131,8 +131,8 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   if (all( !is.null(qLow), !is.null(qUp))) {
     TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
     TC.list <- endoapply(TC.list, function(x) {
-      end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x)
-      start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x)
+      end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x) - 1L
+      start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x) - 1L
       x})
   } else {
     TC.list <- tagClustersGR(object)
@@ -143,10 +143,7 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   
   # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)
-  suppressWarnings(start(clusters.gr) <- start(clusters.gr) - round(maxDist/2)) # Suppress warnings
-  suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + round(maxDist/2)) # because we trim later
-  clusters.gr <- reduce(trim(clusters.gr))  # By definition of `reduce`, they will not overlap
-  # Note that the clusters are temporarily too broad, because we added `maxDist)` to the TCs…
+  clusters.gr <- reduce(clusters.gr, min.gapwidth = maxDist)
   
   # CTSS with score that is sum od all samples
   ctss <- CTSScoordinatesGR(object)
@@ -158,7 +155,7 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   rl <- rle(queryHits(o))$length
   cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
   grouped_scores <- extractList(score(ctss), o)
-  grouped_pos    <- extractList(pos(ctss), o)
+  # grouped_pos    <- extractList(pos(ctss), o)
   
   find.dominant.idx <- function (x) {
     # which.max is breaking ties by taking the last, but this will give slightly
@@ -168,8 +165,8 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   }
   local_max_idx <- sapply(grouped_scores, find.dominant.idx) -1  # Start at zero
   global_max_ids <- cluster_start_idx + local_max_idx
-  start(clusters.gr) <- min(grouped_pos)
-  end  (clusters.gr) <- max(grouped_pos)
+  # start(clusters.gr) <- min(grouped_pos)
+  # end  (clusters.gr) <- max(grouped_pos)
   score(clusters.gr) <- sum(grouped_scores)
   clusters.gr$dominant_ctss <- granges(ctss)[subjectHits(o)][global_max_ids]
   clusters.gr$tpm.dominant_ctss <- score(ctss)[subjectHits(o)][global_max_ids]
@@ -195,11 +192,11 @@ setMethod( ".CCtoSE"
       se <- se[rowSums(DelayedArray(assays(se)[["normalizedTpmMatrix"]])) > tpmThreshold,]
     
     .rowsumAsMatrix <- function(DF, names) {
-      rs <- rowsum(as.matrix(DelayedArray(DF)), as.factor(names))
-      if (rownames(rs)[1] == "") # If some CTSS were not in clusters
-        rs <- rs[-1, , drop = FALSE]
-      rs
-      }
+      # First, remove CTSS that do not match clusters
+      DF <- DF[names != "",]
+      names <- names[names != ""]
+      rowsum(as.matrix(DelayedArray(DF)), as.factor(names), reorder = FALSE)
+    }
     
     counts <- .rowsumAsMatrix(assays(se)[["counts"]], rowRanges(se)$cluster)
     norm   <- .rowsumAsMatrix(assays(se)[["normalizedTpmMatrix"]], rowRanges(se)$cluster)
