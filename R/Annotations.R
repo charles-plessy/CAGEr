@@ -565,9 +565,9 @@ ranges2annot <- function(ranges, annot) {
 #' 
 #' @param genes A \code{\link{GRanges}} object containing \code{gene_name} metadata.
 #' 
-#' @return A \code{\link{Rle}} character vector of same length as the GRanges object,
+#' @return A \code{\link{Rle}} factor of same length as the GRanges object,
 #' indicating one gene symbol or a semicolon-separated list of gene symbols for each
-#' range.
+#' range.  The levels are alphabetically sorted.
 #'         
 #' @family CAGEr annotation functions
 #' @family CAGEr gene expression analysis functions
@@ -586,7 +586,8 @@ ranges2genes <- function(ranges, genes) {
   if (is.null(genes$gene_name))
     stop("Annotation must contain ", dQuote("gene_name"), " metdata.")
   names(genes) <- genes$gene_name
-  ranges2names(ranges, genes)
+  g <- ranges2names(ranges, genes) |> as.character()
+  Rle(factor(g, levels = sort(unique(g))))
 }
 
 
@@ -601,9 +602,10 @@ ranges2genes <- function(ranges, genes) {
 #' @param rangesA A \code{\link{GRanges}} object.
 #' @param rangesB A second GRanges object.
 #' 
-#' @return A \code{\link{Rle}} character vector of same length as the \code{rangesA}
+#' @return A \code{\link{Rle}} factor of same length as the \code{rangesA}
 #' GRanges object, indicating one name or a semicolon-separated list of names from
-#' the each \code{rangesB} object.
+#' the each \code{rangesB} object.  The levels are in order of appearance to
+#' to maintain genomic coordinate sort order when the names are cluster names.
 #'         
 #' @family CAGEr annotation functions
 #' 
@@ -625,6 +627,7 @@ ranges2names <- function(rangesA, rangesB) {
   names <- extractList(names(rangesB), names)
   names <- unique(names)
   names <- unstrsplit(names, ";")
+  names <- factor(names, levels = unique(names))
   Rle(names)
 }
 
