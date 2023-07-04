@@ -626,51 +626,35 @@ setMethod( "consensusClustersGR", "CAGEexp"
     ctss <- CTSScoordinatesGR(object)
     score(ctss) <- CTSSnormalizedTpmDF(object) |>
                   DelayedArray() |> rowSums()
-    ctss2 <- ctss[ctss$filteredCTSSidx]
-    hits <- findOverlaps(query = cc, subject = ctss2)
-    cc <- bioC2_cc_iqw(o = hits, clusters = cc, ctss = ctss2,
-      qLow = qLow, qUp = qUp, return_iqw = returnInterquantileWidth)
+    ctss <- ctss[ctss$filteredCTSSidx]
+    cc <- .ctss_summary_for_clusters(ctss, cc, removeSingletons = FALSE)
+    if(isTRUE(returnInterquantileWidth))
+      cc <- bioC2_cc_iqw(clusters = cc, ctss = ctss, qLow = qLow, qUp = qUp)
   }
+  names(cc) <- as.character(cc)
   cc
 })
 
 ## Used information from the benchmark to pick a function that is fast
-bioC2_cc_iqw <- function(o, clusters, ctss, qLow = 0.1, qUp = 0.9, 
-                          return_iqw = TRUE) {
-    rl <- rle(queryHits(o))$length
-    
-    cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
-    grouped_scores <- extractList(score(ctss), o)
-    ##
-    grouped_scores_cumsum <- sapply(grouped_scores, cumsum)
-    
-    if (return_iqw) {
-      qLowName <- paste0("q_", qLow)
-      qUpName  <- paste0("q_", qUp)
-      if (is.null(qLow) | is.null(qUp))
-        stop( "Set ", sQuote("qLow"), " and ", sQuote("qUp")
+bioC2_cc_iqw <- function(clusters, ctss, qLow = 0.1, qUp = 0.9) {
+  if (is.null(qLow) | is.null(qUp))
+    stop( "Set ", sQuote("qLow"), " and ", sQuote("qUp")
           , " to specify the quantile positions used to calculate width.")
-      
-      if(!is.null(qLow)) 
-        clusters <- .get.quant.pos(cum.sums = grouped_scores_cumsum,
-          clusters = clusters, q = c(qLow))
-      if(!is.null(qUp)) 
-        clusters <- .get.quant.pos(cum.sums = grouped_scores_cumsum,
-          clusters = clusters, q = c(qUp))
-      
-      mcols(clusters)[["interquantile_width"]] <- 
-        mcols(clusters)[[qUpName]] -
-        mcols(clusters)[[qLowName]] + 1
-    }
-    
-    ##
-    local_max_idx <- sapply(grouped_scores, find.dominant.idx) -1 # Start at zero
-    global_max_ids <- cluster_start_idx + local_max_idx
-    clusters$dominant_ctss <- granges(ctss)[subjectHits(o)][global_max_ids]
-    clusters$tpm.dominant_ctss <-
-      score(ctss)[subjectHits(o)][global_max_ids]
-    
-    clusters
+  o <- findOverlaps(query = cc, subject = ctss)
+  rl <- rle(queryHits(o))$length
+  grouped_scores <- extractList(score(ctss), o)
+  grouped_scores_cumsum <- sapply(grouped_scores, cumsum)
+  
+  qLowName <- paste0("q_", qLow)
+  qUpName  <- paste0("q_", qUp)
+  
+  clusters <- .get.quant.pos(cum.sums = grouped_scores_cumsum,
+    clusters = clusters, q = c(qLow, qUp))
+
+  mcols(clusters)[["interquantile_width"]] <- 
+    mcols(clusters)[[qUpName]] - mcols(clusters)[[qLowName]] + 1
+  
+  clusters
 }
 
 

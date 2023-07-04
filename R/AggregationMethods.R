@@ -152,28 +152,7 @@ setMethod( ".aggregateTagClustersGR", "CAGEr"
   ctss <- CTSScoordinatesGR(object)
   score(ctss) <- rowSums(CTSSnormalizedTpmDF(object) |> DelayedArray::DelayedArray() )
   
-  # See `benchmarks/dominant_ctss.md`.
-  o <- findOverlaps(clusters.gr, ctss)
-  
-  rl <- rle(queryHits(o))$length
-  cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
-  grouped_scores <- extractList(score(ctss), o)
-  grouped_pos    <- extractList(pos(ctss), o)
-  
-  find.dominant.idx <- function (x) {
-    # which.max is breaking ties by taking the last, but this will give slightly
-    # different biases on plus an minus strands.
-    w <- which(x == max(x))
-    w[ceiling(length(w)/2)]
-  }
-  local_max_idx <- sapply(grouped_scores, find.dominant.idx) -1  # Start at zero
-  global_max_ids <- cluster_start_idx + local_max_idx
-  start(clusters.gr) <- min(grouped_pos)
-  end  (clusters.gr) <- max(grouped_pos)
-  score(clusters.gr) <- sum(grouped_scores)
-  clusters.gr$dominant_ctss <- granges(ctss)[subjectHits(o)][global_max_ids]
-  clusters.gr$tpm.dominant_ctss <- score(ctss)[subjectHits(o)][global_max_ids]
-  clusters.gr
+  clusters.gr <- .ctss_summary_for_clusters(ctss, clusters.gr, removeSingletons = FALSE)
 
   names(clusters.gr) <- as.character(clusters.gr)
   .ConsensusClusters(clusters.gr)
