@@ -26,7 +26,9 @@ ce <- exampleCAGEexp
 ctss <- CTSScoordinatesGR(ce)
 score(ctss) <- CTSSnormalizedTpmDF(ce) |> DelayedArray::DelayedArray() |> rowSums()
 clusters <- consensusClustersGR(ce)
-clusters$annotation <- clusters$genes <- clusters$exprClass <- NULL # Simplify
+mcols(clusters) <- mcols(clusters)[,c("score", "dominant_ctss", "tpm.dominant_ctss")] # Simplify
+clusters.orig <- clusters
+mcols(clusters) <- NULL
 ```
 
 The functions are given a lookup table associating CTSSes with clusters, and
@@ -91,14 +93,11 @@ dataTable <- function() {
   dom <- dt[ , list( seqnames[1]
                    , strand[1]
                    , pos[find.dominant.idx(score)]
-                   , sum(score)
                    , max(score))
             , by = id]
   setnames(dom, c( "cluster", "chr", "strand"
-                 , "dominant_ctss", "tpm", "tpm.dominant_ctss"))
+                 , "dominant_ctss", "tpm.dominant_ctss"))
   
-  # Let's be really sure we do not mix up things
-  stopifnot(identical(clusters$consensus.cluster, dom$cluster))
   clusters$dominant_ctss <- GRanges(dom$chr, dom$dominant_ctss, dom$strand)
   seqinfo(clusters$dominant_ctss) <- seqinfo(ctss)
   clusters$tpm.dominant_ctss <- dom$tpm.dominant_ctss
@@ -135,48 +134,35 @@ bioC_results
 ```
 
 ```
-## ConsensusClusters object with 805 ranges and 5 metadata columns:
-##                             seqnames            ranges strand |       score
-##                                <Rle>         <IRanges>  <Rle> |   <numeric>
-##            chr17:26027430:+    chr17          26027430      + |     64.1719
-##            chr17:26050540:+    chr17          26050540      + |     22.3101
-##            chr17:26118088:+    chr17          26118088      + |     64.1719
-##            chr17:26142853:+    chr17          26142853      + |     56.0704
-##            chr17:26166954:+    chr17          26166954      + |     64.1719
-##                         ...      ...               ...    ... .         ...
-##   chr17:32706021-32706407:+    chr17 32706021-32706407      + | 136242.4564
-##            chr17:32706605:+    chr17          32706605      + |     64.1719
-##   chr17:32707132-32707170:+    chr17 32707132-32707170      + |    245.4415
-##   chr17:32707322-32707376:+    chr17 32707322-32707376      + |    357.4316
-##   chr17:32708847-32708958:+    chr17 32708847-32708958      + |   8395.7855
-##                             consensus.cluster         tpm    dominant_ctss
-##                                     <integer>   <numeric>        <GRanges>
-##            chr17:26027430:+                 1     64.1719 chr17:26027430:+
-##            chr17:26050540:+                 2     22.3101 chr17:26050540:+
-##            chr17:26118088:+                 3     64.1719 chr17:26118088:+
-##            chr17:26142853:+                 4     56.0704 chr17:26142853:+
-##            chr17:26166954:+                 5     64.1719 chr17:26166954:+
-##                         ...               ...         ...              ...
-##   chr17:32706021-32706407:+               801 136242.4564 chr17:32706231:+
-##            chr17:32706605:+               802     64.1719 chr17:32706605:+
-##   chr17:32707132-32707170:+               803    245.4415 chr17:32707135:+
-##   chr17:32707322-32707376:+               804    357.4316 chr17:32707322:+
-##   chr17:32708847-32708958:+               805   8395.7855 chr17:32708890:+
-##                             tpm.dominant_ctss
-##                                     <numeric>
-##            chr17:26027430:+           64.1719
-##            chr17:26050540:+           22.3101
-##            chr17:26118088:+           64.1719
-##            chr17:26142853:+           56.0704
-##            chr17:26166954:+           64.1719
-##                         ...               ...
-##   chr17:32706021-32706407:+        14993.7493
-##            chr17:32706605:+           64.1719
-##   chr17:32707132-32707170:+           99.6448
-##   chr17:32707322-32707376:+           67.2963
-##   chr17:32708847-32708958:+         1319.9060
+## ConsensusClusters object with 806 ranges and 2 metadata columns:
+##                             seqnames            ranges strand |
+##                                <Rle>         <IRanges>  <Rle> |
+##            chr17:26027430:+    chr17          26027430      + |
+##            chr17:26050540:+    chr17          26050540      + |
+##            chr17:26118088:+    chr17          26118088      + |
+##            chr17:26142853:+    chr17          26142853      + |
+##            chr17:26166954:+    chr17          26166954      + |
+##                         ...      ...               ...    ... .
+##   chr17:32706021-32706407:+    chr17 32706021-32706407      + |
+##            chr17:32706605:+    chr17          32706605      + |
+##   chr17:32707132-32707170:+    chr17 32707132-32707170      + |
+##   chr17:32707322-32707376:+    chr17 32707322-32707376      + |
+##   chr17:32708847-32708958:+    chr17 32708847-32708958      + |
+##                                dominant_ctss tpm.dominant_ctss
+##                                    <GRanges>         <numeric>
+##            chr17:26027430:+ chr17:26027430:+           64.1719
+##            chr17:26050540:+ chr17:26050540:+           22.3101
+##            chr17:26118088:+ chr17:26118088:+           64.1719
+##            chr17:26142853:+ chr17:26142853:+           56.0704
+##            chr17:26166954:+ chr17:26166954:+           64.1719
+##                         ...              ...               ...
+##   chr17:32706021-32706407:+ chr17:32706231:+        14993.7493
+##            chr17:32706605:+ chr17:32706605:+           64.1719
+##   chr17:32707132-32707170:+ chr17:32707135:+           99.6448
+##   chr17:32707322-32707376:+ chr17:32707322:+           67.2963
+##   chr17:32708847-32708958:+ chr17:32708890:+         1319.9060
 ##   -------
-##   seqinfo: 1 sequence from an unspecified genome; no seqlengths
+##   seqinfo: 26 sequences (1 circular) from danRer7 genome
 ```
 
 ```r
@@ -204,22 +190,31 @@ identical(bioC_results, dplyr_results)
 ```
 
 ```r
-microbenchmark::microbenchmark(bioC(), bioC2(), dataTable(), dplyr())
+(benchmark <- microbenchmark::microbenchmark(bioC(), bioC2(), dataTable(), dplyr()))
 ```
 
 ```
 ## Unit: milliseconds
 ##         expr        min         lq       mean     median         uq        max
-##       bioC() 3455.15544 3588.41609 3730.71735 3660.22403 3832.07402 4245.39739
-##      bioC2()   34.00017   36.20774   38.40580   37.57237   39.03414   50.95568
-##  dataTable()   58.93020   62.93159   67.10066   64.74682   69.38356   90.61266
-##      dplyr()  107.36517  112.24707  119.96521  115.04563  123.53149  185.93090
-##  neval cld
-##    100   c
-##    100 a  
-##    100 a  
-##    100  b
+##       bioC() 5383.80738 5604.18083 5810.65343 5682.86584 5800.26130 6887.00923
+##      bioC2()   48.39151   51.30989   53.76299   52.46706   54.49261   68.59898
+##  dataTable()   74.60784   79.24606   84.51815   80.90140   86.89849  126.27618
+##      dplyr()  145.54982  150.83453  159.48283  154.80674  159.93879  203.85146
+##  neval
+##    100
+##    100
+##    100
+##    100
 ```
+
+```r
+library("ggplot2") |> suppressPackageStartupMessages()
+ggplot(benchmark, aes(x = time / 1e9, y = expr, color = expr)) +  # Plot performance comparison
+  geom_boxplot() + 
+  scale_x_log10("time (seconds)")
+```
+
+![](dominant_ctss_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
 
 The approach combining `findOverlaps` from _Bionductor_ and cumulative sums from
 base _R_ works the best on test data, with comparable performance with `dplyr`

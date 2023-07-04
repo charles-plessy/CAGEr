@@ -25,7 +25,9 @@ ce <- exampleCAGEexp
 ctss <- CTSScoordinatesGR(ce)
 score(ctss) <- CTSSnormalizedTpmDF(ce) |> DelayedArray::DelayedArray() |> rowSums()
 clusters <- consensusClustersGR(ce)
-clusters$annotation <- clusters$genes <- clusters$exprClass <- NULL # Simplify
+mcols(clusters) <- mcols(clusters)[,c("score", "dominant_ctss", "tpm.dominant_ctss")] # Simplify
+clusters.orig <- clusters
+mcols(clusters) <- NULL
 ```
 
 The functions are given a lookup table associating CTSSes with clusters, and
@@ -86,14 +88,11 @@ dataTable <- function() {
   dom <- dt[ , list( seqnames[1]
                    , strand[1]
                    , pos[find.dominant.idx(score)]
-                   , sum(score)
                    , max(score))
             , by = id]
   setnames(dom, c( "cluster", "chr", "strand"
-                 , "dominant_ctss", "tpm", "tpm.dominant_ctss"))
+                 , "dominant_ctss", "tpm.dominant_ctss"))
   
-  # Let's be really sure we do not mix up things
-  stopifnot(identical(clusters$consensus.cluster, dom$cluster))
   clusters$dominant_ctss <- GRanges(dom$chr, dom$dominant_ctss, dom$strand)
   seqinfo(clusters$dominant_ctss) <- seqinfo(ctss)
   clusters$tpm.dominant_ctss <- dom$tpm.dominant_ctss
@@ -129,7 +128,11 @@ identical(bioC_results, bioC_results2)
 identical(bioC_results, dataTable_results)
 identical(bioC_results, dplyr_results)
 
-microbenchmark::microbenchmark(bioC(), bioC2(), dataTable(), dplyr())
+(benchmark <- microbenchmark::microbenchmark(bioC(), bioC2(), dataTable(), dplyr()))
+library("ggplot2") |> suppressPackageStartupMessages()
+ggplot(benchmark, aes(x = time / 1e9, y = expr, color = expr)) +  # Plot performance comparison
+  geom_boxplot() + 
+  scale_x_log10("time (seconds)")
 ```
 
 The approach combining `findOverlaps` from _Bionductor_ and cumulative sums from
