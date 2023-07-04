@@ -193,9 +193,10 @@ setMethod( ".CCtoSE"
       se <- se[rowSums(DelayedArray(assays(se)[["normalizedTpmMatrix"]])) > tpmThreshold,]
     
     .rowsumAsMatrix <- function(DF, names) {
+      # First, remove CTSS that do not match clusters
+      DF <- DF[names != "",]
+      names <- names[names != ""]
       rs <- rowsum(as.data.frame(DF), as.factor(names), reorder = FALSE)
-      if (rownames(rs)[1] == "") # If some CTSS were not in clusters
-        rs <- rs[-1, , drop = FALSE]
       as.matrix(rs)
     }
     
