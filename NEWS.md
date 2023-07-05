@@ -17,6 +17,7 @@ BUG FIXES
     
 NEW FEATURES
 
+-   Allow URLs to files in `getCTSS()` (Fixes #50)
 -   Accelerated the computation of quantile position by ~20 times.
 
 # Changes in version 2.6.0
