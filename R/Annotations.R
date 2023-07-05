@@ -551,21 +551,22 @@ ranges2annot <- function(ranges, annot) {
   Rle(annot)
 }
 
+
 #' ranges2genes
 #' 
 #' Assign gene symbol(s) to Genomic Ranges.
 #' 
 #' This private (non-exported) function is used to assign gene symbols
-#' to genomic ranges.  It is run by \code{\link{annotateCTSS}}, which has to
-#' be run before \code{\link{CTSStoGenes}}.
+#' to genomic ranges.  It is run by [`annotateCTSS`], which has to
+#' be run before [`CTSStoGenes`].
 #' 
-#' @param ranges Genomics Ranges object, for example extracted from a
-#'               RangedSummarizedExperiment object with the \code{rowRanges}
-#'               command.
+#' @param ranges [`GenomicRanges::GRanges`] object, for example extracted from
+#'        a [`SummarizedExperiment::RangedSummarizedExperiment`] object with the
+#'        [`SummarizedExperiment::rowRanges`] command.
 #' 
-#' @param genes A \code{\link{GRanges}} object containing \code{gene_name} metadata.
+#' @param genes A _GRanges_ object containing `gene_name` metadata.
 #' 
-#' @return A \code{\link{Rle}} factor of same length as the GRanges object,
+#' @return A [`S4Vectors::Rle`] factor of same length as the _GRanges_ object,
 #' indicating one gene symbol or a semicolon-separated list of gene symbols for each
 #' range.  The levels are alphabetically sorted.
 #'         
@@ -599,12 +600,12 @@ ranges2genes <- function(ranges, genes) {
 #' for each element of the first object returns the name of the elements of
 #' the second object that it intersects with.
 #' 
-#' @param rangesA A \code{\link{GRanges}} object.
-#' @param rangesB A second GRanges object.
+#' @param rangesA A [`GenomicRanges::GRanges`] object.
+#' @param rangesB A second `GRanges` object.
 #' 
-#' @return A \code{\link{Rle}} factor of same length as the \code{rangesA}
-#' GRanges object, indicating one name or a semicolon-separated list of names from
-#' the each \code{rangesB} object.  The levels are in order of appearance to
+#' @return A \code{\link{Rle}} factor of same length as the `rangesA` _GRanges_
+#' object, indicating one name or a semicolon-separated list of names from
+#' the each `rangesB` object.  The levels are in order of appearance to
 #' to maintain genomic coordinate sort order when the names are cluster names.
 #'         
 #' @family CAGEr annotation functions
