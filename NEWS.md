@@ -8,8 +8,12 @@ BUG FIXES
     version 2.6.0 and causing crashes or incorrect quantile calculations.
 -   Apply fix for #77 (aggregateTagClusters losing TCs), which slipped out of
     2.6.0 because of Git branch mixup.
+-   Fix _consensus cluster_ coordinates, where the `maxDist` padding was
+    erroneously remaining in some parts of the computation.
 -   Corrected on-the-fly cumulative sum computation for consensus clusters when
     `sample = NULL`.  The bug was causing incorrectly short quantile ranges.
+-   Force the cluster names to stay sorted, to avoid a bug desynchronising
+    quantile information and genome coordinates.
     
 NEW FEATURES
 
