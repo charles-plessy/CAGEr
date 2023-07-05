@@ -33,7 +33,7 @@ of \emph{CAGEr} for the alternatives that were considered.
 }
 \examples{
 exampleCAGEexp |> CTSStagCountDF() |>
-  rowsum.RleDataFrame(decode(CTSScoordinatesGR(exampleCAGEexp)$cluster), reorder = FALSE)
+  CAGEr:::rowsum.RleDataFrame(decode(CTSScoordinatesGR(exampleCAGEexp)$cluster), reorder = FALSE)
 }
 \seealso{
 Other Rle DataFrames: 

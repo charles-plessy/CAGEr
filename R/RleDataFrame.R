@@ -19,7 +19,7 @@
 #' @family Rle DataFrames
 #' 
 #' @examples 
-#' exampleCAGEexp |> CTSStagCountDF() |> rowSums.RleDataFrame(na.rm = TRUE)
+#' exampleCAGEexp |> CTSStagCountDF() |> CAGEr:::rowSums.RleDataFrame(na.rm = TRUE)
 
 rowSums.RleDataFrame <- function (x, na.rm = FALSE) {
   if(isTRUE(na.rm)) x <- lapply(x, \(v) {v[is.na(v)] <- 0L; v})
@@ -55,7 +55,7 @@ rowSums.RleDataFrame <- function (x, na.rm = FALSE) {
 #' 
 #' @examples 
 #' exampleCAGEexp |> CTSStagCountDF() |>
-#'   rowsum.RleDataFrame(decode(CTSScoordinatesGR(exampleCAGEexp)$cluster), reorder = FALSE)
+#'   CAGEr:::rowsum.RleDataFrame(decode(CTSScoordinatesGR(exampleCAGEexp)$cluster), reorder = FALSE)
 
 rowsum.RleDataFrame <- function(x, group, reorder = TRUE, na.rm = FALSE, ...)
   rowsum(

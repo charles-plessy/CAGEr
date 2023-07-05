@@ -26,7 +26,7 @@ See the file \code{benchmarks/rowSums_on_Rle_DF.md} in the source Git repository
 of \emph{CAGEr} for the alternatives that were considered.
 }
 \examples{
-exampleCAGEexp |> CTSStagCountDF() |> rowSums.RleDataFrame(na.rm = TRUE)
+exampleCAGEexp |> CTSStagCountDF() |> CAGEr:::rowSums.RleDataFrame(na.rm = TRUE)
 }
 \seealso{
 Other Rle DataFrames: 
