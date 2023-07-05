@@ -35,9 +35,9 @@ setGeneric(".getCAGEsignalCoverage", function(ctss.chr, clusters) standardGeneri
 
 setMethod(".getCAGEsignalCoverage", c("CTSS.chr", "GRanges"), function(ctss.chr, clusters) {
   cov <- Rle(rep(0, max(end(clusters), end(ctss.chr))))
-	cov[start(ctss.chr)] <- score(ctss.chr)
+  cov[start(ctss.chr)] <- score(ctss.chr)
   cluster.cumsums <- Views(cov, start = start(clusters), end = end(clusters))
-	viewApply(cluster.cumsums, cumsum)
+  viewApply(cluster.cumsums, cumsum)
 })
 
 
@@ -96,6 +96,6 @@ setMethod(".getCumsum", c("CTSS", "GRanges"), function(ctss, clusters, useMultic
   }
   clusters.cumsum <- unlist(bplapply( seqlevels(clusters), getCumSumChrStrand
                                     , BPPARAM = CAGEr_Multicore(useMulticore, nrCores)))
-	names(clusters.cumsum) <- names(clusters)
-	clusters.cumsum
+  names(clusters.cumsum) <- names(clusters)
+  clusters.cumsum
 })

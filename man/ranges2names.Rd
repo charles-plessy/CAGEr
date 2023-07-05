@@ -7,14 +7,15 @@
 ranges2names(rangesA, rangesB)
 }
 \arguments{
-\item{rangesA}{A \code{\link{GRanges}} object.}
+\item{rangesA}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object.}
 
-\item{rangesB}{A second GRanges object.}
+\item{rangesB}{A second \code{GRanges} object.}
 }
 \value{
-A \code{\link{Rle}} character vector of same length as the \code{rangesA}
-GRanges object, indicating one name or a semicolon-separated list of names from
-the each \code{rangesB} object.
+A \code{\link{Rle}} factor of same length as the \code{rangesA} \emph{GRanges}
+object, indicating one name or a semicolon-separated list of names from
+the each \code{rangesB} object.  The levels are in order of appearance to
+to maintain genomic coordinate sort order when the names are cluster names.
 }
 \description{
 Intersection of genomic ranges
