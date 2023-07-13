@@ -2,100 +2,89 @@
 % Please edit documentation in R/ExportMethods.R
 \name{plotReverseCumulatives}
 \alias{plotReverseCumulatives}
-\alias{plotReverseCumulatives,CAGEr-method}
+\alias{plotReverseCumulatives,CAGEexp-method}
+\alias{plotReverseCumulatives,SummarizedExperiment-method}
 \title{Plot reverse cumulative number of CAGE tags per CTSS}
 \usage{
 plotReverseCumulatives(
   object,
   values = c("raw", "normalized"),
   fitInRange = c(10, 1000),
-  onePlot = FALSE,
-  main = NULL,
-  legend = TRUE,
-  xlab = "number of CAGE tags",
-  ylab = "number of CTSSs (>= nr tags)",
-  xlim = c(1, 1e+05),
-  ylim = c(1, 1e+06)
+  group = NULL
 )
 
-\S4method{plotReverseCumulatives}{CAGEr}(
+\S4method{plotReverseCumulatives}{CAGEexp}(
   object,
   values = c("raw", "normalized"),
   fitInRange = c(10, 1000),
-  onePlot = FALSE,
-  main = NULL,
-  legend = TRUE,
-  xlab = "number of CAGE tags",
-  ylab = "number of CTSSs (>= nr tags)",
-  xlim = c(1, 1e+05),
-  ylim = c(1, 1e+06)
+  group = NULL
+)
+
+\S4method{plotReverseCumulatives}{SummarizedExperiment}(
+  object,
+  values = c("raw", "normalized"),
+  fitInRange = c(10, 1000),
+  group = NULL
 )
 }
 \arguments{
-\item{object}{A CAGEr object}
+\item{object}{A \code{CAGEexp} object}
 
-\item{values}{Which values should be plotted: \code{raw} (default) for raw CAGE
-tag counts or \code{normalized} for normalized tag count values.}
+\item{values}{Plot \code{raw} CAGE tag counts (default) or \code{normalized} values.}
 
 \item{fitInRange}{An integer vector with two values specifying a range of tag
 count values to be used for fitting a power-law distribution to reverse
 cumulatives.  Ignored is set to \code{NULL}.  See Details.}
 
-\item{onePlot}{Logical, should all CAGE datasets be plotted in the same
-plot (\code{TRUE}) or in separate plots (\code{FALSE}).}
-
-\item{main}{Main title for the plot.}
-
-\item{legend}{Set to \code{NULL} to prevent the display of the sample legend.}
-
-\item{xlab, ylab}{Axis labels passed to \code{\link{plot}}.}
-
-\item{xlim, ylim}{Axis range parameters passed to \code{\link{plot}}.}
+\item{group}{The name of a column data of the \code{CAGEexp} object, to be used
+to facet the plot.  If \code{NULL} (default), all the distributions will be
+plotted together.  Set to \code{sampleLabels} to plot each sample separately.}
 }
 \value{
-Plots of reverse cumulative number of CAGE tags per CTSS for each CAGE
-dataset within CAGEr object.  Alpha values of fitted power-laws and suggested
-referent power-law distribution are reported on the plot in case \code{values = "raw"}.
+A \code{\link[ggplot2:ggplot]{ggplot2::ggplot}} object containing the plots.  The plot can
+be further modified to change its title or axis labels (see
+\code{\link[ggplot2:labs]{ggplot2::labs}}).  The legend can be removed with
+\code{\link[ggplot2:guides]{ggplot2::guides}}\code{(col=FALSE)}.
 }
 \description{
-Plots the reverse cumulative distribution of the number of CAGE
-tags per CTSS for all CAGE datasets present in the \code{\link{CAGEr}} object.
-The plots should be used as help in choosing the parameters for power-law
-normalization: the range of values to fit the power-law and the slope of the
-referent power-law distribution (Balwierz \emph{et al}., Genome Biology 2009).
+Plots the reverse cumulative distribution of the expression values of the
+CTSS for all CAGE datasets present in the \code{\link{CAGEexp}} object.  The horizontal
+axis represents an expression value and the vertical axis represents the
+number of CTSS positions supported by >= of that value.  The plot uses a
+log-log scale.  Use these plots as help in choosing the parameters range of
+values and the referent slope for power-law normalization
+(Balwierz \emph{et al}., 2009).
 }
 \details{
-Number of CAGE tags (X-axis) is plotted against the number of TSSs that
-are supported by >= of that number of tags (Y-axis) on a log-log scale for each
-sample. In addition, a power-law distribution is fitted to each reverse cumulative
-using the values in the range specified by \code{fitInRange} parameter. The fitted
-distribution is defined by \code{y = -1 * alpha * x + beta} on the log-log scale,
-and the value of \code{alpha} for each sample is shown on the plot. In addition,
-a suggested referent power-law distribution to which all samples should be
-normalized is drawn on the plot and corresponding parameters (slope alpha and total
-number of tags T) are denoted on the plot.  Referent distribution is chosen so
-that its slope (alpha) is the median of slopes fitted to individual samples and
-its total number of tags (T) is the power of 10 nearest to the median number of tags
-of individual samples.  Resulting plots are helpful in deciding whether power-law
-normalization is appropriate for given samples and reported \code{alpha} values aid
-in choosing optimal \code{alpha} value for referent power-law distribution to
-which all samples will be normalized. For details about normalization see
-\code{\link{normalizeTagCount}} function.
+A power law distribution is fitted to each reverse cumulative using the
+values in the range specified \code{fitInRange}.  The fitted distribution is
+defined by \deqn{y = -1 * alpha * x + beta} on the log-log scale, and the
+value of \emph{alpha} for each sample is shown on the plot's legend.  In addition,
+a suggested referent power law distribution to which all samples could be
+normalized is drawn on the plot and corresponding parameters (slope \emph{alpha}
+and total number of tags \emph{T}) are denoted on the plot.  This referent
+distribution is chosen so that its slope (\emph{alpha}) is the median of slopes
+fitted to individual samples and its total number of tags (\emph{T}) is the power
+of 10 nearest to the median number of tags of individual samples.  Resulting
+plots are helpful in deciding whether power-law normalization is appropriate
+for given samples and reported \code{alpha} values aid in choosing optimal
+\emph{alpha} value power law normalization (see \code{\link{normalizeTagCount}} for details).
 }
 \examples{
-
-plotReverseCumulatives( exampleCAGEexp, xlim = c(1, 1e4), ylim = c(1, 1e5)
-                      , fitInRange = c(5,100), onePlot = TRUE)
+exampleCAGEexp <- setColors(exampleCAGEexp,
+  c("salmon", "darkkhaki", "darkturquoise", "blueviolet", "blueviolet"))
+exampleCAGEexp$grp <- c("a", "b", "b", "c", "c")
+plotReverseCumulatives( exampleCAGEexp, fitInRange = c(5,100))
 plotReverseCumulatives( exampleCAGEexp, values = "normalized"
-                      , fitInRange = c(200, 2000), onePlot = TRUE)
-plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)
-                      , onePlot = TRUE, main = "prim6 replicates")
+                      , fitInRange = c(200, 2000), group = "sampleLabels")
+plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)) +
+  ggplot2::ggtitle("prim6 replicates")
 
 }
 \references{
 Balwierz \emph{et al}. (2009) Methods for analyzing deep sequencing
 expression data: constructing the human and mouse promoterome with deepCAGE data,
-\emph{Genome Biology} \strong{10}(7):R79.
+\emph{Genome Biology} \strong{10}(7):R79. \url{https://doi.org/10.1186/gb-2009-10-7-r79}
 }
 \seealso{
 \code{\link{normalizeTagCount}}
@@ -106,8 +95,14 @@ Other CAGEr plot functions:
 \code{\link{plotCorrelation}()},
 \code{\link{plotExpressionProfiles}()},
 \code{\link{plotInterquantileWidth}()}
+
+Other CAGEr normalised data functions: 
+\code{\link{normalizeTagCount}()}
 }
 \author{
-Vanja Haberle
+Vanja Haberle (original work)
+
+Charles Plessy (port to ggplot2)
 }
+\concept{CAGEr normalised data functions}
 \concept{CAGEr plot functions}

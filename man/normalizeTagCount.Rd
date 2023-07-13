@@ -97,6 +97,9 @@ Other CAGEr object modifiers:
 \code{\link{quantilePositions}()},
 \code{\link{quickEnhancers}()},
 \code{\link{summariseChrExpr}()}
+
+Other CAGEr normalised data functions: 
+\code{\link{plotReverseCumulatives}()}
 }
 \author{
 Vanja Haberle

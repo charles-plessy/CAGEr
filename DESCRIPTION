@@ -30,6 +30,7 @@ Imports:
     reshape2,
     rtracklayer,
     S4Vectors (>= 0.27.5),
+    scales,
     som,
     stringdist,
     stringi,
@@ -68,7 +69,6 @@ Collate:
     'CumulativeDistributionFunctions.R'
     'GetMethods.R'
     'CumulativeDistributionMethods.R'
-    'ExportFunctions.R'
     'ExportMethods.R'
     'ExpressionProfilingMethods.R'
     'ImportFunctions.R'
