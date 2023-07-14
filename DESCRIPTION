@@ -64,6 +64,7 @@ Collate:
     'Annotations.R'
     'AggregationMethods.R'
     'CAGEfightR.R'
+    'Paraclu.R'
     'CorrelationMethods.R'
     'CumulativeDistributionFunctions.R'
     'GetMethods.R'

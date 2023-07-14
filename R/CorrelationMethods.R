@@ -1,4 +1,4 @@
-#' @include CAGEr.R
+#' @include CAGEr.R Paraclu.R
 
 #' @name plotCorrelation
 #' 
