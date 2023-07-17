@@ -16,22 +16,20 @@
 #' @param thresholdIsTpm Logical indicating if `threshold` is expressed in
 #'        raw tag counts (`FALSE`) or normalized signal (`TRUE`).
 #' 
-#' @param method Method to be used for clustering: `"distclu"`,
-#'        `"paraclu"` or `"custom"`.  See Details.
+#' @param method Clustering method: `"distclu"` or `"paraclu"`.
 #' 
 #' @param maxDist Maximal distance between two neighbouring CTSSs for them to be
 #'        part of the same cluster.  Used only when `method = "distclu"`,
 #'        otherwise ignored.
 #' 
 #' @param removeSingletons Logical indicating if tag clusters containing only
-#'        one CTSS be removed.  Ignored when `method = "custom"`.
+#'        one CTSS be removed.
 #' 
 #' @param keepSingletonsAbove Controls which singleton tag clusters will be
 #'        removed.  When `removeSingletons = TRUE`, only singletons with signal
 #'        `< keepSingletonsAbove` will be removed.  Useful to prevent removing
 #'        highly supported singleton tag clusters.  Default value `Inf` results
-#'        in removing all singleton TCs when `removeSingletons = TRUE`.  Ignored
-#'        when `method = "custom"`.
+#'        in removing all singleton TCs when `removeSingletons = TRUE`.
 #' 
 #' @param minStability Minimal stability of the cluster, where stability is
 #'        defined as ratio between maximal and minimal density value for which
@@ -40,17 +38,11 @@
 #'        `< minStability` will be discarded.  Used only when `method = "paraclu"`.
 #' 
 #' @param maxLength Maximal length of cluster in base-pairs.  Clusters with length
-#'        `> maxLength` will be discarded.  Ignored when `method = "custom"`.
+#'        `> maxLength` will be discarded.
 #' 
 #' @param reduceToNonoverlapping Logical, should smaller clusters contained
 #'        within bigger cluster be removed to make a final set of tag clusters
 #'        non-overlapping. Used only `method = "paraclu"`.
-#' 
-#' @param customClusters Genomic coordinates of predefined regions to be used to
-#'        segment the CTSSs.  The format is either a [`GRanges`] object or a
-#'        [`data.frame`] with the following columns: `chr` (chromosome name),
-#'        `start` (0-based start coordinate), `end` (end coordinate), `strand`
-#'        (either `"+"`, or `"-"`).  Used only when `method = "custom"`.
 #' 
 #' @param useMulticore Logical, should multicore be used.  `useMulticore = TRUE`
 #'        has no effect on non-Unix-like platforms.
@@ -113,10 +105,10 @@
 setGeneric( "clusterCTSS"
           , function( object
                     , threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE
-                    , method = c("distclu", "distclu2", "paraclu", "custom"), maxDist = 20
+                    , method = c("distclu", "distclu2", "paraclu"), maxDist = 20
                     , removeSingletons = FALSE, keepSingletonsAbove = Inf
                     , minStability = 1, maxLength = 500
-                    , reduceToNonoverlapping = TRUE, customClusters = NULL
+                    , reduceToNonoverlapping = TRUE
                     , useMulticore = FALSE, nrCores = NULL)
               standardGeneric("clusterCTSS"))
 
@@ -125,7 +117,7 @@ setGeneric( "clusterCTSS"
 setMethod( "clusterCTSS", "CAGEexp"
          , function( object, threshold, nrPassThreshold, thresholdIsTpm, method, maxDist
                    , removeSingletons, keepSingletonsAbove, minStability, maxLength
-                   , reduceToNonoverlapping, customClusters, useMulticore, nrCores) {
+                   , reduceToNonoverlapping, useMulticore, nrCores) {
 
   assay <- ifelse(isTRUE(thresholdIsTpm), "normalizedTpmMatrix", "counts")
   data <- CTSStagCountSE(object)
@@ -160,13 +152,6 @@ setMethod( "clusterCTSS", "CAGEexp"
                                  , keepSingletonsAbove = keepSingletonsAbove
                                  , reduceToNonoverlapping = reduceToNonoverlapping
                                  , useMulticore = useMulticore, nrCores = nrCores)
-  } else if(method == "custom") {
-    if(is.null(customClusters))
-    	stop(sQuote("customClusters"), " must be given when method = ", sQuote("custom"), ".")
-    ctss.cluster.list <- .predefined.clusters( data = data[decode(filteredCTSSidx(object)),]
-                                             , sample.labels = sampleLabels(object)
-                                             , custom.clusters = customClusters
-                                             , useMulticore = useMulticore, nrCores = nrCores)
   }
   
   CTSSclusteringMethod(ctss.cluster.list) <- method
