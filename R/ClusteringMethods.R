@@ -154,7 +154,7 @@ setMethod( "clusterCTSS", "CAGEexp"
                                    , keepSingletonsAbove = keepSingletonsAbove
                                    , useMulticore = useMulticore, nrCores = nrCores)
   } else if (method == "paraclu") {
-    ctss.cluster.list <- .paraclu( se = data[decode(filteredCTSSidx(object)),]
+    ctss.cluster.list <-  paraclu( object = data[decode(filteredCTSSidx(object)),]
                                  , minStability = minStability, maxLength = maxLength
                                  , removeSingletons = removeSingletons
                                  , keepSingletonsAbove = keepSingletonsAbove
