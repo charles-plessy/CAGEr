@@ -105,7 +105,7 @@
 setGeneric( "clusterCTSS"
           , function( object
                     , threshold = 1, nrPassThreshold = 1, thresholdIsTpm = TRUE
-                    , method = c("distclu", "distclu2", "paraclu"), maxDist = 20
+                    , method = c("distclu", "paraclu"), maxDist = 20
                     , removeSingletons = FALSE, keepSingletonsAbove = Inf
                     , minStability = 1, maxLength = 500
                     , reduceToNonoverlapping = TRUE
@@ -136,15 +136,10 @@ setMethod( "clusterCTSS", "CAGEexp"
 	method <- match.arg(method)
 
   if (method == "distclu") {
-    ctss.cluster.list <- .distclu( se = data[decode(filteredCTSSidx(object)),]
+    ctss.cluster.list <-  distclu( object = data[decode(filteredCTSSidx(object)),]
                                  , max.dist = maxDist, removeSingletons = removeSingletons
                                  , keepSingletonsAbove = keepSingletonsAbove
                                  , useMulticore = useMulticore, nrCores = nrCores)
-  } else if (method == "distclu2") {
-    ctss.cluster.list <- .distclu2( object = data[decode(filteredCTSSidx(object)),]
-                                   , max.dist = maxDist, removeSingletons = removeSingletons
-                                   , keepSingletonsAbove = keepSingletonsAbove
-                                   , useMulticore = useMulticore, nrCores = nrCores)
   } else if (method == "paraclu") {
     ctss.cluster.list <-  paraclu( object = data[decode(filteredCTSSidx(object)),]
                                  , minStability = minStability, maxLength = maxLength

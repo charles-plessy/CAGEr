@@ -59,8 +59,7 @@ one CTSS be removed.}
 removed.  When \code{removeSingletons = TRUE}, only singletons with signal
 \verb{< keepSingletonsAbove} will be removed.  Useful to prevent removing
 highly supported singleton tag clusters.  Default value \code{Inf} results
-in removing all singleton TCs when \code{removeSingletons = TRUE}.  Ignored
-when \code{method = "custom"}.}
+in removing all singleton TCs when \code{removeSingletons = TRUE}.}
 
 \item{reduceToNonoverlapping}{Logical, should smaller clusters contained
 within bigger cluster be removed to make a final set of tag clusters
@@ -72,6 +71,21 @@ has no effect on non-Unix-like platforms.}
 \item{nrCores}{Number of cores to use when \code{useMulticore = TRUE}.  Default
 value \code{NULL} uses all detected cores.}
 }
+\value{
+Running Paraclu on a \code{Pairs} object containing positions and scores
+returns an \code{IRanges} object containing the start and end positions of the
+clusters, as well as the minimum and maximum density in \code{min_d} and \code{max_d}
+metadata columns.
+
+Running Paraclu on a \code{CTSS} object dispatches the computation on each strand
+of each sequence level of the object, collects the \code{IRanges} and assemble
+them back in a \code{\link{TagClusters}} object after filtering them by size and by
+expression following the \code{minStability}, \code{maxLength}, \code{removeSingletons},
+\code{keepSingletonsAbove} and \code{reduceToNonoverlapping} parameters.
+
+Running Paraclu on a \code{\link{RangedSummarizedExperiment}} object will loop on each
+sample, and return the results as a \code{\link{GRangesList}} of \code{TagClusters}.
+}
 \description{
 Implementation of Paraclu - parametric clustering of data attached to
 sequences (\url{http://www.cbrc.jp/paraclu/}).
@@ -81,7 +95,9 @@ sequences (\url{http://www.cbrc.jp/paraclu/}).
 (pair <- Pairs(pos(ctss), score(ctss)))
 CAGEr:::.paraclu_params(first(pair), second(pair))
 CAGEr:::.paraclu(first(pair)[1:10], second(pair)[1:10])
-paraclu(pair)
+paraclu(pair[1:10])
+paraclu(ctss[1:10])
+paraclu(CTSStagCountSE(exampleCAGEexp)[1:25,])
 
 }
 \references{
@@ -91,6 +107,7 @@ for transcription initiation in mammalian genomes.}  Genome Research 2008
 }
 \seealso{
 Other CAGEr clustering methods: 
-\code{\link{consensusClustersTpm}()}
+\code{\link{consensusClustersTpm}()},
+\code{\link{distclu}()}
 }
 \concept{CAGEr clustering methods}

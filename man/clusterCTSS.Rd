@@ -10,14 +10,13 @@ clusterCTSS(
   threshold = 1,
   nrPassThreshold = 1,
   thresholdIsTpm = TRUE,
-  method = c("distclu", "distclu2", "paraclu", "custom"),
+  method = c("distclu", "paraclu"),
   maxDist = 20,
   removeSingletons = FALSE,
   keepSingletonsAbove = Inf,
   minStability = 1,
   maxLength = 500,
   reduceToNonoverlapping = TRUE,
-  customClusters = NULL,
   useMulticore = FALSE,
   nrCores = NULL
 )
@@ -27,14 +26,13 @@ clusterCTSS(
   threshold = 1,
   nrPassThreshold = 1,
   thresholdIsTpm = TRUE,
-  method = c("distclu", "distclu2", "paraclu", "custom"),
+  method = c("distclu", "paraclu"),
   maxDist = 20,
   removeSingletons = FALSE,
   keepSingletonsAbove = Inf,
   minStability = 1,
   maxLength = 500,
   reduceToNonoverlapping = TRUE,
-  customClusters = NULL,
   useMulticore = FALSE,
   nrCores = NULL
 )
@@ -48,22 +46,20 @@ in \verb{< nrPassThreshold} experiments.}
 \item{thresholdIsTpm}{Logical indicating if \code{threshold} is expressed in
 raw tag counts (\code{FALSE}) or normalized signal (\code{TRUE}).}
 
-\item{method}{Method to be used for clustering: \code{"distclu"},
-\code{"paraclu"} or \code{"custom"}.  See Details.}
+\item{method}{Clustering method: \code{"distclu"} or \code{"paraclu"}.}
 
 \item{maxDist}{Maximal distance between two neighbouring CTSSs for them to be
 part of the same cluster.  Used only when \code{method = "distclu"},
 otherwise ignored.}
 
 \item{removeSingletons}{Logical indicating if tag clusters containing only
-one CTSS be removed.  Ignored when \code{method = "custom"}.}
+one CTSS be removed.}
 
 \item{keepSingletonsAbove}{Controls which singleton tag clusters will be
 removed.  When \code{removeSingletons = TRUE}, only singletons with signal
 \verb{< keepSingletonsAbove} will be removed.  Useful to prevent removing
 highly supported singleton tag clusters.  Default value \code{Inf} results
-in removing all singleton TCs when \code{removeSingletons = TRUE}.  Ignored
-when \code{method = "custom"}.}
+in removing all singleton TCs when \code{removeSingletons = TRUE}.}
 
 \item{minStability}{Minimal stability of the cluster, where stability is
 defined as ratio between maximal and minimal density value for which
@@ -72,17 +68,11 @@ Frith \emph{et al.}, Genome Research, 2007.  Clusters with stability
 \verb{< minStability} will be discarded.  Used only when \code{method = "paraclu"}.}
 
 \item{maxLength}{Maximal length of cluster in base-pairs.  Clusters with length
-\verb{> maxLength} will be discarded.  Ignored when \code{method = "custom"}.}
+\verb{> maxLength} will be discarded.}
 
 \item{reduceToNonoverlapping}{Logical, should smaller clusters contained
 within bigger cluster be removed to make a final set of tag clusters
 non-overlapping. Used only \code{method = "paraclu"}.}
-
-\item{customClusters}{Genomic coordinates of predefined regions to be used to
-segment the CTSSs.  The format is either a \code{\link{GRanges}} object or a
-\code{\link{data.frame}} with the following columns: \code{chr} (chromosome name),
-\code{start} (0-based start coordinate), \code{end} (end coordinate), \code{strand}
-(either \code{"+"}, or \code{"-"}).  Used only when \code{method = "custom"}.}
 
 \item{useMulticore}{Logical, should multicore be used.  \code{useMulticore = TRUE}
 has no effect on non-Unix-like platforms.}

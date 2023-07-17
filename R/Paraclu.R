@@ -22,8 +22,7 @@
 #'        removed.  When `removeSingletons = TRUE`, only singletons with signal
 #'        `< keepSingletonsAbove` will be removed.  Useful to prevent removing
 #'        highly supported singleton tag clusters.  Default value `Inf` results
-#'        in removing all singleton TCs when `removeSingletons = TRUE`.  Ignored
-#'        when `method = "custom"`.
+#'        in removing all singleton TCs when `removeSingletons = TRUE`.
 #' 
 #' @param reduceToNonoverlapping Logical, should smaller clusters contained
 #'        within bigger cluster be removed to make a final set of tag clusters

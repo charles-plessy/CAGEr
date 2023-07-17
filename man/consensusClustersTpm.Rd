@@ -28,6 +28,7 @@ head(consensusClustersTpm(exampleCAGEexp))
 \code{\link{consensusClustersSE}}
 
 Other CAGEr clustering methods: 
+\code{\link{distclu}()},
 \code{\link{paraclu}()}
 }
 \author{
