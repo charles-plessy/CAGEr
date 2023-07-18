@@ -7,16 +7,16 @@
 ranges2genes(ranges, genes)
 }
 \arguments{
-\item{ranges}{Genomics Ranges object, for example extracted from a
-RangedSummarizedExperiment object with the \code{rowRanges}
-command.}
+\item{ranges}{\code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object, for example extracted from
+a \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} object with the
+\code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::rowRanges}} command.}
 
-\item{genes}{A \code{\link{GRanges}} object containing \code{gene_name} metadata.}
+\item{genes}{A \emph{GRanges} object containing \code{gene_name} metadata.}
 }
 \value{
-A \code{\link{Rle}} character vector of same length as the GRanges object,
+A \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}} factor of same length as the \emph{GRanges} object,
 indicating one gene symbol or a semicolon-separated list of gene symbols for each
-range.
+range.  The levels are alphabetically sorted.
 }
 \description{
 Assign gene symbol(s) to Genomic Ranges.

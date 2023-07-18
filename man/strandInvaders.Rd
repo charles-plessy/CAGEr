@@ -40,13 +40,15 @@ oligonucleotide, that will be matched with the genome sequence
 }
 \value{
 \code{findStrandInvaders} returns a logical-\link{Rle} vector indicating the
-position of the strand invaders in the input ranges.  With \link{CTSS} objects as
-input \code{removeStrandInvaders} returns the object after removing the CTSS
-positions identified as strand invaders.  In the case of \code{CAGEexp} objects,
-the input object is modified in place.  Its sample metadata is also
-updated by creating a new \code{strandInvaders} column that indicates the number
-of molecule counts removed.  This value is subtracted from the \code{counts} colum
-so that the total number of tags is still equal to \code{librarySizes}.
+position of the strand invaders in the input ranges.
+
+With \link{CTSS} objects as input \code{removeStrandInvaders} returns the
+object after removing the CTSS positions identified as strand invaders.
+In the case of \code{CAGEexp} objects, a modified object is returned.  Its sample
+metadata is also updated by creating a new \code{strandInvaders} column that
+indicates the number of molecule counts removed.  This value is subtracted
+from the \code{counts} colum so that the total number of tags is still equal to
+\code{librarySizes}.
 }
 \description{
 \code{findStrandInvaders} detects strand invasion artefacts in the
@@ -69,7 +71,6 @@ is provided to incorporate this information.
 \examples{
 # Note that these examples do not do much on the example data since it was
 # not constructed using a protocol based using the template-switching method.
-"BSgenome.Drerio.UCSC.danRer7"
 
 findStrandInvaders(exampleCAGEexp)
 removeStrandInvaders(exampleCAGEexp)

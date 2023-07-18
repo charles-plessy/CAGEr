@@ -624,8 +624,7 @@ setMethod( "consensusClustersGR", "CAGEexp"
   else{
     ## sample agnostic information on IQW and dominantCTSS
     ctss <- CTSScoordinatesGR(object)
-    score(ctss) <- CTSSnormalizedTpmDF(object) |>
-                  DelayedArray() |> rowSums()
+    score(ctss) <- CTSSnormalizedTpmDF(object) |> rowSums.RleDataFrame()
     ctss <- ctss[ctss$filteredCTSSidx]
     cc <- .ctss_summary_for_clusters(ctss, cc, removeSingletons = FALSE)
     if(isTRUE(returnInterquantileWidth))
@@ -639,7 +638,7 @@ setMethod( "consensusClustersGR", "CAGEexp"
 bioC2_cc_iqw <- function(clusters, ctss, qLow = 0.1, qUp = 0.9) {
   if (is.null(qLow) | is.null(qUp))
     stop( "Set ", sQuote("qLow"), " and ", sQuote("qUp")
-          , " to specify the quantile positions used to calculate width.")
+        , " to specify the quantile positions used to calculate width.")
   o <- findOverlaps(query = cc, subject = ctss)
   rl <- rle(queryHits(o))$length
   grouped_scores <- extractList(score(ctss), o)

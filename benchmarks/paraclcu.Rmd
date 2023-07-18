@@ -1,0 +1,391 @@
+---
+title: "Paraclu benchmark"
+author: "Charles Plessy"
+date: "2023-07-14"
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(CAGEr) |> suppressWarnings()
+```
+
+## Purpose
+
+While refactoring the Paraclu code, I wondered if some data structures would be
+more efficient than `data.frame`s.
+
+## Example data
+
+Let's focus on the clustering of positions with scores from one strand of one
+chromosome, because this is where the algorithm is recursive and hard to
+parallelise.
+
+In the original implementation the input in two columns of a `data.frame`.  Here
+I also try a `Pairs` object, or just two separate arguments for the positions
+and scores.
+
+```{r example_data}
+ctss <- CTSSnormalizedTpmGR(exampleCAGEexp,1)
+isSorted(ctss)
+ctss.df <- as.data.frame(granges(ctss))
+ctss.df$tpm <- decode(score(ctss))
+ctss.df$pos <- ctss.df$start
+ctss.df$end <- ctss.df$start <- ctss.df$width <- NULL
+
+pair <- Pairs(pos(ctss), decode(score(ctss)))
+DF <- DataFrame(pos = pos(ctss), score = decode(score(ctss)))
+l <- list(pos = pos(ctss), score = decode(score(ctss)))
+```
+
+## The paraclu parameters function
+
+The main recursive functions call a subfunction that compute the density and
+the next break point.  First, let's see if it can be optimised.
+
+`paraclu_params_df` was originally called `.paraclu1`.  The other functions
+are rewrites.
+
+```{r paraclu_params}
+paraclu_params_df <- function(ctss) {
+	sit <- nrow(ctss)
+	tot <- sum(ctss$tpm)
+	if(sit == 1) {
+		min_density <- Inf
+		br <- NA
+	}else{
+		densities_forward <- cumsum(ctss$tpm)[-sit]/(ctss$pos[2:sit] - ctss$pos[1])
+		densities_reverse <- cumsum(rev(ctss$tpm))[-sit]/(ctss$pos[sit] - ctss$pos[(sit-1):1])
+		min_densities = c(min(densities_forward), min(densities_reverse))
+		breaks <- c(which(densities_forward == min_densities[1])[1] + 1, sit + 1 - which(densities_reverse == min_densities[2])[1])
+		min_density <- min(min_densities)
+		br <- breaks[tail(which(min_densities == min_density),1)]
+	}
+	list(br = br, min_density = min_density, tot = tot, sit = sit)
+}
+paraclu_params_df(ctss.df)
+
+paraclu_params_Pairs <- function(pair) {
+  sit   <- length(pair)
+  score <- second(pair)
+  tot   <- sum(score)
+  if(sit == 1) return(list(br = NA, min_density = Inf, tot = tot, sit = sit))
+  pos   <- first(pair)
+  densities_forward <- cumsum(    score) [-sit] / (pos[2:sit] - pos[1]        )
+  densities_reverse <- cumsum(rev(score))[-sit] / (pos[sit]   - pos[(sit-1):1])
+  min_densities = c(min(densities_forward), min(densities_reverse))
+  breaks <- c(     1 +   which(densities_forward == min_densities[1])[1]
+             , sit + 1 - which(densities_reverse == min_densities[2])[1])
+  min_density <- min(min_densities)
+  br <- breaks[tail(which(min_densities == min_density),1)]
+  list(br = br, min_density = min_density, tot = tot, sit = sit)
+}
+identical(paraclu_params_Pairs(pair), paraclu_params_df(ctss.df))
+
+paraclu_params_DF <- function(DF) {
+  sit   <- nrow(DF)
+  tot   <- sum(DF$score)
+  if(sit == 1) return(list(br = NA, min_density = Inf, tot = tot, sit = sit))
+  densities_forward <- cumsum(    DF$score) [-sit] / (DF$pos[2:sit] - DF$pos[1]        )
+  densities_reverse <- cumsum(rev(DF$score))[-sit] / (DF$pos[sit]   - DF$pos[(sit-1):1])
+  min_densities = c(min(densities_forward), min(densities_reverse))
+  breaks <- c(     1 +   which(densities_forward == min_densities[1])[1]
+             , sit + 1 - which(densities_reverse == min_densities[2])[1])
+  min_density <- min(min_densities)
+  br <- breaks[tail(which(min_densities == min_density),1)]
+  list(br = br, min_density = min_density, tot = tot, sit = sit)
+}
+identical(paraclu_params_DF(DF), paraclu_params_df(ctss.df))
+
+paraclu_params_twoargs <- function(pos, score) {
+  sit   <- length(pos)
+  tot   <- sum(score)
+  if(sit == 1) return(list(br = NA, min_density = Inf, tot = tot, sit = sit))
+  densities_forward <- cumsum(    score) [-sit] / (pos[2:sit] - pos[1]        )
+  densities_reverse <- cumsum(rev(score))[-sit] / (pos[sit]   - pos[(sit-1):1])
+  min_densities = c(min(densities_forward), min(densities_reverse))
+  breaks <- c(     1 +   which(densities_forward == min_densities[1])[1]
+             , sit + 1 - which(densities_reverse == min_densities[2])[1])
+  min_density <- min(min_densities)
+  br <- breaks[tail(which(min_densities == min_density),1)]
+  list(br = br, min_density = min_density, tot = tot, sit = sit)
+}
+identical(paraclu_params_twoargs(l$pos, l$score), paraclu_params_df(ctss.df))
+
+microbenchmark::microbenchmark(
+  data.frame = paraclu_params_df(ctss.df),
+  Pairs      = paraclu_params_Pairs(pair),
+  DataFrame  = paraclu_params_DF(DF),
+  two_args   = paraclu_params_twoargs(l$pos, l$score),
+  times = 1000)
+```
+
+All functions are microsecond-fast except the DF one.  Let's use the two-
+arguments version in all the benchmarks below.
+
+## Recursive Paraclu function
+
+The original recursive function was originally called `.paraclu2`.  It computes
+extra information like dominant peak etc, which is nice but [we have a good
+function to do that _a posteriori_](.dominant_ctss.md).  Therefore we will compare
+implementations that skip that calculation.
+
+```{r paraclu2}
+# Originally called .paraclu2
+# Minor changes applied to keep ctss.df colnames.
+# Removed re-sorting of output
+paraclu_orig <- function(ctss, min_density = -Inf, clusters.df = data.frame()) {
+	if(nrow(ctss)>0){
+		params <- paraclu_params_twoargs(ctss$pos, ctss$tpm)
+		br <- params[[1]]
+		max_density <- params[[2]]
+		tot <- params[[3]]
+		sit <- params[[4]]
+		
+		if(!(max_density == Inf)){
+			new_min <- max(min_density, max_density)
+			clusters.df <- rbind(paraclu_orig(ctss = ctss[1:(br-1),], min_density = new_min, clusters.df = clusters.df), 
+			                     paraclu_orig(ctss = ctss[br:nrow(ctss),], min_density = new_min, clusters.df = clusters.df))
+		}
+		
+		return(rbind(clusters.df, data.frame(seqnames = ctss$seqnames[1], 
+                    start = min(ctss$pos), 
+                    end = max(ctss$pos), 
+                    strand = ctss$strand[1], 
+                    nr_ctss = sit, 
+		                dominant_ctss = ctss$pos[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]], 
+		                tpm = tot, 
+		                tpm.dominant_ctss = ctss$tpm[which(ctss$tpm == max(ctss$tpm))[ceiling(length(which(ctss$tpm == max(ctss$tpm)))/2)]],
+		                min_d = min_density, max_d= max_density)
+		             )
+		       )
+	}else{
+		return(clusters.df)
+	}
+}
+paraclu_orig(ctss.df) |> head()
+
+paraclu_orig_simpler_output <- function(ctss, min_density = -Inf, clusters.df = data.frame()) {
+	if(nrow(ctss)>0){
+		params <- paraclu_params_twoargs(ctss$pos, ctss$tpm)
+		br <- params[[1]]
+		max_density <- params[[2]]
+		tot <- params[[3]]
+		sit <- params[[4]]
+		
+		if(!(max_density == Inf)){
+			new_min <- max(min_density, max_density)
+			clusters.df <- rbind(paraclu_orig_simpler_output(ctss = ctss[1:(br-1),], min_density = new_min, clusters.df = clusters.df), 
+			                     paraclu_orig_simpler_output(ctss = ctss[br:nrow(ctss),], min_density = new_min, clusters.df = clusters.df))
+		}
+		
+		return(rbind(clusters.df, data.frame(seqnames = ctss$seqnames[1], 
+                    start = min(ctss$pos), 
+                    end = max(ctss$pos), 
+		                min_d = min_density, max_d= max_density)
+		             )
+		       )
+	}else{
+		return(clusters.df)
+	}
+}
+paraclu_orig_simpler_output(ctss.df) |> head()
+```
+
+Representing the clusters in the `IRanges` class looks elegant.  But is it
+efficient?  Also, since we need only two vectors, how about keeping them
+together as a pair?
+
+```{r paraclu_Pair_IRanges}
+paraclu_Pair_IRanges <- function(pair, min_density = -Inf, clusters = IRanges()) {
+  params <- paraclu_params_twoargs(first(pair), second(pair))
+
+  if (!is.na(params$br)) {
+    new_min     <- max(min_density, params$min_density)
+    clusters    <- c(paraclu_Pair_IRanges(pair[   1      : (params$br-1)], new_min, clusters), 
+                     paraclu_Pair_IRanges(pair[params$br :  length(pair)], new_min, clusters))
+  }
+  
+  c( clusters
+   , IRanges( start = min(first(pair))
+            ,   end = max(first(pair))
+            , min_d = min_density
+            , max_d = params$min_density))
+}
+paraclu_Pair_IRanges(pair)
+```
+
+If it is too slow, is it because of the `Pairs` input?  Let's replace it with
+two arguments for position and score separately.
+
+```{r paraclu_on_Pairs}
+paraclu_twoargs_IRanges <- function(pos, score, min_density = -Inf, clusters = IRanges()) {
+  params <- paraclu_params_twoargs(pos, score)
+
+  if (!is.na(params$br)) {
+    new_min     <- max(min_density, params$min_density)
+    left  <-    1      : (params$br-1)
+    right <- params$br :  length(pos)
+    clusters <- c(paraclu_twoargs_IRanges(pos[left],  score[left],  new_min, clusters), 
+                  paraclu_twoargs_IRanges(pos[right], score[right], new_min, clusters))
+  }
+  
+  c( clusters
+   , IRanges( start = min(pos)
+            ,   end = max(pos)
+            , min_d = min_density
+            , max_d = params$min_density))
+}
+paraclu_twoargs_IRanges(l$pos, l$score)
+```
+
+If it is still two slow, would it be better with a `DataFrame` output?
+
+```{r paraclu_twoargs_DF}
+paraclu_twoargs_DF <- function(pos, score, min_density = -Inf
+                               , clusters = DataFrame()) {
+  params <- paraclu_params_twoargs(pos, score)
+
+  if (!is.na(params$br)) {
+    new_min     <- max(min_density, params$min_density)
+    left  <-    1      : (params$br-1)
+    right <- params$br :  length(pos)
+    clusters <- rbind(paraclu_twoargs_DF(pos[left],  score[left],  new_min, clusters), 
+                      paraclu_twoargs_DF(pos[right], score[right], new_min, clusters))
+  }
+  
+  rbind( clusters
+   , DataFrame( start = min(pos)
+            ,   end = max(pos)
+            , min_d = min_density
+            , max_d = params$min_density))
+}
+paraclu_twoargs_DF(l$pos, l$score)
+```
+
+Or a `tibble`?
+
+```{r paraclu_twoargs_tibble}
+paraclu_twoargs_tibble <- function(pos, score, min_density = -Inf
+                               , clusters = tibble::tibble()) {
+  params <- paraclu_params_twoargs(pos, score)
+
+  if (!is.na(params$br)) {
+    new_min     <- max(min_density, params$min_density)
+    left  <-    1      : (params$br-1)
+    right <- params$br :  length(pos)
+    clusters <- rbind(paraclu_twoargs_tibble(pos[left],  score[left],  new_min, clusters), 
+                      paraclu_twoargs_tibble(pos[right], score[right], new_min, clusters))
+  }
+  
+  rbind( clusters
+   , tibble::tibble( start = min(pos)
+            ,   end = max(pos)
+            , min_d = min_density
+            , max_d = params$min_density))
+}
+paraclu_twoargs_tibble(l$pos, l$score)
+```
+
+Or a plain `data.frame`?
+
+```{r paraclu_twoargs_df}
+paraclu_twoargs_df <- function(pos, score, min_density = -Inf
+                               , clusters = data.frame()) {
+  params <- paraclu_params_twoargs(pos, score)
+
+  if (!is.na(params$br)) {
+    new_min  <- max(min_density, params$min_density)
+    left     <-    1      : (params$br - 1)
+    right    <- params$br :   length(pos)
+    clusters <- rbind(paraclu_twoargs_df(pos[left],  score[left],  new_min, clusters), 
+                      paraclu_twoargs_df(pos[right], score[right], new_min, clusters))
+  }
+  rbind( clusters
+       , data.frame( start = min(pos)
+                   ,   end = max(pos)
+                   , min_d = min_density
+                   , max_d = params$min_density))
+}
+paraclu_twoargs_df(l$pos, l$score) |> head()
+```
+
+Or do we lose time by keeping in memory slices of the original vector?
+
+```{r paraclu_fourargs_df}
+paraclu_fourargs_df <- function(pos, score, left, right, min_density = -Inf
+                               , clusters = data.frame()) {
+  range <- left : right
+  params <- paraclu_params_twoargs(pos[range], score[range])
+  br <- left - 1 + params$br
+
+  if (!is.na(params$br)) {
+    new_min     <- max(min_density, params$min_density)
+    clusters <- rbind(paraclu_fourargs_df(pos, score, left, br - 1, new_min, clusters), 
+                      paraclu_fourargs_df(pos, score, br  , right , new_min, clusters))
+  }
+  
+  rbind( clusters
+   , data.frame( start = min(pos)
+            ,   end = max(pos)
+            , min_d = min_density
+            , max_d = params$min_density))
+}
+paraclu_fourargs_df(l$pos, l$score, 1, length(l$pos)) |> head()
+```
+
+## Results:
+
+Using DataFrame or IRanges during recursion is very expensive, so let's not
+bother benchmarking replicates.
+
+```{r benchmarks_BioC}
+microbenchmark::microbenchmark(times = 1
+, tibble      = paraclu_twoargs_tibble(l$pos, l$score)
+, data.frame  = paraclu_twoargs_df(l$pos, l$score)
+, DataFrame   = paraclu_twoargs_DF(l$pos, l$score)
+, IRanges     = paraclu_twoargs_IRanges(l$pos, l$score)
+, IRanges_P   = paraclu_Pair_IRanges(pair)
+, orig_simple = paraclu_orig_simpler_output(ctss.df)
+, orig        = paraclu_orig(ctss.df)
+)
+```
+
+How about the other methods ?
+
+```{r benchmarks}
+(benchmark <- microbenchmark::microbenchmark(times = 20
+, tibble      = paraclu_twoargs_tibble(l$pos, l$score)
+, data.frame  = paraclu_twoargs_df(l$pos, l$score)
+, orig_simple = paraclu_orig_simpler_output(ctss.df)
+, orig        = paraclu_orig(ctss.df)
+, fourargs    = paraclu_fourargs_df(l$pos, l$score, 1, length(l$pos))
+))
+
+library("ggplot2") |> suppressPackageStartupMessages()
+ggplot(benchmark, aes(x = time / 1e9, y = expr, color = expr)) +
+  geom_boxplot() + 
+  scale_x_log10("time (seconds)")
+```
+
+The `data.frame` method is simplest and fastest.
+
+```{r result}
+orig_df <- paraclu_orig(ctss.df)
+new_df  <- paraclu_twoargs_df(l$pos, l$score)
+all( identical(orig_df$start, new_df$start)
+   , identical(orig_df$end  , new_df$end)
+   , identical(orig_df$min_d, new_df$min_d)
+   , identical(orig_df$max_d, new_df$max_d))
+paraclu_twoargs_df
+```
+
+## Session information
+
+```{r}
+sessionInfo()
+```

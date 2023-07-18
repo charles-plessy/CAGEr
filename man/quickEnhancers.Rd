@@ -46,6 +46,7 @@ Other CAGEr object modifiers:
 \code{\link{getCTSS}()},
 \code{\link{normalizeTagCount}()},
 \code{\link{quantilePositions}()},
+\code{\link{resetCAGEexp}()},
 \code{\link{summariseChrExpr}()}
 }
 \concept{CAGEfightR}

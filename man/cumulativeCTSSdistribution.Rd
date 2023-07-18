@@ -2,7 +2,7 @@
 % Please edit documentation in R/CumulativeDistributionMethods.R
 \name{cumulativeCTSSdistribution}
 \alias{cumulativeCTSSdistribution}
-\alias{cumulativeCTSSdistribution,CAGEr-method}
+\alias{cumulativeCTSSdistribution,CAGEexp-method}
 \title{Cumulative sums of CAGE counts along genomic regions}
 \usage{
 cumulativeCTSSdistribution(
@@ -12,7 +12,7 @@ cumulativeCTSSdistribution(
   nrCores = NULL
 )
 
-\S4method{cumulativeCTSSdistribution}{CAGEr}(
+\S4method{cumulativeCTSSdistribution}{CAGEexp}(
   object,
   clusters = c("tagClusters", "consensusClusters"),
   useMulticore = FALSE,
@@ -31,8 +31,10 @@ cumulativeCTSSdistribution(
 (set to \code{NULL} to use all detected cores).}
 }
 \value{
-In \code{CAGEexp} objects, cumulative sums are stored
-in the metadata slot using the \code{RleList} class.
+In \code{CAGEexp} objects, cumulative sums for the \emph{tag clusters} are
+stored in the metadata slot using the \code{RleList} class.  For \emph{consensus
+clusters}, they are stored in \emph{assays} of the \code{consensusClusters} experiment
+slot of the \code{CAGEexp} object.
 }
 \description{
 Calculates the cumulative sum of normalised CAGE counts along each tag
@@ -56,6 +58,7 @@ Other CAGEr object modifiers:
 \code{\link{normalizeTagCount}()},
 \code{\link{quantilePositions}()},
 \code{\link{quickEnhancers}()},
+\code{\link{resetCAGEexp}()},
 \code{\link{summariseChrExpr}()}
 
 Other CAGEr clusters functions: 
@@ -72,6 +75,8 @@ Other CAGEr clusters functions:
 }
 \author{
 Vanja Haberle
+
+Charles Plessy
 }
 \concept{CAGEr clusters functions}
 \concept{CAGEr object modifiers}

@@ -1,4 +1,4 @@
-#' @include AllClasses.R Annotations.R CAGEexp.R CAGEr.R ClusteringMethods.R ClusteringFunctions.R CTSS.R Multicore.R
+#' @include Annotations.R CAGEexp.R CAGEr.R ClusteringMethods.R ClusteringFunctions.R CTSS.R Multicore.R
 
 #' @name aggregateTagClusters
 #' 
@@ -91,17 +91,35 @@ setGeneric( "aggregateTagClusters"
                     , qLow = NULL, qUp = NULL
                     , maxDist = 100
                     , useMulticore = FALSE, nrCores = NULL)
-          	  standardGeneric("aggregateTagClusters"))
+            standardGeneric("aggregateTagClusters"))
 
 #' @rdname aggregateTagClusters
 
 setMethod( "aggregateTagClusters", "CAGEr"
          , function ( object, tpmThreshold, excludeSignalBelowThreshold
                     , qLow, qUp, maxDist, useMulticore, nrCores) {
-  objname <- deparse(substitute(object))
-
-  consensus.clusters <- .aggregateTagClustersGR( object, tpmThreshold = tpmThreshold
-                                               , qLow = qLow, qUp = qUp, maxDist = maxDist)
+  
+  # Prepare the GRangesList object containing the TCs.
+  if (all( !is.null(qLow), !is.null(qUp))) {
+   # If using quantiles, correct start and end.
+   TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
+   # Define start and and according to quantile positions.
+   # Quantile coordinates are relative to start position: a value of "1" means
+   # "first base of the cluster".  Therefore, 1 base must be subtracted in the
+   # function below
+   TC.list <- endoapply(TC.list, function(x) {
+     end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x) - 1L
+     start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x) - 1L
+     x})
+  } else {
+   TC.list <- tagClustersGR(object)
+  }
+  # Filter out TCs with too low score.
+  TC.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpmThreshold])
+  
+  # Compute consensus clusters
+  consensus.clusters <-
+    .aggregateTagClustersGRL(gr.list = TC.list, CAGEexp_obj = object, maxDist = maxDist)
   
   if (excludeSignalBelowThreshold) {
     filter <- .filterCtss( object
@@ -109,58 +127,38 @@ setMethod( "aggregateTagClusters", "CAGEr"
                          , nrPassThreshold = 1
                          , thresholdIsTpm  = TRUE)
   } else filter <- TRUE
-	
+
     CTSScoordinatesGR(object)$cluster <-
       ranges2names(CTSScoordinatesGR(object), consensus.clusters)
     se <- CTSStagCountSE(object)[filter & decode(filteredCTSSidx(object)), ]
-    consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters)
+    consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters, tpmThreshold = tpmThreshold)
     score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
     object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
     object
 })
 
-
-setGeneric( ".aggregateTagClustersGR"
-          , function( object, tpmThreshold = 5
-                    , qLow = NULL, qUp = NULL, maxDist = 100)
-          	  standardGeneric(".aggregateTagClustersGR"))
-
-setMethod( ".aggregateTagClustersGR", "CAGEr"
-         , function ( object, tpmThreshold
-                    , qLow, qUp, maxDist) {
-  if (all( !is.null(qLow), !is.null(qUp))) {
-    TC.list <- tagClustersGR(object, returnInterquantileWidth = TRUE,  qLow = qLow, qUp = qUp)
-    TC.list <- endoapply(TC.list, function(x) {
-      end(x)   <- mcols(x)[[paste0("q_", qUp) ]] + start(x)
-      start(x) <- mcols(x)[[paste0("q_", qLow)]] + start(x)
-      x})
-  } else {
-    TC.list <- tagClustersGR(object)
-  }
-
-  # Filter out TCs with too low score.
-  gr.list <- endoapply(TC.list, function (gr) gr <- gr[score(gr) >= tpmThreshold])
-  
+.aggregateTagClustersGRL <- function ( gr.list, CAGEexp_obj, maxDist) {
   # Aggregate clusters by expanding and merging TCs from all samples.
   clusters.gr <- unlist(gr.list)
-  suppressWarnings(start(clusters.gr) <- start(clusters.gr) - round(maxDist/2)) # Suppress warnings
-  suppressWarnings(end(clusters.gr)   <- end(clusters.gr)   + round(maxDist/2)) # because we trim later
-  clusters.gr <- reduce(trim(clusters.gr))  # By definition of `reduce`, they will not overlap
-  # Note that the clusters are temporarily too broad, because we added `maxDist)` to the TCs…
+  clusters.gr <- reduce(clusters.gr, min.gapwidth = maxDist)
+
+  # CTSS with score that is sum of all samples
+  ctss <- CTSScoordinatesGR(CAGEexp_obj)
+  score(ctss) <- rowSums(CTSSnormalizedTpmDF(CAGEexp_obj) |> DelayedArray::DelayedArray() )
   
-  # CTSS with score that is sum od all samples
-  ctss <- CTSScoordinatesGR(object)
-  score(ctss) <- rowSums(CTSSnormalizedTpmDF(object) |> DelayedArray::DelayedArray() )
+  # Stop if some TCs do not overlap with any CTSS, because the rest of the code
+  # is not robust against that.
+  if (any(countOverlaps(clusters.gr, ctss) == 0))
+    stop("Some TCs do not overlap any CTSS!")
   
   clusters.gr <- .ctss_summary_for_clusters(ctss, clusters.gr, removeSingletons = FALSE)
 
   names(clusters.gr) <- as.character(clusters.gr)
   .ConsensusClusters(clusters.gr)
-})
-
+}
 
 setGeneric( ".CCtoSE" , function(se, consensus.clusters, tpmThreshold = 1)
-          	  standardGeneric(".CCtoSE"))
+            standardGeneric(".CCtoSE"))
 
 setMethod( ".CCtoSE"
          , c(se = "RangedSummarizedExperiment")
@@ -174,18 +172,19 @@ setMethod( ".CCtoSE"
       se <- se[rowSums(DelayedArray(assays(se)[["normalizedTpmMatrix"]])) > tpmThreshold,]
     
     .rowsumAsMatrix <- function(DF, names) {
-      rs <- rowsum(as.matrix(DelayedArray(DF)), as.factor(names))
-      if (rownames(rs)[1] == "") # If some CTSS were not in clusters
-        rs <- rs[-1, , drop = FALSE]
-      rs
-      }
+      # First, remove CTSS that do not match clusters
+      DF <- DF[names != "",]
+      names <- names[names != ""]
+      rs <- rowsum(as.data.frame(DF), as.factor(names), reorder = FALSE)
+      as.matrix(rs)
+    }
     
     counts <- .rowsumAsMatrix(assays(se)[["counts"]], rowRanges(se)$cluster)
     norm   <- .rowsumAsMatrix(assays(se)[["normalizedTpmMatrix"]], rowRanges(se)$cluster)
 
-	  SummarizedExperiment( rowRanges = consensus.clusters[rownames(counts)]
-	                      , assays    = SimpleList( counts     = counts
-	                                              , normalized = norm))
+    SummarizedExperiment( rowRanges = consensus.clusters[rownames(counts)]
+                        , assays    = SimpleList( counts     = counts
+                                                , normalized = norm))
 })
 
 #' @name CustomConsensusClusters
@@ -235,15 +234,14 @@ setGeneric( "CustomConsensusClusters"
                     , threshold       = 0
                     , nrPassThreshold = 1
                     , thresholdIsTpm  = TRUE)
-          	  standardGeneric("CustomConsensusClusters"))
+            standardGeneric("CustomConsensusClusters"))
 
 #' @rdname CustomConsensusClusters
 
 setMethod( "CustomConsensusClusters", c("CAGEexp", "GRanges")
          , function (object, clusters
                     , threshold, nrPassThreshold, thresholdIsTpm  = TRUE) {
-  objname <- deparse(substitute(object))
-  
+
   clusters <- .ConsensusClusters(clusters)
   
   filter <- .filterCtss( object
