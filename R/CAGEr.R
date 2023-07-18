@@ -206,10 +206,15 @@ setMethod(".filterCtss", "RangedSummarizedExperiment", function (object, thresho
   assay <- ifelse(thresholdIsTpm, "normalizedTpmMatrix", "counts")
   if(assay == "normalizedTpmMatrix" & is.null(assays(object)[[assay]]))
     stop("Normalise the CAGEr object first with ", sQuote("normalizeTagCount()"), ".")
-  .filterCtss(DelayedArray(assays(object)[[assay]]), threshold, nrPassThreshold, thresholdIsTpm)
+  .filterCtss(assays(object)[[assay]], threshold, nrPassThreshold, thresholdIsTpm)
 })
 
-setMethod(".filterCtss", "DelayedArray", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
-  nr.pass.threshold <- rowSums(object >= threshold)
-  Rle(nr.pass.threshold >= min(nrPassThreshold, ncol(object)))
+setMethod(".filterCtss", "DataFrame", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
+  nr.pass.threshold <- rowSums.RleDataFrame(lapply(object, \(x) x > threshold) |> DataFrame())
+  nr.pass.threshold >= min(nrPassThreshold, ncol(object))
+})
+
+setMethod(".filterCtss", "matrix", function (object, threshold, nrPassThreshold, thresholdIsTpm) {
+  nr.pass.threshold <- rowSums(object > threshold)
+  nr.pass.threshold >= min(nrPassThreshold, ncol(object))
 })

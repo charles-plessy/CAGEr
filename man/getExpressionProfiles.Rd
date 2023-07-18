@@ -3,7 +3,7 @@
 \name{getExpressionProfiles}
 \alias{getExpressionProfiles}
 \alias{getExpressionProfiles,CAGEexp-method}
-\alias{getExpressionProfiles,DelayedArray-method}
+\alias{getExpressionProfiles,matrix-method}
 \title{CAGE data based expression clustering}
 \usage{
 getExpressionProfiles(
@@ -26,7 +26,7 @@ getExpressionProfiles(
   yDim = 5
 )
 
-\S4method{getExpressionProfiles}{DelayedArray}(
+\S4method{getExpressionProfiles}{matrix}(
   object,
   what = c("CTSS", "consensusClusters"),
   tpmThreshold = 5,

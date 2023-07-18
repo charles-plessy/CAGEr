@@ -245,7 +245,6 @@ setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
 #' function being called:
 #' 
 #' * `CTSStagCountDF`: A [`DataFrame`] of [`Rle`] integers.
-#' * `CTSStagCountDA`: A [`DelayedArray`] wrapping a `DataFrame` of `Rle` integers.
 #' * `CTSStagCountSE`: A [`RangedSummarizedExperiment`]` containing a `DataFrame`
 #'    of `Rle` integers.
 #' * `CTSStagCountGR`: A `CTSS` object (wrapping `GRanges`) containing a `score`
@@ -271,24 +270,6 @@ setGeneric("CTSStagCountDF", function(object) standardGeneric("CTSStagCountDF"))
 
 setMethod("CTSStagCountDF", "CAGEexp", function (object)
   assay(CTSStagCountSE(object)))
-
-
-#' @name CTSStagCountDA
-#' @rdname CTSStagCount
-#' 
-#' @examples 
-#' CTSStagCountDA(exampleCAGEexp)
-#' 
-#' @import DelayedArray DelayedArray
-#' @export
-
-setGeneric("CTSStagCountDA", function(object) tandardGeneric("CTSStagCountDA"))
-
-#' @rdname CTSStagCount
-
-setMethod("CTSStagCountDA", signature(object = "CAGEr"), function (object)
-  DelayedArray(CTSStagCountDF(object)))
-
 
 #' @name CTSStagCountGR
 #' @rdname CTSStagCount
