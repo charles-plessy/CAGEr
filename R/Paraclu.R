@@ -143,7 +143,7 @@ setMethod("paraclu", "CTSS",
                          , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
   # Stich the results back as a GRanges object
   table <- expand.grid(seqnames = levels(f[[1]]), strand = levels(f[[2]]))
-  rownames(table) <- as.character(rownames(table))
+  rownames(table) <- paste(table$seqnames, table$strand, sep='.')
   clusters <- sapply(names(result.list), \(name)
     GRanges( seqnames = table[name, "seqnames"]
            , ranges   = result.list[[name]]
