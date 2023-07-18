@@ -94,7 +94,9 @@ setMethod( "cumulativeCTSSdistribution", "CAGEexp"
   ctss <- c(ctss, fill[!fill %in% ctss]) |> sort()
   o <- findOverlaps(query = clusters, subject = ctss)
   grouped_scores <- extractList(score(ctss), o)
-  safe_cumsum(grouped_scores)
+  cs <- safe_cumsum(grouped_scores)
+  names(cs) <- names(clusters)
+  cs
 }
 
 # Strangely it looks like the cumsums do not tolerate RleLists where the last
