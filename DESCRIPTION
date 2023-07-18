@@ -63,7 +63,6 @@ Collate:
     'CAGEfightR.R'
     'Paraclu.R'
     'CorrelationMethods.R'
-    'CumulativeDistributionFunctions.R'
     'GetMethods.R'
     'CumulativeDistributionMethods.R'
     'ExportFunctions.R'
