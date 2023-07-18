@@ -80,9 +80,13 @@ setMethod( "quantilePositions", "CAGEexp"
                       , q        = c(qLow, qUp))
       },
       BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
-    for (qName in paste("q", c(qLow, qUp), sep = "_")) {
-      assays(consensusClustersSE(object), withDimnames=FALSE)[[qName]] <-
-        DataFrame(lapply(cons.clusters.l, function(gr) mcols(gr)[,qName]))
+    message("\t-> ", "all samples grouped")
+    qpos <- .get.quant.pos( cum.sums = object@metadata$CTSScumulativesConsensusClustersAll
+                            , clusters = rowRanges(consensusClustersSE(object))
+                            , q = c(qLow, qUp))
+    for (quantile in c(qLow, qUp)) {
+      qName <- paste("q", quantile, sep = "_")
+      mcols(rowRanges(consensusClustersSE(object)))[[qName]] <- mcols(qpos)[[qName]]
     }
   }
   object

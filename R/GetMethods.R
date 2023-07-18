@@ -608,35 +608,16 @@ setMethod( "consensusClustersGR", "CAGEexp"
     score(ctss) <- CTSSnormalizedTpmDF(object) |> rowSums.RleDataFrame()
     ctss <- ctss[ctss$filteredCTSSidx]
     cc <- .ctss_summary_for_clusters(ctss, cc, removeSingletons = FALSE)
-    if(isTRUE(returnInterquantileWidth))
-      cc <- bioC2_cc_iqw(clusters = cc, ctss = ctss, qLow = qLow, qUp = qUp)
+    if(isTRUE(returnInterquantileWidth)) {
+      qLowName <- paste0("q_", qLow)
+      qUpName  <- paste0("q_", qUp)
+      mcols(cc)[["interquantile_width"]] <- 
+        mcols(cc)[[qUpName]] - mcols(cc)[[qLowName]] + 1
+    }
   }
   names(cc) <- as.character(cc)
   cc
 })
-
-## Used information from the benchmark to pick a function that is fast
-bioC2_cc_iqw <- function(clusters, ctss, qLow = 0.1, qUp = 0.9) {
-  if (is.null(qLow) | is.null(qUp))
-    stop( "Set ", sQuote("qLow"), " and ", sQuote("qUp")
-        , " to specify the quantile positions used to calculate width.")
-  o <- findOverlaps(query = cc, subject = ctss)
-  rl <- rle(queryHits(o))$length
-  grouped_scores <- extractList(score(ctss), o)
-  grouped_scores_cumsum <- sapply(grouped_scores, cumsum)
-  
-  qLowName <- paste0("q_", qLow)
-  qUpName  <- paste0("q_", qUp)
-  
-  clusters <- .get.quant.pos(cum.sums = grouped_scores_cumsum,
-    clusters = clusters, q = c(qLow, qUp))
-
-  mcols(clusters)[["interquantile_width"]] <- 
-    mcols(clusters)[[qUpName]] - mcols(clusters)[[qLowName]] + 1
-  
-  clusters
-}
-
 
 #' @name consensusClustersSE
 #' @rdname consensusClusters
