@@ -88,6 +88,10 @@ setMethod( "cumulativeCTSSdistribution", "CAGEexp"
 
 # See benchmarks/cumulative_sums.md
 .clusterCumSums <- function(ctss, clusters) {
+  # Fill gaps with zeros
+  fill <- GPos(clusters)
+  score(fill) <- Rle(0L)
+  ctss <- c(ctss, fill[!fill %in% ctss]) |> sort()
   o <- findOverlaps(query = clusters, subject = ctss)
   grouped_scores <- extractList(score(ctss), o)
   safe_cumsum(grouped_scores)
