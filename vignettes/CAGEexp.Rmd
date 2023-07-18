@@ -340,6 +340,19 @@ corr.m <- plotCorrelation2( ce, samples = "all"
                           , method = "pearson")
 ```
 
+### Sequence distribution at the transcription start site.
+
+The presence of the core promoter motifs can be checked with the `TSSlogo()`
+function, provided that the _CAGEexp_ object was built with a _BSgenome_
+package allowing access to the sequence flanking the transcription start sites.
+
+```{r TSSlogo, fig.cap="Sequence logo at the transcription start site"}
+TSSlogo(CTSScoordinatesGR(ce) |> subset(annotation == "promoter"), upstream = 35)
+```
+
+The `TSSlogo()` function can also be used later.  When passed _tag clusters_
+or _consensus clusters_, it will automatically center the regions on their
+_dominant peak_.
 
 Merging of replicates
 ---------------------

@@ -72,6 +72,7 @@ Other CAGEr annotation functions:
 \code{\link{ranges2names}()}
 
 Other CAGEr plot functions: 
+\code{\link{TSSlogo}()},
 \code{\link{hanabiPlot}()},
 \code{\link{plotCorrelation}()},
 \code{\link{plotExpressionProfiles}()},

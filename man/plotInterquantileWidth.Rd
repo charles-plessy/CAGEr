@@ -63,6 +63,7 @@ plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
 }
 \seealso{
 Other CAGEr plot functions: 
+\code{\link{TSSlogo}()},
 \code{\link{hanabiPlot}()},
 \code{\link{plotAnnot}()},
 \code{\link{plotCorrelation}()},

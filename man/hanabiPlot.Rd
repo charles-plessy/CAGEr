@@ -52,6 +52,7 @@ Other CAGEr richness functions:
 \code{\link{plot.hanabi}()}
 
 Other CAGEr plot functions: 
+\code{\link{TSSlogo}()},
 \code{\link{plotAnnot}()},
 \code{\link{plotCorrelation}()},
 \code{\link{plotExpressionProfiles}()},

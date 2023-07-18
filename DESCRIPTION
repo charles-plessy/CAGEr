@@ -45,6 +45,7 @@ Suggests:
     BSgenome.Drerio.UCSC.danRer7,
     DESeq2,
     FANTOM3and4CAGE,
+    ggseqlogo,
     BiocStyle,
     knitr,
     rmarkdown
@@ -84,6 +85,7 @@ Collate:
     'ShiftingFunctions.R'
     'ShiftingMethods.R'
     'StrandInvaders.R'
+    'TSSlogo.R'
 LazyData: true
 VignetteBuilder: knitr
 RoxygenNote: 7.2.1

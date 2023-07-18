@@ -179,6 +179,7 @@ plotCorrelation2(exampleCAGEexp, what = "consensusClusters", value = "normalized
 }
 \seealso{
 Other CAGEr plot functions: 
+\code{\link{TSSlogo}()},
 \code{\link{hanabiPlot}()},
 \code{\link{plotAnnot}()},
 \code{\link{plotExpressionProfiles}()},
