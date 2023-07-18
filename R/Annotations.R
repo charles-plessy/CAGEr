@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEexp.R
+#' @include CAGEexp.R
 
 #' @name plotAnnot
 #'
