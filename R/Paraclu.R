@@ -139,7 +139,7 @@ setMethod("paraclu", "CTSS",
   f <- list(seqnames(object), strand(object))
   object.list <- split(object, f, drop = TRUE)
   # Run Paraclu on each element
-  object.listofpairs <- lapply(object.list, \(x) Pairs(pos(x), score(x)))
+  object.listofpairs <- lapply(object.list, \(x) Pairs(pos(x), decode(score(x))))
   result.list <- bplapply( object.listofpairs, paraclu
                          , BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
   # Stich the results back as a GRanges object
