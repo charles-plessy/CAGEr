@@ -76,6 +76,7 @@ Other CAGEr object modifiers:
 \code{\link{getCTSS}()},
 \code{\link{normalizeTagCount}()},
 \code{\link{quickEnhancers}()},
+\code{\link{resetCAGEexp}()},
 \code{\link{summariseChrExpr}()}
 
 Other CAGEr clusters functions: 

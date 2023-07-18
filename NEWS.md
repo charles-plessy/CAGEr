@@ -17,8 +17,9 @@ BUG FIXES
     
 NEW FEATURES
 
--   Allow URLs to files in `getCTSS()` (Fixes #50)
+-   Allow URLs to files in `getCTSS()` (Fixes #50).
 -   Accelerated the computation of quantile position by ~20 times.
+-   New `resetCAGEexp()` function.
 
 # Changes in version 2.6.0
 
