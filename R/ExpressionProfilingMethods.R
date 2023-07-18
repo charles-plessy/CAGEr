@@ -89,10 +89,10 @@ setMethod( "getExpressionProfiles", "CAGEexp"
 		stop("Provided CAGEexp object contains only one sample! At least two samples are required for expression profiling!")
   
   tpm.mx <- switch( what
-                  , CTSS              = CTSSnormalizedTpmDF(object)
+                  , CTSS              = CTSSnormalizedTpmDF(object) |> as.data.frame() |> as.matrix()
                   , consensusClusters = assay(consensusClustersSE(object), "normalized"))
   
-  l   <- getExpressionProfiles( object = DelayedArray(tpm.mx)
+  l   <- getExpressionProfiles( object = tpm.mx
                               , tpmThreshold = tpmThreshold, nrPassThreshold = nrPassThreshold
                               , method = method, xDim = xDim, yDim = yDim)
   cl  <- l[[1]]
@@ -113,7 +113,6 @@ setMethod( "getExpressionProfiles", "CAGEexp"
 #' @rdname getExpressionProfiles
 #' @importFrom som som
 #' @importFrom stats kmeans
-#' @import DelayedMatrixStats
 
 setMethod("getExpressionProfiles", "DelayedArray",
 function (object, what, tpmThreshold, nrPassThreshold, method, xDim, yDim) {

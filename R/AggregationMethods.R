@@ -144,7 +144,7 @@ setMethod( "aggregateTagClusters", "CAGEr"
 
   # CTSS with score that is sum of all samples
   ctss <- CTSScoordinatesGR(CAGEexp_obj)
-  score(ctss) <- rowSums(CTSSnormalizedTpmDF(CAGEexp_obj) |> DelayedArray::DelayedArray() )
+  score(ctss) <- rowSums.RleDataFrame(CTSSnormalizedTpmDF(CAGEexp_obj))
   
   # Stop if some TCs do not overlap with any CTSS, because the rest of the code
   # is not robust against that.
@@ -169,7 +169,7 @@ setMethod( ".CCtoSE"
       rowRanges(se)$cluster <- ranges2names(rowRanges(se), consensus.clusters)
     
     if (tpmThreshold > 0)
-      se <- se[rowSums(DelayedArray(assays(se)[["normalizedTpmMatrix"]])) > tpmThreshold,]
+      se <- se[rowSums.RleDataFrame(assays(se)[["normalizedTpmMatrix"]]) > tpmThreshold,]
     
     .rowsumAsMatrix <- function(DF, names) {
       # First, remove CTSS that do not match clusters

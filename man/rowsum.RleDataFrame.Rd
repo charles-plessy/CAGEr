@@ -4,7 +4,7 @@
 \alias{rowsum.RleDataFrame}
 \title{rowsum function for Rle DataFrames}
 \usage{
-rowsum.RleDataFrame(x, group, reorder = TRUE, na.rm = FALSE, ...)
+\method{rowsum}{RleDataFrame}(x, group, reorder = TRUE, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{A \code{DataFrame} containing only numerical \code{Rle} columns.}
