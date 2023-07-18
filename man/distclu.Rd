@@ -10,30 +10,30 @@ distclu(
   object,
   max.dist = 20,
   removeSingletons = FALSE,
-  keepSingletonsAbove = Inf,
-  useMulticore = FALSE,
-  nrCores = NULL
+  keepSingletonsAbove = Inf
 )
 
 \S4method{distclu}{SummarizedExperiment}(
   object,
   max.dist = 20,
   removeSingletons = FALSE,
-  keepSingletonsAbove = Inf,
-  useMulticore = FALSE,
-  nrCores = NULL
+  keepSingletonsAbove = Inf
 )
 
 \S4method{distclu}{CTSS}(
   object,
   max.dist = 20,
   removeSingletons = FALSE,
-  keepSingletonsAbove = Inf,
-  useMulticore = FALSE,
-  nrCores = NULL
+  keepSingletonsAbove = Inf
 )
 }
 \arguments{
+\item{object}{The \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} object
+containing CTSS information.}
+
+\item{max.dist}{Maximal distance between two neighbouring CTSSs for them to
+be part of the same cluster.}
+
 \item{removeSingletons}{Logical indicating if tag clusters containing only
 one CTSS be removed.}
 
@@ -47,8 +47,7 @@ in removing all singleton TCs when \code{removeSingletons = TRUE}.}
 Distance clustering
 }
 \examples{
-CAGEr:::.paraclu(first(pair)[1:10], second(pair)[1:10])
-distclu(ctss[1:10])
+distclu(CTSSnormalizedTpmGR(exampleCAGEexp, 1)[1:10])
 distclu(CTSStagCountSE(exampleCAGEexp)[1:25,])
 
 }

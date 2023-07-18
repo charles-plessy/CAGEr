@@ -56,6 +56,7 @@
 #' @family CAGEr clustering methods
 #' 
 #' @importFrom utils tail
+#' @importFrom S4Vectors Pairs first second
 #' 
 #' @examples 
 #' (ctss <- CTSSnormalizedTpmGR(exampleCAGEexp,1))
@@ -172,6 +173,8 @@ setMethod("paraclu", "CTSS",
   as(clusters, "TagClusters")
 })
 
+#' @rdname paraclu
+
 setMethod("paraclu", "GRanges",
   function( object
           , minStability = 1, maxLength = 500
@@ -184,6 +187,8 @@ setMethod("paraclu", "GRanges",
          , reduceToNonoverlapping = reduceToNonoverlapping
          , useMulticore = useMulticore, nrCores = nrCores)
 })
+
+#' @rdname paraclu
 
 setMethod("paraclu", "SummarizedExperiment",
   function( object

@@ -53,7 +53,7 @@
 #' @details The `"distclu"` method is an implementation of simple distance-based
 #' clustering of data attached to sequences, where two neighbouring TSSs are
 #' joined together if they are closer than some specified distance (see
-#' [`distclu-functions`] for implementation details.
+#' [`GenomicRanges::reduce`] for implementation details.
 #' 
 #' `"paraclu"` is an implementation of Paraclu algorithm for parametric
 #' clustering of data attached to sequences (Frith _et al._, Genome Research,
@@ -138,8 +138,7 @@ setMethod( "clusterCTSS", "CAGEexp"
   if (method == "distclu") {
     ctss.cluster.list <-  distclu( object = data[decode(filteredCTSSidx(object)),]
                                  , max.dist = maxDist, removeSingletons = removeSingletons
-                                 , keepSingletonsAbove = keepSingletonsAbove
-                                 , useMulticore = useMulticore, nrCores = nrCores)
+                                 , keepSingletonsAbove = keepSingletonsAbove)
   } else if (method == "paraclu") {
     ctss.cluster.list <-  paraclu( object = data[decode(filteredCTSSidx(object)),]
                                  , minStability = minStability, maxLength = maxLength

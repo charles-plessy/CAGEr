@@ -71,6 +71,13 @@ NULL
 }
 
 #' Distance clustering
+#' 
+#' @param object The [`SummarizedExperiment::RangedSummarizedExperiment`] object
+#'        containing CTSS information.
+#' 
+#' @param max.dist Maximal distance between two neighbouring CTSSs for them to
+#'        be part of the same cluster.
+#' 
 #' @param removeSingletons Logical indicating if tag clusters containing only
 #'        one CTSS be removed.
 #' 
@@ -92,8 +99,7 @@ NULL
 #' @family CAGEr clustering methods
 #' 
 #' @examples 
-#' CAGEr:::.paraclu(first(pair)[1:10], second(pair)[1:10])
-#' distclu(ctss[1:10])
+#' distclu(CTSSnormalizedTpmGR(exampleCAGEexp, 1)[1:10])
 #' distclu(CTSStagCountSE(exampleCAGEexp)[1:25,])
 #' 
 #' @export
@@ -103,14 +109,13 @@ setGeneric("distclu",
     object,
     max.dist = 20,
     removeSingletons = FALSE,
-    keepSingletonsAbove = Inf,
-    useMulticore = FALSE, nrCores = NULL
+    keepSingletonsAbove = Inf
     ) standardGeneric("distclu"))
 
 #' @rdname distclu
 
 setMethod("distclu", "SummarizedExperiment",
-          function(object, max.dist, removeSingletons, keepSingletonsAbove, useMulticore, nrCores) {
+          function(object, max.dist, removeSingletons, keepSingletonsAbove) {
   ctss.cluster.list <- GRangesList()
   for(s in colnames(object)) {
     message("\t-> ", s)
@@ -125,7 +130,7 @@ setMethod("distclu", "SummarizedExperiment",
   ctss.cluster.list
 })
 
-.distclu_CTSS <- function(object, max.dist, removeSingletons, keepSingletonsAbove, useMulticore, nrCores) {
+.distclu_CTSS <- function(object, max.dist, removeSingletons, keepSingletonsAbove) {
   clusters <- reduce(GRanges(object), min = max.dist)
   clusters <- .ctss_summary_for_clusters(object, clusters,
                                          removeSingletons    = removeSingletons,

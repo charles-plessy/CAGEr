@@ -95,7 +95,7 @@ assigns them to predefined genomic regions.
 The \code{"distclu"} method is an implementation of simple distance-based
 clustering of data attached to sequences, where two neighbouring TSSs are
 joined together if they are closer than some specified distance (see
-\code{\link{distclu-functions}} for implementation details.
+\code{\link[GenomicRanges:inter-range-methods]{GenomicRanges::reduce}} for implementation details.
 
 \code{"paraclu"} is an implementation of Paraclu algorithm for parametric
 clustering of data attached to sequences (Frith \emph{et al.}, Genome Research,

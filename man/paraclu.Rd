@@ -4,6 +4,8 @@
 \alias{paraclu}
 \alias{paraclu,Pairs-method}
 \alias{paraclu,CTSS-method}
+\alias{paraclu,GRanges-method}
+\alias{paraclu,SummarizedExperiment-method}
 \title{Parametric clustering}
 \usage{
 paraclu(
@@ -29,6 +31,28 @@ paraclu(
 )
 
 \S4method{paraclu}{CTSS}(
+  object,
+  minStability = 1,
+  maxLength = 500,
+  removeSingletons = FALSE,
+  keepSingletonsAbove = Inf,
+  reduceToNonoverlapping = TRUE,
+  useMulticore = FALSE,
+  nrCores = NULL
+)
+
+\S4method{paraclu}{GRanges}(
+  object,
+  minStability = 1,
+  maxLength = 500,
+  removeSingletons = FALSE,
+  keepSingletonsAbove = Inf,
+  reduceToNonoverlapping = TRUE,
+  useMulticore = FALSE,
+  nrCores = NULL
+)
+
+\S4method{paraclu}{SummarizedExperiment}(
   object,
   minStability = 1,
   maxLength = 500,
