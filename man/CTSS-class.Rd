@@ -8,7 +8,6 @@
 \alias{CTSS}
 \alias{coerce,CTSS,GRanges-method}
 \alias{coerce,GRanges,CTSS-method}
-\alias{CTSS.chr-class}
 \title{CAGE Transcription Start Sites}
 \usage{
 \S4method{show}{CTSS}(object)
@@ -48,10 +47,6 @@ class.  It is used by \emph{CAGEr} for type safety.
 
 The \code{CTSS} constructor takes the same arguments as \code{\link[GenomicRanges:GPos-class]{GenomicRanges::GPos}},
 plus \code{bsgenomeName}, and minus \code{stitch}, which is hardcoded to \code{FALSE}.
-
-The \code{CTSS.chr} class represents a \code{CTSS} object that is
-guaranteed to be only on a single chromosome.  It is used internally by
-\emph{CAGEr} for type-safe polymorphic dispatch.
 }
 \details{
 The \code{genomeName} element of the \code{metadata} slot is used to store the
@@ -80,9 +75,6 @@ genome(gr) <- "foo"
 as(gr, "CTSS")
 identical(seqinfo(gr), seqinfo(as(gr, "CTSS")))
 as(as(gr, "CTSS"), "CTSS") # Make sure it works twice in a row
-
-# (internal use) Transform CTSS to CTSS.chr object
-ctss.chr <- as(CTSScoordinatesGR(exampleCAGEexp), "CTSS.chr")
 }
 \author{
 Charles Plessy
