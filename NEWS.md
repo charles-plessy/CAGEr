@@ -1,5 +1,15 @@
 # Changes in version 2.7.1
 
+BACKWARDS-INCOMPATIBLE CHANGES
+
+-   The `CTSStagCountDA` function is removed.
+-   The _dominant peak_ in `TagClusters` objects is now a `GRanges` object like
+    in `ConsensusClusters`.
+-   The `custom` method for tag clustering is removed.  It was obsoleted by
+    the newer `CustomConsensusClusters` function.
+-   The `exportToTrack` function now exports scores of _tag clusters_ and
+    _consensus clusters_ instead of setting them to zero.
+
 BUG FIXES
 
 -   Correct quantile positions, which were shifted by one base.  This bug may
@@ -18,9 +28,12 @@ BUG FIXES
 NEW FEATURES
 
 -   Allow URLs to files in `getCTSS()` (Fixes #50).
--   Accelerated the computation of quantile position by ~20 times.
+-   Accelerated the computation of cumulative sums and quantile position ~10×.
 -   New `resetCAGEexp()` function.
 -   New `flagByUpstreamSequences()` function.
+-   New `distclu` and `paraclu` functions that can run directly on `CTSS`
+    objects.  You can use them to test parameters before running the whole
+    `CAGEexp` object through `clusterCTSS`.
 
 # Changes in version 2.6.0
 
