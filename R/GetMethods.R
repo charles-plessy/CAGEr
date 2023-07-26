@@ -469,7 +469,10 @@ setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
 #' position of dominant TSS, total CAGE signal and additional information for
 #' all TCs from specified CAGE dataset (sample).  If
 #' `returnInterquantileWidth = TRUE`, interquantile width for each TC is also
-#' calculated using provided quantile positions.
+#' calculated using provided quantile positions.  The [`S4Vectors::metadata`]
+#' slot of the object contains a copy of the `CAGEexp` object's _column data_,
+#' as well as information on the clustering method in a `clusteringMethod`
+#' element.
 #' 
 #' @author Vanja Haberle
 #' @author Charles Plessy
@@ -482,6 +485,7 @@ setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
 #' tagClustersGR( exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9 )
 #' tagClustersGR( exampleCAGEexp, 1
 #'              , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9 )
+#' tagClustersGR( exampleCAGEexp )$clusteringMethod
 #' 
 #' @export
 
@@ -496,6 +500,7 @@ setGeneric( "tagClustersGR"
                                   , qLow = qLow, qUp = qUp))
     names(tc.list) <- sampleLabels(object)
     metadata(tc.list)$clusteringMethod <- CTSSclusteringMethod(object)
+    metadata(tc.list)$colData <- colData(object)
     return(tc.list)
   }
   validSamples(object, sample)

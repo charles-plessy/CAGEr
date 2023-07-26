@@ -62,10 +62,12 @@ NULL
 #'                       , fitInRange = c(200, 2000), group = "sampleLabels")
 #' plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)) +
 #'   ggplot2::ggtitle("prim6 replicates")
+#' tagClustersGR(exampleCAGEexp) |> plotReverseCumulatives()
 #' 
-#' @importFrom ggplot2 aes_string geom_abline geom_step geom_vline ggplot ggtitle
+#' @importFrom ggplot2 aes geom_abline geom_step geom_vline ggplot ggtitle
 #' @importFrom ggplot2 guides guide_legend labs
 #' @importFrom ggplot2 scale_color_manual scale_x_log10 scale_y_log10
+#' @importFrom rlang .data
 #' @importFrom scales hue_pal
 #' @importFrom stats cor median
 #' @importFrom VGAM zeta
@@ -77,31 +79,13 @@ setGeneric( "plotReverseCumulatives",
           , group = NULL)
     standardGeneric("plotReverseCumulatives"))
 
-# Transform the CAGEexp in a SummarizedExperiment with the same colData
-.plotReverseCumulatives_CAGEexp_to_SE <-
-  function( object, values = c("raw", "normalized")) {
-  se <- CTSStagCountSE(object)
-  colData(se) <- colData(object)
-  assay(se) <- switch( match.arg(values)
-                     , raw        = CTSStagCountDF(object)
-                     , normalized = CTSSnormalizedTpmDF(object))
-  se
-}
-
-#' @rdname plotReverseCumulatives
-
-setMethod("plotReverseCumulatives", "CAGEexp",
+# This is the main plotting function.
+.plotReverseCumulatives <-
   function( object, values = c("raw", "normalized")
           , fitInRange = c(10, 1000)
           , group = NULL) {
-  object <- .plotReverseCumulatives_CAGEexp_to_SE(object, values)
-  plotReverseCumulatives(object, values, fitInRange, group)
-})
-
-.plotReverseCumulativesSE <-
-  function( object, values = c("raw", "normalized")
-          , fitInRange = c(10, 1000)
-          , group = NULL) {
+  if (is.null(object@metadata$colData))
+    stop("Expects a List-like object with a colData DataFrame in its metadata slot.")
   
   values <- match.arg(values)
   if (values == "raw") {
@@ -113,12 +97,12 @@ setMethod("plotReverseCumulatives", "CAGEexp",
   }
   
   if (is.null(group)) {
-    object$group <- "All samples"
+    object@metadata$colData$group <- "All samples"
     group <- "group"
   }
   
-  if (is.null(object$Colors)) {
-    object$Colors <- scales::hue_pal()(ncol(object))
+  if (is.null(object@metadata$colData$Colors)) {
+    object@metadata$colData$Colors <- scales::hue_pal()(length(object))
   }
   
   toCumSums <- function(exprValues, sampleName) {
@@ -131,40 +115,40 @@ setMethod("plotReverseCumulatives", "CAGEexp",
   }
   
   # Make a "long" table
-  DF <- lapply( colnames(assay(object))
-              , function(s) toCumSums(assay(object)[,s], s)
+  DF <- lapply( names(object)
+              , function(s) toCumSums(object[[s]], s)
               ) |> do.call(what = rbind)
   
   # Enforce original sample order
   DF$plotOrder <- DF$sampleLabels |> ordered(unique(DF$sampleLabels))
 
   p <- as.data.frame(DF) |>
-      merge( colData(object)[,c('sampleLabels', group)] |> as.data.frame()
+      merge( object@metadata$colData[,c('sampleLabels', group)] |> as.data.frame()
            , by="sampleLabels") |> ggplot() +
-    aes_string("x", "y", col = "plotOrder") +
+    aes(.data$x, .data$y, col = .data$plotOrder) +
     geom_step() +
     scale_x_log10() + scale_y_log10() +
     xlab(xlab) + ylab(ylab) +
     ggtitle("Reverse-cumulative plot")
 
   if(!is.null(fitInRange)) {
-    fit.coefs.m <- sapply(assay(object), val.range = fitInRange, \(x, val.range)
+    fit.coefs.m <- sapply(object, val.range = fitInRange, \(x, val.range)
       .fit.power.law.to.reverse.cumulative(decode(x), val.range))
     fit.slopes <- fit.coefs.m[1,]
     reference.slope <- min(median(fit.slopes), -1.05)
-    reference.library.size <- 10^floor(log10(median(sapply(assay(object), sum))))
+    reference.library.size <- 10^floor(log10(median(sapply(object, sum))))
     reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
     p <- p +
       geom_abline(intercept = reference.intercept, slope = reference.slope, color = "grey", linetype = "longdash") +
       geom_vline(xintercept = fitInRange, color = "darkgrey", linetype = "dotted") +
       scale_color_manual(
-        values = object$Colors,
+        values = object@metadata$colData$Colors,
         labels = paste0("(", formatC(-fit.slopes, format = "f", digits = 2), ") ",  names(fit.slopes))) +
       labs(subtitle = paste0("Ref. distribution alpha = ", sprintf("%.2f", -reference.slope), ", T = ", reference.library.size, ".")) +
       guides(col = guide_legend(title = "(alpha) sample names"))
   } else {
     p <- p +
-      scale_color_manual(values = object$Colors)
+      scale_color_manual(values = object@metadata$colData$Colors)
       guides(col = guide_legend(title = "Sample names"))
   }
   p + facet_wrap(group)
@@ -172,7 +156,28 @@ setMethod("plotReverseCumulatives", "CAGEexp",
 
 #' @rdname plotReverseCumulatives
 
-setMethod("plotReverseCumulatives", "SummarizedExperiment", .plotReverseCumulativesSE)
+setMethod("plotReverseCumulatives", "CAGEexp",
+          function( object, values = c("raw", "normalized")
+                  , fitInRange = c(10, 1000)
+                  , group = NULL) {
+  DF <- switch( match.arg(values)
+                , raw        = CTSStagCountDF(object)
+                , normalized = CTSSnormalizedTpmDF(object))
+  DF@metadata$colData <- colData(object)
+  # Remember DataFrames are just Lists.
+  .plotReverseCumulatives(DF, values, fitInRange, group)
+})
+
+#' @rdname plotReverseCumulatives
+
+setMethod("plotReverseCumulatives", "GRangesList",
+          function( object, values = c("raw", "normalized")
+                  , fitInRange = c(10, 1000)
+                  , group = NULL) {
+  L <- lapply(object, score) |> as("List")
+  metadata(L) <- metadata(object)
+  .plotReverseCumulatives(L, values, fitInRange, group)
+})
 
 #' @name plotInterquantileWidth
 #' 

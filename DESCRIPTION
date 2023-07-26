@@ -26,6 +26,7 @@ Imports:
     KernSmooth,
     memoise,
     plyr,
+    rlang,
     Rsamtools,
     reshape2,
     rtracklayer,

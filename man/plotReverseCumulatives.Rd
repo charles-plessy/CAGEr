@@ -3,7 +3,7 @@
 \name{plotReverseCumulatives}
 \alias{plotReverseCumulatives}
 \alias{plotReverseCumulatives,CAGEexp-method}
-\alias{plotReverseCumulatives,SummarizedExperiment-method}
+\alias{plotReverseCumulatives,GRangesList-method}
 \title{Plot reverse cumulative number of CAGE tags per CTSS}
 \usage{
 plotReverseCumulatives(
@@ -20,7 +20,7 @@ plotReverseCumulatives(
   group = NULL
 )
 
-\S4method{plotReverseCumulatives}{SummarizedExperiment}(
+\S4method{plotReverseCumulatives}{GRangesList}(
   object,
   values = c("raw", "normalized"),
   fitInRange = c(10, 1000),
@@ -79,6 +79,7 @@ plotReverseCumulatives( exampleCAGEexp, values = "normalized"
                       , fitInRange = c(200, 2000), group = "sampleLabels")
 plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)) +
   ggplot2::ggtitle("prim6 replicates")
+tagClustersGR(exampleCAGEexp) |> plotReverseCumulatives()
 
 }
 \references{
