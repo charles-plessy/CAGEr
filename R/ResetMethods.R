@@ -139,6 +139,7 @@ setMethod("resetCAGEexp", signature("CAGEexp"), function (object) {
   se <- CTSStagCountSE(object)
   assays(se) <- assays(se)['counts']
   mcols(rowRanges(se)) <- NULL
+  se <- se[decode(rowSums.RleDataFrame(assay(se))) > 0,]
   cd <- colData(object)
   cd <- cd[, ! colnames(cd) %in% c("promoter", "exon", "intron", "unknown", "unannotated", "genes", "outOfClusters")]
   cd$librarySizes <- sapply(assay(se), sum)
