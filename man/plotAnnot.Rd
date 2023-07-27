@@ -6,6 +6,7 @@
 \alias{plotAnnot,data.frame-method}
 \alias{plotAnnot,DataFrame-method}
 \alias{plotAnnot,CAGEexp-method}
+\alias{plotAnnot,GRangesList-method}
 \title{Plot annotation statistics}
 \usage{
 plotAnnot(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
@@ -15,15 +16,17 @@ plotAnnot(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
 \S4method{plotAnnot}{DataFrame}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
 
 \S4method{plotAnnot}{CAGEexp}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
+
+\S4method{plotAnnot}{GRangesList}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
 }
 \arguments{
 \item{x}{An object from which can be extracted a table with columns named
 \code{promoter}, \code{exon}, \code{intron}, \code{mapped}, \code{extracted}, \code{rdna}, and
-\code{tagdust}, that will be passed to the \code{mapStats} function.}
+\code{tagdust}, that will be passed to the \code{\link{mapStats}} function.}
 
-\item{scope}{The name of a \dQuote{scope}, that defines which data is plotted
+\item{scope}{The name of a \emph{scope}, that defines which data is plotted
 and how it is normalised, or a function implementing that scope.
-See \code{\link[=mapStatsScopes]{mapStatsScopes()}} for details on each scope.}
+See \code{\link{mapStatsScopes}} for details on each scope.}
 
 \item{title}{The title of the plot.}
 
@@ -33,18 +36,24 @@ to be pasted together.}
 
 \item{facet}{A factor or the name of a \code{colData} column of a
 \code{CAGEexp} object, to facet the samples in the sense of
-\code{ggplot2}'s \link[ggplot2:facet_wrap]{facet_wrap} function.}
+\code{ggplot2}'s \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}} function.}
 
-\item{normalise}{Whether to normalise or not. Default: TRUE.}
+\item{normalise}{Whether to normalise or not. Default: \code{TRUE}.}
 }
 \value{
-Returns invisibly a \code{ggplot2} object of class \code{c("gg", "ggplot")}.
+Returns a \code{\link[ggplot2:ggplot]{ggplot2::ggplot}} object.
 }
 \description{
-Plot maping statistics of an object containing mapping statistics in
-counts as percentages in stacked barplots.
+Extracts processing and alignment statistics from a \emph{CAGEr} object and plots
+them as counts or percentages in stacked barplots.
 }
 \details{
+When given a \code{\link{CAGEexp}} object or its \emph{column data}, what will be counted is
+the number of \emph{CAGE tags}.  When given cluster objects (\code{\link{CTSS}},
+\code{\link{TagCluster}} or \code{\link{ConsensusCluster}}) wrapped as
+a \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges::GRangesList}}, what will be counted is the number of
+\emph{clusters}.
+
 Stacked barplots with error bars inspired from
 \url{http://stackoverflow.com/questions/10417003/stacked-barplot-with-errorbars-using-ggplot2}.
 See \url{http://www.biomedcentral.com/1471-2164/14/665/figure/F1} for example.
@@ -63,7 +72,7 @@ plotAnnot(exampleCAGEexp, CAGEr:::msScope_counts , group = "myGroups")
 
 }
 \seealso{
-\code{\link[=mapStats]{mapStats()}} for a list of \emph{scopes}.
+\code{\link{mapStats}} for a list of \emph{scopes}.
 
 Other CAGEr annotation functions: 
 \code{\link{annotateCTSS}()},
