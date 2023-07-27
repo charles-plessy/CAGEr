@@ -21,6 +21,9 @@ NEW FEATURES
 -   Accelerated the computation of quantile position by ~20 times.
 -   New `resetCAGEexp()` function.
 -   New `flagByUpstreamSequences()` function.
+-   The `annotateCTSS` and `annotateConsensusClusters` function gain a
+    `upstream` and a `downstream` parameter to change the width of promoter
+    regions.
 
 # Changes in version 2.6.0
 
