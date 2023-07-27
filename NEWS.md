@@ -14,6 +14,7 @@ BUG FIXES
     `sample = NULL`.  The bug was causing incorrectly short quantile ranges.
 -   Force the cluster names to stay sorted, to avoid a bug desynchronising
     quantile information and genome coordinates.
+-   Fix #96 where the record of _tag clustering_ method was accidentally deleted.
     
 NEW FEATURES
 
