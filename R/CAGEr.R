@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEexp.R CTSS.R
+#' @include CAGEexp.R CTSS.R
 NULL
 
 #' Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for

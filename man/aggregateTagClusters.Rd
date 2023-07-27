@@ -112,6 +112,7 @@ Other CAGEr object modifiers:
 \code{\link{normalizeTagCount}()},
 \code{\link{quantilePositions}()},
 \code{\link{quickEnhancers}()},
+\code{\link{resetCAGEexp}()},
 \code{\link{summariseChrExpr}()}
 
 Other CAGEr clusters functions: 

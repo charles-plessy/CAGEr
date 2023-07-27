@@ -1,4 +1,4 @@
-#' @include AllClasses.R CAGEr.R CAGEexp.R ClusteringMethods.R CTSS.R GetMethods.R SetMethods.R
+#' @include CAGEr.R CAGEexp.R ClusteringMethods.R CTSS.R GetMethods.R SetMethods.R
 
 #' @name getCTSS
 #' 

@@ -111,3 +111,39 @@ setMethod( "mergeCAGEsets"
   CTSStagCountSE(ce) <- se
   ce
 })
+
+#' Reset a CAGEexp object
+#' 
+#' Removes all data but the raw CTSS counts and coordinates from a [`CAGEexp`]
+#' object.  Useful after removing samples.
+#' 
+#' @param object A `CAGEexp` object
+#' 
+#' @return Returns a `CAGEexp` object, which contains a non-normalised
+#' `tagCountMatrix` experiment.
+#' 
+#' @author Charles Plessy
+#' 
+#' @family CAGEr object modifiers
+#' 
+#' @examples 
+#' resetCAGEexp(exampleCAGEexp)
+#' 
+#' @export
+
+setGeneric("resetCAGEexp", function(object) standardGeneric("resetCAGEexp"))
+
+#' @rdname resetCAGEexp
+
+setMethod("resetCAGEexp", signature("CAGEexp"), function (object) {
+  se <- CTSStagCountSE(object)
+  assays(se) <- assays(se)['counts']
+  mcols(rowRanges(se)) <- NULL
+  se <- se[decode(rowSums.RleDataFrame(assay(se))) > 0,]
+  cd <- colData(object)
+  cd <- cd[, ! colnames(cd) %in% c("promoter", "exon", "intron", "unknown", "unannotated", "genes", "outOfClusters")]
+  cd$librarySizes <- sapply(assay(se), sum)
+  ce <- CAGEexp(colData = cd)
+  CTSStagCountSE(ce) <- se
+  ce
+})

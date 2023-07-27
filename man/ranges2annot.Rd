@@ -2,21 +2,27 @@
 % Please edit documentation in R/Annotations.R
 \name{ranges2annot}
 \alias{ranges2annot}
-\title{Hierarchical annotation of CTSSes}
+\title{Hierarchical annotation of genomic regions.}
 \usage{
-ranges2annot(ranges, annot)
+ranges2annot(ranges, annot, upstream = 500, downstream = 500)
 }
 \arguments{
-\item{ranges}{A \code{\link{CTSS}} object, for example extracted from a
-\code{RangedSummarizedExperiment} object with the \code{\link{rowRanges}}
+\item{ranges}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object, for example extracted from
+a \code{RangedSummarizedExperiment} object with the \code{\link{rowRanges}}
 command.}
 
-\item{annot}{A \code{\link{GRanges}} from which promoter positions will be inferred.
+\item{annot}{A \code{GRanges} from which promoter positions will be inferred.
 Typically GENCODE.  If the \code{type} metadata is present, it should
 contain \code{gene}, \code{exon} and \code{transcript} among its values.  Otherwise,
 all entries are considered transcripts. If the \code{transcript_type}
 metadata is available, the entries that may not be primary products
 (for instance \sQuote{snoRNA}) are discarded.}
+
+\item{upstream}{Number of bases \emph{upstream} the start of the transcript models
+to be considered as part of the \emph{promoter region}.}
+
+\item{downstream}{Number of bases \emph{downstream} the start of the transcript
+models to be considered as part of the \emph{promoter region}.}
 }
 \value{
 A Run-length-encoded (\code{\link{Rle}}) factor of same length as the \code{CTSS}
@@ -25,8 +31,8 @@ object, indicating if the interval is \code{promoter}, \code{exon}, \code{intron
 metadata is absent.
 }
 \description{
-Assigns region types such as \code{promoter}, \code{exon} or \code{unknown}
-to CTSSes.
+Assigns region types such as \code{promoter}, \code{exon} or \code{unknown} to genomic
+regions such as \emph{CTSS}, \emph{tag clusters}, or \emph{consensus clusters}.
 }
 \details{
 Only the biotypes that are likely to have a pol II promoter will be
@@ -49,7 +55,7 @@ CAGEr:::ranges2annot(ctss, gr1)
 gr2 <- gr1
 gr2$type            <- c("transcript",     "exon",           "transcript")
 gr2$transcript_type <- c("protein_coding", "protein_coding", "miRNA")
-CAGEr:::ranges2annot(ctss, gr2)
+CAGEr:::ranges2annot(ctss, gr2, up=500, down=20)
 
 }
 \seealso{

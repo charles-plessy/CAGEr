@@ -304,14 +304,14 @@ setMethod( "scoreShift", "CAGEexp"
 	    ## adjust colnames for columns in temp_df2
 	    colnames(temp_df2) <- paste(c("pvalue.KS", "fdr.KS"), 
 	                    group_x_str, group_y_str, sep=".")
-	    temp_df <- cbind.DataFrame(temp_df, temp_df2)
+	    temp_df <- cbind(temp_df, temp_df2)
 	}
 	
 	
 	prior_rowdata <- rowData(consensusClustersSE(object))
 	
 
-	use_df <- cbind.DataFrame(prior_rowdata, temp_df)
+	use_df <- cbind(prior_rowdata, temp_df)
   
 	## manage duplicate columns
 	use_df <- use_df[ , !duplicated(colnames(use_df))]

@@ -96,6 +96,7 @@ Other CAGEr object modifiers:
 \code{\link{getCTSS}()},
 \code{\link{quantilePositions}()},
 \code{\link{quickEnhancers}()},
+\code{\link{resetCAGEexp}()},
 \code{\link{summariseChrExpr}()}
 
 Other CAGEr normalised data functions: 

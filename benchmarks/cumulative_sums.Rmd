@@ -1,0 +1,123 @@
+---
+title: "Cumulative sums"
+author: "Charles Plessy"
+date: "2023-07-18"
+output: 
+  html_document: 
+    keep_md: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+## Purpose
+
+The function to compute cumulative sums is one of the slowest in CAGEr.
+Can we speed it up?
+
+## Setup
+
+```{r setup}
+library("CAGEr")   |> suppressPackageStartupMessages()
+library("ggplot2") |> suppressPackageStartupMessages()
+```
+
+### Example data
+
+```{r define_data}
+(clusters <- tagClustersGR(exampleCAGEexp)[[1]])
+(ctss <- CTSSnormalizedTpmGR(exampleCAGEexp, 1))
+```
+
+## Current implementation at the time the benchmark was written.
+
+```{r current_function}
+cumsums_viewApply <- function(ctss, clusters) {
+  cov <- Rle(rep(0, max(end(clusters), end(ctss))))
+  cov[start(ctss)] <- score(ctss)
+  cluster.cumsums <- Views(cov, start = start(clusters), end = end(clusters))
+  viewApply(cluster.cumsums, cumsum)
+}
+cumsums_viewApply_res <- cumsums_viewApply(ctss, clusters)
+head(cumsums_viewApply_res)
+```
+
+## Alternative functions.
+
+`cumsums_extractList_sapply` is a reduced version of the `bioC2_cc_iqw` currently
+used in `consensusClustersGR`.
+
+```{r define_functions}
+cumsums_extractList_sapply <- function(ctss, clusters) {
+  # Fill gaps with zeros
+  fill <- GPos(clusters)
+  score(fill) <- Rle(0L)
+  ctss <- c(ctss, fill[!fill %in% ctss]) |> sort()
+  o <- findOverlaps(query = clusters, subject = ctss)
+  grouped_scores <- extractList(score(ctss), o)
+  sapply(grouped_scores, cumsum)
+}
+cumsums_extractList_sapply_res <- cumsums_extractList_sapply(ctss, clusters)
+
+cumsums_extractList_aslist <- function(ctss, clusters) {
+  # Fill gaps with zeros
+  fill <- GPos(clusters)
+  score(fill) <- Rle(0L)
+  ctss <- c(ctss, fill[!fill %in% ctss]) |> sort()
+  o <- findOverlaps(query = clusters, subject = ctss)
+  grouped_scores <- extractList(score(ctss), o)
+  cumsum(grouped_scores) |> as.list()
+}
+cumsums_extractList_aslist_res <- cumsums_extractList_aslist(ctss, clusters)
+
+cumsums_extractList_RleList <- function(ctss, clusters) {
+  # Fill gaps with zeros
+  fill <- GPos(clusters)
+  score(fill) <- Rle(0L)
+  ctss <- c(ctss, fill[!fill %in% ctss]) |> sort()
+  o <- findOverlaps(query = clusters, subject = ctss)
+  grouped_scores <- extractList(score(ctss), o)
+  cumsum(grouped_scores)
+}
+cumsums_extractList_RleList_res <- cumsums_extractList_RleList(ctss, clusters)
+```
+
+The results are almost the same.  The differences appear to be rounding errors.
+
+```{r compare_results}
+# Identical
+identical(cumsums_viewApply_res[[3]],  cumsums_extractList_sapply_res[[3]])
+cumsums_viewApply_res[[3]] - cumsums_extractList_sapply_res[[3]]
+identical(cumsums_viewApply_res,  cumsums_extractList_sapply_res)
+
+# Slightly different
+identical(cumsums_viewApply_res[[3]], cumsums_extractList_RleList_res[[3]])
+cumsums_viewApply_res[[3]] - cumsums_extractList_aslist_res[[3]]
+
+# Identical
+identical(cumsums_extractList_RleList_res[[3]], cumsums_extractList_aslist_res[[3]])
+```
+
+## Benchmark
+
+```{r benchmark, fig.height=3, fig.width=9}
+(microbench_out <- microbenchmark::microbenchmark(
+  times = 100,
+  viewApply = cumsums_viewApply(ctss, clusters),
+  extractList_sapply  = cumsums_extractList_sapply(ctss, clusters),
+  extractList_lapply  = cumsums_extractList_aslist(ctss, clusters),
+  extractList_RleList = cumsums_extractList_RleList(ctss, clusters)
+))
+
+# https://statisticsglobe.com/microbenchmark-package-r
+ggplot(microbench_out, aes(x = time / 1e6, y = expr, color = expr)) +  # Plot performance comparison
+  geom_boxplot() + 
+  scale_x_log10("time (milliseconds)")
+```
+
+## Result
+
+The winner is about 10 times faster!
+
+```{r}
+sessionInfo()
+```

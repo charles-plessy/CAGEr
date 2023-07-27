@@ -65,7 +65,7 @@ for a specified CAGE experiment from a \code{\link{CAGEexp}} object.
 tagClustersGR( exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9 )
 tagClustersGR( exampleCAGEexp, 1
              , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9 )
-tagClustersGR( exampleCAGEexp )$clusteringMethod
+tagClustersGR( exampleCAGEexp )@metadata$colData
 
 }
 \seealso{
