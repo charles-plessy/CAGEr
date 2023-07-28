@@ -465,6 +465,37 @@ setMethod("annotateCTSS", c("CAGEexp", "GRanges"), function (object, ranges, ups
   object
 })
 
+#' `annotateTagClusters` annotates the _tag clusters_ of a _CAGEr_ object.
+#'   
+#' @return `annotateTagClusters` returns the input object with the same
+#' modifications as above.
+#' 
+#' @examples 
+#' exampleCAGEexp <- annotateTagClusters(exampleCAGEexp, exampleZv9_annot)
+#' tagClustersGR(exampleCAGEexp, 1)
+#' 
+#' @export
+#' @rdname annotateCTSS
+
+setGeneric("annotateTagClusters", function(object, ranges, upstream=500, downstream=500)
+  standardGeneric("annotateTagClusters"))
+
+#' @rdname annotateCTSS
+
+setMethod("annotateTagClusters", c("CAGEexp", "GRanges"), function (object, ranges, upstream=500, downstream=500){
+  if(is.null(experiments(object)$tagCountMatrix))
+    stop("Input does not contain CTSS expressiond data, see ", dQuote("getCTSS()"), ".")
+  tagClustersGR(object) <- endoapply(tagClustersGR(object), function (gr) {
+    gr$annotation <- ranges2annot(gr, ranges, upstream, downstream) 
+    if(!is.null(ranges$gene_name))
+      gr$genes    <- ranges2genes(gr, ranges)
+    gr
+    })
+  validObject(object)
+  object
+})
+
+
 #' @name annotateConsensusClusters
 #' 
 #' @rdname annotateCTSS

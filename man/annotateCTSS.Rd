@@ -3,6 +3,8 @@
 \name{annotateCTSS}
 \alias{annotateCTSS}
 \alias{annotateCTSS,CAGEexp,GRanges-method}
+\alias{annotateTagClusters}
+\alias{annotateTagClusters,CAGEexp,GRanges-method}
 \alias{annotateConsensusClusters}
 \alias{annotateConsensusClusters,CAGEexp,GRanges-method}
 \title{Annotate and compute summary statistics}
@@ -10,6 +12,10 @@
 annotateCTSS(object, ranges, upstream = 500, downstream = 500)
 
 \S4method{annotateCTSS}{CAGEexp,GRanges}(object, ranges, upstream = 500, downstream = 500)
+
+annotateTagClusters(object, ranges, upstream = 500, downstream = 500)
+
+\S4method{annotateTagClusters}{CAGEexp,GRanges}(object, ranges, upstream = 500, downstream = 500)
 
 annotateConsensusClusters(object, ranges, upstream = 500, downstream = 500)
 
@@ -42,6 +48,9 @@ a \code{genes} column is added to indicate the number of different gene symbols
 detected.
 }
 
+\code{annotateTagClusters} returns the input object with the same
+modifications as above.
+
 \code{annotateConsensusClusters} returns the input object with the same
 modifications as above.
 }
@@ -55,6 +64,9 @@ of a CAGEr object.
 \examples{
 annotateCTSS(exampleCAGEexp, exampleZv9_annot)
 colData(exampleCAGEexp)
+
+exampleCAGEexp <- annotateTagClusters(exampleCAGEexp, exampleZv9_annot)
+tagClustersGR(exampleCAGEexp, 1)
 
 annotateConsensusClusters(exampleCAGEexp, exampleZv9_annot)
 consensusClustersGR(exampleCAGEexp)
