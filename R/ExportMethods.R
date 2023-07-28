@@ -535,32 +535,27 @@ function( object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
   trk
 })
 
-#' @rdname exportToTrack
 
-setMethod( "exportToTrack", "TagClusters",
-function( object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
-  object$thick <- IRanges(object$dominant_ctss)
+.exportToTrack_clusters <- function( object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
+  object$thick <- ranges(object$dominant_ctss)
   object$dominant_ctss <- NULL
- 	names(object) <- NULL
- 	object$name <- NA
- 	object$nr_ctss <- NULL
- 	object$tpm.dominant_ctss <- NULL
-  score(object) <- 0L
-  exportToTrack( GRanges(object), qLow = qLow, qUp = qUp
-               , colorByExpressionProfile = colorByExpressionProfile
-               , oneTrack = oneTrack)
-})
-
-#' @rdname exportToTrack
-
-setMethod( "exportToTrack", "ConsensusClusters"
-           , function( object, what, qLow, qUp
-                       , colorByExpressionProfile, oneTrack) {
-  score(object) <- 0L
+  names(object) <- NULL
+  object$name <- NA
+  object$nr_ctss <- NULL
+  object$tpm.dominant_ctss <- NULL
   exportToTrack( GRanges(object), qLow = qLow, qUp = qUp
                  , colorByExpressionProfile = colorByExpressionProfile
                  , oneTrack = oneTrack)
-})
+}
+
+#' @rdname exportToTrack
+
+setMethod( "exportToTrack", "TagClusters", .exportToTrack_clusters)
+
+#' @rdname exportToTrack
+
+setMethod( "exportToTrack", "ConsensusClusters", .exportToTrack_clusters)
+
 
 # This function might be used later to restore the capacity of assigning a
 # color to each SOM cluster.

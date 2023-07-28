@@ -245,7 +245,6 @@ setMethod("CTSScoordinatesGR", "CAGEexp", function (object)
 #' function being called:
 #' 
 #' * `CTSStagCountDF`: A [`DataFrame`] of [`Rle`] integers.
-#' * `CTSStagCountDA`: A [`DelayedArray`] wrapping a `DataFrame` of `Rle` integers.
 #' * `CTSStagCountSE`: A [`RangedSummarizedExperiment`]` containing a `DataFrame`
 #'    of `Rle` integers.
 #' * `CTSStagCountGR`: A `CTSS` object (wrapping `GRanges`) containing a `score`
@@ -271,24 +270,6 @@ setGeneric("CTSStagCountDF", function(object) standardGeneric("CTSStagCountDF"))
 
 setMethod("CTSStagCountDF", "CAGEexp", function (object)
   assay(CTSStagCountSE(object)))
-
-
-#' @name CTSStagCountDA
-#' @rdname CTSStagCount
-#' 
-#' @examples 
-#' CTSStagCountDA(exampleCAGEexp)
-#' 
-#' @import DelayedArray DelayedArray
-#' @export
-
-setGeneric("CTSStagCountDA", function(object) tandardGeneric("CTSStagCountDA"))
-
-#' @rdname CTSStagCount
-
-setMethod("CTSStagCountDA", signature(object = "CAGEr"), function (object)
-  DelayedArray(CTSStagCountDF(object)))
-
 
 #' @name CTSStagCountGR
 #' @rdname CTSStagCount
@@ -485,11 +466,8 @@ setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
 #' tagClustersGR( exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9 )
 #' tagClustersGR( exampleCAGEexp, 1
 #'              , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9 )
-<<<<<<< HEAD
 #' tagClustersGR( exampleCAGEexp )$clusteringMethod
-=======
 #' tagClustersGR( exampleCAGEexp )@metadata$colData
->>>>>>> devel
 #' 
 #' @export
 
@@ -634,53 +612,18 @@ setMethod( "consensusClustersGR", "CAGEexp"
     ## sample agnostic information on IQW and dominantCTSS
     ctss <- CTSScoordinatesGR(object)
     score(ctss) <- CTSSnormalizedTpmDF(object) |> rowSums.RleDataFrame()
-    ctss2 <- ctss[ctss$filteredCTSSidx]
-    hits <- findOverlaps(query = cc, subject = ctss2)
-    cc <- bioC2_cc_iqw(o = hits, clusters = cc, ctss = ctss2,
-      qLow = qLow, qUp = qUp, return_iqw = returnInterquantileWidth)
-  }
-  cc
-})
-
-## Used information from the benchmark to pick a function that is fast
-bioC2_cc_iqw <- function(o, clusters, ctss, qLow = 0.1, qUp = 0.9, 
-                          return_iqw = TRUE) {
-    rl <- rle(queryHits(o))$length
-    
-    cluster_start_idx <- cumsum(c(1, head(rl, -1))) # Where each run starts
-    grouped_scores <- extractList(score(ctss), o)
-    ##
-    grouped_scores_cumsum <- .getCumsum(ctss, clusters)
-    
-    if (return_iqw) {
+    ctss <- ctss[ctss$filteredCTSSidx]
+    cc <- .ctss_summary_for_clusters(ctss, cc, removeSingletons = FALSE)
+    if(isTRUE(returnInterquantileWidth)) {
       qLowName <- paste0("q_", qLow)
       qUpName  <- paste0("q_", qUp)
-      if (is.null(qLow) | is.null(qUp))
-        stop( "Set ", sQuote("qLow"), " and ", sQuote("qUp")
-          , " to specify the quantile positions used to calculate width.")
-      
-      if(!is.null(qLow)) 
-        clusters <- .get.quant.pos(cum.sums = grouped_scores_cumsum,
-          clusters = clusters, q = c(qLow))
-      if(!is.null(qUp)) 
-        clusters <- .get.quant.pos(cum.sums = grouped_scores_cumsum,
-          clusters = clusters, q = c(qUp))
-      
-      mcols(clusters)[["interquantile_width"]] <- 
-        mcols(clusters)[[qUpName]] -
-        mcols(clusters)[[qLowName]] + 1
+      mcols(cc)[["interquantile_width"]] <- 
+        mcols(cc)[[qUpName]] - mcols(cc)[[qLowName]] + 1
     }
-    
-    ##
-    local_max_idx <- sapply(grouped_scores, find.dominant.idx) -1 # Start at zero
-    global_max_ids <- cluster_start_idx + local_max_idx
-    clusters$dominant_ctss <- granges(ctss)[subjectHits(o)][global_max_ids]
-    clusters$tpm.dominant_ctss <-
-      score(ctss)[subjectHits(o)][global_max_ids]
-    
-    clusters
-}
-
+  }
+  names(cc) <- as.character(cc)
+  cc
+})
 
 #' @name consensusClustersSE
 #' @rdname consensusClusters

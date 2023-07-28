@@ -105,30 +105,6 @@ setMethod("coerce", c("GRanges", "CTSS"),
   as(gp, "CTSS")
 })
 
-
-#' @description The `CTSS.chr` class represents a `CTSS` object that is 
-#' guaranteed to be only on a single chromosome.  It is used internally by
-#' _CAGEr_ for type-safe polymorphic dispatch.
-#' 
-#' @rdname CTSS-class
-#' 
-#' @import methods
-#' @importFrom GenomicRanges GPos
-#' 
-#' @examples
-#' 
-#' # (internal use) Transform CTSS to CTSS.chr object
-#' ctss.chr <- as(CTSScoordinatesGR(exampleCAGEexp), "CTSS.chr")
-
-setClass( "CTSS.chr"
-        , contains = "CTSS"
-        , validity =
-  function(object) 
-    if (length(seqlevelsInUse(object)) > 1)
-      return("Mutiple sequnames found: CTSS.chr objects should be only on a single chromosome.")
-)
-
-
 #' ConsensusClusters
 #' 
 #' The \code{ConsensusClusters} class represents consensus clusters.

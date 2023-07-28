@@ -26,6 +26,10 @@ head(consensusClustersTpm(exampleCAGEexp))
 }
 \seealso{
 \code{\link{consensusClustersSE}}
+
+Other CAGEr clustering methods: 
+\code{\link{distclu}()},
+\code{\link{paraclu}()}
 }
 \author{
 Vanja Haberle

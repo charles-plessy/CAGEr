@@ -59,10 +59,51 @@ setMethod( "cumulativeCTSSdistribution", "CAGEexp"
     ctss <- CTSSnormalizedTpmGR(object, s)
     if (!is.null(ctss$filteredCTSSidx))
       ctss <- ctss[ctss$filteredCTSSidx]
-    .getCumsum( ctss         = ctss
-              , clusters     = getClusters(object, s)
-              , useMulticore = useMulticore, nrCores = nrCores)
+      .clusterCumSums( ctss         = ctss
+                     , clusters     = getClusters(object, s))
   })
   samples.cumsum.list <- lapply(samples.cumsum.list, RleList)
+  # Also compute the cumulative sums on the whole data for consensus clusters.
+  if (clusters == "consensusClusters") {
+    ctss <- CTSScoordinatesGR(object)
+    score(ctss) <- rowSums.RleDataFrame(CTSSnormalizedTpmDF(object))
+    if (!is.null(ctss$filteredCTSSidx)) ctss <- ctss[ctss$filteredCTSSidx]
+    object@metadata$CTSScumulativesConsensusClustersAll <-
+      .clusterCumSums(ctss, rowRanges(consensusClustersSE(object)))
+  }
   setClusters(object, samples.cumsum.list)
 })
+
+#' @noRd
+#'
+#' @examples 
+#' 
+#' ctss      <- CTSSnormalizedTpmGR(exampleCAGEexp, "Zf.30p.dome")
+#' ctss      <- ctss[ctss$filteredCTSSidx]
+#' clusters  <- tagClustersGR(exampleCAGEexp, "Zf.30p.dome")
+#' clusters.cumsum <- CAGEr:::.clusterCumSums(ctss, head(clusters))
+#' decode(clusters.cumsum[[3]])
+#' ctss[queryHits(findOverlaps(ctss, clusters[3]))]
+#' clusters[3]
+
+# See benchmarks/cumulative_sums.md
+.clusterCumSums <- function(ctss, clusters) {
+  # Fill gaps with zeros
+  fill <- GPos(clusters)
+  score(fill) <- Rle(0L)
+  ctss <- c(ctss, fill[!fill %in% ctss]) |> sort()
+  o <- findOverlaps(query = clusters, subject = ctss)
+  grouped_scores <- extractList(score(ctss), o)
+  cs <- safe_cumsum(grouped_scores)
+  names(cs) <- names(clusters)
+  cs
+}
+
+# Strangely it looks like the cumsums do not tolerate RleLists where the last
+# element is empty.
+# See https://github.com/Bioconductor/S4Vectors/issues/115
+safe_cumsum <- function(x) {
+  x <- c(x, Rle(1))
+  cs <- cumsum(x)
+  head(cs, -1)
+}
