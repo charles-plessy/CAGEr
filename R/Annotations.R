@@ -21,7 +21,8 @@ NULL
 #' @param title The title of the plot.
 #' @param group A factor to group the samples, or the name of a `colData`
 #'        column of a `CAGEexp` object, or a formula giving the names of columns
-#'        to be pasted together.
+#'        to be pasted together.  If no group is provided the sample labels will
+#'        be used.
 #' @param facet A factor or the name of a `colData` column of a
 #'        `CAGEexp` object, to facet the samples in the sense of
 #'        `ggplot2`'s [`ggplot2::facet_wrap()`] function.
@@ -57,7 +58,7 @@ NULL
 #' @export
 
 setGeneric("plotAnnot", function( x, scope, title
-                                , group = "default", facet = NULL
+                                , group = "sampleLabels", facet = NULL
                                 , normalise = TRUE)
   standardGeneric("plotAnnot"))
 
@@ -166,7 +167,7 @@ setMethod("plotAnnot", "GRangesList",
 #'        and how it is normalised, or a function that implements a custom scope.
 #'        See [mapStatsScopes()] for details on each scope.
 #' @param group A vector of factors defining groups in the data.  By default,
-#'        the \dQuote{group} column of the \dQuote{libs} table.
+#'        the sample labels (which means no grouping).
 #' @param facet A vector of factors defining facets in the data (in the sense
 #'        of `ggplot2`'s [facet_wrap][ggplot2::facet_wrap()] function).
 #' @param normalise Whether to normalise or not. Default: `TRUE`.
@@ -195,18 +196,11 @@ setMethod("plotAnnot", "GRangesList",
 
 mapStats <- function( libs
                     , scope
-                    , group="default"
+                    , group="sampleLabels"
                     , facet = NULL
                     , normalise = TRUE) {
   
-  if (identical(group, "default")) {
-      if        ("group" %in% colnames(libs)) {
-        group <- libs$group
-      } else if ("Group" %in% colnames(libs)) {
-        group <- libs$Group
-    } else
-      stop(paste("Missing", dQuote("group"), "column in the data frame."))
-  }
+  if (is.null(libs$sampleLabels)) stop(paste("Missing", dQuote("sampleLabels"), "column in the data frame."))
   
   # Backup levels for later.  Coerce to factor if it was not.  This way,
   # numerical ordering is preserved despite the conversion to characters

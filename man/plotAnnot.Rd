@@ -9,15 +9,50 @@
 \alias{plotAnnot,GRangesList-method}
 \title{Plot annotation statistics}
 \usage{
-plotAnnot(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
+plotAnnot(
+  x,
+  scope,
+  title,
+  group = "sampleLabels",
+  facet = NULL,
+  normalise = TRUE
+)
 
-\S4method{plotAnnot}{data.frame}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
+\S4method{plotAnnot}{data.frame}(
+  x,
+  scope,
+  title,
+  group = "sampleLabels",
+  facet = NULL,
+  normalise = TRUE
+)
 
-\S4method{plotAnnot}{DataFrame}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
+\S4method{plotAnnot}{DataFrame}(
+  x,
+  scope,
+  title,
+  group = "sampleLabels",
+  facet = NULL,
+  normalise = TRUE
+)
 
-\S4method{plotAnnot}{CAGEexp}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
+\S4method{plotAnnot}{CAGEexp}(
+  x,
+  scope,
+  title,
+  group = "sampleLabels",
+  facet = NULL,
+  normalise = TRUE
+)
 
-\S4method{plotAnnot}{GRangesList}(x, scope, title, group = "default", facet = NULL, normalise = TRUE)
+\S4method{plotAnnot}{GRangesList}(
+  x,
+  scope,
+  title,
+  group = "sampleLabels",
+  facet = NULL,
+  normalise = TRUE
+)
 }
 \arguments{
 \item{x}{An object from which can be extracted a table with columns named
@@ -32,7 +67,8 @@ See \code{\link{mapStatsScopes}} for details on each scope.}
 
 \item{group}{A factor to group the samples, or the name of a \code{colData}
 column of a \code{CAGEexp} object, or a formula giving the names of columns
-to be pasted together.}
+to be pasted together.  If no group is provided the sample labels will
+be used.}
 
 \item{facet}{A factor or the name of a \code{colData} column of a
 \code{CAGEexp} object, to facet the samples in the sense of
