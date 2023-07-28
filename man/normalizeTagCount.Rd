@@ -98,6 +98,9 @@ Other CAGEr object modifiers:
 \code{\link{quickEnhancers}()},
 \code{\link{resetCAGEexp}()},
 \code{\link{summariseChrExpr}()}
+
+Other CAGEr normalised data functions: 
+\code{\link{plotReverseCumulatives}()}
 }
 \author{
 Vanja Haberle

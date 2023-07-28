@@ -71,6 +71,7 @@
 #' 
 #' plotCorrelation2(exampleCAGEexp, what = "consensusClusters", value = "normalized")
 #' 
+#' @importFrom graphics box legend par strwidth text
 #' @export
 
 setGeneric( "plotCorrelation"
