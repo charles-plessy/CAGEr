@@ -8,7 +8,7 @@ NULL
 #' 
 #' When given a [`CAGEexp`] object or its _column data_, what will be counted is
 #' the number of _CAGE tags_.  When given cluster objects ([`CTSS`],
-#' [`TagCluster`] or [`ConsensusCluster`]) wrapped as
+#' [`TagClusters`] or [`ConsensusClusters`]) wrapped as
 #' a [`GenomicRanges::GRangesList`], what will be counted is the number of
 #' _clusters_.
 #' 
