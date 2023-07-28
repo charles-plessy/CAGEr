@@ -1,3 +1,17 @@
+# Changes in devel version
+
+BUG FIXES
+
+-   Fix accidental deletion of the record of the  _tag clustering_ method (#96).
+
+NEW FEATURES
+
+-   New `resetCAGEexp()` function.
+-   New `flagByUpstreamSequences()` function.
+-   The `annotateCTSS` and `annotateConsensusClusters` function gain a
+    `upstream` and a `downstream` parameter to change the width of promoter
+    regions.
+
 # Changes in version 2.7.1
 
 BUG FIXES
@@ -19,8 +33,6 @@ NEW FEATURES
 
 -   Allow URLs to files in `getCTSS()` (Fixes #50).
 -   Accelerated the computation of quantile position by ~20 times.
--   New `resetCAGEexp()` function.
--   New `flagByUpstreamSequences()` function.
 
 # Changes in version 2.6.0
 

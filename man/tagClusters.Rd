@@ -52,7 +52,10 @@ Returns a \code{GRangesList} or a \code{GRanges} object with genomic coordinates
 position of dominant TSS, total CAGE signal and additional information for
 all TCs from specified CAGE dataset (sample).  If
 \code{returnInterquantileWidth = TRUE}, interquantile width for each TC is also
-calculated using provided quantile positions.
+calculated using provided quantile positions.  The \code{\link[S4Vectors:Annotated-class]{S4Vectors::metadata}}
+slot of the object contains a copy of the \code{CAGEexp} object's \emph{column data},
+as well as information on the clustering method in a \code{clusteringMethod}
+element.
 }
 \description{
 Extracts tag clusters (TCs) produced by \code{\link{clusterCTSS}} function
@@ -62,6 +65,7 @@ for a specified CAGE experiment from a \code{\link{CAGEexp}} object.
 tagClustersGR( exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9 )
 tagClustersGR( exampleCAGEexp, 1
              , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9 )
+tagClustersGR( exampleCAGEexp )@metadata$colData
 
 }
 \seealso{

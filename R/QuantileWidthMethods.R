@@ -71,6 +71,8 @@ setMethod( "quantilePositions", "CAGEexp"
       },
       BPPARAM = CAGEr_Multicore(useMulticore, nrCores))
     ctss.clusters <- GRangesList(ctss.clusters)
+    # Keep metadata, it contains information on clustering method!
+    metadata(ctss.clusters) <- metadata(object)
     tagClustersGR(object) <- ctss.clusters
   } else if (clusters == "consensusClusters"){
     cons.clusters.l <- bplapply(sampleList(object), function(s) {
