@@ -175,6 +175,7 @@ setMethod( "initialize", "CAGEexp"
 #'   normalizeTagCount()                             |>
 #'   getExpressionProfiles("CTSS")                   |>
 #'   clusterCTSS()                                   |>
+#'   annotateTagClusters(exampleZv9_annot)           |>
 #'   cumulativeCTSSdistribution("tagClusters")       |>
 #'   quantilePositions("tagClusters")                |>
 #'   aggregateTagClusters()                          |>
