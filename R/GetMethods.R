@@ -485,11 +485,8 @@ setMethod("CTSSclusteringMethod", "CAGEexp", function (object)
 #' tagClustersGR( exampleCAGEexp, "Zf.high", TRUE, 0.1, 0.9 )
 #' tagClustersGR( exampleCAGEexp, 1
 #'              , returnInterquantileWidth = TRUE, qLow = 0.1, qUp = 0.9 )
-<<<<<<< HEAD
 #' tagClustersGR( exampleCAGEexp )$clusteringMethod
-=======
 #' tagClustersGR( exampleCAGEexp )@metadata$colData
->>>>>>> devel
 #' 
 #' @export
 
