@@ -179,6 +179,24 @@ setMethod("plotReverseCumulatives", "GRangesList",
   .plotReverseCumulatives(L, values, fitInRange, group)
 })
 
+#' @rdname plotReverseCumulatives
+
+setMethod("plotReverseCumulatives", "GRanges",
+          function( object, values = c("raw", "normalized")
+                    , fitInRange = c(10, 1000)
+                    , group = NULL) {
+  if(is.null(group)) {
+    sampleLabels <- "No sample name available"
+  } else {
+    sampleLabels <- group
+  }
+  L <- List(score(object))
+  names(L) <- sampleLabels
+  metadata(L)$colData <- metadata(object)$colData
+  if (is.null(metadata(L)$colData)) metadata(L)$colData <- DataFrame(sampleLabels=sampleLabels)
+  .plotReverseCumulatives(L, values, fitInRange, group = NULL)
+})
+
 #' @name plotInterquantileWidth
 #' 
 #' @title Plot cluster widths
