@@ -4,6 +4,7 @@
 \alias{plotReverseCumulatives}
 \alias{plotReverseCumulatives,CAGEexp-method}
 \alias{plotReverseCumulatives,GRangesList-method}
+\alias{plotReverseCumulatives,GRanges-method}
 \title{Plot reverse cumulative number of CAGE tags per CTSS}
 \usage{
 plotReverseCumulatives(
@@ -21,6 +22,13 @@ plotReverseCumulatives(
 )
 
 \S4method{plotReverseCumulatives}{GRangesList}(
+  object,
+  values = c("raw", "normalized"),
+  fitInRange = c(10, 1000),
+  group = NULL
+)
+
+\S4method{plotReverseCumulatives}{GRanges}(
   object,
   values = c("raw", "normalized"),
   fitInRange = c(10, 1000),
