@@ -1,172 +1,201 @@
 #' @include CAGEr.R
+NULL
 
-###########################################################
-# Functions for exporting results (graphical and textual)
-#
-
-#' @name plotReverseCumulatives
+#' Plot reverse cumulative number of CAGE tags per CTSS
 #' 
-#' @title Plot reverse cumulative number of CAGE tags per CTSS
+#' Plots the reverse cumulative distribution of the expression values of the
+#' CTSS for all CAGE datasets present in the [`CAGEexp`] object.  The horizontal
+#' axis represents an expression value and the vertical axis represents the
+#' number of CTSS positions supported by >= of that value.  The plot uses a
+#' log-log scale.  Use these plots as help in choosing the parameters range of
+#' values and the referent slope for power-law normalization
+#' (Balwierz _et al_., 2009).
 #' 
-#' @description Plots the reverse cumulative distribution of the number of CAGE
-#' tags per CTSS for all CAGE datasets present in the [`CAGEr`] object.
-#' The plots should be used as help in choosing the parameters for power-law
-#' normalization: the range of values to fit the power-law and the slope of the
-#' referent power-law distribution (Balwierz _et al_., Genome Biology 2009).
+#' A power law distribution is fitted to each reverse cumulative using the
+#' values in the range specified `fitInRange`.  The fitted distribution is
+#' defined by \deqn{y = -1 * alpha * x + beta} on the log-log scale, and the
+#' value of _alpha_ for each sample is shown on the plot's legend.  In addition,
+#' a suggested referent power law distribution to which all samples could be
+#' normalized is drawn on the plot and corresponding parameters (slope _alpha_
+#' and total number of tags _T_) are denoted on the plot.  This referent
+#' distribution is chosen so that its slope (_alpha_) is the median of slopes
+#' fitted to individual samples and its total number of tags (_T_) is the power
+#' of 10 nearest to the median number of tags of individual samples.  Resulting
+#' plots are helpful in deciding whether power-law normalization is appropriate
+#' for given samples and reported `alpha` values aid in choosing optimal
+#' _alpha_ value power law normalization (see [`normalizeTagCount`] for details).
 #' 
-#' @param object A CAGEr object
+#' @param object A `CAGEexp` object
 #' 
-#' @param values Which values should be plotted: `raw` (default) for raw CAGE
-#' tag counts or `normalized` for normalized tag count values.
+#' @param values Plot `raw` CAGE tag counts (default) or `normalized` values.
 #' 
 #' @param fitInRange An integer vector with two values specifying a range of tag
 #' count values to be used for fitting a power-law distribution to reverse
 #' cumulatives.  Ignored is set to `NULL`.  See Details.
 #' 
-#' @param onePlot Logical, should all CAGE datasets be plotted in the same
-#' plot (`TRUE`) or in separate plots (`FALSE`). 
+#' @param group The name of a column data of the `CAGEexp` object, to be used
+#' to facet the plot.  If `NULL` (default), all the distributions will be
+#' plotted together.  Set to `sampleLabels` to plot each sample separately.
 #' 
-#' @param main Main title for the plot.
-#' 
-#' @param legend Set to `NULL` to prevent the display of the sample legend.
-#' 
-#' @param xlab,ylab Axis labels passed to [`plot`].
-#' 
-#' @param xlim,ylim Axis range parameters passed to [`plot`].
-#' 
-#' @details Number of CAGE tags (X-axis) is plotted against the number of TSSs that
-#' are supported by >= of that number of tags (Y-axis) on a log-log scale for each
-#' sample. In addition, a power-law distribution is fitted to each reverse cumulative
-#' using the values in the range specified by `fitInRange` parameter. The fitted
-#' distribution is defined by `y = -1 * alpha * x + beta` on the log-log scale,
-#' and the value of `alpha` for each sample is shown on the plot. In addition,
-#' a suggested referent power-law distribution to which all samples should be
-#' normalized is drawn on the plot and corresponding parameters (slope alpha and total
-#' number of tags T) are denoted on the plot.  Referent distribution is chosen so
-#' that its slope (alpha) is the median of slopes fitted to individual samples and
-#' its total number of tags (T) is the power of 10 nearest to the median number of tags
-#' of individual samples.  Resulting plots are helpful in deciding whether power-law
-#' normalization is appropriate for given samples and reported `alpha` values aid
-#' in choosing optimal `alpha` value for referent power-law distribution to
-#' which all samples will be normalized. For details about normalization see
-#' [`normalizeTagCount`] function.
-#' 
-#' @return Plots of reverse cumulative number of CAGE tags per CTSS for each CAGE
-#' dataset within CAGEr object.  Alpha values of fitted power-laws and suggested
-#' referent power-law distribution are reported on the plot in case `values = "raw"`.
+#' @returns A [`ggplot2::ggplot`] object containing the plots.  The plot can
+#' be further modified to change its title or axis labels (see
+#' [`ggplot2::labs`]).  The legend can be removed with
+#' [`ggplot2::guides`]`(col=FALSE)`.
 #' 
 #' @references Balwierz _et al_. (2009) Methods for analyzing deep sequencing
 #' expression data: constructing the human and mouse promoterome with deepCAGE data,
-#' _Genome Biology_ **10**(7):R79. 
+#' _Genome Biology_ **10**(7):R79. <https://doi.org/10.1186/gb-2009-10-7-r79>
 #' 
-#' @author Vanja Haberle
+#' @author Vanja Haberle (original work)
+#' @author Charles Plessy (port to ggplot2)
 #' 
 #' @seealso [`normalizeTagCount`]
 #' @family CAGEr plot functions
+#' @family CAGEr normalised data functions
 #' 
 #' @examples 
-#' 
-#' plotReverseCumulatives( exampleCAGEexp, xlim = c(1, 1e4), ylim = c(1, 1e5)
-#'                       , fitInRange = c(5,100), onePlot = TRUE)
+#' exampleCAGEexp <- setColors(exampleCAGEexp,
+#'   c("salmon", "darkkhaki", "darkturquoise", "blueviolet", "blueviolet"))
+#' exampleCAGEexp$grp <- c("a", "b", "b", "c", "c")
+#' plotReverseCumulatives( exampleCAGEexp, fitInRange = c(5,100))
 #' plotReverseCumulatives( exampleCAGEexp, values = "normalized"
-#'                       , fitInRange = c(200, 2000), onePlot = TRUE)
-#' plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)
-#'                       , onePlot = TRUE, main = "prim6 replicates")
+#'                       , fitInRange = c(200, 2000), group = "sampleLabels")
+#' plotReverseCumulatives( exampleCAGEexp[,4:5], fitInRange = c(5,100)) +
+#'   ggplot2::ggtitle("prim6 replicates")
+#' tagClustersGR(exampleCAGEexp) |> plotReverseCumulatives()
 #' 
-#' @importFrom graphics abline box legend par plot strwidth text
+#' @importFrom ggplot2 aes geom_abline geom_step geom_vline ggplot ggtitle
+#' @importFrom ggplot2 guides guide_legend labs
+#' @importFrom ggplot2 scale_color_manual scale_x_log10 scale_y_log10
+#' @importFrom rlang .data
+#' @importFrom scales hue_pal
 #' @importFrom stats cor median
 #' @importFrom VGAM zeta
 #' @export
 
-setGeneric( "plotReverseCumulatives"
-          , function( object, values = c("raw", "normalized")
-                    , fitInRange = c(10, 1000)
-                    , onePlot = FALSE, main = NULL, legend = TRUE
-                    , xlab = "number of CAGE tags"
-                    , ylab = "number of CTSSs (>= nr tags)"
-                    , xlim = c(1, 1e5)
-                    , ylim = c(1, 1e6))
-	standardGeneric("plotReverseCumulatives"))
+setGeneric( "plotReverseCumulatives",
+  function( object, values = c("raw", "normalized")
+          , fitInRange = c(10, 1000)
+          , group = NULL)
+    standardGeneric("plotReverseCumulatives"))
+
+# This is the main plotting function.
+.plotReverseCumulatives <-
+  function( object, values = c("raw", "normalized")
+          , fitInRange = c(10, 1000)
+          , group = NULL) {
+  if (is.null(object@metadata$colData))
+    stop("Expects a List-like object with a colData DataFrame in its metadata slot.")
+  
+  values <- match.arg(values)
+  if (values == "raw") {
+    xlab <- "Number of CAGE tags"
+    ylab <- "Number of CTSSs >= number of tags"
+  } else {
+    xlab <- "Normalised expression value of CAGE tags"
+    ylab <- "Number of CTSSs >= expression value"
+  }
+  
+  if (is.null(group)) {
+    object@metadata$colData$group <- "All samples"
+    group <- "group"
+  }
+  
+  if (is.null(object@metadata$colData$Colors)) {
+    object@metadata$colData$Colors <- scales::hue_pal()(length(object))
+  }
+  
+  toCumSums <- function(exprValues, sampleName) {
+    # See benchmarks/sorted-abundance-benchmark.Rmd in the CAGEr's Git repository
+    exprValues <- exprValues[exprValues != 0]
+    exprValues <- sort(exprValues, decreasing = TRUE)
+    DataFrame(x          = runValue(exprValues),
+              y          = cumsum(runLength(exprValues)),
+              sampleLabels = sampleName)
+  }
+  
+  # Make a "long" table
+  DF <- lapply( names(object)
+              , function(s) toCumSums(object[[s]], s)
+              ) |> do.call(what = rbind)
+  
+  # Enforce original sample order
+  DF$plotOrder <- DF$sampleLabels |> ordered(unique(DF$sampleLabels))
+
+  p <- as.data.frame(DF) |>
+      merge( object@metadata$colData[,c('sampleLabels', group)] |> as.data.frame()
+           , by="sampleLabels") |> ggplot() +
+    aes(.data$x, .data$y, col = .data$plotOrder) +
+    geom_step() +
+    scale_x_log10() + scale_y_log10() +
+    xlab(xlab) + ylab(ylab) +
+    ggtitle("Reverse-cumulative plot")
+
+  if(!is.null(fitInRange)) {
+    fit.coefs.m <- sapply(object, val.range = fitInRange, \(x, val.range)
+      .fit.power.law.to.reverse.cumulative(decode(x), val.range))
+    fit.slopes <- fit.coefs.m[1,]
+    reference.slope <- min(median(fit.slopes), -1.05)
+    reference.library.size <- 10^floor(log10(median(sapply(object, sum))))
+    reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
+    p <- p +
+      geom_abline(intercept = reference.intercept, slope = reference.slope, color = "grey", linetype = "longdash") +
+      geom_vline(xintercept = fitInRange, color = "darkgrey", linetype = "dotted") +
+      scale_color_manual(
+        values = object@metadata$colData$Colors,
+        labels = paste0("(", formatC(-fit.slopes, format = "f", digits = 2), ") ",  names(fit.slopes))) +
+      labs(subtitle = paste0("Ref. distribution alpha = ", sprintf("%.2f", -reference.slope), ", T = ", reference.library.size, ".")) +
+      guides(col = guide_legend(title = "(alpha) sample names"))
+  } else {
+    p <- p +
+      scale_color_manual(values = object@metadata$colData$Colors)
+      guides(col = guide_legend(title = "Sample names"))
+  }
+  p + facet_wrap(group)
+}
 
 #' @rdname plotReverseCumulatives
 
-setMethod( "plotReverseCumulatives", "CAGEr"
-         , function ( object, values, fitInRange, onePlot, main, legend
-                    , xlab, ylab, xlim, ylim) {
-	sample.labels <- sampleLabels(object)
-	values <- match.arg(values)
-	#pdf(file = paste("CTSS_reverse_cumulatives_", values, "_all_samples.pdf", sep = ""), width = 8, height = 8, onefile = T, bg = "transparent", family = "Helvetica", fonts = NULL)
-	old.par <- par(mar = c(5,5,5,2))
-	on.exit(par(old.par))
-	cols <- names(sample.labels)
-	
-  tag.count <- switch( values
-                     , raw        = CTSStagCountDF(object)
-                     , normalized = CTSSnormalizedTpmDF(object))
-
-	if(! is.null(fitInRange)) {
-		fit.coefs.m <- as.matrix(data.frame(lapply(tag.count, function(x) {.fit.power.law.to.reverse.cumulative(values = decode(x), val.range = fitInRange)})))
-		fit.slopes <- fit.coefs.m[1,]
-		names(fit.slopes) <- sample.labels
-		reference.slope <- min(median(fit.slopes), -1.05)
-		reference.library.size <- 10^floor(log10(median(sapply(tag.count, sum))))
-#reference.intercept <- log(reference.library.size/zeta(-1*reference.slope))  # intercept on natural logarithm scale
-		reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
-	}
-	
-	if(onePlot == TRUE){
-		.plotReverseCumulative( values = tag.count[, 1]
-		                      , col    = cols[1]
-		                      , title  = ifelse(is.null(main), "All samples", main)
-		                      , xlab   = xlab, ylab = ylab
-		                      , xlim   = xlim, ylim = ylim)
-		if(length(sample.labels) > 1){
-			sapply(c(2:length(sample.labels)), function(x)
-			  .plotReverseCumulative( values = tag.count[, sample.labels[x]]
-			                        , col = cols[x]
-			                        , add = TRUE))
-		}
-		if(!is.null(fitInRange)) {
-			abline(v = fitInRange, lty = "dotted")
-			abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash")
-			main.legend.text <- sprintf("(%.2f) %s", -1 * fit.slopes, sample.labels)
-			legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)
-		} else {
-			main.legend.text <- sample.labels
-		}
-		if (isTRUE(legend))
-		  legend( "topright"
-		        , legend    = main.legend.text
-		        , bty       = "n"
-		        , col       = cols
-		        , text.col  = cols
-		        , lwd       = 2
-		        , cex       = 1.3
-		        , y.intersp = 1.2)
-	}else{
-		if(!is.null(fitInRange)) {
-			sapply(sample.labels, function(x) {
-				.plotReverseCumulative( values    = tag.count[, x]
-				                      , col       = cols[which(sample.labels == x)]
-				                      , title     = x
-				                      , col.title = cols[which(sample.labels == x)]
-				                      , xlab      = xlab, ylab = ylab
-				                      , xlim      = xlim, ylim = ylim)
-				abline(v = fitInRange, lty = "dotted"); abline(a = reference.intercept, b = reference.slope, col = "#7F7F7F7F", lty = "longdash"); text(min(fitInRange), 10^6, labels = paste(" alpha =", formatC(-1*fit.slopes[x], format = "f", digits = 2), sep = " "), adj = c(0,1), col = cols[which(sample.labels == x)], cex = 1.3); legend("bottomleft", legend = c("Ref. distribution:", paste(" alpha = ", sprintf("%.2f", -1*reference.slope), sep = ""), paste(" T = ", reference.library.size, sep = "")), bty = "n", col = NA, text.col = "#7F7F7F", cex = 1.3, y.intersp = 1.2)})
-		} else {
-			sapply( sample.labels, function(x)
-				.plotReverseCumulative( values    = tag.count[, x]
-				                      , col       = cols[which(sample.labels == x)]
-				                      , title     = x
-				                      , col.title = cols[which(sample.labels == x)]
-				                      , xlab      = xlab, ylab = ylab
-				                      , xlim      = xlim, ylim = ylim)
-			)
-		}
-	}
-	invisible(TRUE)
+setMethod("plotReverseCumulatives", "CAGEexp",
+          function( object, values = c("raw", "normalized")
+                  , fitInRange = c(10, 1000)
+                  , group = NULL) {
+  DF <- switch( match.arg(values)
+                , raw        = CTSStagCountDF(object)
+                , normalized = CTSSnormalizedTpmDF(object))
+  DF@metadata$colData <- colData(object)
+  # Remember DataFrames are just Lists.
+  .plotReverseCumulatives(DF, values, fitInRange, group)
 })
 
+#' @rdname plotReverseCumulatives
+
+setMethod("plotReverseCumulatives", "GRangesList",
+          function( object, values = c("raw", "normalized")
+                  , fitInRange = c(10, 1000)
+                  , group = NULL) {
+  L <- lapply(object, score) |> as("List")
+  metadata(L) <- metadata(object)
+  .plotReverseCumulatives(L, values, fitInRange, group)
+})
+
+#' @rdname plotReverseCumulatives
+
+setMethod("plotReverseCumulatives", "GRanges",
+          function( object, values = c("raw", "normalized")
+                    , fitInRange = c(10, 1000)
+                    , group = NULL) {
+  if(is.null(group)) {
+    sampleLabels <- "No sample name available"
+  } else {
+    sampleLabels <- group
+  }
+  L <- List(score(object))
+  names(L) <- sampleLabels
+  metadata(L)$colData <- metadata(object)$colData
+  if (is.null(metadata(L)$colData)) metadata(L)$colData <- DataFrame(sampleLabels=sampleLabels)
+  .plotReverseCumulatives(L, values, fitInRange, group = NULL)
+})
 
 #' @name plotInterquantileWidth
 #' 

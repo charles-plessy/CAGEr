@@ -391,7 +391,7 @@ To check whether our CAGE datasets follow power-law distribution and in which ra
 can use the `plotReverseCumulatives` function:
 
 ```{r ReverseCumulatives, fig.cap="Reverse cumulative distribution of CAGE tags"}
-plotReverseCumulatives(ce, fitInRange = c(5, 1000), onePlot = TRUE)
+plotReverseCumulatives(ce, fitInRange = c(5, 1000))
 ```
 
 In addition to the reverse cumulative plots (Figure \@ref(fig:ReverseCumulatives)), a power-law
