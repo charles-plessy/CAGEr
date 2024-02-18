@@ -34,7 +34,7 @@ setGeneric(".powerLaw", function(tag.counts, fitInRange = c(10, 1000), alpha = 1
   standardGeneric(".powerLaw")})
 
 setMethod(".powerLaw", "numeric", function (tag.counts, fitInRange, alpha, T) {
-  fit.coef <- .fit.power.law.to.reverse.cumulative(values = tag.counts, val.range = fitInRange)
+  fit.coef <- fitPowerLaw(tag.counts, fitInRange)
 	.normalize.to.reference.power.law.distribution(values = tag.counts, lin.reg.coef = fit.coef, alpha = alpha, T = T)
 })
 
@@ -50,60 +50,108 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
   DataFrame(sapply(tag.counts, function(X) .powerLaw(X, fitInRange, alpha, T)))
 })
 
-#' @name .fit.power.law.to.reverse.cumulative
+#' Fit a power law to the CAGE data
 #' 
 #' Function that fits power-law distribution to reverse cumulative of given
-#' values - fitting is done using only the range specified in val.range
+#' values.  Fitting is done using only a specified range.
 #' 
-#' @return Two coefficients describing fitted power-law distribution (a = slope
-#' in the logX-logY plot (where X=signal, Y=number of sites that have >= of given
-#' signal), b = intercept in the logX-logY plot)
+#' @param x The object containing the data.
+#' @param fitInRange The range in which to fit the power law.
 #' 
-#' @importFrom data.table data.table setkeyv setnames
+#' @return Returns the slope (`plSlope`) and the intercept (`plInt`) of the
+#' fitted power-law distribution.  If the input is a single sample, function
+#' returns a numeric vector.  If the input is multiple samples, the function
+#' returns a `DataFrame`.  If the input is a whole _CAGEexp_ object, the
+#' function returns the object with information added to its `colData`.
+#' 
 #' @importFrom stats coefficients lm
-#' @noRd
+#' 
+#' @author Vanja Haberle
+#' @author Charles Plessy
+#' 
+#' @export
+
+setGeneric("fitPowerLaw", function(x, fitInRange = c(10, 1000)) {
+  standardGeneric("fitPowerLaw")})
+
+#' @rdname fitPowerLaw
+#' @examples
+#' exampleCAGEexp |> fitPowerLaw() |> colData()
+
+setMethod("fitPowerLaw", "CAGEexp", function (x, fitInRange) {
+  DF <- fitPowerLaw(CTSStagCountDF(x), fitInRange)
+  colData(x) <- cbind(colData(x), DF)
+  x
+})
+
+#' @rdname fitPowerLaw
+#' @examples
+#' exampleCAGEexp |> CTSStagCountDF() |> fitPowerLaw()
+
+setMethod("fitPowerLaw", "DataFrame", function (x, fitInRange) {
+  m <- sapply(x, fitPowerLaw, fitInRange)
+  DF <- as(t(m), "DataFrame")
+  rownames(DF) <- names(x)
+  DF
+})
+
+#' @rdname fitPowerLaw
+#' @examples
+#' exampleCAGEexp |> CTSStagCountGR('all') |> fitPowerLaw()
+
+setMethod("fitPowerLaw", "GRangesList", function (x, fitInRange) {
+  m <- sapply(x, fitPowerLaw, fitInRange)
+  DF <- as(t(m), "DataFrame")
+  rownames(DF) <- names(x)
+  DF
+})
+
+#' @rdname fitPowerLaw
+#' @examples
+#' exampleCAGEexp |> CTSStagCountGR(1) |> fitPowerLaw()
+
+setMethod("fitPowerLaw", "GRanges", function (x, fitInRange) {
+  fitPowerLaw(score(x), fitInRange)
+})
+
+#' @rdname fitPowerLaw
+#' @examples
+#' exampleCAGEexp |> CTSStagCountGR(1) |> score() |> fitPowerLaw()
+
+setMethod("fitPowerLaw", "Rle", function (x, fitInRange) {
+  .fit.power.law.to.reverse.cumulative(x, fitInRange)
+})
+
+#' @rdname fitPowerLaw
+#' @examples
+#' exampleCAGEexp |> CTSStagCountGR(1) |> score() |> decode() |> fitPowerLaw()
+
+setMethod("fitPowerLaw", "numeric", function(x, fitInRange) {
+  .fit.power.law.to.reverse.cumulative(x, fitInRange)
+})
 
 .fit.power.law.to.reverse.cumulative <- function(values, val.range = c(10, 1000)) {
-
-# using data.table package	
-	v <- data.table(num = 1, nr_tags = values)
-	num <- nr_tags <- NULL # Keep R CMD check happy.
-	v <- v[, sum(num), by = nr_tags]
-	setkeyv(v, "nr_tags")
-	v$V1 <- rev(cumsum(rev(v$V1)))
-	setnames(v, c('nr_tags', 'reverse_cumulative'))
-	
-	# check if range values are > 0
-	if(any(val.range < 1)){
-	  stop(paste("The range of values for fitting the power law",
-	             "arg 'fitInRange', expects integers > 0."))
-	}
-	
-	v <- v[nr_tags >= min(val.range) & nr_tags <= max(val.range)]
-	
-	# check if specified range values have at least 1 entry in v 
-	if(nrow(v) < 1){
-	  stop(paste("Selected range for fitting the power law does not contain any",
-	             "tag count values. Consider changing/increasing 'fitInRange'."))
-	}
-#	v <- aggregate(values, by = list(values), FUN = length)
-#	v$x <- rev(cumsum(rev(v$x)))
-#	colnames(v) <- c('nr_tags', 'reverse_cumulative')
-#	v <- subset(v, nr_tags >= min(val.range) & nr_tags <= max(val.range))
-	
-	lin.m <- lm(log(reverse_cumulative) ~ log(nr_tags), data = v)
-	
-	a <- coefficients(lin.m)[2]
-	b <- coefficients(lin.m)[1]
-	
-	# check if specified range values have >1 entries in v 
-	if(is.na(a) && b == 0){
-	  stop(paste("Selected range for fitting the power law does not", 
-	       "contain enough values. Consider changing/increasing 'fitInRange'."))
-	}
-	return(c(a, b))
+  # Using Rle
+  v <- sort(Rle(values), decr = TRUE)
+  nr_tags <- rev(runValue(v))
+  reverse_cumulative <- v  |> runLength() |> cumsum() |> rev()
+  
+  inRange <- nr_tags >= min(val.range) & nr_tags <= max(val.range)
+  
+  lin.m <- lm(log(reverse_cumulative[inRange]) ~ log(nr_tags[inRange]))
+  
+  a <- coefficients(lin.m)[2]
+  names(a) <- 'plSlope'
+  b <- coefficients(lin.m)[1]
+  names(b) <- 'plInt'
+  
+  # check if specified range values have >1 entries in v 
+  if(is.na(a) && b == 0){
+    stop(paste("Selected range for fitting the power law does not", 
+               "contain enough values. Consider changing/increasing 'fitInRange'."))
+  }
+  c(a, b)
 }
-
 
 #' .normalize.to.reference.power.law.distribution
 #' 

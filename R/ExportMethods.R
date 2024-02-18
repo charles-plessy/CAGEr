@@ -105,8 +105,7 @@ setMethod( "plotReverseCumulatives", "CAGEr"
                      , normalized = CTSSnormalizedTpmDF(object))
 
 	if(! is.null(fitInRange)) {
-		fit.coefs.m <- as.matrix(data.frame(lapply(tag.count, function(x) {.fit.power.law.to.reverse.cumulative(values = decode(x), val.range = fitInRange)})))
-		fit.slopes <- fit.coefs.m[1,]
+		fit.slopes <- fitPowerLaw(tag.count)$plSlope
 		names(fit.slopes) <- sample.labels
 		reference.slope <- min(median(fit.slopes), -1.05)
 		reference.library.size <- 10^floor(log10(median(sapply(tag.count, sum))))
