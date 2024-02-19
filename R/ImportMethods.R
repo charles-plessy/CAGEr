@@ -651,343 +651,332 @@ setMethod( "getCTSS", "CAGEexp"
 "FANTOM5mouseSamples"
 
 
-#' #' importPublicData
-#' #' @noRd
-#' #' @importFrom utils data
-#' #' @export
+#' importPublicData
 #' 
-#' setGeneric(
-#' name="importPublicData",
-#' def=function(source, dataset, group, sample){
-#' 	standardGeneric("importPublicData")
+#' Imports CAGE data from different sources into a [`CAGEexp`] object.  After
+#' the object has been created the data can be further manipulated and
+#' visualized using other functions available in the _CAGEr_ package and
+#' integrated with other analyses in R.  Available resources include:
+#' 
+#'   - FANTOM5 datasets (Forrest _et al.,_ Nature 2014) for numerous human and
+#'   mouse samples (primary cells, cell lines and tissues), which are fetched
+#'   directly from FANTOM5 online resource at
+#'   \href{https://fantom.gsc.riken.jp/5/data}{https://fantom.gsc.riken.jp/5/data}.
+#'   
+#'   - FANTOM3 and 4 datasets (Carninci _et al., _ Science 2005, Faulkner
+#'   _et al.,_ Nature Genetics 2009, Suzuki _et al._ Nature Genetics 2009) from
+#'   _FANTOM3and4CAGE_ data package available from Bioconductor.
+#'   
+#'   - ENCODE datasets (Djebali _et al._ Nature 2012) for numerous human cell
+#'   lines from _ENCODEprojectCAGE_ data package, which is available for
+#'   download from \href{http://promshift.genereg.net/CAGEr/}{http://promshift.genereg.net/CAGEr/}.
+#'   
+#'   - Zebrafish (_Danio rerio_) developmental timecourse datasets (Nepal _et al._ Genome
+#'   Research 2013) from \emph{ZebrafishDevelopmentalCAGE} data package, which
+#'   is available for download from
+#'   \href{http://promshift.genereg.net/CAGEr/}{http://promshift.genereg.net/CAGEr/}.
+#' 
+#' @param origin Character vector specifying one of the available resources for
+#'        CAGE data (`"FANTOM5"`, `"FANTOM3and4"`, `"ENCODE"` or `"ZebrafishDevelopment"`).
+#'        
+#' @param dataset Character vector specifying one or more of the datasets
+#'        available in the selected resource. For FANTOM5 it can be either
+#'        `"human"` or  `"mouse"`, and only one of them can be specified at a
+#'        time. For other resources please refer to the vignette of the
+#'        corresponding data package for the list of available datasets.
+#'        Multiple datasets mapped to the same genome can be specified to
+#'        combine selected samples from each.
+#'        
+#' @param group Character string specifying one or more groups within specified
+#'        dataset(s), from which the samples should be selected.  The `group`
+#'        argument is used only when importing TSSs from data packages and
+#'        ignored for "FANTOM5".  For available groups in each dataset please
+#'        refer to the vignette of the corresponding data package. Either only
+#'        one group has to be specified (if all selected samples belong to the
+#'        same group) or one group per sample (if samples belong to different
+#'        groups).  In the latter case, the number of elements in `group` must
+#'        match the number of elements in `sample`.
+#'        
+#' @param sample Character string specifying one or more CAGE samples.  Check
+#'        the corresponding data package for available samples within each group
+#'        and their labels. For FANTOM5 resource, list of all human (~1000) and
+#'        mouse (~) samples can be obtained in _CAGEr_ by loading
+#'        `data(FANTOM5humanSamples)` and `data(FANTOM5mouseSamples)`,
+#'        respectively.  Use the names from the \code{sample} column to specify
+#'        which samples should be imported.
+#' 
+#' @return A [`CAGEexp`] object is returned, containing information on library
+#' size, CTSS coordinates and tag count matrix.  The object is ready for _CAGEr_
+#' analysis (normalisation, tag clustering, …).
+#' 
+#' @references 
+#' 
+#'  - Carninci _et al.,_ (2005). _The Transcriptional Landscape of the Mammalian
+#'  Genome_. Science **309**(5740):1559-1563.
+#'  
+#'  - Djebali _et al.,_ (2012). _Landscape of transcription in human cells._
+#'  Nature **488**(7414):101-108.
+#'  
+#'  - Faulkner _et al.,_ (2009). _The regulated retrotransposon transcriptome of
+#'  mammalian cells._, Nature Genetics **41**:563-571.
+#'  
+#'  - Forrest _et al.,_ (2014). _A promoter-level mammalian expression atlas._
+#'  Nature **507**(7493):462-470.
+#'  
+#'  - Nepal _et al.,_ (2013). _Dynamic regulation of the transcription
+#'  initiation landscape at single nucleotide resolution during vertebrate
+#'  embryogenesis_. Genome Research **23**(11):1938-1950.
+#'  
+#'  - Suzuki_et al.,_ (2009). The transcriptional network that controls growth
+#'  arrest and differentiation in a human myeloid leukemia cell line_. Nature
+#'  Genetics **41**:553-562.
+#'  
+#' @author Vanja Haberle
+#' @author Charles Plessy
+#' 
+#' @family FANTOM data
+#' 
+#' @examples 
+#' \dontrun{
+#' ### importing FANTOM5 data
+#' 
+#' # list of FANTOM5 human tissue samples
+#' 
+#' data(FANTOM5humanSamples)
+#' head(subset(FANTOM5humanSamples, type == "tissue"))
+#' 
+#' # import selected samples
+#' f5 <- importPublicData(
+#'   origin="FANTOM5", dataset = "human",
+#'   sample = c("adipose_tissue__adult__pool1", "adrenal_gland__adult__pool1",
+#'              "aorta__adult__pool1"))
+#' 
+#' CTSScoordinatesGR(f5)
+#' 
+#' ### importing FANTOM3/4 data from a data package
+#' 
+#' library(FANTOM3and4CAGE)
+#' 
+#' # list of mouse datasets available in this package
+#' 
+#' data(FANTOMmouseSamples)
+#' unique(FANTOMmouseSamples$dataset)
+#' head(subset(FANTOMmouseSamples, dataset == "FANTOMtissueCAGEmouse"))
+#' head(subset(FANTOMmouseSamples, dataset == "FANTOMtimecourseCAGEmouse"))
+#' 
+#' # import selected samples from two different mouse datasets
+#' 
+#' f34 <- importPublicData(
+#'   origin="FANTOM3and4", dataset = c("FANTOMtissueCAGEmouse", "FANTOMtimecourseCAGEmouse"),
+#'   group = c("brain", "adipogenic_induction"),
+#'   sample = c("CCL-131_Neuro-2a_treatment_for_6hr_with_MPP+", "DFAT-D1_preadipocytes_2days"))
+#' 
+#' f34 <- importPublicData(
+#'   origin="FANTOM3and4", dataset = c("FANTOMtissueCAGEmouse"),
+#'   group = c("brain"),
+#'   sample = c("CCL-131_Neuro-2a_treatment_for_6hr_with_MPP+"))
+#' 
+#' CTSScoordinatesGR(f34)
+#' 
 #' }
-#' )
 #' 
-#' setMethod("importPublicData",
-#' signature(source = "character", dataset = "character", sample = "character"),
-#' function (source, dataset, group, sample){
-#' 	
-#' 	if(source == "ENCODE"){
-#' 		
-#' 		if("ENCODEprojectCAGE" %in% rownames(installed.packages()) == FALSE){
-#' 			stop("Requested CAGE data package is not installed! Please install and load the ENCODEprojectCAGE package, which is available for download from http://promshift.genereg.net/CAGEr/PackageSource/.")
-#' 		}else if(!("package:ENCODEprojectCAGE" %in% search())){
-#' 			stop("Requested CAGE data package is not loaded! Please load the data package by calling 'library(ENCODEprojectCAGE)'")
-#' 		}
-#' 			
-#' 		if(dataset[1] == "ENCODEtissueCAGEfly"){
-#' 			genome.name <- "BSgenome.Dmelanogaster.UCSC.dm3"
-#' 			ENCODEtissueCAGEfly <- NULL
-#' 			data("ENCODEtissueCAGEfly", envir = environment())
-#' 			if(group == "embryo"){
-#' 				if(sample == "mixed_embryos_0-24hr"){
-#' 					
-#' 					ctssTable <- ENCODEtissueCAGEfly[["embryo"]]
-#' 					
-#' 				}else{
-#' 					stop("Specified sample not valid! The dataset 'ENCODEtissueCAGEfly' containes only one sample named 'mixed_embryos_0-24hr'!")
-#' 				}
-#' 			}else{
-#' 				stop("Specified group not valid! The dataset 'ENCODEtissueCAGEfly' containes only one group named 'embryo'!")
-#' 			}
-#' 		
-#' 		}else{
-#' 			genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
-#' 			ENCODEhumanCellLinesSamples <- NULL
-#' 			data("ENCODEhumanCellLinesSamples", envir = environment())
-#' 			info.df <- ENCODEhumanCellLinesSamples
-#' 			
-#' 			if(!(all(dataset %in% info.df$dataset))){
-#' 				stop("Specified dataset(s) not found! Call data(ENCODEhumanCellLinesSamples) and check 'dataset' column for available ENCODE datasets!")
-#' 			}
-#' 			if(length(dataset) == 1){
-#' 				
-#' 				if(!(all(group %in% info.df[info.df$dataset == dataset,"group"]))){
-#' 					stop("Some of the provided groups cannot be found in the specified dataset!")
-#' 				}
-#' 				if(length(group) == 1){
-#' 					if(!(all(sample %in% info.df[info.df$group == group,"sample"]))){
-#' 						stop("Some of the provided samples cannot be found in the specified group!")
-#' 					}
-#' 				}else if(length(group) == length(sample)){
-#' 					if(!all(sapply(c(1:length(group)), function(x) {sample[x] %in% info.df[info.df$group == group[x],"sample"]}))){
-#' 						stop("Provided 'group' and 'sample' do not match! Some of the provided samples cannot be found in the corresponding groups!")
-#' 					}
-#' 				}else{
-#' 					stop("Number of elements in the 'group' must be either 1 or must match the number of elements in the 'sample'!")
-#' 				}
-#' 								
-#' 								
-#' 			}else if(length(dataset) == length(group)){
-#' 				if(!all(sapply(c(1:length(dataset)), function(x) {group[x] %in% info.df[info.df$dataset == dataset[x],"group"]}))){
-#' 					stop("Provided 'dataset' and 'group' do not match! Some of the provided groups cannot be found in the corresponding datasets!")
-#' 				}
-#' 				if(length(group) == length(sample)){
-#' 					if(!all(sapply(c(1:length(group)), function(x) {sample[x] %in% info.df[info.df$group == group[x],"sample"]}))){
-#' 						stop("Provided 'group' and 'sample' do not match! Some of the provided samples cannot be found in the corresponding groups!")
-#' 					}
-#' 				}else{
-#' 					stop("Number of elements in the 'group' must match the number of elements in the 'sample'!")
-#' 				}
-#' 			
-#' 				
-#' 			}else{
-#' 				stop("Number of elements in the 'dataset' must be either 1 or must match the number of elements in the 'group' and in the 'sample'!")
-#' 			}
-#' 			
-#' 			data(list = dataset, envir = environment())
-#' 			
-#' 			if(length(unique(dataset))>1){
-#' 				
-#' 				for(i in 1:length(unique(dataset))){
-#' 					dset <- get(unique(dataset)[i])
-#' 					for(j in 1:length(unique(group[which(dataset == unique(dataset)[i])]))){
-#' 						g <- unique(group[which(dataset == unique(dataset)[i])])[j]
-#' 						ctss <- dset[[g]][, c("chr", "pos", "strand", sample[which((group == g) & (dataset == unique(dataset)[i]))])]
-#' 						discard <- apply(ctss[, c(4:ncol(ctss)), drop = F], 1, function(x) {sum(x > 0)}) >= 1
-#' 						ctss <- data.table(ctss[discard,])
-#' 						setkeyv(ctss, cols = c("chr", "pos", "strand"))
-#' 						if(i == 1 & j == 1){
-#' 							ctssTable <- ctss							
-#' 						}else{
-#' 							ctssTable <- merge(ctssTable, ctss, all.x = T, all.y = T)
-#' 						}
-#' 					}
-#' 				}
-#' 				ctssTable[is.na(ctssTable)] <- 0
-#' 				
-#' 			}else{
-#' 				
-#' 				selected.dataset <- get(dataset)
-#' 				if(length(unique(group))>1){
-#' 					
-#' 					for(i in 1:length(unique(group))){
-#' 						g <- unique(group)[i]
-#' 						ctss <- selected.dataset[[g]][, c("chr", "pos", "strand", sample[which(group == g)])]
-#' 						discard <- apply(ctss[, c(4:ncol(ctss)), drop = F], 1, function(x) {sum(x > 0)}) >= 1
-#' 						ctss <- data.table(ctss[discard,])
-#' 						setkeyv(ctss, cols = c("chr", "pos", "strand"))
-#' 						if(i == 1){
-#' 							ctssTable <- ctss							
-#' 						}else{
-#' 							ctssTable <- merge(ctssTable, ctss, all.x = T, all.y = T)
-#' 						}						
-#' 					}
-#' 					
-#' 					ctssTable[is.na(ctssTable)] <- 0					
-#' 					
-#' 				}else{
-#' 					ctssTable <- selected.dataset[[group]][,c("chr", "pos", "strand", sample)]
-#' 				}
-#' 			}
-#' 			
-#' 			ctssTable <- data.frame(ctssTable, stringsAsFactors = F, check.names = F)
-#' 		}
-#' 		
-#' 		
-#' 	}else if(source == "FANTOM3and4"){
-#' 		
-#' 		if("FANTOM3and4CAGE" %in% rownames(installed.packages()) == FALSE){
-#' 			stop("Requested CAGE data package is not installed! Please install and load the FANTOM3and4CAGE package available from Bioconductor.")
-#' 		}else if(!("package:FANTOM3and4CAGE" %in% search())){
-#' 			stop("Requested CAGE data package is not loaded! Please load the data package by calling 'library(FANTOM3and4CAGE)'")
-#' 		}
-#' 		FANTOMhumanSamples <- FANTOMmouseSamples <- NULL
-#' 		data("FANTOMhumanSamples", envir = environment())
-#' 		info.df1 <- FANTOMhumanSamples
-#' 		data("FANTOMmouseSamples", envir = environment())
-#' 		info.df2 <- FANTOMmouseSamples
-#' 				
-#' 		if(!(all(dataset %in% info.df1$dataset) | all(dataset %in% info.df2$dataset))){
-#' 			stop("Specified dataset(s) not found! Call data(FANTOMhumanSamples) and data(FANTOMmouseSamples) and check 'dataset' column for available ENCODE datasets!")
-#' 		}
-#' 		if(length(grep("human", dataset))>0){
-#' 			genome.name <- "BSgenome.Hsapiens.UCSC.hg18"
-#' 			info.df <- info.df1
-#' 		}else if(length(grep("mouse", dataset))>0){
-#' 			genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
-#' 			info.df <- info.df2
-#' 		}
-#' 		
-#' 		if(length(dataset) == 1){
-#' 			
-#' 			if(!(all(group %in% info.df[info.df$dataset == dataset,"group"]))){
-#' 				stop("Some of the provided groups cannot be found in the specified dataset!")
-#' 			}
-#' 			if(length(group) == 1){
-#' 				if(!(all(sample %in% info.df[info.df$group == group,"sample"]))){
-#' 					stop("Some of the provided samples cannot be found in the specified group!")
-#' 				}
-#' 			}else if(length(group) == length(sample)){
-#' 				if(!all(sapply(c(1:length(group)), function(x) {sample[x] %in% info.df[info.df$group == group[x],"sample"]}))){
-#' 					stop("Provided 'group' and 'sample' do not match! Some of the provided samples cannot be found in the corresponding groups!")
-#' 				}
-#' 			}else{
-#' 				stop("Number of elements in the 'group' must be either 1 or must match the number of elements in the 'sample'!")
-#' 			}
-#' 			
-#' 			
-#' 		}else if(length(dataset) == length(group)){
-#' 			if(!all(sapply(c(1:length(dataset)), function(x) {group[x] %in% info.df[info.df$dataset == dataset[x],"group"]}))){
-#' 				stop("Provided 'dataset' and 'group' do not match! Some of the provided groups cannot be found in the corresponding datasets!")
-#' 			}
-#' 			if(length(group) == length(sample)){
-#' 				if(!all(sapply(c(1:length(group)), function(x) {sample[x] %in% info.df[info.df$group == group[x],"sample"]}))){
-#' 					stop("Provided 'group' and 'sample' do not match! Some of the provided samples cannot be found in the corresponding groups!")
-#' 				}
-#' 			}else{
-#' 				stop("Number of elements in the 'group' must match the number of elements in the 'sample'!")
-#' 			}
-#' 			
-#' 			
-#' 		}else{
-#' 			stop("Number of elements in the 'dataset' must be either 1 or must match the number of elements in the 'group' and in the 'sample'!")
-#' 		}
-#' 		
-#' 		data(list = dataset, envir = environment())
-#' 		
-#' 		if(length(unique(dataset))>1){
-#' 			
-#' 			for(i in 1:length(unique(dataset))){
-#' 				dset <- get(unique(dataset)[i])
-#' 				for(j in 1:length(unique(group[which(dataset == unique(dataset)[i])]))){
-#' 					g <- unique(group[which(dataset == unique(dataset)[i])])[j]
-#' 					ctss <- dset[[g]][, c("chr", "pos", "strand", sample[which(group == g)])]
-#' 					discard <- apply(ctss[, c(4:ncol(ctss)), drop = F], 1, function(x) {sum(x > 0)}) >= 1
-#' 					ctss <- data.table(ctss[discard,])
-#' 					setnames(ctss, c("chr", "pos", "strand", paste(g, sample[which(group == g)], sep = "__")))
-#' 					setkeyv(ctss, cols = c("chr", "pos", "strand"))
-#' 					if(i == 1 & j == 1){
-#' 						ctssTable <- ctss							
-#' 					}else{
-#' 						ctssTable <- merge(ctssTable, ctss, all.x = T, all.y = T)
-#' 					}
-#' 				}
-#' 			}
-#' 			
-#' 			ctssTable[is.na(ctssTable)] <- 0
-#' 			
-#' 		}else{
-#' 			
-#' 			selected.dataset <- get(dataset)
-#' 			if(length(unique(group))>1){
-#' 				
-#' 				for(i in 1:length(unique(group))){
-#' 					g <- unique(group)[i]
-#' 					ctss <- selected.dataset[[g]][, c("chr", "pos", "strand", sample[which(group == g)])]
-#' 					discard <- apply(ctss[, c(4:ncol(ctss)), drop = F], 1, function(x) {sum(x > 0)}) >= 1
-#' 					ctss <- data.table(ctss[discard,])
-#' 					setnames(ctss, c("chr", "pos", "strand", paste(g, sample[which(group == g)], sep = "__")))
-#' 					setkeyv(ctss, cols = c("chr", "pos", "strand"))
-#' 					if(i == 1){
-#' 						ctssTable <- ctss							
-#' 					}else{
-#' 						ctssTable <- merge(ctssTable, ctss, all.x = T, all.y = T)
-#' 					}						
-#' 				}
-#' 				
-#' 				ctssTable[is.na(ctssTable)] <- 0					
-#' 				
-#' 			}else{
-#' 				ctssTable <- selected.dataset[[group]][,c("chr", "pos", "strand", sample)]
-#' 				setnames(ctssTable, c("chr", "pos", "strand", paste(group, sample, sep = "__")))
-#' 			}
-#' 		}
-#' 		
-#' 		ctssTable <- data.frame(ctssTable, stringsAsFactors = F, check.names = F)
-#' 	
-#' 			
-#' 		
-#' 	}else if (source == "FANTOM5"){
-#' 		
-#' 		if(length(dataset) != 1){
-#' 			stop("For FANTOM5 only one dataset can be specified and it can be either 'human' or 'mouse'!")
-#' 		}else if(!(dataset %in% c("human", "mouse"))){
-#' 			stop("For FANTOM5, dataset can be either 'human' or 'mouse'!")
-#' 		}
-#' 		if(dataset == "human"){
-#' 		  FANTOM5humanSamples <- NULL
-#' 			data("FANTOM5humanSamples", envir = environment())
-#' 			samples.info <- FANTOM5humanSamples
-#' 			genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
-#' 		}else if(dataset == "mouse"){
-#' 		  FANTOM5mouseSamples <- NULL
-#' 			data("FANTOM5mouseSamples", envir = environment())
-#' 			samples.info <- FANTOM5mouseSamples
-#' 			genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
-#' 		}		
-#' 
-#' 		if(!(all(sample %in% samples.info$sample))){
-#' 			stop(paste("Some sample names cannot be found for the specified dataset! Call data(FANTOM5", dataset, "Samples) and check the 'sample' column for valid sample names!", sep = ""))
-#' 		}
-#' 		
-#' 		
-#' 		
-#' 		for(i in c(1:length(sample))){
-#' 			
-#' 			message("Fetching sample: ", sample[i], "...")
-#' 			sample.url <- samples.info[samples.info$sample == sample[i], "data_url"]
-#' 			con <- gzcon(url(paste(sample.url)))
-#' 			ctss <- scan(con, what = list(character(), NULL, integer(), NULL, integer(), character()))
-#' 			ctss.df <- data.table(chr = ctss[[1]], pos = ctss[[3]], strand = ctss[[6]], tagCount = ctss[[5]])
-#' 			setnames(ctss.df, c("chr", "pos", "strand", sample[i]))
-#' 			setkeyv(ctss.df, cols = c("chr", "pos", "strand"))
-#' 			if(i == 1){
-#' 				ctss.table <- ctss.df
-#' 			}else{
-#' 				message("Adding sample to CTSS table...\n")
-#' 				ctss.table <- merge(ctss.table, ctss.df, all.x = T, all.y = T)
-#' 				ctss.table[is.na(ctss.table)] <- 0
-#' 			}
-#' 			
-#' 		}
-#' 		
-#' 		ctssTable <- data.frame(ctss.table, stringsAsFactors = F, check.names = F)
-#' 		
-#' 		
-#' 	}else if (source == "ZebrafishDevelopment"){
-#' 
-#' 		if("ZebrafishDevelopmentalCAGE" %in% rownames(installed.packages()) == FALSE){
-#' 			stop("Requested CAGE data package is not installed! Please install and load the ZebrafishDevelopmentalCAGE package, which is available for download from http://promshift.genereg.net/CAGEr/PackageSource/.")
-#' 		}else if(!("package:ZebrafishDevelopmentalCAGE" %in% search())){
-#' 			stop("Requested CAGE data package is not loaded! Please load the data package by calling 'library(ZebrafishDevelopmentalCAGE)'")
-#' 		}
-#' 		
-#' 	  ZebrafishSamples <- NULL
-#' 		data("ZebrafishSamples", envir = environment())
-#' 		if(dataset == "ZebrafishCAGE"){
-#' 			if(group == "development"){
-#' 				if(!(all(sample %in% ZebrafishSamples$sample))){
-#' 					stop("Some sample names cannot be found for the specified dataset! Call data(ZebrafishSamples) and check the 'sample' column for valid sample names!")
-#' 				}else{
-#' 					genome.name <- "BSgenome.Drerio.UCSC.danRer7"
-#' 					ZebrafishCAGE <- NULL
-#' 					data("ZebrafishCAGE", envir = environment())
-#' 					ctssTable <- ZebrafishCAGE[["development"]][,c("chr", "pos", "strand", sample)]
-#'                     ctssTable <- ctssTable[apply(ctssTable[,4:ncol(ctssTable),drop=FALSE], 1, function(x) {any(x>0)}),]
-#' 				}
-#' 			}else{
-#' 				stop("Invalid group name! There is only one group in this dataset named 'development'.")
-#' 			}
-#' 		}else{
-#' 			stop("Invalid dataset name! There is only one available dataset named 'ZebrafishCAGE'.")
-#' 		}
-#' 		
-#' 		
-#' 	}else{
-#' 		stop("Currently only the following public CAGE data resources are supported: 'FANTOM5', 'FANTOM3and4', 'ENCODE', 'ZebrafishDevelopment'. Refer to CAGEr vignette on how to use those resources!")
-#' 	}
-#' 	
-#'     rownames(ctssTable) <- c(1:nrow(ctssTable))
-#'     
-#' 	sample.labels <- colnames(ctssTable)[4:ncol(ctssTable)]
-#' 	names(sample.labels) <- rainbow(n = length(sample.labels))
-#' 	myCAGEset <- new("CAGEset", genomeName = genome.name, inputFiles = paste(source, sample.labels, sep = "__"), inputFilesType = source, sampleLabels = sample.labels)
-#' 	myCAGEset@librarySizes <- as.integer(colSums(ctssTable[,4:ncol(ctssTable),drop=FALSE]))
-#' 	myCAGEset@CTSScoordinates <- ctssTable[, c("chr", "pos", "strand")]
-#' 	myCAGEset@tagCountMatrix <- ctssTable[,4:ncol(ctssTable),drop=FALSE]
-#' 	
-#' 	return(myCAGEset)
-#' 	
-#' }
-#' )
+#' @importFrom utils data
+#' @export
+
+setGeneric("importPublicData",
+           function(origin = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"),
+                    dataset,
+                    group,
+                    sample)
+             standardGeneric("importPublicData"))
+
+.df2SE <- function(df, sample, genome.name) {
+  ctssRanges <- CTSS(df$chr,
+                     df$pos,
+                     df$strand,
+                     seqinfo = seqinfo(getRefGenome(genome.name)),
+                     bsgenomeName = genome.name)
+  ctssDF <- lapply(df[ , sample, drop = FALSE], Rle) |> DataFrame()
+  colnames(ctssDF) <- make.names(colnames(ctssDF))
+  ctssSE <- SummarizedExperiment(c(counts = ctssDF), ctssRanges)
+  if (ncol(ctssDF) == 1) {
+    ctssSE <- ctssSE[        df[ , sample]  > 0,]
+  } else {
+    ctssSE <- ctssSE[rowSums(df[ , sample]) > 0,]
+  }
+  sort(ctssSE)
+}
+
+.importPublicData <- function(origin = c("FANTOM5", "FANTOM3and4", "ENCODE", "ZebrafishDevelopment"), dataset, group, sample) {
+ # origin <- match.arg(origin)
+	if (origin == "ENCODE") {
+	  ce <- .importPublicData_ENCODE (dataset = dataset, group = group, sample = sample)
+	} else if (origin == "FANTOM3and4") {
+    ce <- .importPublicData_F34 (dataset = dataset, group = group, sample = sample)
+  } else if (origin == "FANTOM5") {
+    ce <- .importPublicData_F5 (dataset = dataset, group = group, sample = sample)
+  } else if (origin == "ZebrafishDevelopment") {
+    ce <- .importPublicData_ZF (group = group, sample = sample)
+  }
+  ce
+}
+
+.importPublicData_ENCODE <- function (dataset, group = NULL, sample = NULL) {
+  if (length(unique(dataset))>1) stop ("Merging datasets not supported yet.")
+  if (! requireNamespace("ENCODEprojectCAGE"))
+    stop ("This function requires the ", dQuote("ENCODEprojectCAGE"), " package.",
+          " package; please install it from http://promshift.genereg.net/CAGEr/PackageSource/.")
+  if (dataset == "ENCODEtissueCAGEfly") {
+    if (group != "embryo") stop("Only 'embryo' is allowed as group for dataset 'ENCODEtissueCAGEfly'.")
+    if (sample != "mixed_embryos_0-24hr") stop("Only 'mixed_embryos_0-24hr' is allowed as sample for dataset 'ENCODEtissueCAGEfly'.")
+    if (! requireNamespace("BSgenome.Dmelanogaster.UCSC.dm3"))
+      stop ("This function requires the ", dQuote("BSgenome.Dmelanogaster.UCSC.dm3"), " package.")
+    genome.name <- "BSgenome.Dmelanogaster.UCSC.dm3"
+    ENCODEtissueCAGEfly <- NULL
+    data("ENCODEtissueCAGEfly", package = "ENCODEprojectCAGE", envir = environment())
+    df <- ENCODEtissueCAGEfly$embryo
+  } else {
+    if (! requireNamespace("BSgenome.Hsapiens.UCSC.hg19"))
+      stop ("This function requires the ", dQuote("BSgenome.Hsapiens.UCSC.hg19"), " package.")
+    genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
+    ENCODEhumanCellLinesSamples <- NULL
+    data("ENCODEhumanCellLinesSamples", package = "ENCODEprojectCAGE", envir = environment())
+    info.df <- ENCODEhumanCellLinesSamples
+    if(!(all(dataset %in% info.df$dataset)))
+      stop("Specified dataset(s) not found! Call data(ENCODEhumanCellLinesSamples) and check 'dataset' column for available ENCODE datasets!")
+    if(!(all(group %in% info.df[info.df$dataset == dataset,"group"])))
+      stop("Some of the provided groups cannot be found in the specified dataset!")
+    if(!(all(sample %in% info.df[,"sample"])))
+      stop("Some of the provided samples cannot be found!")
+    data(list= dataset, package = "ENCODEprojectCAGE", envir = environment())
+    df <- get(dataset)[[group]]
+  }
+  se <- .df2SE(df, sample, genome.name)
+  ce <- CAGEexp(genomeName = genome.name,
+                colData = DataFrame( sampleLabels = make.names(sample),
+                                     inputFiles = NA,
+                                     inputFilesType = 'ctss',
+                                     librarySizes = sapply(assay(se), sum),
+                                     row.names = make.names(sample)))
+  CTSStagCountSE(ce) <- se
+  ce
+} 
+
+.importPublicData_F34 <- function (dataset, group = NULL, sample = NULL) {
+  if (length(unique(dataset))>1) stop("merging datasets not supported yet.")
+  if (! requireNamespace("FANTOM3and4CAGE"))
+    stop ("This function requires the ", dQuote("FANTOM3and4CAGE"), " package.")
+  if (all(dataset %in% c("FANTOMtissueCAGEhuman"  ,   "FANTOMtimecourseCAGEhuman"))) {
+    if (! requireNamespace("BSgenome.Hsapiens.UCSC.hg18"))
+      stop ("This function requires the ", dQuote("BSgenome.Hsapiens.UCSC.hg18"), " package.")
+    FANTOMhumanSamples <- FANTOMtimecourseCAGEhuman <- FANTOMtissueCAGEhuman <- NULL
+      data("FANTOMhumanSamples",        package = "FANTOM3and4CAGE", envir = environment())
+    data("FANTOMtimecourseCAGEhuman", package = "FANTOM3and4CAGE", envir = environment())
+    data("FANTOMtissueCAGEhuman",     package = "FANTOM3and4CAGE", envir = environment())
+    samples.info <- FANTOMhumanSamples
+    genome.name <- "BSgenome.Hsapiens.UCSC.hg18"
+  } else if (all(dataset %in% c("FANTOMtissueCAGEmouse", "FANTOMtimecourseCAGEmouse"))) {
+    if (! requireNamespace("BSgenome.Mmusculus.UCSC.mm9"))
+      stop ("This function requires the ", dQuote("BSgenome.Mmusculus.UCSC.mm9"), " package.")
+    FANTOMmouseSamples <- NULL
+    data("FANTOMmouseSamples", package = "FANTOM3and4CAGE", envir = environment())
+    data("FANTOMtimecourseCAGEmouse", package = "FANTOM3and4CAGE", envir = environment())
+    data("FANTOMtissueCAGEmouse",     package = "FANTOM3and4CAGE", envir = environment())
+    samples.info <- FANTOMmouseSamples
+    genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
+  } else {
+    stop("At least one dataset name is not valid")
+  }
+  
+  validSampleNames <- samples.info$sample
+  if (is.null(sample)) sample <- validSampleNames
+  if ( ! all(sample %in% validSampleNames))
+    stop("At least one sample name is not valid. ",
+         "Call data('FANTOMhumanSamples', package='FANTOM3and4CAGE') or ",
+         "data('FANTOMmouseSamples', package='FANTOM3and4CAGE') to check valid names.")
+  validGroupNames <- unique(samples.info$group)
+  if ( ! all(group %in% validGroupNames))
+    stop("At least one group name is not valid. ",
+         "Call data('FANTOMhumanSamples', package='FANTOM3and4CAGE') or ",
+         "data('FANTOMmouseSamples', package='FANTOM3and4CAGE') to check valid names.")
+  
+  df <- get(dataset)[[group]]
+  se <- .df2SE(df, sample, genome.name)
+  ce <- CAGEexp(genomeName = genome.name,
+                colData = DataFrame( sampleLabels = make.names(sample),
+                                     inputFiles = NA,
+                                     inputFilesType = 'ctss',
+                                     librarySizes = sapply(assay(se), sum),
+                                     row.names = make.names(sample)))
+  CTSStagCountSE(ce) <- se
+  ce
+}
+
+.importPublicData_F5 <- function(dataset = c("human", "mouse"), group = NULL, sample = NULL) {
+  dataset <- match.arg(dataset)
+  if (dataset == "human") {
+    if (! requireNamespace("BSgenome.Hsapiens.UCSC.hg19"))
+      stop ("This function requires the ", dQuote("BSgenome.Hsapiens.UCSC.hg19"), " package.")
+    FANTOM5humanSamples <- NULL
+    data("FANTOM5humanSamples", package = "CAGEr", envir = environment())
+    samples.info <- FANTOM5humanSamples
+    genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
+  } else {
+    if (! requireNamespace("BSgenome.Mmusculus.UCSC.mm9"))
+      stop ("This function requires the ", dQuote("BSgenome.Mmusculus.UCSC.mm9"), " package.")
+    FANTOM5mouseSamples <- NULL
+    data("FANTOM5mouseSamples", package = "CAGEr", envir = environment())
+    samples.info <- FANTOM5mouseSamples
+    genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
+  }
+  
+  validSampleNames <- samples.info$sample
+  if (is.null(sample)) sample <- validSampleNames
+  if ( ! all(sample %in% validSampleNames))
+    stop("At least one sample name is not valid. ",
+         "Call data('FANTOM5humanSamples', package='CAGEr') or ",
+         "data('FANTOM5mouseSamples', package='CAGEr') to check valid names.")
+  
+  ce <- CAGEexp(genomeName = genome.name,
+          inputFiles = samples.info[samples.info$sample %in% sample,"data_url"],
+          inputFilesType = "bedScore",
+          sampleLabels = make.names(sample))
+  getCTSS(ce)
+}
+
+.importPublicData_ZF <- function(group = "development", sample = NULL) {
+  if (group != "development")
+    stop("Invalid group name! There is only one group in this dataset named 'development'.")
+  if (! requireNamespace("ZebrafishDevelopmentalCAGE"))
+    stop ("This function requires the ", dQuote("ZebrafishDevelopmentalCAGE"),
+          " package; please install it from http://promshift.genereg.net/CAGEr/PackageSource/.")
+  if (! requireNamespace("BSgenome.Drerio.UCSC.danRer7"))
+    stop ("This function requires the ", dQuote("BSgenome.Drerio.UCSC.danRer7"), " package.")
+
+  ZebrafishSamples <- NULL
+  data("ZebrafishSamples", package = "ZebrafishDevelopmentalCAGE", envir = environment())
+  
+  validSampleNames <- levels(ZebrafishSamples$sample)
+  if (is.null(sample )) sample <- validSampleNames
+  if ( ! all(sample %in% validSampleNames))
+    stop("At least one sample name is not valid. ",
+         "Valid sample names are: ", paste(validSampleNames, collapse = ", "), ".")
+  
+  ZebrafishCAGE <- NULL
+  data("ZebrafishCAGE", package = "ZebrafishDevelopmentalCAGE", envir = environment())
+  # The vignette of ZebrafishDevelopmentalCAGE states that the provided coordinates are 1-based.
+  ctssSE <- .df2SE(ZebrafishCAGE$development, sample, "BSgenome.Drerio.UCSC.danRer7")
+  ce <- CAGEexp(genomeName = "BSgenome.Drerio.UCSC.danRer7",
+                colData = DataFrame( sampleLabels = sample,
+                                     inputFiles = NA,
+                                     inputFilesType = 'ctss',
+                                     librarySizes = sapply(assay(ctssSE), sum),
+                                     row.names = sample))
+  CTSStagCountSE(ce) <- ctssSE
+  ce
+}
+
+#' @rdname importPublicData
+
+setMethod("importPublicData", signature(origin = "character", dataset = "character", sample = "character"),
+          .importPublicData)
