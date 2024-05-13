@@ -44,6 +44,9 @@ Depends:
     methods,
     MultiAssayExperiment,
     R (>= 4.1.0)
+Remotes:
+   url::http://promshift.genereg.net/CAGEr/PackageSource/ENCODEprojectCAGE_1.0.1.tar.gz,
+   url::http://promshift.genereg.net/CAGEr/PackageSource/ZebrafishDevelopmentalCAGE_0.99.0.tar.gz
 Suggests:
     BSgenome.Dmelanogaster.UCSC.dm3,
     BSgenome.Drerio.UCSC.danRer7,
@@ -51,11 +54,13 @@ Suggests:
     BSgenome.Hsapiens.UCSC.hg19,
     BSgenome.Mmusculus.UCSC.mm9,
     DESeq2,
+    ENCODEprojectCAGE,
     FANTOM3and4CAGE,
     ggseqlogo,
     BiocStyle,
     knitr,
-    rmarkdown
+    rmarkdown,
+    ZebrafishDevelopmentalCAGE
 Description: The _CAGEr_ package identifies transcription start sites (TSS) and
  their usage frequency from CAGE (Cap Analysis Gene Expression) sequencing data.
  It normalises raw CAGE tag count, clusters TSSs into tag clusters (TC) and
