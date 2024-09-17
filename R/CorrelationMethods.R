@@ -486,10 +486,10 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
                              , tagCountThreshold, applyThresholdBoth
                              , digits) {
   # Select samples
-  if (all(samples %in% colnames(expr.table))) {
-    expr.table <- expr.table[,samples]
-  } else if(samples == "all"){
+  if(samples == "all"){
     samples <- colnames(expr.table)
+  } else if (all(samples %in% colnames(expr.table))) {
+    expr.table <- expr.table[,samples]
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
   nr.samples <- length(samples)
   
@@ -540,16 +540,18 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
     points(df, ...)
   }
 
-  pairs( expr.table
-       , lower.panel = pointsUnique
-       , upper.panel = panel.cor
-       , pch = "."
-       , cex = 4
-       , log = "xy"
-       , las = 1
-       , xaxp = c(1,10,1)
-       , yaxp = c(1,10,1)
-       , labels = samples)
+  if (TOPLOT){
+    pairs( expr.table
+        , lower.panel = pointsUnique
+        , upper.panel = panel.cor
+        , pch = "."
+        , cex = 4
+        , log = "xy"
+        , las = 1
+        , xaxp = c(1,10,1)
+        , yaxp = c(1,10,1)
+        , labels = samples)
+  }
   
   # Return a correlation matrix
   corr.m <- matrix(1, nr.samples, nr.samples)

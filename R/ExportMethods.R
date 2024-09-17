@@ -101,6 +101,7 @@ setGeneric( "plotReverseCumulatives",
     group <- "group"
   }
   
+  # no need for colors if a multi-facet plot and many colors
   if (is.null(object@metadata$colData$Colors)) {
     object@metadata$colData$Colors <- scales::hue_pal()(length(object))
   }
@@ -230,8 +231,8 @@ setMethod("plotReverseCumulatives", "GRanges",
 #' @family CAGEr plot functions
 #' @family CAGEr clusters functions
 #' 
-#' @importFrom ggplot2 ggplot scale_fill_manual geom_histogram facet_wrap
-#' @importFrom ggplot2 ggtitle xlab ylab labs
+#' @importFrom ggplot2 ggplot aes_string scale_fill_manual geom_histogram facet_wrap
+#' @importFrom ggplot2 ggtitle xlab ylab
 #' 
 #' @examples
 #' 
@@ -278,17 +279,22 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
   
 	binsize <- round(max(iqwidths$iq_width)/2)
 	
-	ggplot2::ggplot(iqwidths) +
-	  ggplot2::aes_string(x = "iq_width", fill = "sampleName") +
-	  ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
-	  ggplot2::geom_histogram(bins = binsize) +
-	  ggplot2::facet_wrap("~sampleName") +
-	  ggplot2::ggtitle(paste0(
+	iqwidth_plot <- ggplot(iqwidths) +
+	  aes_string(x = "iq_width") +
+	  scale_fill_manual(values = names(sampleLabels(object))) +
+	  geom_histogram(bins = binsize) +
+	  facet_wrap("~sampleName") +
+	  ggtitle(paste0(
 	    switch(clusters, tagClusters = "Tag Clusters", consensusClusters = "Consenss Clusters"),
 	    " interquantile width (quantile ", qLow, " to ", qUp, ")")) +
-	  ggplot2::xlab("Interquantile width (bp)") +
-	  ggplot2::ylab("Frequency") +
-	  ggplot2::labs(fill = "Sample name")
+	  xlab("Interquantile width (bp)") +
+	  ylab("Frequency")
+
+    if (TOPLOT){
+      print(iqwidth_plot)
+    }
+
+    return(iqwidth_plot)
 })
 
 #' @name plotExpressionProfiles
