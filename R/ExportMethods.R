@@ -64,9 +64,7 @@ NULL
 #'   ggplot2::ggtitle("prim6 replicates")
 #' tagClustersGR(exampleCAGEexp) |> plotReverseCumulatives()
 #' 
-#' @importFrom ggplot2 aes geom_abline geom_step geom_vline ggplot ggtitle
-#' @importFrom ggplot2 guides guide_legend labs
-#' @importFrom ggplot2 scale_color_manual scale_x_log10 scale_y_log10
+#' @importFrom ggplot2 aes geom_line geom_abline facet_wrap geom_text geom_vline ggplot
 #' @importFrom rlang .data
 #' @importFrom scales hue_pal
 #' @importFrom stats cor median
@@ -131,27 +129,30 @@ setGeneric( "plotReverseCumulatives",
     reference.slope <- min(median(fit.slopes), -1.05)
     reference.library.size <- 10^floor(log10(median(sapply(object, sum))))
     reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
-  }
 
-  plot_out <- ggplot2::ggplot(intermediate_df) +
-    ggplot2::aes(x=x, y=y) +
-    ggplot2::geom_line() +
-    ggplot2::facet_wrap(. ~sampleLabels) +
-    xlim(xlim[1], xlim[2]) +
-    ylim(ylim[1], ylim[2]) +
-    scale_x_continuous(trans='log10') +
-    scale_y_continuous(trans='log10') +
-    labs(title="Reference distribution:",
-         subtitle = paste0("alpha= ", sprintf("%.2f", -1*reference.slope), " T= ", reference.library.size),
-         x =xlab, y = ylab) +
-    ggplot2::geom_text(data = intermediate_df,
-       mapping= aes(
-         x=10, y= 10,
-         label = paste0("alpha= ", formatC(-1*fit.slopes[sampleLabels], format = "f", digits = 2)))) +
-    ggplot2::geom_vline(xintercept=fitInRange, linetype="dotted") +
-    ggplot2::geom_abline(slope = reference.slope, intercept = reference.intercept,
-                         linetype="longdash", colour="#7F7F7F7F")
-  
+    plot_out <- ggplot(intermediate_df) +
+      aes(x=x, y=y) +
+      geom_line() +
+      facet_wrap(. ~sampleLabels) +
+      xlim(xlim[1], xlim[2]) +
+      ylim(ylim[1], ylim[2]) +
+      scale_x_continuous(trans='log10') +
+      scale_y_continuous(trans='log10') +
+      labs(title="Reference distribution:",
+          subtitle = paste0("alpha= ", sprintf("%.2f", -1*reference.slope), " T= ", reference.library.size),
+          x =xlab, y = ylab) +
+      geom_text(data = intermediate_df,
+        mapping= aes(
+          x=10, y= 10,
+          label = paste0("alpha= ", formatC(-1*fit.slopes[sampleLabels], format = "f", digits = 2)))) +
+      geom_vline(xintercept=fitInRange, linetype="dotted") +
+      geom_abline(slope = reference.slope, intercept = reference.intercept,
+                          linetype="longdash", colour="#7F7F7F7F")
+  } else{
+    # ToDo: what is the intended behaviour?
+    warning("reference distribution not fitted")
+  }
+    
   if (TOPLOT){
     print(plot_out)
   }
