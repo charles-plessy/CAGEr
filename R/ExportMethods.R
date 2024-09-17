@@ -83,7 +83,9 @@ setGeneric( "plotReverseCumulatives",
 .plotReverseCumulatives <-
   function( object, values = c("raw", "normalized")
           , fitInRange = c(10, 1000)
-          , group = NULL) {
+          , group = NULL
+          , xlim = c(1, 1e5)
+          , ylim = c(1, 1e6)) {
   if (is.null(object@metadata$colData))
     stop("Expects a List-like object with a colData DataFrame in its metadata slot.")
   
@@ -99,11 +101,6 @@ setGeneric( "plotReverseCumulatives",
   if (is.null(group)) {
     object@metadata$colData$group <- "All samples"
     group <- "group"
-  }
-  
-  # no need for colors if a multi-facet plot and many colors
-  if (is.null(object@metadata$colData$Colors)) {
-    object@metadata$colData$Colors <- scales::hue_pal()(length(object))
   }
   
   toCumSums <- function(exprValues, sampleName) {
@@ -123,14 +120,9 @@ setGeneric( "plotReverseCumulatives",
   # Enforce original sample order
   DF$plotOrder <- DF$sampleLabels |> ordered(unique(DF$sampleLabels))
 
-  p <- as.data.frame(DF) |>
+  intermediate_df <- as.data.frame(DF) |>
       merge( object@metadata$colData[,c('sampleLabels', group)] |> as.data.frame()
-           , by="sampleLabels") |> ggplot() +
-    aes(.data$x, .data$y, col = .data$plotOrder) +
-    geom_step() +
-    scale_x_log10() + scale_y_log10() +
-    xlab(xlab) + ylab(ylab) +
-    ggtitle("Reverse-cumulative plot")
+           , by="sampleLabels")
 
   if(!is.null(fitInRange)) {
     fit.coefs.m <- sapply(object, val.range = fitInRange, \(x, val.range)
@@ -139,20 +131,32 @@ setGeneric( "plotReverseCumulatives",
     reference.slope <- min(median(fit.slopes), -1.05)
     reference.library.size <- 10^floor(log10(median(sapply(object, sum))))
     reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
-    p <- p +
-      geom_abline(intercept = reference.intercept, slope = reference.slope, color = "grey", linetype = "longdash") +
-      geom_vline(xintercept = fitInRange, color = "darkgrey", linetype = "dotted") +
-      scale_color_manual(
-        values = object@metadata$colData$Colors,
-        labels = paste0("(", formatC(-fit.slopes, format = "f", digits = 2), ") ",  names(fit.slopes))) +
-      labs(subtitle = paste0("Ref. distribution alpha = ", sprintf("%.2f", -reference.slope), ", T = ", reference.library.size, ".")) +
-      guides(col = guide_legend(title = "(alpha) sample names"))
-  } else {
-    p <- p +
-      scale_color_manual(values = object@metadata$colData$Colors)
-      guides(col = guide_legend(title = "Sample names"))
   }
-  p + facet_wrap(group)
+
+  plot_out <- ggplot2::ggplot(intermediate_df) +
+    ggplot2::aes(x=x, y=y) +
+    ggplot2::geom_line() +
+    ggplot2::facet_wrap(. ~sampleLabels) +
+    xlim(xlim[1], xlim[2]) +
+    ylim(ylim[1], ylim[2]) +
+    scale_x_continuous(trans='log10') +
+    scale_y_continuous(trans='log10') +
+    labs(title="Reference distribution:",
+         subtitle = paste0("alpha= ", sprintf("%.2f", -1*reference.slope), " T= ", reference.library.size),
+         x =xlab, y = ylab) +
+    ggplot2::geom_text(data = intermediate_df,
+       mapping= aes(
+         x=10, y= 10,
+         label = paste0("alpha= ", formatC(-1*fit.slopes[sampleLabels], format = "f", digits = 2)))) +
+    ggplot2::geom_vline(xintercept=fitInRange, linetype="dotted") +
+    ggplot2::geom_abline(slope = reference.slope, intercept = reference.intercept,
+                         linetype="longdash", colour="#7F7F7F7F")
+  
+  if (TOPLOT){
+    print(plot_out)
+  }
+    
+  return(list(plot_out, reference.slope, reference.library.size, reference.intercept))
 }
 
 #' @rdname plotReverseCumulatives
