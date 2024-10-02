@@ -64,7 +64,7 @@ NULL
 #'   ggplot2::ggtitle("prim6 replicates")
 #' tagClustersGR(exampleCAGEexp) |> plotReverseCumulatives()
 #' 
-#' @importFrom ggplot2 aes geom_line geom_abline facet_wrap geom_text geom_vline ggplot
+#' @importFrom ggplot2 aes geom_line geom_abline facet_wrap geom_text geom_vline ggplot scale_x_log10 scale_y_log10
 #' @importFrom rlang .data
 #' @importFrom scales hue_pal
 #' @importFrom stats cor median
@@ -81,9 +81,7 @@ setGeneric( "plotReverseCumulatives",
 .plotReverseCumulatives <-
   function( object, values = c("raw", "normalized")
           , fitInRange = c(10, 1000)
-          , group = NULL
-          , xlim = c(1, 1e5)
-          , ylim = c(1, 1e6)) {
+          , group = NULL) {
   if (is.null(object@metadata$colData))
     stop("Expects a List-like object with a colData DataFrame in its metadata slot.")
   
@@ -130,14 +128,12 @@ setGeneric( "plotReverseCumulatives",
     reference.library.size <- 10^floor(log10(median(sapply(object, sum))))
     reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
 
-    plot_out <- ggplot(intermediate_df) +
+    ggplot(intermediate_df) +
       aes(x=x, y=y) +
       geom_line() +
       facet_wrap(. ~sampleLabels) +
-      xlim(xlim[1], xlim[2]) +
-      ylim(ylim[1], ylim[2]) +
-      scale_x_continuous(trans='log10') +
-      scale_y_continuous(trans='log10') +
+      scale_x_log10()  +
+      scale_y_log10()  +
       labs(title="Reference distribution:",
           subtitle = paste0("alpha= ", sprintf("%.2f", -1*reference.slope), " T= ", reference.library.size),
           x =xlab, y = ylab) +
@@ -152,12 +148,7 @@ setGeneric( "plotReverseCumulatives",
     # ToDo: what is the intended behaviour?
     warning("reference distribution not fitted")
   }
-    
-  if (TOPLOT){
-    print(plot_out)
-  }
-    
-  return(list(plot_out, reference.slope, reference.library.size, reference.intercept))
+
 }
 
 #' @rdname plotReverseCumulatives
@@ -284,7 +275,7 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
   
 	binsize <- round(max(iqwidths$iq_width)/2)
 	
-	iqwidth_plot <- ggplot(iqwidths) +
+	ggplot(iqwidths) +
 	  aes_string(x = "iq_width") +
 	  scale_fill_manual(values = names(sampleLabels(object))) +
 	  geom_histogram(bins = binsize) +
@@ -295,11 +286,6 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
 	  xlab("Interquantile width (bp)") +
 	  ylab("Frequency")
 
-    if (TOPLOT){
-      print(iqwidth_plot)
-    }
-
-    return(iqwidth_plot)
 })
 
 #' @name plotExpressionProfiles
