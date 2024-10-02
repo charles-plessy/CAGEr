@@ -551,13 +551,13 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
       , yaxp = c(1,10,1)
       , labels = samples)
   
-  # # Return a correlation matrix
-  # corr.m <- matrix(1, nr.samples, nr.samples)
-  # colnames(corr.m) <- samples
-  # rownames(corr.m) <- samples
-  # corr.m[lower.tri(corr.m)] <- corr.v
-  # corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
-  # corr.m
+  # Return a correlation matrix
+  corr.m <- matrix(1, nr.samples, nr.samples)
+  colnames(corr.m) <- samples
+  rownames(corr.m) <- samples
+  corr.m[lower.tri(corr.m)] <- corr.v
+  corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
+  corr.m
 }
 
 # Vanja's version of smooth scatter that allows passing range.x argument to grDevices:::.smoothScatterCalcDensity function to calculate 2D kernel smoothed density
