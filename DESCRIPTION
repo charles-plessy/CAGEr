@@ -1,7 +1,7 @@
 Package: CAGEr
 Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for precise mapping of transcription start sites and promoterome mining
-Version: 2.15.0
-Date: 2024-10-25
+Version: 2.15.1
+Date: 2025-06-22
 Authors@R:
   c( person("Vanja",   "Haberle",   email = "vanja.haberle@gmail.com",       role = "aut"),
      person("Charles", "Plessy",    email = "charles.plessy@oist.jp",        role = "cre"),
@@ -16,10 +16,10 @@ Imports:
     CAGEfightR,
     data.table,
     formula.tools,
-    GenomeInfoDb,
-    GenomicAlignments,
-    GenomicFeatures,
-    GenomicRanges (>= 1.37.16),
+    Seqinfo,
+    GenomicAlignments (>= 1.45.1),
+    GenomicFeatures (>= 1.61.4),
+    GenomicRanges (>= 1.61.1),
     ggplot2 (>= 2.2.0),
     gtools,
     IRanges (>= 2.18.0),
@@ -27,15 +27,15 @@ Imports:
     memoise,
     plyr,
     rlang,
-    Rsamtools,
+    Rsamtools (>= 2.25.1),
     reshape2,
-    rtracklayer,
+    rtracklayer (>= 1.69.1),
     S4Vectors (>= 0.27.5),
     scales,
     som,
     stringdist,
     stringi,
-    SummarizedExperiment,
+    SummarizedExperiment (>= 1.39.1),
     utils,
     vegan,
     VGAM
@@ -104,6 +104,6 @@ Collate:
     'TSSlogo.R'
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8

@@ -28,9 +28,10 @@ setClassUnion("CAGEr", c("CAGEexp"))  # Legacy of dual support for CAGEset befor
 #' 
 #' @details If the `reference.genome` object exists and is a BSgenome_, it will
 #' be returned.  This allows the user to run things like
-#' `seqlevelsStyle(BSgenome.Hsapiens.UCSC.hg19) <- "NCBI"` on the BSgenome
-#' object before running `getCTSS`.  If the `reference.genome` object does not
-#' exist, attempts to load it and return it, or throws an error if not available.
+#' `GenomeInfoDb::seqlevelsStyle(BSgenome.Hsapiens.UCSC.hg19) <- "NCBI"` on
+#' the BSgenome object before running `getCTSS`.  If the `reference.genome`
+#' object does not exist, attempts to load it and return it, or throws an
+#' error if not available.
 #' 
 #' @return A BSgenome object of the same name as the `reference.genome` argument.
 #' 
