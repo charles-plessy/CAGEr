@@ -302,6 +302,31 @@ setMethod( "plotCorrelation2", "matrix"
                    , digits             = digits)
 })
 
+# Helper function to calculate a correlation matrix from an expression table without plotting it
+calculate_correlation_matrix <- function(
+    expr.table, samples, method, tagCountThreshold,
+    applyThresholdBoth){
+
+    # Select samples
+    if(samples == "all"){
+        samples <- colnames(expr.table)
+    } else if (all(samples %in% colnames(expr.table))) {
+        expr.table <- expr.table[,samples]
+    } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
+    nr.samples <- length(samples)
+
+    # Pre-calculate a vector of correlation coefficients
+    corr.v <- corVector(expr.table, method, tagCountThreshold, applyThresholdBoth)
+
+    corr.m <- matrix(1, nr.samples, nr.samples)
+    colnames(corr.m) <- samples
+    rownames(corr.m) <- samples
+    corr.m[lower.tri(corr.m)] <- corr.v
+    corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
+
+    return(corr.m)
+}
+
 
 # Helper function to apply threshold pairwise
 .applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {

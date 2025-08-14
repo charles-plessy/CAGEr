@@ -43,3 +43,24 @@ setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {
   enhancers <- quickEnhancers(se)
   c(enhancers = enhancers, object)
 })
+
+# Export normalized CTSS for CAGEfightR
+export_normalized_ctss <- function(object = "CAGEexp"){
+  # object is copied and modified from CAGEr: the original code only takes the counts
+  # Extract CTSS count matrix as SummarizedExperiment
+  se <- CTSStagCountSE(object)
+  # Clean up and structure metadata
+  colData(se) <- colData(object)
+  rowRanges(se) <- as(rowRanges(se), "StitchedGPos")
+  colData(se)$Name <- colData(se)$sampleLabels
+
+  # Convert counts to sparse matrix to save memory
+  assays(se, withDimnames=FALSE) <- List(
+      counts = as(as.matrix(as.data.frame(assays(se)[[1]])), "dgCMatrix"),
+      TPM = as(as.matrix(as.data.frame(assays(se)[[2]])), "dgCMatrix"))
+
+  # Save as main working object
+  cfSampleCTSSs <- se
+
+  return (cfSampleCTSSs)
+}

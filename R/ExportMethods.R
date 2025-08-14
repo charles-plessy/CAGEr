@@ -197,6 +197,96 @@ setMethod("plotReverseCumulatives", "GRanges",
   .plotReverseCumulatives(L, values, fitInRange, group = NULL)
 })
 
+# Helper function for separating the calulcation and plotting of reverse cumulatives.
+
+prepare_counts <- function(tag_counts){
+    tag_xy <- tibble(name=character(), x=numeric(), y=numeric())
+    # for each column, add x and y values
+    for (column_idx in 1:dim(tag_counts)[2]){
+        tag_column <- tag_counts[,column_idx]
+        values <- sort(Rle(tag_column), decreasing = TRUE)
+        values <- values[values != 0]
+
+        x_values <- runValue(values)
+        y_values <- cumsum(runLength(values))
+        tag_xy <- tag_xy %>% add_row(
+            name= colnames(tag_counts)[column_idx], x=x_values, y=y_values
+        )
+    }
+    return(tag_xy)
+}
+
+
+calculateReverseCumulative <- function(
+    object,
+    values = c("raw", "normalized"),
+    fitInRange = c(10, 1000)
+    ){
+    sample.labels <- sampleLabels(object)
+    values <- match.arg(values)
+
+    tag.count <- switch(
+        values,
+        raw = CTSStagCountDF(object),
+        normalized = CTSSnormalizedTpmDF(object))
+
+    if(! is.null(fitInRange)) {
+        fit.coefs.m <- as.matrix(data.frame(lapply(tag.count, function(x) {
+        .fit.power.law.to.reverse.cumulative(values = decode(x), val.range = fitInRange)})))
+        fit.slopes <- fit.coefs.m[1,]
+        names(fit.slopes) <- sample.labels
+        reference.slope <- min(median(fit.slopes), -1.05)
+        reference.library.size <- 10^floor(log10(median(sapply(tag.count, sum))))
+        reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
+    }
+    tag_count_df <- prepare_counts(tag.count)
+
+    # License note: the return values are extended to include the slope and intercept
+    return(list(tag_count_df, reference.slope, reference.library.size, reference.intercept, fit.slopes))
+}
+
+plotReverseCumulatives2 <- function(
+    tag_count_df,
+    slope,
+    intercept,
+    library_size,
+    fit.slopes,
+    fitInRange = c(10, 1000),
+    main = NULL, legend = TRUE,
+    xlab = "number of CAGE tags", ylab = "number of CTSSs (>= nr tags)",
+    xlim = c(1, 1e5), ylim = c(1, 1e6)){
+
+    # plot nicely
+    # facets grid
+    # remove alpha, but add as title for alpha and subtitle for T
+    # geom_vline for vertical as two numbers
+    # diagonal as separate geom_abline slope and intercept
+
+    plot_out <- ggplot2::ggplot(tag_count_df) +
+        ggplot2::aes(x=x, y=y) +
+        ggplot2::geom_line() +
+        ggplot2::facet_wrap(. ~name) +
+        xlim(xlim[1], xlim[2]) +
+        ylim(ylim[1], ylim[2]) +
+        scale_x_continuous(trans='log10') +
+        scale_y_continuous(trans='log10') +
+        labs(title="Reference distribution:",
+            subtitle = paste0("alpha= ", sprintf("%.2f", -1*slope), " T= ", library_size),
+            x =xlab, y = ylab) +
+        ggplot2::geom_text(data = tag_count_df,
+                mapping= aes(
+                x=10, y= 10,
+                label = paste0("alpha= ", formatC(-1*fit.slopes[name], format = "f", digits = 2)))) +
+        ggplot2::geom_vline(xintercept=fitInRange, linetype="dotted") +
+        ggplot2::geom_abline(
+            slope = slope,
+            intercept = intercept,
+            linetype="longdash",
+            colour="#7F7F7F7F")
+
+    return(plot_out)
+}
+
 #' @name plotInterquantileWidth
 #' 
 #' @title Plot cluster widths
@@ -278,7 +368,8 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
   
 	binsize <- round(max(iqwidths$iq_width)/2)
 	
-	ggplot2::ggplot(iqwidths) +
+  if len(sampleLabels(object) < 10){
+    ggplot2::ggplot(iqwidths) +
 	  ggplot2::aes_string(x = "iq_width", fill = "sampleName") +
 	  ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
 	  ggplot2::geom_histogram(bins = binsize) +
@@ -289,7 +380,21 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
 	  ggplot2::xlab("Interquantile width (bp)") +
 	  ggplot2::ylab("Frequency") +
 	  ggplot2::labs(fill = "Sample name")
+  } else {
+    ggplot2::ggplot(iqwidths) +
+	  ggplot2::aes_string(x = "iq_width") +
+	  ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
+	  ggplot2::geom_histogram(bins = binsize) +
+	  ggplot2::facet_wrap("~sampleName") +
+	  ggplot2::ggtitle(paste0(
+	    switch(clusters, tagClusters = "Tag Clusters", consensusClusters = "Consenss Clusters"),
+	    " interquantile width (quantile ", qLow, " to ", qUp, ")")) +
+	  ggplot2::xlab("Interquantile width (bp)") +
+	  ggplot2::ylab("Frequency")
+  }
+	
 })
+
 
 #' @name plotExpressionProfiles
 #' 
