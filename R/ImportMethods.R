@@ -1039,31 +1039,12 @@ import.bigwig <- function(
         return(x)
     })
 
-    if (grepl( ".Signal.UniqueMultiple.str1.out.wig.bw", names(plus)[1], fixed = TRUE)){
-        plus_sample_names = stringr::str_remove_all(
-            names(plus),
-            ".Signal.UniqueMultiple.str1.out.wig.bw")
-        minus_sample_names = stringr::str_remove_all(
-            names(minus),
-            ".Signal.UniqueMultiple.str2.out.wig.bw" )
-    } else if (grepl( ".Signal.Unique.str1.out.wig.bw", names(plus)[1], fixed = TRUE)) {
-        plus_sample_names = stringr::str_remove_all(
-            names(plus),
-            ".Signal.Unique.str1.out.wig.bw")
-        minus_sample_names = stringr::str_remove_all(
-            names(minus),
-            ".Signal.Unique.str2.out.wig.bw")
-    } else if (grepl( "_str1", names(plus)[1], fixed = TRUE)) {
-        plus_sample_names = stringr::str_remove_all(
-            names(plus),
-            "_str1")
-        minus_sample_names = stringr::str_remove_all(
-            names(minus),
-            "_str2")
-    } else {
-        plus_sample_names = names(plus)
-        minus_sample_names = names(minus)
-    }
+    plus_sample_names = stringr::str_remove_all(
+        names(plus),
+        "_str1")
+    minus_sample_names = stringr::str_remove_all(
+        names(minus),
+        "_str2")
 
     names(plus) <- plus_sample_names
     names(minus) <- minus_sample_names
