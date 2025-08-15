@@ -210,14 +210,15 @@ coerceInBSgenome <- function(gr, genome) {
 #' @family loadFileIntoGPos
 
 loadFileIntoGPos    <- function( filepath
-                               , filetype = c( "bam", "bamPairedEnd"
+                               , filetype = c( "bam", "bamPairedEnd", "bigwig"
                                              , "bed", "bedctss", "bedScore"
                                              , "CAGEscanMolecule", "ctss")
                                , sequencingQualityThreshold
                                , mappingQualityThreshold
                                , removeFirstG
                                , correctSystematicG
-                               , genome) {
+                               , genome
+                               , sample_names_files_dict) {
   if (missing(filetype)) stop("Please specify the file type.")
   filetype <- match.arg(filetype)
   switch( filetype
@@ -235,6 +236,9 @@ loadFileIntoGPos    <- function( filepath
                                             , removeFirstG = removeFirstG
                                             , correctSystematicG = correctSystematicG
                                             , genome = genome)
+        , bigwig           = import.bigwig( filepath = filepath
+                                          , genome = genome
+                                          , sample_names_files_dict = sample_names_files_dict)
         , bed              = import.bedmolecule(filepath)
         , bedScore         = import.bedScore(filepath)
         , bedctss          = import.bedCTSS(filepath)
@@ -982,3 +986,141 @@ setGeneric("importPublicData",
 
 setMethod("importPublicData", signature(origin = "character", dataset = "character", sample = "character"),
           .importPublicData)
+
+
+#' Read in BigWig files to CAGEexp object
+#'
+#' @param genome the name of the reference genome (bsgenome)
+#' @param filepath list of input bigwig files with full path
+#' @param sample_names_files_dict dictionary of matching sample names to files
+#' @return a CAGEexp object
+#' @examples
+#' import.bigwig(
+#'  genome="BSgenome.Scerevisiae.UCSC.sacCer3",
+#'  filepath=["path/to/file1.bw", "path/to/file2.bw"],
+#'  sample_names_files_dict=["path/to/file1.bw": "sample1", "path/to/file2.bw": "sample2"],
+#'  )
+
+import.bigwig <- function(
+    genome,
+    filepath,
+    sample_names_files_dict){
+
+    bigwigs = unlist(
+        stringr::str_split(
+            stringr::str_remove_all(
+                filepath, ","),
+            stringr::fixed(" ")))
+
+    signals = lapply(
+        bigwigs,
+        function(x) {
+            track_in <- rtracklayer::import(x)
+            track_bs <- coerceInBSgenome(track_in, genome)
+        })
+
+    signal_names <- c()
+    for (bn in basename(bigwigs)){
+        signal_names <- append(signal_names, sample_names_files_dict[[bn]])
+    }
+    names(signals) = signal_names
+
+    signalsSplit = split(
+        signals,
+        grepl("str1", names(signals)))
+
+    plus = lapply(signalsSplit$`TRUE`, function(x) {
+        strand(x) = "+"
+        return(x)
+    })
+
+    minus = lapply(signalsSplit$`FALSE`, function(x) {
+        strand(x) = "-"
+        return(x)
+    })
+
+    if (grepl( ".Signal.UniqueMultiple.str1.out.wig.bw", names(plus)[1], fixed = TRUE)){
+        plus_sample_names = stringr::str_remove_all(
+            names(plus),
+            ".Signal.UniqueMultiple.str1.out.wig.bw")
+        minus_sample_names = stringr::str_remove_all(
+            names(minus),
+            ".Signal.UniqueMultiple.str2.out.wig.bw" )
+    } else if (grepl( ".Signal.Unique.str1.out.wig.bw", names(plus)[1], fixed = TRUE)) {
+        plus_sample_names = stringr::str_remove_all(
+            names(plus),
+            ".Signal.Unique.str1.out.wig.bw")
+        minus_sample_names = stringr::str_remove_all(
+            names(minus),
+            ".Signal.Unique.str2.out.wig.bw")
+    } else if (grepl( "_str1", names(plus)[1], fixed = TRUE)) {
+        plus_sample_names = stringr::str_remove_all(
+            names(plus),
+            "_str1")
+        minus_sample_names = stringr::str_remove_all(
+            names(minus),
+            "_str2")
+    } else {
+        plus_sample_names = names(plus)
+        minus_sample_names = names(minus)
+    }
+
+    names(plus) <- plus_sample_names
+    names(minus) <- minus_sample_names
+
+    if (!all(plus_sample_names == minus_sample_names)) {
+        if (setequal(plus_sample_names, minus_sample_names)) {
+            minus = minus[match(plus_sample_names, minus_sample_names)]
+        } else {
+            stop("Error: Some basenames of minus- and plus-strand bigWigs are different! Are these bigWigs from different sets of samples? Exit.")
+        }
+    }
+
+    # Step 0: Create a CAGEexp object, filenames only of str1
+    ce <- new(
+        "CAGEexp",
+        colData = DataFrame(
+            inputFiles = bigwigs[grep("str1", bigwigs)],
+            sampleLabels = plus_sample_names,
+            inputFilesType = "CTSStable",
+            row.names = plus_sample_names),
+            metadata = list(genomeName = genome))
+
+    # Step 1: Load each file as GRangesList where each GRange is a CTSS data.
+    merged = mapply(c, plus, minus)
+    merged_gpos <- lapply(merged, function(x) {
+        gp <- GPos(stitch=FALSE, x)
+        score(gp) <- x$score
+        gp <- coerceInBSgenome(gp, genome)
+        gp <- sort(gp)
+    })
+    merged_gpos <- GRangesList(merged_gpos)
+
+    # Step 2: Create GPos representing all the nucleotides with CAGE counts in the list.
+    rowRanges <- sort(unique(unlist(merged_gpos)))
+    mcols(rowRanges) <- NULL
+
+    # Step 3: Fold the GRangesList in a expression DataFrame of Rle-encoded counts.
+    assay <- DataFrame(V1 = Rle(rep(0L, length(rowRanges))))
+    expandRange <- function(global, local) {
+        x <- Rle(rep(0L, length(global)))
+        x[global %in% local] <- score(local)
+        x
+    }
+    for (i in seq_along(merged_gpos))
+        assay[,i] <- expandRange(rowRanges, merged_gpos[[i]])
+
+    rowRanges <- new("CTSS", rowRanges, bsgenomeName = genome)
+    colnames(assay) <- names(merged)
+
+    # Setp 4: Put the data in the appropriate slot of the MultiAssayExperiment.
+    CTSStagCountSE(ce) <- SummarizedExperiment(
+        rowRanges = rowRanges,
+        assays = SimpleList(counts = assay))
+
+    # Step 5: update the sample metadata (colData).
+    ce$librarySizes <- unlist(lapply(CTSStagCountDF(ce), sum))
+
+    # Setp 6: Return the modified object.
+    ce
+}
