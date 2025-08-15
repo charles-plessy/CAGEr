@@ -136,6 +136,7 @@ setGeneric( "plotReverseCumulatives",
       .fit.power.law.to.reverse.cumulative(decode(x), val.range))
     fit.slopes <- fit.coefs.m[1,]
     reference.slope <- min(median(fit.slopes), -1.05)
+    # TODO: assign reference.slope to a slot in CAGEexp object
     reference.library.size <- 10^floor(log10(median(sapply(object, sum))))
     reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
     p <- p +
