@@ -289,7 +289,6 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
 	  ggplot2::xlab("Interquantile width (bp)") +
 	  ggplot2::ylab("Frequency") +
 	  ggplot2::labs(fill = "Sample name")
-	
 })
 
 #' @name plotExpressionProfiles
