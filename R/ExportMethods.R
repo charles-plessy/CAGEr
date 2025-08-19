@@ -278,17 +278,17 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
   
 	binsize <- round(max(iqwidths$iq_width)/2)
 	
-    ggplot2::ggplot(iqwidths) +
-      ggplot2::aes_string(x = "iq_width", fill = "sampleName") +
-      ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
-      ggplot2::geom_histogram(bins = binsize) +
-      ggplot2::facet_wrap("~sampleName") +
-      ggplot2::ggtitle(paste0(
-        switch(clusters, tagClusters = "Tag Clusters", consensusClusters = "Consenss Clusters"),
-        " interquantile width (quantile ", qLow, " to ", qUp, ")")) +
-      ggplot2::xlab("Interquantile width (bp)") +
-      ggplot2::ylab("Frequency") +
-      ggplot2::labs(fill = "Sample name")
+  ggplot2::ggplot(iqwidths) +
+    ggplot2::aes_string(x = "iq_width", fill = "sampleName") +
+    ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
+    ggplot2::geom_histogram(bins = binsize) +
+    ggplot2::facet_wrap("~sampleName") +
+    ggplot2::ggtitle(paste0(
+      switch(clusters, tagClusters = "Tag Clusters", consensusClusters = "Consenss Clusters"),
+      " interquantile width (quantile ", qLow, " to ", qUp, ")")) +
+    ggplot2::xlab("Interquantile width (bp)") +
+    ggplot2::ylab("Frequency") +
+    ggplot2::labs(fill = "Sample name")
 	
 })
 
