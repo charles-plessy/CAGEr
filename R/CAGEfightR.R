@@ -1,6 +1,14 @@
 # Wrappers to CAGEfightR functions.
 
-# Helper function to export tag count data
+#' Helper function to export tag count data into summarized experiment object with StitchedGPos.
+#' 
+#' @param object A `CAGEexp` object
+#' 
+#' @return A `SummarizedExperiment` object.
+#' 
+#' @family CAGEr accessor methods
+#' @family CAGEr normalized data functions
+
 .export_tag_counts <- function(object = "CAGEexp") {
   se <- CTSStagCountSE(object)
   colData(se) <- colData(object)
@@ -50,25 +58,31 @@ setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {
   c(enhancers = enhancers, object)
 })
 
-
-#' Enhancer calling
-#'
-#' @param ce CAGEexp object with CTSS values
-#' @param cfBalanceThreshold threshold for the cagefightr balance score
-#' @param unexpressed threshold above which normalized CTSS are considered expressed
-#' @param minSamples non inlcusive lower threshold for number of samples supporting enhancers (i.e. where there is bidirectionality)
-#' @return enhancers
+#' Export of normalized CTSS in an object that can be used as input to CAGEfightR.
+#' 
+#' An export function for integration of normalized values into CAGEfightR.
+#' 
+#' @note At the moment the conversion is expensive as it goes from `DataFrame`
+#' of `Rle` to `data.frame` to `matrix`.
+#' 
+#' @param object A `CAGEexp` object with CTSS values
+#' 
+#' @return A `SummarizedExperiment` object with StitchedGPos values.
+#' 
+#' @family CAGEr accessor methods
+#' @family CAGEr normalized data functions
+#' 
 #' @examples
-#' cagefightr_enhancers(
-#' ce,
-#' cfBalanceThreshold = 0.95,
-#' unexpressed = 0,
-#' minSamples = 0
-#' )
-setMethod("CAGEfightREnhancers"
-        , signature( object = "CAGEexp", cfBalanceThreshold
-                    , unexpressed, minSamples)
-                    , function(object) {
+#' exportNormalizedCTSS(exampleCAGEexp)
+setGeneric("exportNormalizedCTSS", function(object)
+  standardGeneric("exportNormalizedCTSS"))
+
+
+#' @export
+#' @rdname exportNormalizedCTSS
+#' @aliases exportNormalizedCTSS,CAGEexp-method
+#' 
+setMethod("exportNormalizedCTSS", signature( object = "CAGEexp"), function(object) {
   se <- .export_tag_counts(object)
 
   # Convert counts to sparse matrix to save memory
@@ -76,31 +90,6 @@ setMethod("CAGEfightREnhancers"
       counts = as(as.matrix(as.data.frame(assays(se)[[1]])), "dgCMatrix"),
       TPM = as(as.matrix(as.data.frame(assays(se)[[2]])), "dgCMatrix"))
 
-  # Save as main working object
-  cfSampleCTSSs <- se
-
-  # Calculate pooled signal across all samples (average TPM)
-  cfSampleCTSSs <- CAGEfightR::calcPooled(
-      cfSampleCTSSs,
-      inputAssay = "TPM")
-
-  # Calculate how many samples support expression at each CTSS
-  cfSampleCTSSs <- CAGEfightR::calcSupport(
-      cfSampleCTSSs,
-      inputAssay = "counts",
-      outputColumn = "support",
-      unexpressed = 0)
-
-  # Find bidirectional clusters (potential enhancers)
-  sampleBCs <- CAGEfightR::clusterBidirectionally(
-      cfSampleCTSSs,
-      balanceThreshold = cfBalanceThreshold)
-
-  # Filter bidirectional clusters that are supported in at least 1 sample
-  finalSampleBCs <- CAGEfightR::subsetByBidirectionality(
-      sampleBCs,
-      samples = cfSampleCTSSs,
-      minSamples = 0)
-
-  finalSampleBCs
+  # Return summarized experiment object
+  se
 })

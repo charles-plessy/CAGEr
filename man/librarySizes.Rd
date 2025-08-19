@@ -33,6 +33,7 @@ librarySizes(exampleCAGEexp)
 \code{\link{getCTSS}}
 
 Other CAGEr accessor methods: 
+\code{\link{.export_tag_counts}()},
 \code{\link{CTSScoordinatesGR}()},
 \code{\link{CTSScumulativesTagClusters}()},
 \code{\link{CTSSnormalizedTpmDF}()},
@@ -40,6 +41,7 @@ Other CAGEr accessor methods:
 \code{\link{GeneExpDESeq2}()},
 \code{\link{GeneExpSE}()},
 \code{\link{consensusClustersGR}()},
+\code{\link{exportNormalizedCTSS}()},
 \code{\link{expressionClasses}()},
 \code{\link{filteredCTSSidx}()},
 \code{\link{genomeName}()},
