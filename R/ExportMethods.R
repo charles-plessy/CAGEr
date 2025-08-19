@@ -277,7 +277,7 @@ setMethod( "plotInterquantileWidth", "CAGEexp"
   iqwidths <- iqwidths[iqwidths$iq_width >= xlim[1] & iqwidths$iq_width <= xlim[2],]
   
 	binsize <- round(max(iqwidths$iq_width)/2)
-
+	
 	ggplot2::ggplot(iqwidths) +
 	  ggplot2::aes_string(x = "iq_width", fill = "sampleName") +
 	  ggplot2::scale_fill_manual(values = names(sampleLabels(object))) +
