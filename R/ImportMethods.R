@@ -237,8 +237,7 @@ loadFileIntoGPos    <- function( filepath
                                             , correctSystematicG = correctSystematicG
                                             , genome = genome)
         , bigwig           = import.bigwig( filepath = filepath
-                                          , genome = genome
-                                          , sample_names_files_dict = sample_names_files_dict)
+                                          , genome = genome)
         , bed              = import.bedmolecule(filepath)
         , bedScore         = import.bedScore(filepath)
         , bedctss          = import.bedCTSS(filepath)
@@ -992,59 +991,55 @@ setMethod("importPublicData", signature(origin = "character", dataset = "charact
 #'
 #' @param genome the name of the reference genome (bsgenome)
 #' @param filepath list of input bigwig files with full path
-#' @param sample_names_files_dict dictionary of matching sample names to files
+#' The filenames should include a "_str1" and "_str2" substring after the sample name
+#' The sampe name will be the prefix before these substrings
+#' the filepath in the CAGEexp object will only include the bw corresponding to str1
+#' 
 #' @return a CAGEexp object
+#' 
+#' @author Katalin Ferenc
+#' @author Damir Baranasic
+#' 
 #' @examples
+#' filePaths <- c(
+#' "data/NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw",
+#' "data/NCig10061_subsampled_str2.Signal.Unique.str2.out.wig.bw",
+#' "data/NCig10063_subsampled_str1.Signal.Unique.str1.out.wig.bw",
+#' "data/NCig10063_subsampled_str2.Signal.Unique.str2.out.wig.bw")
 #' import.bigwig(
-#'  genome="BSgenome.Scerevisiae.UCSC.sacCer3",
-#'  filepath=["path/to/file1.bw", "path/to/file2.bw"],
-#'  sample_names_files_dict=["path/to/file1.bw": "sample1", "path/to/file2.bw": "sample2"],
+#'  genome="BSgenome.Drerio.UCSC.danRer7",
+#'  filepath=filePaths
 #'  )
 
 import.bigwig <- function(
     genome,
-    filepath,
-    sample_names_files_dict){
-
-    bigwigs = unlist(
-        stringr::str_split(
-            stringr::str_remove_all(
-                filepath, ","),
-            stringr::fixed(" ")))
+    filepath){
 
     signals = lapply(
-        bigwigs,
+        filepath,
         function(x) {
             track_in <- rtracklayer::import(x)
-            track_bs <- coerceInBSgenome(track_in, genome)
+            coerceInBSgenome(track_in, genome)
         })
 
-    signal_names <- c()
-    for (bn in basename(bigwigs)){
-        signal_names <- append(signal_names, sample_names_files_dict[[bn]])
-    }
+    signal_names <- sub("(_str1|_str2).*", "\\1", basename(filepath))
     names(signals) = signal_names
 
+    # divide the signals into plus and minus strands
     signalsSplit = split(
         signals,
         grepl("str1", names(signals)))
-
     plus = lapply(signalsSplit$`TRUE`, function(x) {
         strand(x) = "+"
         return(x)
     })
-
     minus = lapply(signalsSplit$`FALSE`, function(x) {
         strand(x) = "-"
         return(x)
     })
 
-    plus_sample_names = stringr::str_remove_all(
-        names(plus),
-        "_str1")
-    minus_sample_names = stringr::str_remove_all(
-        names(minus),
-        "_str2")
+    plus_sample_names = gsub("_str1", "", names(plus))
+    minus_sample_names = gsub("_str2", "", names(minus))
 
     names(plus) <- plus_sample_names
     names(minus) <- minus_sample_names
@@ -1073,7 +1068,7 @@ import.bigwig <- function(
         gp <- GPos(stitch=FALSE, x)
         score(gp) <- x$score
         gp <- coerceInBSgenome(gp, genome)
-        gp <- sort(gp)
+        sort(gp)
     })
     merged_gpos <- GRangesList(merged_gpos)
 
