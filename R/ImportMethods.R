@@ -1003,9 +1003,7 @@ setMethod("importPublicData", signature(origin = "character", dataset = "charact
 #' @examples
 #' filePaths <- c(
 #' "data/NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw",
-#' "data/NCig10061_subsampled_str2.Signal.Unique.str2.out.wig.bw",
-#' "data/NCig10063_subsampled_str1.Signal.Unique.str1.out.wig.bw",
-#' "data/NCig10063_subsampled_str2.Signal.Unique.str2.out.wig.bw")
+#' "data/NCig10061_subsampled_str2.Signal.Unique.str2.out.wig.bw")
 #' import.bigwig(
 #'  genome="BSgenome.Drerio.UCSC.danRer7",
 #'  filepath=filePaths
@@ -1052,51 +1050,13 @@ import.bigwig <- function(
         }
     }
 
-    # Step 0: Create a CAGEexp object, filenames only of str1
-    ce <- new(
-        "CAGEexp",
-        colData = DataFrame(
-            inputFiles = bigwigs[grep("str1", bigwigs)],
-            sampleLabels = plus_sample_names,
-            inputFilesType = "CTSStable",
-            row.names = plus_sample_names),
-            metadata = list(genomeName = genome))
-
-    # Step 1: Load each file as GRangesList where each GRange is a CTSS data.
+    # Load each file as GRangesList where each GRange is a CTSS data.
     merged = mapply(c, plus, minus)
     merged_gpos <- lapply(merged, function(x) {
         gp <- GPos(stitch=FALSE, x)
         score(gp) <- x$score
-        gp <- coerceInBSgenome(gp, genome)
-        sort(gp)
     })
-    merged_gpos <- GRangesList(merged_gpos)
 
-    # Step 2: Create GPos representing all the nucleotides with CAGE counts in the list.
-    rowRanges <- sort(unique(unlist(merged_gpos)))
-    mcols(rowRanges) <- NULL
+    merged_gpos
 
-    # Step 3: Fold the GRangesList in a expression DataFrame of Rle-encoded counts.
-    assay <- DataFrame(V1 = Rle(rep(0L, length(rowRanges))))
-    expandRange <- function(global, local) {
-        x <- Rle(rep(0L, length(global)))
-        x[global %in% local] <- score(local)
-        x
-    }
-    for (i in seq_along(merged_gpos))
-        assay[,i] <- expandRange(rowRanges, merged_gpos[[i]])
-
-    rowRanges <- new("CTSS", rowRanges, bsgenomeName = genome)
-    colnames(assay) <- names(merged)
-
-    # Setp 4: Put the data in the appropriate slot of the MultiAssayExperiment.
-    CTSStagCountSE(ce) <- SummarizedExperiment(
-        rowRanges = rowRanges,
-        assays = SimpleList(counts = assay))
-
-    # Step 5: update the sample metadata (colData).
-    ce$librarySizes <- unlist(lapply(CTSStagCountDF(ce), sum))
-
-    # Setp 6: Return the modified object.
-    ce
 }
