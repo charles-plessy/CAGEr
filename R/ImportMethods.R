@@ -175,10 +175,10 @@ addCTSScolumn <- function(CTSS.all.samples, CTSS) {
 #' with the given BSgenome object.  The sequnames of the GRanges are also set
 #' accordingly to the BSgenome.
 #' 
-#' @importFrom GenomeInfoDb seqinfo
-#' @importFrom GenomeInfoDb seqlengths
-#' @importFrom GenomeInfoDb seqlevels seqlevels<-
-#' @importFrom GenomeInfoDb seqnames
+#' @importFrom Seqinfo seqinfo
+#' @importFrom Seqinfo seqlengths
+#' @importFrom Seqinfo seqlevels seqlevels<-
+#' @importFrom Seqinfo seqnames
 #' @importFrom S4Vectors %in%
 
 coerceInBSgenome <- function(gr, genome) {
@@ -341,7 +341,7 @@ import.bam <- function( filepath
 #' 
 #' @return Returns a \code{\link{CTSS}} object.
 #' 
-#' @importFrom GenomeInfoDb bsgenomeName
+#' @importFrom Seqinfo bsgenomeName
 #' @family loadFileIntoGPos
 
 bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
@@ -455,7 +455,7 @@ import.bedScore <- function(filepath) {
 #' @family loadFileIntoGPos
 #' 
 #' @importFrom rtracklayer import.bed
-#' @importFrom GenomeInfoDb sortSeqlevels
+#' @importFrom Seqinfo sortSeqlevels
 #' @importFrom GenomicRanges countOverlaps
 #' 
 #' @examples
