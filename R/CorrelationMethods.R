@@ -330,6 +330,19 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
   corr.v
 }
 
+
+# Helper function to pre-calculate a vector of correlation coefficients
+calculateCorrelations <- function(corr.v, samples, nr.samples){
+
+  corr.m <- matrix(1, nr.samples, nr.samples)
+  colnames(corr.m) <- samples
+  rownames(corr.m) <- samples
+  corr.m[lower.tri(corr.m)] <- corr.v
+  corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
+
+  corr.m
+}
+
 #' @importFrom grDevices dev.flush dev.hold
 #' @importFrom graphics Axis mtext
 
@@ -495,6 +508,7 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
   
   # Pre-calculate a vector of correlation coefficients
   corr.v <- corVector(expr.table, method, tagCountThreshold, applyThresholdBoth)
+  corr.m <- calculateCorrelations(corr.v, samples, nr.samples)
   
   # Add pseudocount to null values so that the plot axes are correctly set.
   pseudocount <- min(sapply(expr.table, function(x) min(x[x>0]))) / 2
@@ -550,13 +564,7 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
        , xaxp = c(1,10,1)
        , yaxp = c(1,10,1)
        , labels = samples)
-  
-  # Return a correlation matrix
-  corr.m <- matrix(1, nr.samples, nr.samples)
-  colnames(corr.m) <- samples
-  rownames(corr.m) <- samples
-  corr.m[lower.tri(corr.m)] <- corr.v
-  corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
+
   corr.m
 }
 
@@ -652,27 +660,131 @@ yaxs = par("yaxs"), ...)
     }
 }
 
-# A simple function to calculate correlation matrix without plotting it
-calculateCorrelationMatrix <- function(
-    expr.table, samples, method, tagCountThreshold,
-    applyThresholdBoth){
 
-    # Select samples
-    if(samples == "all"){
-        samples <- colnames(expr.table)
-    } else if (all(samples %in% colnames(expr.table))) {
-        expr.table <- expr.table[,samples]
-    } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
-    nr.samples <- length(samples)
+#' @rdname correlationMatrix
+#' 
+#' @details \code{correlationMatrix} calculates correlation matrix without
+#' plotting it
+#' 
+#' @importFrom memoise memoise
+#' @export
 
-    # Pre-calculate a vector of correlation coefficients
-    corr.v <- corVector(expr.table, method, tagCountThreshold, applyThresholdBoth)
+setGeneric( "correlationMatrix"
+          , function( object, what = c("CTSS", "consensusClusters")
+                    , values = c("raw", "normalized")
+                    , samples = "all", method = "pearson"
+                    , tagCountThreshold = 1, applyThresholdBoth = FALSE)
+              standardGeneric("plotCorrelation2"))
 
-    corr.m <- matrix(1, nr.samples, nr.samples)
-    colnames(corr.m) <- samples
-    rownames(corr.m) <- samples
-    corr.m[lower.tri(corr.m)] <- corr.v
-    corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
+#' @rdname correlationMatrix
 
-    return(corr.m)
+setMethod( "correlationMatrix", "CAGEexp"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth) {
+  what <- match.arg(what)
+  se <- switch( what
+              , CTSS              = CTSStagCountSE(object)
+              , consensusClusters = consensusClustersSE(object)
+              , genes             = GeneExpSE(object)
+              , stop("Unsupported value for ", dQuote("what"), ": ", what))
+  correlationMatrix( se
+                  , what               = what
+                  , values             = values
+                  , samples            = samples
+                  , method             = method
+                  , tagCountThreshold  = tagCountThreshold
+                  , applyThresholdBoth = applyThresholdBoth
+                  , digits             = digits)
+})
+
+#' @rdname correlationMatrix
+
+setMethod( "correlationMatrix", "SummarizedExperiment"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth) {
+  values <- match.arg(values)
+  
+  if (values == "raw") {
+    if ("counts" %in% assayNames(object)) {
+      values <- "counts"
+    } else {
+      stop( "Could not find a ", dQuote("counts"), " assay for the "
+          , dQuote(what), " clustering level")
+    }
+  } else if (values == "normalized") {
+    if ("normalized" %in% assayNames(object)) {
+      values <- "normalized"
+    } else if ("normalizedTpmMatrix" %in% assayNames(object)) {
+      values <- "normalizedTpmMatrix"
+    } else {
+      stop( "Could not find a ", dQuote("normalized"), " assay for the "
+          , dQuote(what), " clustering level")
+    }
+  }
+  
+  correlationMatrix( assay(object, values)
+                  , what               = what
+                  , values             = values
+                  , samples            = samples
+                  , method             = method
+                  , tagCountThreshold  = tagCountThreshold
+                  , applyThresholdBoth = applyThresholdBoth)
+})
+
+#' @rdname correlationMatrix
+
+setMethod( "correlationMatrix", "DataFrame"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth
+                   , digits) {
+  .correlationMatrix( object
+                   , samples            = samples
+                   , method             = method
+                   , tagCountThreshold  = tagCountThreshold
+                   , applyThresholdBoth = applyThresholdBoth)
+})
+
+#' @rdname correlationMatrix
+
+setMethod( "correlationMatrix", "data.frame"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth
+                   , digits) {
+  .correlationMatrix( object
+                   , samples            = samples
+                   , method             = method
+                   , tagCountThreshold  = tagCountThreshold
+                   , applyThresholdBoth = applyThresholdBoth)
+})
+
+#' @rdname correlationMatrix
+
+setMethod( "correlationMatrix", "matrix"
+         , function( object, what, values, samples, method
+                   , tagCountThreshold, applyThresholdBoth
+                   , digits) {
+  .correlationMatrix( as.data.frame(object)
+                   , samples            = samples
+                   , method             = method
+                   , tagCountThreshold  = tagCountThreshold
+                   , applyThresholdBoth = applyThresholdBoth)
+})
+
+
+# The function that runs the actual work of calculating correlations
+.correlationMatrix <- function( expr.table, samples, method
+                             , tagCountThreshold, applyThresholdBoth) {
+  # Select samples
+  if(samples == "all"){
+      samples <- colnames(expr.table)
+  } else if (all(samples %in% colnames(expr.table))) {
+      expr.table <- expr.table[,samples]
+  } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
+  nr.samples <- length(samples)
+
+  corr.v <- corVector(expr.table, method, tagCountThreshold, applyThresholdBoth)
+  corr.m <- calculateCorrelations(corr.v, samples, nr.samples)
+
+  corr.m
+
 }
