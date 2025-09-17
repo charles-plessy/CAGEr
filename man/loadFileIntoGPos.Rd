@@ -6,7 +6,7 @@
 \usage{
 loadFileIntoGPos(
   filepath,
-  filetype = c("bam", "bamPairedEnd", "bed", "bedctss", "bedScore", "CAGEscanMolecule",
+  filetype = c("bam", "bamPairedEnd", "bed", "biwgig", "bedScore", "bedctss", "CAGEscanMolecule",
     "ctss"),
   sequencingQualityThreshold,
   mappingQualityThreshold,
