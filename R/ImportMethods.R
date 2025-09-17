@@ -1001,43 +1001,42 @@ setMethod("importPublicData", signature(origin = "character", dataset = "charact
 #' @author Damir Baranasic
 #' 
 #' @examples
-#' filePaths <- c(
-#' "data/NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw",
-#' "data/NCig10061_subsampled_str2.Signal.Unique.str2.out.wig.bw")
 #' import.bigwig(
 #'  genome="BSgenome.Drerio.UCSC.danRer7",
-#'  filepath=filePaths
+#'  filepath=system.file("extdata", "NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw")
 #'  )
 
 import.bigwig <- function(
     genome,
     filepath){
 
-    signals = lapply(
-        filepath,
+    str2_path <- gsub("str1","str2" , filepath)
+    str1_str2_paths <- c(filepath, str2_path)
+    signals <- lapply(
+        str1_str2_paths,
         function(x) {
             track_in <- rtracklayer::import(x)
-            coerceInBSgenome(track_in, genome)
+            track_in
         })
 
-    signal_names <- sub("(_str1|_str2).*", "\\1", basename(filepath))
-    names(signals) = signal_names
+    signal_names <- sub("(_str1|_str2).*", "\\1", basename(str1_str2_paths))
+    names(signals) <- signal_names
 
     # divide the signals into plus and minus strands
-    signalsSplit = split(
+    signalsSplit <- split(
         signals,
         grepl("str1", names(signals)))
-    plus = lapply(signalsSplit$`TRUE`, function(x) {
+    plus <- lapply(signalsSplit$`TRUE`, function(x) {
         strand(x) = "+"
         return(x)
     })
-    minus = lapply(signalsSplit$`FALSE`, function(x) {
+    minus <- lapply(signalsSplit$`FALSE`, function(x) {
         strand(x) = "-"
         return(x)
     })
 
-    plus_sample_names = gsub("_str1", "", names(plus))
-    minus_sample_names = gsub("_str2", "", names(minus))
+    plus_sample_names <- gsub("_str1", "", names(plus))
+    minus_sample_names <- gsub("_str2", "", names(minus))
 
     names(plus) <- plus_sample_names
     names(minus) <- minus_sample_names
@@ -1051,7 +1050,7 @@ import.bigwig <- function(
     }
 
     # Load each file as GRangesList where each GRange is a CTSS data.
-    merged = mapply(c, plus, minus)
+    merged <- mapply(c, plus, minus)
     merged_gpos <- lapply(merged, function(x) {
         gp <- GPos(stitch=FALSE, x)
         score(gp) <- x$score
