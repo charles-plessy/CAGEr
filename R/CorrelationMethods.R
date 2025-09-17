@@ -734,8 +734,7 @@ setMethod( "correlationMatrix", "SummarizedExperiment"
 
 setMethod( "correlationMatrix", "DataFrame"
          , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
+                   , tagCountThreshold, applyThresholdBoth) {
   .correlationMatrix( object
                    , samples            = samples
                    , method             = method
@@ -747,8 +746,7 @@ setMethod( "correlationMatrix", "DataFrame"
 
 setMethod( "correlationMatrix", "data.frame"
          , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
+                   , tagCountThreshold, applyThresholdBoth) {
   .correlationMatrix( object
                    , samples            = samples
                    , method             = method
@@ -760,8 +758,7 @@ setMethod( "correlationMatrix", "data.frame"
 
 setMethod( "correlationMatrix", "matrix"
          , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
+                   , tagCountThreshold, applyThresholdBoth) {
   .correlationMatrix( as.data.frame(object)
                    , samples            = samples
                    , method             = method
