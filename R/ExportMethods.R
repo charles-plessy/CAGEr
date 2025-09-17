@@ -136,7 +136,7 @@ setGeneric( "plotReverseCumulatives",
       .fit.power.law.to.reverse.cumulative(decode(x), val.range))
     fit.slopes <- fit.coefs.m[1,]
     reference.slope <- min(median(fit.slopes), -1.05)
-    if is(object, "CAGEexp"){
+    if(is(object, "CAGEexp")){
       object@metadata$reference.slope <- reference.slope
       print(object@metadata$reference.slope)
     }
