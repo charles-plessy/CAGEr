@@ -211,7 +211,7 @@ coerceInBSgenome <- function(gr, genome) {
 
 loadFileIntoGPos    <- function( filepath
                                , filetype = c( "bam", "bamPairedEnd", "bigwig"
-                                             , "bed", "bedctss", "bedScore"
+                                             , "bed", "bedScore", "bedctss"
                                              , "CAGEscanMolecule", "ctss")
                                , sequencingQualityThreshold
                                , mappingQualityThreshold
@@ -501,6 +501,82 @@ import.CTSS <- function(filepath) {
                      , strand   = CTSS$strand))
   score(gp) <- CTSS$score
   gp
+}
+
+
+#' Read in BigWig files to CAGEexp object
+#'
+#' @param genome the name of the reference genome (bsgenome)
+#' @param filepath list of input bigwig files with full path
+#' The filenames should include a "_str1" and "_str2" substring after the sample name
+#' The sampe name will be the prefix before these substrings
+#' the filepath in the CAGEexp object will only include the bw corresponding to str1
+#' 
+#' @return a CAGEexp object
+#' 
+#' @family loadFileIntoGPos
+#' 
+#' @author Katalin Ferenc
+#' @author Damir Baranasic
+#' 
+#' @examples
+#' import.bigwig(
+#'  genome="BSgenome.Drerio.UCSC.danRer7",
+#'  filepath=system.file("extdata", "NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw")
+#'  )
+
+import.bigwig <- function(
+    genome,
+    filepath){
+
+    str2_path <- gsub("str1","str2" , filepath)
+    str1_str2_paths <- c(filepath, str2_path)
+    signals <- lapply(
+        str1_str2_paths,
+        function(x) {
+            track_in <- rtracklayer::import(x)
+            track_in
+        })
+
+    signal_names <- sub("(_str1|_str2).*", "\\1", basename(str1_str2_paths))
+    names(signals) <- signal_names
+
+    # divide the signals into plus and minus strands
+    signalsSplit <- split(
+        signals,
+        grepl("str1", names(signals)))
+    plus <- lapply(signalsSplit$`TRUE`, function(x) {
+        strand(x) = "+"
+        return(x)
+    })
+    minus <- lapply(signalsSplit$`FALSE`, function(x) {
+        strand(x) = "-"
+        return(x)
+    })
+
+    plus_sample_names <- gsub("_str1", "", names(plus))
+    minus_sample_names <- gsub("_str2", "", names(minus))
+
+    names(plus) <- plus_sample_names
+    names(minus) <- minus_sample_names
+
+    if (!all(plus_sample_names == minus_sample_names)) {
+        if (setequal(plus_sample_names, minus_sample_names)) {
+            minus = minus[match(plus_sample_names, minus_sample_names)]
+        } else {
+            stop("Error: Some basenames of minus- and plus-strand bigWigs are different! Are these bigWigs from different sets of samples? Exit.")
+        }
+    }
+
+    # Load each file as GRangesList where each GRange is a CTSS data.
+    merged <- mapply(c, plus, minus)
+    merged_gpos <- lapply(merged, function(x) {
+        gp <- GPos(stitch=FALSE, x)
+        score(gp) <- x$score
+    })
+
+    merged_gpos
+
 }
 
 #' parseCAGEscanBlocksToGrangeTSS
@@ -986,76 +1062,3 @@ setGeneric("importPublicData",
 setMethod("importPublicData", signature(origin = "character", dataset = "character", sample = "character"),
           .importPublicData)
 
-
-#' Read in BigWig files to CAGEexp object
-#'
-#' @param genome the name of the reference genome (bsgenome)
-#' @param filepath list of input bigwig files with full path
-#' The filenames should include a "_str1" and "_str2" substring after the sample name
-#' The sampe name will be the prefix before these substrings
-#' the filepath in the CAGEexp object will only include the bw corresponding to str1
-#' 
-#' @return a CAGEexp object
-#' 
-#' @author Katalin Ferenc
-#' @author Damir Baranasic
-#' 
-#' @examples
-#' import.bigwig(
-#'  genome="BSgenome.Drerio.UCSC.danRer7",
-#'  filepath=system.file("extdata", "NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw")
-#'  )
-
-import.bigwig <- function(
-    genome,
-    filepath){
-
-    str2_path <- gsub("str1","str2" , filepath)
-    str1_str2_paths <- c(filepath, str2_path)
-    signals <- lapply(
-        str1_str2_paths,
-        function(x) {
-            track_in <- rtracklayer::import(x)
-            track_in
-        })
-
-    signal_names <- sub("(_str1|_str2).*", "\\1", basename(str1_str2_paths))
-    names(signals) <- signal_names
-
-    # divide the signals into plus and minus strands
-    signalsSplit <- split(
-        signals,
-        grepl("str1", names(signals)))
-    plus <- lapply(signalsSplit$`TRUE`, function(x) {
-        strand(x) = "+"
-        return(x)
-    })
-    minus <- lapply(signalsSplit$`FALSE`, function(x) {
-        strand(x) = "-"
-        return(x)
-    })
-
-    plus_sample_names <- gsub("_str1", "", names(plus))
-    minus_sample_names <- gsub("_str2", "", names(minus))
-
-    names(plus) <- plus_sample_names
-    names(minus) <- minus_sample_names
-
-    if (!all(plus_sample_names == minus_sample_names)) {
-        if (setequal(plus_sample_names, minus_sample_names)) {
-            minus = minus[match(plus_sample_names, minus_sample_names)]
-        } else {
-            stop("Error: Some basenames of minus- and plus-strand bigWigs are different! Are these bigWigs from different sets of samples? Exit.")
-        }
-    }
-
-    # Load each file as GRangesList where each GRange is a CTSS data.
-    merged <- mapply(c, plus, minus)
-    merged_gpos <- lapply(merged, function(x) {
-        gp <- GPos(stitch=FALSE, x)
-        score(gp) <- x$score
-    })
-
-    merged_gpos
-
-}
