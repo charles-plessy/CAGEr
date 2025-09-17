@@ -674,7 +674,7 @@ setGeneric( "correlationMatrix"
                     , values = c("raw", "normalized")
                     , samples = "all", method = "pearson"
                     , tagCountThreshold = 1, applyThresholdBoth = FALSE)
-              standardGeneric("plotCorrelation2"))
+              standardGeneric("correlationMatrix"))
 
 #' @rdname correlationMatrix
 
