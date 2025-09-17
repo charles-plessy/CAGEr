@@ -693,8 +693,7 @@ setMethod( "correlationMatrix", "CAGEexp"
                   , samples            = samples
                   , method             = method
                   , tagCountThreshold  = tagCountThreshold
-                  , applyThresholdBoth = applyThresholdBoth
-                  , digits             = digits)
+                  , applyThresholdBoth = applyThresholdBoth)
 })
 
 #' @rdname correlationMatrix
