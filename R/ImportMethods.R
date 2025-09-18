@@ -505,9 +505,9 @@ import.CTSS <- function(filepath) {
 #' Read in BigWig files to CAGEexp object
 #'
 #' @param genome the name of the reference genome (bsgenome)
-#' @param filepath list of input bigwig files with full path
-#' The filenames should include a "_str1" and "_str2" substring after the sample name
-#' The sampe name will be the prefix before these substrings
+#' @param filepath an input bigwig file with full path
+#' The filename should include a "str1" and it should have a pair that is 
+#' identical except having "str2" substring
 #' the filepath in the CAGEexp object will only include the bw corresponding to str1
 #' 
 #' @return a CAGEexp object
@@ -532,8 +532,7 @@ import.bigwig <- function(filepath){
     strand(plus) <- '+'
     minus <- import.bw(str2_path) 
     strand(minus) <- '-'
-    GPos(c(plus, minus), stitch=FALSE) # I do not remember if the import functions are expected to sort their output…
-
+    GPos(c(plus, minus), stitch=FALSE)
 }
 
 #' parseCAGEscanBlocksToGrangeTSS
