@@ -661,12 +661,65 @@ yaxs = par("yaxs"), ...)
 }
 
 
-#' @rdname correlationMatrix
+#' @include CAGEr.R Paraclu.R
+
+#' @name correlationMatrix
 #' 
-#' @details \code{correlationMatrix} calculates correlation matrix without
-#' plotting it
+#' @title Pairwise correlations of CAGE signal
 #' 
-#' @importFrom memoise memoise
+#' @description Calculates the pairwise correlation between samples
+#' 
+#' @param object A \code{\link{CAGEr}} object or (only for
+#'   \code{plotCorrelation2}) a \code{\link{SummarizedExperiment}} or an
+#'   expression table as a \code{\link{DataFrame}}, \code{\link{data.frame}} or
+#'   \code{\link{matrix}} object.
+#' 
+#' @param what The clustering level to be used for calculating
+#'   correlations. Can be either \code{"CTSS"} to use individual TSSs or
+#'   \code{"consensusClusters"} to use consensus clusters, \emph{i.e.} entire
+#'   promoters.  Ignored for anything else than \code{CAGEr} objects.
+#' 
+#' @param values Use either \code{"raw"} (default) or \code{"normalized"} CAGE
+#'   signal. Ignored for plain expression tables.
+#' 
+#' @param samples Character vector indicating which samples to use. Can be
+#'   either \code{"all"} to select all samples in a \code{CAGEr} object, or a
+#'   subset of valid sample labels as returned by the
+#'   \code{\link{sampleLabels}} function.
+#' 
+#' @param method A character string indicating which correlation coefficient
+#'   should be computed.  Passed to \code{cor} function.  Can be one of
+#'   \code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.
+#' 
+#' @param tagCountThreshold Only TSSs with tag count \code{>= tagCountThreshold}
+#'   in either one (\code{applyThresholdBoth = FALSE}) or both samples
+#'   (\code{applyThresholdBoth = TRUE}) are used to calculate
+#'   correlation.
+#' 
+#' @param applyThresholdBoth See \code{tagCountThreshold} above.
+#' 
+#' @details The same matrix is returned from \code{plotCorrelation2}
+#' 
+#' \code{SummarizedExperiment} objects are expected to contain raw tag counts
+#' in a \dQuote{counts} assay and the normalized expression scores in a
+#' \dQuote{normalized} assay.
+#' 
+#' Avoid using large \code{matrix} objects as they are coerced to
+#' \code{DataFrame} class without special care for efficiency.
+#' 
+#' @return Returns a \code{matrix} of pairwise correlations between 
+#' selected samples.
+#' 
+#' @author Vanja Haberle
+#' @author Charles Plessy
+#' @author Katalin Ferenc
+#' 
+#' @family CAGEr functions
+#' 
+#' @examples
+#' 
+#' correlationMatrix(exampleCAGEexp, what = "consensusClusters", value = "normalized")
+#' 
 #' @export
 
 setGeneric( "correlationMatrix"
