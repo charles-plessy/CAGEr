@@ -36,6 +36,7 @@ NULL
 #' @param group The name of a column data of the `CAGEexp` object, to be used
 #' to facet the plot.  If `NULL` (default), all the distributions will be
 #' plotted together.  Set to `sampleLabels` to plot each sample separately.
+#'
 #' 
 #' @returns A [`ggplot2::ggplot`] object containing the plots.  The plot can
 #' be further modified to change its title or axis labels (see
@@ -83,7 +84,8 @@ setGeneric( "plotReverseCumulatives",
 .plotReverseCumulatives <-
   function( object, values = c("raw", "normalized")
           , fitInRange = c(10, 1000)
-          , group = NULL) {
+          , group = NULL
+          , cageexp = NULL) {
   if (is.null(object@metadata$colData))
     stop("Expects a List-like object with a colData DataFrame in its metadata slot.")
   
@@ -136,9 +138,8 @@ setGeneric( "plotReverseCumulatives",
       .fit.power.law.to.reverse.cumulative(decode(x), val.range))
     fit.slopes <- fit.coefs.m[1,]
     reference.slope <- min(median(fit.slopes), -1.05)
-    if(is(object, "CAGEexp")){
-      object@metadata$reference.slope <- reference.slope
-      print(object@metadata$reference.slope)
+    if (!is.null(cageexp)){
+      cageexp@metadata$reference.slope <- reference.slope
     }
     reference.library.size <- 10^floor(log10(median(sapply(object, sum))))
     reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
@@ -169,7 +170,7 @@ setMethod("plotReverseCumulatives", "CAGEexp",
                 , normalized = CTSSnormalizedTpmDF(object))
   DF@metadata$colData <- colData(object)
   # Remember DataFrames are just Lists.
-  .plotReverseCumulatives(DF, values, fitInRange, group)
+  .plotReverseCumulatives(DF, values, fitInRange, group, object)
 })
 
 #' @rdname plotReverseCumulatives
