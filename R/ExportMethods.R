@@ -84,8 +84,7 @@ setGeneric( "plotReverseCumulatives",
 .plotReverseCumulatives <-
   function( object, values = c("raw", "normalized")
           , fitInRange = c(10, 1000)
-          , group = NULL
-          , cageexp = NULL) {
+          , group = NULL) {
   if (is.null(object@metadata$colData))
     stop("Expects a List-like object with a colData DataFrame in its metadata slot.")
   
@@ -138,9 +137,6 @@ setGeneric( "plotReverseCumulatives",
       .fit.power.law.to.reverse.cumulative(decode(x), val.range))
     fit.slopes <- fit.coefs.m[1,]
     reference.slope <- min(median(fit.slopes), -1.05)
-    if (!is.null(cageexp)){
-      cageexp@metadata$reference.slope <- reference.slope
-    }
     reference.library.size <- 10^floor(log10(median(sapply(object, sum))))
     reference.intercept <- log10(reference.library.size/VGAM::zeta(-1*reference.slope))  # intercept on log10 scale used for plotting with abline
     p <- p +
@@ -151,6 +147,7 @@ setGeneric( "plotReverseCumulatives",
         labels = paste0("(", formatC(-fit.slopes, format = "f", digits = 2), ") ",  names(fit.slopes))) +
       labs(subtitle = paste0("Ref. distribution alpha = ", sprintf("%.2f", -reference.slope), ", T = ", reference.library.size, ".")) +
       guides(col = guide_legend(title = "(alpha) sample names"))
+    p + labs(reference.slope = reference.slope)
   } else {
     p <- p +
       scale_color_manual(values = object@metadata$colData$Colors)
@@ -170,7 +167,7 @@ setMethod("plotReverseCumulatives", "CAGEexp",
                 , normalized = CTSSnormalizedTpmDF(object))
   DF@metadata$colData <- colData(object)
   # Remember DataFrames are just Lists.
-  .plotReverseCumulatives(DF, values, fitInRange, group, object)
+  .plotReverseCumulatives(DF, values, fitInRange, group)
 })
 
 #' @rdname plotReverseCumulatives
