@@ -217,8 +217,7 @@ loadFileIntoGPos    <- function( filepath
                                , mappingQualityThreshold
                                , removeFirstG
                                , correctSystematicG
-                               , genome
-                               , sample_names_files_dict) {
+                               , genome) {
   if (missing(filetype)) stop("Please specify the file type.")
   filetype <- match.arg(filetype)
   switch( filetype
@@ -236,8 +235,7 @@ loadFileIntoGPos    <- function( filepath
                                             , removeFirstG = removeFirstG
                                             , correctSystematicG = correctSystematicG
                                             , genome = genome)
-        , bigwig           = import.bigwig( filepath = filepath
-                                          , genome = genome)
+        , bigwig           = import.bigwig(filepath)
         , bed              = import.bedmolecule(filepath)
         , bedScore         = import.bedScore(filepath)
         , bedctss          = import.bedCTSS(filepath)
@@ -515,67 +513,26 @@ import.CTSS <- function(filepath) {
 #' @return a CAGEexp object
 #' 
 #' @family loadFileIntoGPos
+#'
+#' @importFrom rtracklayer import.bw
 #' 
 #' @author Katalin Ferenc
 #' @author Damir Baranasic
 #' 
 #' @examples
 #' import.bigwig(
-#'  genome="BSgenome.Drerio.UCSC.danRer7",
-#'  filepath=system.file("extdata", "NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw")
+#'  system.file("extdata", "NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw", package = "CAGEr")
 #'  )
 
-import.bigwig <- function(
-    genome,
-    filepath){
+import.bigwig <- function(filepath){
 
     str2_path <- gsub("str1","str2" , filepath)
-    str1_str2_paths <- c(filepath, str2_path)
-    signals <- lapply(
-        str1_str2_paths,
-        function(x) {
-            track_in <- rtracklayer::import(x)
-            track_in
-        })
-
-    signal_names <- sub("(_str1|_str2).*", "\\1", basename(str1_str2_paths))
-    names(signals) <- signal_names
-
-    # divide the signals into plus and minus strands
-    signalsSplit <- split(
-        signals,
-        grepl("str1", names(signals)))
-    plus <- lapply(signalsSplit$`TRUE`, function(x) {
-        strand(x) = "+"
-        return(x)
-    })
-    minus <- lapply(signalsSplit$`FALSE`, function(x) {
-        strand(x) = "-"
-        return(x)
-    })
-
-    plus_sample_names <- gsub("_str1", "", names(plus))
-    minus_sample_names <- gsub("_str2", "", names(minus))
-
-    names(plus) <- plus_sample_names
-    names(minus) <- minus_sample_names
-
-    if (!all(plus_sample_names == minus_sample_names)) {
-        if (setequal(plus_sample_names, minus_sample_names)) {
-            minus = minus[match(plus_sample_names, minus_sample_names)]
-        } else {
-            stop("Error: Some basenames of minus- and plus-strand bigWigs are different! Are these bigWigs from different sets of samples? Exit.")
-        }
-    }
-
-    # Load each file as GRangesList where each GRange is a CTSS data.
-    merged <- mapply(c, plus, minus)
-    merged_gpos <- lapply(merged, function(x) {
-        gp <- GPos(stitch=FALSE, x)
-        score(gp) <- x$score
-    })
-
-    merged_gpos
+    if(!file.exists(str2_path)) stop("File ", str2_path, " does not exist!")
+    plus <- import.bw(filepath)
+    strand(plus) <- '+'
+    minus <- import.bw(str2_path) 
+    strand(minus) <- '-'
+    GPos(c(plus, minus), stitch=FALSE) # I do not remember if the import functions are expected to sort their output…
 
 }
 
