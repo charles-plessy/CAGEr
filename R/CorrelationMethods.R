@@ -714,6 +714,13 @@ yaxs = par("yaxs"), ...)
 #' @author Charles Plessy
 #' @author Katalin Ferenc
 #' 
+#' @aliases
+#'   correlationMatrix,CAGEexp-method
+#'   correlationMatrix,SummarizedExperiment-method
+#'   correlationMatrix,DataFrame-method
+#'   correlationMatrix,data.frame-method
+#'   correlationMatrix,matrix-method
+#' 
 #' @family CAGEr functions
 #' 
 #' @examples
