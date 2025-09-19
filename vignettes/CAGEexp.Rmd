@@ -135,7 +135,7 @@ _CAGEr_ package supports three types of CAGE data input:
 The type and the format of the input files is specified at the beginning of the workflow, when the
 `CAGEset` object is created (section 3.2). This is done by setting the `inputFilesType` argument,
 which accepts the following self-explanatory options referring to formats mentioned above:
-`"bam", "bamPairedEnd", "bed", "ctss", "CTSStable"`.
+`"bam", "bamPairedEnd", "bigwig", "bed", "ctss", "CTSStable"`.
 
 In addition, the package provides a method for coercing a `data.frame` object containing single
 base-pair TSS information into a `CAGEset` object (as described in section 4.1), which can be
