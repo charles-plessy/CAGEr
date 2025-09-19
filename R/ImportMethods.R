@@ -530,9 +530,13 @@ import.bigwig <- function(filepath){
     if(!file.exists(str2_path)) stop("File ", str2_path, " does not exist!")
     plus <- import.bw(filepath)
     strand(plus) <- '+'
+    gpp <- GPos(plus, stitch=FALSE)
+    score(gpp) <- plus$score
     minus <- import.bw(str2_path) 
     strand(minus) <- '-'
-    GPos(c(plus, minus), stitch=FALSE)
+    gpn <- GPos(minus, stitch=FALSE)
+    score(gpn) <- minus$score
+    c(gpp, gpn)
 }
 
 #' parseCAGEscanBlocksToGrangeTSS
