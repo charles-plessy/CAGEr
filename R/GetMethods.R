@@ -204,7 +204,7 @@ function (object){
 #' wrapping genomic ranges.  A `filteredCTSSidx` column metadata will be present
 #' if [`filterLowExpCTSS`] was ran earlier. 
 #' 
-#' @importFrom GenomeInfoDb genome genome<-
+#' @importFrom Seqinfo genome genome<-
 #' @importFrom IRanges IRanges
 #' 
 #' @examples
