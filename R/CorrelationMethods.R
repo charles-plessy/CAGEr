@@ -831,10 +831,10 @@ setMethod( "correlationMatrix", "matrix"
 .correlationMatrix <- function( expr.table, samples, method
                              , tagCountThreshold, applyThresholdBoth) {
   # Select samples
-  if(samples == "all"){
-      samples <- colnames(expr.table)
-  } else if (all(samples %in% colnames(expr.table))) {
-      expr.table <- expr.table[,samples]
+  if (all(samples %in% colnames(expr.table))) {
+    expr.table <- expr.table[,samples]
+  } else if(samples == "all"){
+    samples <- colnames(expr.table)
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
   nr.samples <- length(samples)
 
