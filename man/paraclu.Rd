@@ -108,8 +108,8 @@ them back in a \code{\link{TagClusters}} object after filtering them by size and
 expression following the \code{minStability}, \code{maxLength}, \code{keepSingletonsAbove}
 and \code{reduceToNonoverlapping} parameters.
 
-Running Paraclu on a \code{\link{RangedSummarizedExperiment}} object will loop on each
-sample, and return the results as a \code{\link{GRangesList}} of \code{TagClusters}.
+Running Paraclu on a \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} object will loop on each
+sample, and return the results as a \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges::GRangesList}} of \code{TagClusters}.
 
 Running Paraclu on a \code{\link{CAGEexp}} returnts is with the clusters stored as a
 \code{GRangesList} of \code{\link{TagClusters}} objects in its metadata slot \code{tagClusters}.

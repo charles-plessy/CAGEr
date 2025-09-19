@@ -32,8 +32,8 @@ Returns an object with number of CAGE tags supporting each TSS
 (rows) in every CAGE dataset (columns).  The class of the object depends on the
 function being called:
 \itemize{
-\item \code{CTSStagCountDF}: A \code{\link{DataFrame}} of \code{\link{Rle}} integers.
-\item \code{CTSStagCountSE}: A \code{\link{RangedSummarizedExperiment}}\verb{containing a}DataFrame\code{of}Rle` integers.
+\item \code{CTSStagCountDF}: A \code{\link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame}} of \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}} integers.
+\item \code{CTSStagCountSE}: A \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}}\verb{containing a}DataFrame\code{of}Rle` integers.
 \item \code{CTSStagCountGR}: A \code{CTSS} object (wrapping \code{GRanges}) containing a \code{score}
 column indicating expression values for a given sample, or a
 \code{GRangesList} of \code{CTSS} objects.

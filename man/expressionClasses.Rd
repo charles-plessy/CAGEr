@@ -16,7 +16,7 @@ expressionClasses(object)
 \item{object}{A \code{\link{CAGEr}} object.}
 }
 \value{
-Returns a \code{\link{Rle}}-encoded vector of labels of \emph{expression classes}.
+Returns a \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}}-encoded vector of labels of \emph{expression classes}.
 The number of labels matches the number of expression clusters returned by
 \code{\link{getExpressionProfiles}} function.
 }

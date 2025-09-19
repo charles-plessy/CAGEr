@@ -72,7 +72,7 @@ least \code{nrPassThreshold} samples.}
 normalized signal (\code{TRUE}).}
 }
 \value{
-\code{flagLowExpCTSS} returns a \code{\link{Rle}} vector where \code{TRUE} indicates the
+\code{flagLowExpCTSS} returns a \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}} vector where \code{TRUE} indicates the
 index of a CTSS that passes the filter.
 
 \code{filterLowExpCTSS} returns the \code{CAGEr} object where the output of

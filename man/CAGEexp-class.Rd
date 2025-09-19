@@ -7,10 +7,10 @@
 \alias{coerce,data.frame,CAGEexp-method}
 \title{CAGEr class to hold all data and metadata about one CAGE experiment.}
 \description{
-The \code{\link{CAGEr}} class is a \code{\link{MultiAssayExperiment}} object containing all data
+The \code{\link{CAGEr}} class is a \code{\link[MultiAssayExperiment:MultiAssayExperiment]{MultiAssayExperiment::MultiAssayExperiment}} object containing all data
 and metadata about a set of CAGE libraries.  It replaced the CAGEset class
 in 2017.  The main difference is that the expression data is stored
-in \code{\link{DataFrame}} objects of \code{\link{Rle}}-encoded expression values, instead of plain
+in \code{\link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame}} objects of \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}}-encoded expression values, instead of plain
 \code{data.frame}s.  With large datasets, this saves considerable amounts of memory.
 }
 \details{

@@ -8,7 +8,7 @@ ranges2annot(ranges, annot, upstream = 500, downstream = 500)
 }
 \arguments{
 \item{ranges}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object, for example extracted from
-a \code{RangedSummarizedExperiment} object with the \code{\link{rowRanges}}
+a \code{RangedSummarizedExperiment} object with the \code{\link[MatrixGenerics:rowRanges]{MatrixGenerics::rowRanges}}
 command.}
 
 \item{annot}{A \code{GRanges} from which promoter positions will be inferred.
@@ -25,7 +25,7 @@ to be considered as part of the \emph{promoter region}.}
 models to be considered as part of the \emph{promoter region}.}
 }
 \value{
-A Run-length-encoded (\code{\link{Rle}}) factor of same length as the \code{CTSS}
+A Run-length-encoded (\code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}}) factor of same length as the \code{CTSS}
 object, indicating if the interval is \code{promoter}, \code{exon}, \code{intron} or
 \code{unknown}, or just \code{promoter}, \code{gene}, \code{unknown} if the \code{type}
 metadata is absent.

@@ -31,7 +31,7 @@ loadFileIntoGPos(
 \item{genome}{See coerceInBSgenome().}
 }
 \value{
-A \code{\link[=GPos]{GPos()}} object where the score represents the number of CAGE tags
+A \code{\link[GenomicRanges:GPos-class]{GenomicRanges::GPos()}} object where the score represents the number of CAGE tags
 starting on that nucleotide.
 }
 \description{

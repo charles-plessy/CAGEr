@@ -25,7 +25,7 @@ which to extract sample-specific information on consensus clusters.}
 }
 \value{
 \code{consensusClustersGR} returns a \code{\link{ConsensusClusters}} object, which
-wraps the \code{\link{GRanges}} class.  The \code{score} columns indicates the
+wraps the \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} class.  The \code{score} columns indicates the
 normalised expression value of each cluster, either across all samples
 (\code{sample = NULL}), or for the selected sample.  The legacy \code{tpm} column may
 be removed in the future.  When \code{sample} argument is
@@ -37,7 +37,7 @@ the dominant TSS, and (if applicable) interquantile width of the consensus
 clusters in the specified sample or otherwise, sample-agnostic information is
 returned.
 
-\code{consensusClustersSE} returns the \code{\link{SummarizedExperiment}} stored
+\code{consensusClustersSE} returns the \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}} stored
 in the \code{consensusClusters} experiment slot of the CAGEexp object.
 }
 \description{

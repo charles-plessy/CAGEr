@@ -44,7 +44,7 @@ defined relatively to the start point of their cluster, for more efficient
 \code{TagClusters} objects directly.  The quantile data for \verb{consensus clusters}
 are stored in \code{\link{integer}} matrices named \dQuote{q_\emph{x}}, where \emph{x}
 represents the quantile (for instance, \code{q_0.1}), and these matrices are
-\emph{assays} of the \code{consensusClusters} \code{\link{RangedSummarizedExperiment}}.
+\emph{assays} of the \code{consensusClusters} \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}}.
 }
 \description{
 Calculates the positions of \dQuote{upper} and \dQuote{lower}
