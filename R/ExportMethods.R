@@ -36,7 +36,6 @@ NULL
 #' @param group The name of a column data of the `CAGEexp` object, to be used
 #' to facet the plot.  If `NULL` (default), all the distributions will be
 #' plotted together.  Set to `sampleLabels` to plot each sample separately.
-#'
 #' 
 #' @returns A [`ggplot2::ggplot`] object containing the plots.  The plot can
 #' be further modified to change its title or axis labels (see
