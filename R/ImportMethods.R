@@ -175,10 +175,10 @@ addCTSScolumn <- function(CTSS.all.samples, CTSS) {
 #' with the given BSgenome object.  The sequnames of the GRanges are also set
 #' accordingly to the BSgenome.
 #' 
-#' @importFrom GenomeInfoDb seqinfo
-#' @importFrom GenomeInfoDb seqlengths
-#' @importFrom GenomeInfoDb seqlevels seqlevels<-
-#' @importFrom GenomeInfoDb seqnames
+#' @importFrom Seqinfo seqinfo
+#' @importFrom Seqinfo seqlengths
+#' @importFrom Seqinfo seqlevels seqlevels<-
+#' @importFrom Seqinfo seqnames
 #' @importFrom S4Vectors %in%
 
 coerceInBSgenome <- function(gr, genome) {
@@ -210,8 +210,8 @@ coerceInBSgenome <- function(gr, genome) {
 #' @family loadFileIntoGPos
 
 loadFileIntoGPos    <- function( filepath
-                               , filetype = c( "bam", "bamPairedEnd"
-                                             , "bed", "bedctss", "bedScore"
+                               , filetype = c( "bam", "bamPairedEnd", "bigwig"
+                                             , "bed", "bedScore", "bedctss"
                                              , "CAGEscanMolecule", "ctss")
                                , sequencingQualityThreshold
                                , mappingQualityThreshold
@@ -235,6 +235,7 @@ loadFileIntoGPos    <- function( filepath
                                             , removeFirstG = removeFirstG
                                             , correctSystematicG = correctSystematicG
                                             , genome = genome)
+        , bigwig           = import.bigwig(filepath)
         , bed              = import.bedmolecule(filepath)
         , bedScore         = import.bedScore(filepath)
         , bedctss          = import.bedCTSS(filepath)
@@ -338,7 +339,7 @@ import.bam <- function( filepath
 #' 
 #' @return Returns a \code{\link{CTSS}} object.
 #' 
-#' @importFrom GenomeInfoDb bsgenomeName
+#' @importFrom Seqinfo bsgenomeName
 #' @family loadFileIntoGPos
 
 bam2CTSS <- function(gr, removeFirstG, correctSystematicG, genome) {
@@ -452,7 +453,7 @@ import.bedScore <- function(filepath) {
 #' @family loadFileIntoGPos
 #' 
 #' @importFrom rtracklayer import.bed
-#' @importFrom GenomeInfoDb sortSeqlevels
+#' @importFrom Seqinfo sortSeqlevels
 #' @importFrom GenomicRanges countOverlaps
 #' 
 #' @examples
@@ -498,6 +499,40 @@ import.CTSS <- function(filepath) {
                      , strand   = CTSS$strand))
   score(gp) <- CTSS$score
   gp
+}
+
+
+#' Read in BigWig files to CAGEexp object
+#'
+#' @param genome the name of the reference genome (bsgenome)
+#' @param filepath an input bigwig file with full path
+#' The filename should include a "str1" and it should have a pair that is 
+#' identical except having "str2" substring
+#' the filepath in the CAGEexp object will only include the bw corresponding to str1
+#' 
+#' @return a CAGEexp object
+#' 
+#' @family loadFileIntoGPos
+#'
+#' @importFrom rtracklayer import.bw
+#' 
+#' @author Katalin Ferenc
+#' @author Damir Baranasic
+#' 
+#' @examples
+#' import.bigwig(
+#'  system.file("extdata", "NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw", package = "CAGEr")
+#'  )
+
+import.bigwig <- function(filepath){
+
+    str2_path <- gsub("str1","str2" , filepath)
+    if(!file.exists(str2_path)) stop("File ", str2_path, " does not exist!")
+    plus <- import.bw(filepath)
+    strand(plus) <- '+'
+    minus <- import.bw(str2_path) 
+    strand(minus) <- '-'
+    GPos(c(plus, minus), stitch=FALSE)
 }
 
 #' parseCAGEscanBlocksToGrangeTSS
@@ -982,3 +1017,4 @@ setGeneric("importPublicData",
 
 setMethod("importPublicData", signature(origin = "character", dataset = "character", sample = "character"),
           .importPublicData)
+
