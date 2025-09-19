@@ -13,7 +13,7 @@ Note that the format of the "CTSS" files handled in this function is not
 the same as the FANTOM5 "CTSS" files (which are plain BED).}
 }
 \description{
-Imports a "CTSS" file in a \link{GPos} object
+Imports a "CTSS" file in a \link[GenomicRanges:GPos-class]{GenomicRanges::GPos} object
 }
 \examples{
 CAGEr:::import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))

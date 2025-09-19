@@ -7,7 +7,7 @@
 \description{
 The \emph{CAGEr} package provides one class of objects to load, contain and
 process CAGE data: the \code{\link{CAGEexp}} class, introduced 2017, which is based on the
-\code{\link{MultiAssayExperiment}} class.  In comparison with the original \code{CAGEset}
+\code{\link[MultiAssayExperiment:MultiAssayExperiment]{MultiAssayExperiment::MultiAssayExperiment}} class.  In comparison with the original \code{CAGEset}
 class (removed in 2021) \code{CAGEexp} objects benefit from a a more efficient data storage, using
 \code{DataFrame}s of run-length-encoded (\code{Rle}) integers, allowing for the
 loading and use of much larger transcriptome datasets.

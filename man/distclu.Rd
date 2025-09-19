@@ -28,7 +28,7 @@ all TCs by default.  Setting it to \code{Inf} removes all singletons.}
 }
 \value{
 For \code{CTSS} input, a \code{\link{TagClusters}} object, for
-\code{SummarizedExperiment} input, a \code{\link{GRangesList}} of \code{\link{TagClusters}} objects,
+\code{SummarizedExperiment} input, a \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges::GRangesList}} of \code{\link{TagClusters}} objects,
 and for \code{\link{CAGEexp}} input, a modified object containing the tag clusters
 stored as a \code{GRangesList} of \code{\link{TagClusters}} objects in its metadata slot
 \code{tagClusters}.

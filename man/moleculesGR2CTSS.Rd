@@ -7,10 +7,10 @@
 moleculesGR2CTSS(gr)
 }
 \arguments{
-\item{gr}{A \link{GRanges} object.}
+\item{gr}{A \link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges} object.}
 }
 \value{
-Returns a \link{GRanges} object.
+Returns a \link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges} object.
 }
 \description{
 Calculates CTSS positions from a GenomicRanges object where each element

@@ -55,7 +55,7 @@ Unix-like platforms).}
 }
 \value{
 Returns the object in which the \emph{experiment} \code{consensusClusters} will
-be occupied by a \code{\link{RangedSummarizedExperiment}} containing the cluster
+be occupied by a \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} containing the cluster
 coordinates as row ranges, and their expression levels in the \code{counts} and
 \code{normalized} assays.  These genomic ranges are returned by the
 \code{\link{consensusClustersGR}} function and the whole object can be accessed with
