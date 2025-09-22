@@ -17,7 +17,7 @@ function.}
 The input object with the following modifications:
 \itemize{
 \item A new \code{geneExpMatrix} experiment containing gene expression levels as
-a \code{\link{SummarizedExperiment}} object with one assay called \code{counts}, which
+a \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}} object with one assay called \code{counts}, which
 is plain \code{matrix} of integers.  (This plays better than \verb{Rle DataFrames}
 when interfacing with downstream packages like DESeq2, and since the number of
 genes is limited, a \code{matrix} will not cause problems of performance.)

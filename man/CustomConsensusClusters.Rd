@@ -24,7 +24,7 @@ CustomConsensusClusters(
 \arguments{
 \item{object}{A \code{CAGEexp} object}
 
-\item{clusters}{Consensus clusters in \code{\link{GRanges}} format.}
+\item{clusters}{Consensus clusters in \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} format.}
 
 \item{threshold, nrPassThreshold}{Only CTSSs with signal \verb{>= threshold} in
 \verb{>= nrPassThreshold} experiments will be used for clustering and will
@@ -34,7 +34,7 @@ contribute towards total signal of the cluster.}
 normalized signal (TRUE).}
 }
 \value{
-stores the result as a new \code{\link{RangedSummarizedExperiment}} in the
+stores the result as a new \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} in the
 \code{experiment} slot of the object.  The assays of the new experiment are called
 \code{counts} and \code{normalized}.  An \code{outOfClusters} column is added
 to the sample metadata to reflect the number of molecules that do not have

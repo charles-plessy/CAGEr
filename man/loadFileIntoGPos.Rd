@@ -6,8 +6,8 @@
 \usage{
 loadFileIntoGPos(
   filepath,
-  filetype = c("bam", "bamPairedEnd", "bigwig", "bed", "bedScore", "bedctss", "CAGEscanMolecule",
-    "ctss"),
+  filetype = c("bam", "bamPairedEnd", "bigwig", "bed", "bedScore", "bedctss",
+    "CAGEscanMolecule", "ctss"),
   sequencingQualityThreshold,
   mappingQualityThreshold,
   removeFirstG,
@@ -31,7 +31,7 @@ loadFileIntoGPos(
 \item{genome}{See coerceInBSgenome().}
 }
 \value{
-A \code{\link[=GPos]{GPos()}} object where the score represents the number of CAGE tags
+A \code{\link[GenomicRanges:GPos-class]{GenomicRanges::GPos()}} object where the score represents the number of CAGE tags
 starting on that nucleotide.
 }
 \description{
@@ -48,6 +48,7 @@ Other loadFileIntoGPos:
 \code{\link{import.bedCTSS}()},
 \code{\link{import.bedScore}()},
 \code{\link{import.bedmolecule}()},
+\code{\link{import.bigwig}()},
 \code{\link{moleculesGR2CTSS}()}
 }
 \concept{loadFileIntoGPos}

@@ -39,7 +39,7 @@ oligonucleotide, that will be matched with the genome sequence
 (defaults to \code{TATAGGG}).}
 }
 \value{
-\code{findStrandInvaders} returns a logical-\link{Rle} vector indicating the
+\code{findStrandInvaders} returns a logical-\link[S4Vectors:Rle-class]{S4Vectors::Rle} vector indicating the
 position of the strand invaders in the input ranges.
 
 With \link{CTSS} objects as input \code{removeStrandInvaders} returns the

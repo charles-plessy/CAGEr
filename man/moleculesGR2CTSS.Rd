@@ -7,10 +7,10 @@
 moleculesGR2CTSS(gr)
 }
 \arguments{
-\item{gr}{A \link{GRanges} object.}
+\item{gr}{A \link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges} object.}
 }
 \value{
-Returns a \link{GRanges} object.
+Returns a \link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges} object.
 }
 \description{
 Calculates CTSS positions from a GenomicRanges object where each element
@@ -29,6 +29,7 @@ Other loadFileIntoGPos:
 \code{\link{import.bedCTSS}()},
 \code{\link{import.bedScore}()},
 \code{\link{import.bedmolecule}()},
+\code{\link{import.bigwig}()},
 \code{\link{loadFileIntoGPos}()}
 }
 \concept{loadFileIntoGPos}

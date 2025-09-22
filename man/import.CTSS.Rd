@@ -13,7 +13,7 @@ Note that the format of the "CTSS" files handled in this function is not
 the same as the FANTOM5 "CTSS" files (which are plain BED).}
 }
 \description{
-Imports a "CTSS" file in a \link{GPos} object
+Imports a "CTSS" file in a \link[GenomicRanges:GPos-class]{GenomicRanges::GPos} object
 }
 \examples{
 CAGEr:::import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))
@@ -26,6 +26,7 @@ Other loadFileIntoGPos:
 \code{\link{import.bedCTSS}()},
 \code{\link{import.bedScore}()},
 \code{\link{import.bedmolecule}()},
+\code{\link{import.bigwig}()},
 \code{\link{loadFileIntoGPos}()},
 \code{\link{moleculesGR2CTSS}()}
 }

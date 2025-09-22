@@ -33,7 +33,7 @@ annotateConsensusClusters(object, annot, upstream = 500, downstream = 500)
 \arguments{
 \item{object}{\code{CAGEexp} object.}
 
-\item{annot}{A \code{\link{GRanges}} or a \code{\link{TxDb}} object representing the genome
+\item{annot}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} or a \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures::TxDb}} object representing the genome
 annotation.  See details for the \code{GRanges} object.}
 
 \item{upstream}{Number of bases \emph{upstream} the start of the transcript models
@@ -71,7 +71,7 @@ annotation statistics.
 of a CAGEr object.
 }
 \details{
-If the annotation is a \code{\link{GRanges}}, gene names will be extracted from the
+If the annotation is a \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}}, gene names will be extracted from the
 \code{gene_name} metadata, the \code{transcript_type} metadata will be used to filter
 out entries that do not have promoters (such as immunogloblulin VDJ segments),
 and the \code{type} metadata is used to extract positions of introns and exons.

@@ -10,7 +10,7 @@
 \item{ctss}{A \code{\link{CTSS}} object.}
 
 \item{clusters}{A \code{\link{TagClusters}}, \code{\link{ConsensusClusters}} or any other
-object implementing the \code{\link{GRanges}} class.}
+object implementing the \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} class.}
 }
 \value{
 The \code{clusters} object with a new \code{dominant_CTSS} metadata in \code{CTSS}
