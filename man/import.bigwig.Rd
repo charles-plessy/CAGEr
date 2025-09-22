@@ -4,15 +4,10 @@
 \alias{import.bigwig}
 \title{Read in BigWig files to CAGEexp object}
 \usage{
-import.bigwig(genome, filepath)
+import.bigwig(filepath)
 }
 \arguments{
-\item{genome}{the name of the reference genome (bsgenome)}
-
-\item{filepath}{list of input bigwig files with full path
-The filenames should include a "_str1" and "_str2" substring after the sample name
-The sampe name will be the prefix before these substrings
-the filepath in the CAGEexp object will only include the bw corresponding to str1}
+\item{filepath}{Path to an input bigwig file on the plus strand.}
 }
 \value{
 a CAGEexp object
@@ -20,11 +15,26 @@ a CAGEexp object
 \description{
 Read in BigWig files to CAGEexp object
 }
+\note{
+The filename must contain the string \code{str1} and have a pair for the
+minus strand that has identical path except with the \code{str2} substring, so
+that \code{inputFiles} CAGEexp object will only point to plus-strand BigWig files.
+}
 \examples{
-import.bigwig(
- genome="BSgenome.Drerio.UCSC.danRer7",
- filepath = system.file("extdata", "NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw", package = "CAGEr")
- )
+
+pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
+                               , "str1.out.wig.bw$" , full.names = TRUE)
+                               
+CAGEr:::import.bigwig(pathsToInputFiles[1])
+
+\dontrun{
+sampleLabels <- sub( "_subsampled_str1.Signal.Unique.str1.out.wig.bw"
+                   , "", basename(pathsToInputFiles))
+CAGEexp( genomeName     = "BSgenome.Drerio.UCSC.danRer7"
+       , inputFiles     = pathsToInputFiles
+       , inputFilesType = "bigwig"
+       , sampleLabels   = sampleLabels) |> getCTSS()
+}
 }
 \seealso{
 Other loadFileIntoGPos: 
