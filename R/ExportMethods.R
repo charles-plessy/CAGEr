@@ -146,6 +146,7 @@ setGeneric( "plotReverseCumulatives",
         labels = paste0("(", formatC(-fit.slopes, format = "f", digits = 2), ") ",  names(fit.slopes))) +
       labs(subtitle = paste0("Ref. distribution alpha = ", sprintf("%.2f", -reference.slope), ", T = ", reference.library.size, ".")) +
       guides(col = guide_legend(title = "(alpha) sample names"))
+    p@meta$reference.slope <- reference.slope
   } else {
     p <- p +
       scale_color_manual(values = object@metadata$colData$Colors)
