@@ -332,7 +332,7 @@ import.bam <- function( filepath
 #' 
 #' Converts genomic ranges representing SAM/BAM alignments into a CTSS object.
 #' 
-#' @param gr A \code{\link{GRanges}} object returned by \code{\link{import.bam}}.
+#' @param gr A [`GenomicRanges::GRanges`] object returned by [`import.bam()`].
 #' @param removeFirstG See getCTSS().
 #' @param correctSystematicG See getCTSS().
 #' @param genome See coerceInBSgenome().

@@ -7,7 +7,7 @@
 bam2CTSS(gr, removeFirstG, correctSystematicG, genome)
 }
 \arguments{
-\item{gr}{A \code{\link{GRanges}} object returned by \code{\link{import.bam}}.}
+\item{gr}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object returned by \code{\link[=import.bam]{import.bam()}}.}
 
 \item{removeFirstG}{See getCTSS().}
 

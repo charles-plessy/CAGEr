@@ -10,7 +10,7 @@
 \S4method{.byCtss}{data.table}(ctssDT, colName, fun)
 }
 \arguments{
-\item{ctssDT}{A \code{\link{data.table}} representing CTSSes.}
+\item{ctssDT}{A \code{\link[data.table:data.table]{data.table::data.table}} representing CTSSes.}
 
 \item{colName}{The name of the column on which to apply the function.}
 
@@ -19,7 +19,7 @@
 \description{
 \code{.byCTSS} is a private function using  \code{data.table} objects
 to preform grouping operations at a high performance.  These functions use
-\emph{non-standard evaluation} in a context that raises warnings in \code{R CMD check}.
+\emph{non-standard evaluation} in a context that raises warnings in \verb{R CMD check}.
 By separating these functions from the rest of the code, I hope to make the workarounds
 easier to manage.
 }
