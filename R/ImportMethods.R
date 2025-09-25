@@ -332,7 +332,7 @@ import.bam <- function( filepath
 #' 
 #' Converts genomic ranges representing SAM/BAM alignments into a CTSS object.
 #' 
-#' @param gr A \code{\link{GRanges}} object returned by \code{\link{import.bam}}.
+#' @param gr A [`GenomicRanges::GRanges`] object returned by [`import.bam()`].
 #' @param removeFirstG See getCTSS().
 #' @param correctSystematicG See getCTSS().
 #' @param genome See coerceInBSgenome().
@@ -504,11 +504,11 @@ import.CTSS <- function(filepath) {
 
 #' Read in BigWig files to CAGEexp object
 #'
-#' @param genome the name of the reference genome (bsgenome)
-#' @param filepath an input bigwig file with full path
-#' The filename should include a "str1" and it should have a pair that is 
-#' identical except having "str2" substring
-#' the filepath in the CAGEexp object will only include the bw corresponding to str1
+#' @param filepath Path to an input bigwig file on the plus strand.
+#' 
+#' @note The filename must contain the string `str1` and have a pair for the
+#' minus strand that has identical path except with the `str2` substring, so
+#' that `inputFiles` CAGEexp object will only point to plus-strand BigWig files.
 #' 
 #' @return a CAGEexp object
 #' 
@@ -520,12 +520,22 @@ import.CTSS <- function(filepath) {
 #' @author Damir Baranasic
 #' 
 #' @examples
-#' import.bigwig(
-#'  system.file("extdata", "NCig10061_subsampled_str1.Signal.Unique.str1.out.wig.bw", package = "CAGEr")
-#'  )
+#' 
+#' pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
+#'                                , "str1.out.wig.bw$" , full.names = TRUE)
+#'                                
+#' CAGEr:::import.bigwig(pathsToInputFiles[1])
+#'
+#' \dontrun{
+#' sampleLabels <- sub( "_subsampled_str1.Signal.Unique.str1.out.wig.bw"
+#'                    , "", basename(pathsToInputFiles))
+#' CAGEexp( genomeName     = "BSgenome.Drerio.UCSC.danRer7"
+#'        , inputFiles     = pathsToInputFiles
+#'        , inputFilesType = "bigwig"
+#'        , sampleLabels   = sampleLabels) |> getCTSS()
+#' }
 
 import.bigwig <- function(filepath){
-
     str2_path <- gsub("str1","str2" , filepath)
     if(!file.exists(str2_path)) stop("File ", str2_path, " does not exist!")
     plus <- import.bw(filepath)

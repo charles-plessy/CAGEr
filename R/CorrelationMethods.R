@@ -5,56 +5,51 @@
 #' @title Pairwise scatter plots and correlations of CAGE signal
 #' 
 #' @description Calculates the pairwise correlation between samples and creates
-#' a plot matrix showing the correlation coeficients in the upper triangle, the
-#' sample names in the diagonal, and the catter plots in the lower triangle.
+#' a plot matrix showing the correlation coefficients in the upper triangle, the
+#' sample names in the diagonal, and the scatter plots in the lower triangle.
 #' 
-#' @param object A \code{\link{CAGEr}} object or (only for
-#'   \code{plotCorrelation2}) a \code{\link{SummarizedExperiment}} or an
-#'   expression table as a \code{\link{DataFrame}}, \code{\link{data.frame}} or
-#'   \code{\link{matrix}} object.
+#' @param object A [`CAGEexp`] object or (only for [`plotCorrelation2()`] a
+#'   [`SummarizedExperiment::SummarizedExperiment`] or an expression table as a
+#'   [`S4Vectors::DataFrame`], [`data.frame`] or [`matrix`] object.
 #' 
 #' @param what The clustering level to be used for plotting and calculating
-#'   correlations.  Can be either \code{"CTSS"} to use individual TSSs or
-#'   \code{"consensusClusters"} to use consensus clusters, \emph{i.e.} entire
-#'   promoters.  Ignored for anything else than \code{CAGEr} objects.
+#'   correlations: `CTSS` (individual TSSs) or `consensusClusters`. Ignored for
+#'   anything else than `CAGEexp` objects.
 #' 
-#' @param values Use either \code{"raw"} (default) or \code{"normalized"} CAGE
+#' @param values Use either `raw` (default) or `normalized` CAGE
 #'   signal.  Ignored for plain expression tables.
 #' 
 #' @param samples Character vector indicating which samples to use.  Can be
-#'   either \code{"all"} to select all samples in a \code{CAGEr} object, or a
-#'   subset of valid sample labels as returned by the
-#'   \code{\link{sampleLabels}} function.
+#'   either `all` to select all samples in a `CAGEexp` object, or a subset of
+#'   valid sample labels as returned by [`sampleLabels()`].
 #' 
 #' @param method A character string indicating which correlation coefficient
-#'   should be computed.  Passed to \code{cor} function.  Can be one of
-#'   \code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.
+#'   should be computed.  Passed to [`cor()`].  Can be one of `pearson`,
+#'   `spearman`, or `kendall`.
 #' 
-#' @param tagCountThreshold Only TSSs with tag count \code{>= tagCountThreshold}
-#'   in either one (\code{applyThresholdBoth = FALSE}) or both samples
-#'   (\code{applyThresholdBoth = TRUE}) are plotted and used to calculate
+#' @param tagCountThreshold,applyThresholdBoth Only TSSs with tag count
+#'   `>= tagCountThreshold` in either one (`applyThresholdBoth = FALSE`) or both
+#'   samples (`applyThresholdBoth = TRUE`) are plotted and used to calculate
 #'   correlation.
 #' 
-#' @param applyThresholdBoth See \code{tagCountThreshold} above.
-#' 
 #' @param plotSize Size of the individual comparison plot in pixels - the
-#' total size of the resulting png will be \code{length(samples) * plotSize}
-#' in both dimensions.  Ignored in \code{plotCorrelation2}.
+#' total size of the resulting png will be `length(samples) * plotSize`
+#' in both dimensions.  Ignored in `plotCorrelation2`.
 #' 
 #' @details In the scatter plots, a pseudo-count equal to half the lowest score
 #' is added to the null values so that they can appear despite logarithmic scale.
 #' 
-#' \code{SummarizedExperiment} objects are expected to contain raw tag counts
+#' `SummarizedExperiment` objects are expected to contain raw tag counts
 #' in a \dQuote{counts} assay and the normalized expression scores in a
 #' \dQuote{normalized} assay.
 #' 
-#' Avoid using large \code{matrix} objects as they are coerced to
-#' \code{DataFrame} class without special care for efficiency.
+#' Avoid using large `matrix` objects as they are coerced to `DataFrame` class
+#' without special care for efficiency.
 #' 
-#' @return Displays the plot and returns a \code{matrix} of pairwise
+#' @return Displays the plot and returns a `matrix` of pairwise
 #' correlations between selected samples.  The scatterplots of
-#' \code{plotCorrelation} are colored according to the density of points, and
-#' in \code{plotCorrelation2} they are just black and white, which is much
+#' `plotCorrelation` are colored according to the density of points, and
+#' in `plotCorrelation2` they are just black and white, which is much
 #' faster to plot.  Note that while the scatterplots are on a logarithmic scale
 #' with pseudocount added to the zero values, the correlation coefficients are
 #' calculated on untransformed (but thresholded) data.

@@ -100,34 +100,29 @@ plotCorrelation2(
 )
 }
 \arguments{
-\item{object}{A \code{\link{CAGEr}} object or (only for
-\code{plotCorrelation2}) a \code{\link{SummarizedExperiment}} or an
-expression table as a \code{\link{DataFrame}}, \code{\link{data.frame}} or
-\code{\link{matrix}} object.}
+\item{object}{A \code{\link{CAGEexp}} object or (only for \code{\link[=plotCorrelation2]{plotCorrelation2()}} a
+\code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}} or an expression table as a
+\code{\link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame}}, \code{\link{data.frame}} or \code{\link{matrix}} object.}
 
 \item{what}{The clustering level to be used for plotting and calculating
-correlations.  Can be either \code{"CTSS"} to use individual TSSs or
-\code{"consensusClusters"} to use consensus clusters, \emph{i.e.} entire
-promoters.  Ignored for anything else than \code{CAGEr} objects.}
+correlations: \code{CTSS} (individual TSSs) or \code{consensusClusters}. Ignored for
+anything else than \code{CAGEexp} objects.}
 
-\item{values}{Use either \code{"raw"} (default) or \code{"normalized"} CAGE
+\item{values}{Use either \code{raw} (default) or \code{normalized} CAGE
 signal.  Ignored for plain expression tables.}
 
 \item{samples}{Character vector indicating which samples to use.  Can be
-either \code{"all"} to select all samples in a \code{CAGEr} object, or a
-subset of valid sample labels as returned by the
-\code{\link{sampleLabels}} function.}
+either \code{all} to select all samples in a \code{CAGEexp} object, or a subset of
+valid sample labels as returned by \code{\link[=sampleLabels]{sampleLabels()}}.}
 
 \item{method}{A character string indicating which correlation coefficient
-should be computed.  Passed to \code{cor} function.  Can be one of
-\code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.}
+should be computed.  Passed to \code{\link[=cor]{cor()}}.  Can be one of \code{pearson},
+\code{spearman}, or \code{kendall}.}
 
-\item{tagCountThreshold}{Only TSSs with tag count \code{>= tagCountThreshold}
-in either one (\code{applyThresholdBoth = FALSE}) or both samples
-(\code{applyThresholdBoth = TRUE}) are plotted and used to calculate
+\item{tagCountThreshold, applyThresholdBoth}{Only TSSs with tag count
+\verb{>= tagCountThreshold} in either one (\code{applyThresholdBoth = FALSE}) or both
+samples (\code{applyThresholdBoth = TRUE}) are plotted and used to calculate
 correlation.}
-
-\item{applyThresholdBoth}{See \code{tagCountThreshold} above.}
 
 \item{plotSize}{Size of the individual comparison plot in pixels - the
 total size of the resulting png will be \code{length(samples) * plotSize}
@@ -151,8 +146,8 @@ calculated on untransformed (but thresholded) data.
 }
 \description{
 Calculates the pairwise correlation between samples and creates
-a plot matrix showing the correlation coeficients in the upper triangle, the
-sample names in the diagonal, and the catter plots in the lower triangle.
+a plot matrix showing the correlation coefficients in the upper triangle, the
+sample names in the diagonal, and the scatter plots in the lower triangle.
 }
 \details{
 In the scatter plots, a pseudo-count equal to half the lowest score
@@ -162,8 +157,8 @@ is added to the null values so that they can appear despite logarithmic scale.
 in a \dQuote{counts} assay and the normalized expression scores in a
 \dQuote{normalized} assay.
 
-Avoid using large \code{matrix} objects as they are coerced to
-\code{DataFrame} class without special care for efficiency.
+Avoid using large \code{matrix} objects as they are coerced to \code{DataFrame} class
+without special care for efficiency.
 
 \code{plotCorrelation2} speeds up the plotting by a) deduplicating
 that data: no point is plot twice at the same coordinates, b) rounding the

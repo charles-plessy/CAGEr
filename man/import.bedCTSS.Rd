@@ -28,6 +28,7 @@ Other loadFileIntoGPos:
 \code{\link{import.bam.ctss}()},
 \code{\link{import.bedScore}()},
 \code{\link{import.bedmolecule}()},
+\code{\link{import.bigwig}()},
 \code{\link{loadFileIntoGPos}()},
 \code{\link{moleculesGR2CTSS}()}
 }
