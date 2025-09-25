@@ -29,6 +29,7 @@ Other loadFileIntoGPos:
 \code{\link{import.bedCTSS}()},
 \code{\link{import.bedScore}()},
 \code{\link{import.bedmolecule}()},
+\code{\link{import.bigwig}()},
 \code{\link{loadFileIntoGPos}()}
 }
 \concept{loadFileIntoGPos}

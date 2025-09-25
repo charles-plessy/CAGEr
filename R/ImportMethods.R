@@ -210,8 +210,8 @@ coerceInBSgenome <- function(gr, genome) {
 #' @family loadFileIntoGPos
 
 loadFileIntoGPos    <- function( filepath
-                               , filetype = c( "bam", "bamPairedEnd"
-                                             , "bed", "bedctss", "bedScore"
+                               , filetype = c( "bam", "bamPairedEnd", "bigwig"
+                                             , "bed", "bedScore", "bedctss"
                                              , "CAGEscanMolecule", "ctss")
                                , sequencingQualityThreshold
                                , mappingQualityThreshold
@@ -235,6 +235,7 @@ loadFileIntoGPos    <- function( filepath
                                             , removeFirstG = removeFirstG
                                             , correctSystematicG = correctSystematicG
                                             , genome = genome)
+        , bigwig           = import.bigwig(filepath)
         , bed              = import.bedmolecule(filepath)
         , bedScore         = import.bedScore(filepath)
         , bedctss          = import.bedCTSS(filepath)
@@ -331,7 +332,7 @@ import.bam <- function( filepath
 #' 
 #' Converts genomic ranges representing SAM/BAM alignments into a CTSS object.
 #' 
-#' @param gr A \code{\link{GRanges}} object returned by \code{\link{import.bam}}.
+#' @param gr A [`GenomicRanges::GRanges`] object returned by [`import.bam()`].
 #' @param removeFirstG See getCTSS().
 #' @param correctSystematicG See getCTSS().
 #' @param genome See coerceInBSgenome().
@@ -498,6 +499,54 @@ import.CTSS <- function(filepath) {
                      , strand   = CTSS$strand))
   score(gp) <- CTSS$score
   gp
+}
+
+
+#' Read in BigWig files to CAGEexp object
+#'
+#' @param filepath Path to an input bigwig file on the plus strand.
+#' 
+#' @note The filename must contain the string `str1` and have a pair for the
+#' minus strand that has identical path except with the `str2` substring, so
+#' that `inputFiles` CAGEexp object will only point to plus-strand BigWig files.
+#' 
+#' @return a CAGEexp object
+#' 
+#' @family loadFileIntoGPos
+#'
+#' @importFrom rtracklayer import.bw
+#' 
+#' @author Katalin Ferenc
+#' @author Damir Baranasic
+#' 
+#' @examples
+#' 
+#' pathsToInputFiles <- list.files( system.file("extdata", package = "CAGEr")
+#'                                , "str1.out.wig.bw$" , full.names = TRUE)
+#'                                
+#' CAGEr:::import.bigwig(pathsToInputFiles[1])
+#'
+#' \dontrun{
+#' sampleLabels <- sub( "_subsampled_str1.Signal.Unique.str1.out.wig.bw"
+#'                    , "", basename(pathsToInputFiles))
+#' CAGEexp( genomeName     = "BSgenome.Drerio.UCSC.danRer7"
+#'        , inputFiles     = pathsToInputFiles
+#'        , inputFilesType = "bigwig"
+#'        , sampleLabels   = sampleLabels) |> getCTSS()
+#' }
+
+import.bigwig <- function(filepath){
+    str2_path <- gsub("str1","str2" , filepath)
+    if(!file.exists(str2_path)) stop("File ", str2_path, " does not exist!")
+    plus <- import.bw(filepath)
+    strand(plus) <- '+'
+    gpp <- GPos(plus, stitch=FALSE)
+    score(gpp) <- plus$score
+    minus <- import.bw(str2_path) 
+    strand(minus) <- '-'
+    gpn <- GPos(minus, stitch=FALSE)
+    score(gpn) <- minus$score
+    c(gpp, gpn)
 }
 
 #' parseCAGEscanBlocksToGrangeTSS
@@ -982,3 +1031,4 @@ setGeneric("importPublicData",
 
 setMethod("importPublicData", signature(origin = "character", dataset = "character", sample = "character"),
           .importPublicData)
+

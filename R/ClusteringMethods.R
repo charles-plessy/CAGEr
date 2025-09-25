@@ -4,13 +4,13 @@
 #' 
 #' @title Apply functions to identical CTSSes.
 #' 
-#' @param ctssDT A \code{\link{data.table}} representing CTSSes.
+#' @param ctssDT A [`data.table::data.table`] representing CTSSes.
 #' @param colName The name of the column on which to apply the function.
 #' @param fun The function to apply.
 #' 
-#' @description \code{.byCTSS} is a private function using  \code{data.table} objects
+#' @description `.byCTSS` is a private function using  `data.table` objects
 #' to preform grouping operations at a high performance.  These functions use
-#' \emph{non-standard evaluation} in a context that raises warnings in \code{R CMD check}.
+#' _non-standard evaluation_ in a context that raises warnings in `R CMD check`.
 #' By separating these functions from the rest of the code, I hope to make the workarounds
 #' easier to manage.
 #' 

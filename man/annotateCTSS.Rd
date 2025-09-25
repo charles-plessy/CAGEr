@@ -33,7 +33,7 @@ annotateConsensusClusters(object, annot, upstream = 500, downstream = 500)
 \arguments{
 \item{object}{\code{CAGEexp} object.}
 
-\item{annot}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} or a \code{\link{TxDb}} object representing the genome
+\item{annot}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} or a \code{\link[GenomicFeatures:TxDb-class]{GenomicFeatures::TxDb}} object representing the genome
 annotation.  See details for the \code{GRanges} object.}
 
 \item{upstream}{Number of bases \emph{upstream} the start of the transcript models

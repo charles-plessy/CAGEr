@@ -6,8 +6,8 @@
 \usage{
 loadFileIntoGPos(
   filepath,
-  filetype = c("bam", "bamPairedEnd", "bed", "bedctss", "bedScore", "CAGEscanMolecule",
-    "ctss"),
+  filetype = c("bam", "bamPairedEnd", "bigwig", "bed", "bedScore", "bedctss",
+    "CAGEscanMolecule", "ctss"),
   sequencingQualityThreshold,
   mappingQualityThreshold,
   removeFirstG,
@@ -48,6 +48,7 @@ Other loadFileIntoGPos:
 \code{\link{import.bedCTSS}()},
 \code{\link{import.bedScore}()},
 \code{\link{import.bedmolecule}()},
+\code{\link{import.bigwig}()},
 \code{\link{moleculesGR2CTSS}()}
 }
 \concept{loadFileIntoGPos}

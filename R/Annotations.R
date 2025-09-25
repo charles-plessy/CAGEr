@@ -714,7 +714,7 @@ ranges2genes <- function(ranges, genes) {
 #' @param rangesA A [`GenomicRanges::GRanges`] object.
 #' @param rangesB A second `GRanges` object.
 #' 
-#' @return A \code{\link{Rle}} factor of same length as the `rangesA` _GRanges_
+#' @return A [`S4Vectors::Rle`] factor of same length as the `rangesA` _GRanges_
 #' object, indicating one name or a semicolon-separated list of names from
 #' the each `rangesB` object.  The levels are in order of appearance to
 #' to maintain genomic coordinate sort order when the names are cluster names.

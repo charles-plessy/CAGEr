@@ -12,7 +12,7 @@ ranges2names(rangesA, rangesB)
 \item{rangesB}{A second \code{GRanges} object.}
 }
 \value{
-A \code{\link{Rle}} factor of same length as the \code{rangesA} \emph{GRanges}
+A \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}} factor of same length as the \code{rangesA} \emph{GRanges}
 object, indicating one name or a semicolon-separated list of names from
 the each \code{rangesB} object.  The levels are in order of appearance to
 to maintain genomic coordinate sort order when the names are cluster names.
