@@ -255,49 +255,6 @@ setMethod( "plotCorrelation2", "SummarizedExperiment"
                   , digits             = digits)
 })
 
-#' @rdname plotCorrelation
-
-setMethod( "plotCorrelation2", "DataFrame"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
-  .plotCorrelation2( object
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth
-                   , digits             = digits)
-})
-
-#' @rdname plotCorrelation
-
-setMethod( "plotCorrelation2", "data.frame"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
-  .plotCorrelation2( object
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth
-                   , digits             = digits)
-})
-
-#' @rdname plotCorrelation
-
-setMethod( "plotCorrelation2", "matrix"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
-  .plotCorrelation2( as.data.frame(object)
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth
-                   , digits             = digits)
-})
-
-
 # Helper function to apply threshold pairwise
 .applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {
   if (applyThresholdBoth) {
@@ -490,24 +447,24 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
 
 # The function that runs the actual work of calculating correlations and
 # plotting expression values.
-.plotCorrelation2 <- function( expr.table, samples, method
+.plotCorrelation2 <- function( object, what, values, samples, method
                              , tagCountThreshold, applyThresholdBoth
                              , digits) {
   # Select samples
-  if (all(samples %in% colnames(expr.table))) {
-    expr.table <- expr.table[,samples]
+  if (all(samples %in% colnames(object))) {
+    object <- object[,samples]
   } else if(samples == "all"){
-    samples <- colnames(expr.table)
+    samples <- colnames(object)
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
   nr.samples <- length(samples)
   
   # Pre-calculate a vector of correlation coefficients
-  corr.v <- corVector(expr.table, method, tagCountThreshold, applyThresholdBoth)
+  corr.v <- corVector(object, method, tagCountThreshold, applyThresholdBoth)
   corr.m <- calculateCorrelations(corr.v, samples, nr.samples)
   
   # Add pseudocount to null values so that the plot axes are correctly set.
-  pseudocount <- min(sapply(expr.table, function(x) min(x[x>0]))) / 2
-  expr.table  <- DataFrame(lapply( expr.table
+  pseudocount <- min(sapply(object, function(x) min(x[x>0]))) / 2
+  object  <- DataFrame(lapply( object
                                  , function(x) {x[x==0] <- pseudocount ; x}))
   
   # This closure retreives correlation coefficients one after the other.
@@ -549,7 +506,7 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
     points(df, ...)
   }
 
-  pairs( expr.table
+  pairs( object
        , lower.panel = pointsUnique
        , upper.panel = panel.cor
        , pch = "."
@@ -562,6 +519,23 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
 
   corr.m
 }
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "DataFrame",  .plotCorrelation2)
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "data.frame", .plotCorrelation2)
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "matrix"
+         , function( object
+                   , what, values, samples, method , tagCountThreshold, applyThresholdBoth, digits) {
+  .plotCorrelation2( as.data.frame(object)
+                   , what, values, samples, method , tagCountThreshold, applyThresholdBoth, digits)
+})
 
 # Vanja's version of smooth scatter that allows passing range.x argument to grDevices:::.smoothScatterCalcDensity function to calculate 2D kernel smoothed density
 
@@ -726,56 +700,36 @@ setMethod( "correlationMatrix", "SummarizedExperiment"
                   , applyThresholdBoth = applyThresholdBoth)
 })
 
+# The function that runs the actual work of calculating correlations
+.correlationMatrix <- function( object, what, values, samples, method
+                                , tagCountThreshold, applyThresholdBoth) {
+  # Select samples
+  if (all(samples %in% colnames(object))) {
+    object <- object[,samples]
+  } else if(samples == "all"){
+    samples <- colnames(object)
+  } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
+  nr.samples <- length(samples)
+  
+  corr.v <- corVector(object, method, tagCountThreshold, applyThresholdBoth)
+  corr.m <- calculateCorrelations(corr.v, samples, nr.samples)
+  
+  corr.m
+}
+
 #' @rdname plotCorrelation
 
-setMethod( "correlationMatrix", "DataFrame"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
-  .correlationMatrix( object
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth)
-})
+setMethod( "correlationMatrix", "DataFrame",  .correlationMatrix )
 
 #' @rdname plotCorrelation
 
-setMethod( "correlationMatrix", "data.frame"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
-  .correlationMatrix( object
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth)
-})
+setMethod( "correlationMatrix", "data.frame", .correlationMatrix )
 
 #' @rdname plotCorrelation
 
 setMethod( "correlationMatrix", "matrix"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
-  .correlationMatrix( as.data.frame(object)
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth)
+         , function( object
+                   , what, values, samples, method, tagCountThreshold, applyThresholdBoth) {
+ .correlationMatrix( as.data.frame(object)
+                   , what, values, samples, method, tagCountThreshold, applyThresholdBoth)
 })
-
-# The function that runs the actual work of calculating correlations
-.correlationMatrix <- function( expr.table, samples, method
-                             , tagCountThreshold, applyThresholdBoth) {
-  # Select samples
-  if (all(samples %in% colnames(expr.table))) {
-    expr.table <- expr.table[,samples]
-  } else if(samples == "all"){
-    samples <- colnames(expr.table)
-  } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
-  nr.samples <- length(samples)
-
-  corr.v <- corVector(expr.table, method, tagCountThreshold, applyThresholdBoth)
-  corr.m <- calculateCorrelations(corr.v, samples, nr.samples)
-
-  corr.m
-
-}
