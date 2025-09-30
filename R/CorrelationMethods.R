@@ -1,20 +1,19 @@
 #' @include CAGEr.R Paraclu.R
+NULL
 
-#' @name plotCorrelation
+#' Pairwise scatter plots and correlations of CAGE signal
 #' 
-#' @title Pairwise scatter plots and correlations of CAGE signal
+#' Functions to compute pairwise sample correlations and display them in a
+#' matrix with scatter plots below the diagonal, sample names on the diagonal,
+#' and correlation coefficients above.
 #' 
-#' @description Calculates the pairwise correlation between samples and creates
-#' a plot matrix showing the correlation coefficients in the upper triangle, the
-#' sample names in the diagonal, and the scatter plots in the lower triangle.
-#' 
-#' @param object A [`CAGEexp`] object or (only for [`plotCorrelation2()`] a
-#'   [`SummarizedExperiment::SummarizedExperiment`] or an expression table as a
-#'   [`S4Vectors::DataFrame`], [`data.frame`] or [`matrix`] object.
+#' @param object A [`CAGEexp`] object or a [`SummarizedExperiment::SummarizedExperiment`]
+#'   or an expression table as a [`S4Vectors::DataFrame`], [`data.frame`] or
+#'   [`matrix`] object. [`plotCorrelation()`] only supports `CAGEexp` input.
 #' 
 #' @param what The clustering level to be used for plotting and calculating
 #'   correlations: `CTSS` (individual TSSs) or `consensusClusters`. Ignored for
-#'   anything else than `CAGEexp` objects.
+#'   anything else than `CAGEexp` and `SummarizedExperiment` objects.
 #' 
 #' @param values Use either `raw` (default) or `normalized` CAGE
 #'   signal.  Ignored for plain expression tables.
@@ -39,9 +38,8 @@
 #' @details In the scatter plots, a pseudo-count equal to half the lowest score
 #' is added to the null values so that they can appear despite logarithmic scale.
 #' 
-#' `SummarizedExperiment` objects are expected to contain raw tag counts
-#' in a \dQuote{counts} assay and the normalized expression scores in a
-#' \dQuote{normalized} assay.
+#' `SummarizedExperiment` objects are expected to contain raw tag counts in a
+#' `counts` assay and the normalized expression scores in a `normalized` assay.
 #' 
 #' Avoid using large `matrix` objects as they are coerced to `DataFrame` class
 #' without special care for efficiency.
@@ -56,6 +54,7 @@
 #' 
 #' @author Vanja Haberle
 #' @author Charles Plessy
+#' @author Katalin Ferenc
 #' 
 #' @family CAGEr plot functions
 #' 
@@ -186,6 +185,8 @@ setMethod( "plotCorrelation", "CAGEr"
 #' and e) preventing coercion of \code{DataFrames} to \code{data.frames}.
 #' 
 #' @importFrom memoise memoise
+#' @importFrom graphics pairs
+#' 
 #' @export
 
 setGeneric( "plotCorrelation2"
@@ -196,7 +197,6 @@ setGeneric( "plotCorrelation2"
                     , digits = 3)
               standardGeneric("plotCorrelation2"))
 
-#' @importFrom graphics pairs
 #' @rdname plotCorrelation
 
 setMethod( "plotCorrelation2", "CAGEexp"
@@ -655,71 +655,12 @@ yaxs = par("yaxs"), ...)
     }
 }
 
-
-#' @include CAGEr.R Paraclu.R
-
-#' @name correlationMatrix
+#' @rdname plotCorrelation
 #' 
-#' @title Pairwise correlations of CAGE signal
-#' 
-#' @description Calculates the pairwise correlation between samples
-#' 
-#' @param object A \code{\link{CAGEr}} object or (only for
-#'   \code{plotCorrelation2}) a \code{\link{SummarizedExperiment}} or an
-#'   expression table as a \code{\link{DataFrame}}, \code{\link{data.frame}} or
-#'   \code{\link{matrix}} object.
-#' 
-#' @param what The clustering level to be used for calculating
-#'   correlations. Can be either \code{"CTSS"} to use individual TSSs or
-#'   \code{"consensusClusters"} to use consensus clusters, \emph{i.e.} entire
-#'   promoters.  Ignored for anything else than \code{CAGEr} objects.
-#' 
-#' @param values Use either \code{"raw"} (default) or \code{"normalized"} CAGE
-#'   signal. Ignored for plain expression tables.
-#' 
-#' @param samples Character vector indicating which samples to use. Can be
-#'   either \code{"all"} to select all samples in a \code{CAGEr} object, or a
-#'   subset of valid sample labels as returned by the
-#'   \code{\link{sampleLabels}} function.
-#' 
-#' @param method A character string indicating which correlation coefficient
-#'   should be computed.  Passed to \code{cor} function.  Can be one of
-#'   \code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.
-#' 
-#' @param tagCountThreshold Only TSSs with tag count \code{>= tagCountThreshold}
-#'   in either one (\code{applyThresholdBoth = FALSE}) or both samples
-#'   (\code{applyThresholdBoth = TRUE}) are used to calculate
-#'   correlation.
-#' 
-#' @param applyThresholdBoth See \code{tagCountThreshold} above.
-#' 
-#' @details The same matrix is returned from \code{plotCorrelation2}
-#' 
-#' \code{SummarizedExperiment} objects are expected to contain raw tag counts
-#' in a \dQuote{counts} assay and the normalized expression scores in a
-#' \dQuote{normalized} assay.
-#' 
-#' Avoid using large \code{matrix} objects as they are coerced to
-#' \code{DataFrame} class without special care for efficiency.
-#' 
-#' @return Returns a \code{matrix} of pairwise correlations between 
-#' selected samples.
-#' 
-#' @author Vanja Haberle
-#' @author Charles Plessy
-#' @author Katalin Ferenc
-#' 
-#' @aliases
-#'   correlationMatrix,CAGEexp-method
-#'   correlationMatrix,SummarizedExperiment-method
-#'   correlationMatrix,DataFrame-method
-#'   correlationMatrix,data.frame-method
-#'   correlationMatrix,matrix-method
-#' 
-#' @family CAGEr functions
+#' @return `correlationMatrix()` returns a `matrix` of pairwise correlations
+#' between selected samples.
 #' 
 #' @examples
-#' 
 #' correlationMatrix(exampleCAGEexp, what = "consensusClusters", value = "normalized")
 #' 
 #' @export
@@ -731,7 +672,7 @@ setGeneric( "correlationMatrix"
                     , tagCountThreshold = 1, applyThresholdBoth = FALSE)
               standardGeneric("correlationMatrix"))
 
-#' @rdname correlationMatrix
+#' @rdname plotCorrelation
 
 setMethod( "correlationMatrix", "CAGEexp"
          , function( object, what, values, samples, method
@@ -751,7 +692,7 @@ setMethod( "correlationMatrix", "CAGEexp"
                   , applyThresholdBoth = applyThresholdBoth)
 })
 
-#' @rdname correlationMatrix
+#' @rdname plotCorrelation
 
 setMethod( "correlationMatrix", "SummarizedExperiment"
          , function( object, what, values, samples, method
@@ -785,7 +726,7 @@ setMethod( "correlationMatrix", "SummarizedExperiment"
                   , applyThresholdBoth = applyThresholdBoth)
 })
 
-#' @rdname correlationMatrix
+#' @rdname plotCorrelation
 
 setMethod( "correlationMatrix", "DataFrame"
          , function( object, what, values, samples, method
@@ -797,7 +738,7 @@ setMethod( "correlationMatrix", "DataFrame"
                    , applyThresholdBoth = applyThresholdBoth)
 })
 
-#' @rdname correlationMatrix
+#' @rdname plotCorrelation
 
 setMethod( "correlationMatrix", "data.frame"
          , function( object, what, values, samples, method
@@ -809,7 +750,7 @@ setMethod( "correlationMatrix", "data.frame"
                    , applyThresholdBoth = applyThresholdBoth)
 })
 
-#' @rdname correlationMatrix
+#' @rdname plotCorrelation
 
 setMethod( "correlationMatrix", "matrix"
          , function( object, what, values, samples, method
@@ -820,7 +761,6 @@ setMethod( "correlationMatrix", "matrix"
                    , tagCountThreshold  = tagCountThreshold
                    , applyThresholdBoth = applyThresholdBoth)
 })
-
 
 # The function that runs the actual work of calculating correlations
 .correlationMatrix <- function( expr.table, samples, method
