@@ -9,6 +9,12 @@
 \alias{plotCorrelation2,DataFrame-method}
 \alias{plotCorrelation2,data.frame-method}
 \alias{plotCorrelation2,matrix-method}
+\alias{correlationMatrix}
+\alias{correlationMatrix,CAGEexp-method}
+\alias{correlationMatrix,SummarizedExperiment-method}
+\alias{correlationMatrix,DataFrame-method}
+\alias{correlationMatrix,data.frame-method}
+\alias{correlationMatrix,matrix-method}
 \title{Pairwise scatter plots and correlations of CAGE signal}
 \usage{
 plotCorrelation(
@@ -98,15 +104,75 @@ plotCorrelation2(
   applyThresholdBoth = FALSE,
   digits = 3
 )
+
+correlationMatrix(
+  object,
+  what = c("CTSS", "consensusClusters"),
+  values = c("raw", "normalized"),
+  samples = "all",
+  method = "pearson",
+  tagCountThreshold = 1,
+  applyThresholdBoth = FALSE
+)
+
+\S4method{correlationMatrix}{CAGEexp}(
+  object,
+  what = c("CTSS", "consensusClusters"),
+  values = c("raw", "normalized"),
+  samples = "all",
+  method = "pearson",
+  tagCountThreshold = 1,
+  applyThresholdBoth = FALSE
+)
+
+\S4method{correlationMatrix}{SummarizedExperiment}(
+  object,
+  what = c("CTSS", "consensusClusters"),
+  values = c("raw", "normalized"),
+  samples = "all",
+  method = "pearson",
+  tagCountThreshold = 1,
+  applyThresholdBoth = FALSE
+)
+
+\S4method{correlationMatrix}{DataFrame}(
+  object,
+  what = c("CTSS", "consensusClusters"),
+  values = c("raw", "normalized"),
+  samples = "all",
+  method = "pearson",
+  tagCountThreshold = 1,
+  applyThresholdBoth = FALSE
+)
+
+\S4method{correlationMatrix}{data.frame}(
+  object,
+  what = c("CTSS", "consensusClusters"),
+  values = c("raw", "normalized"),
+  samples = "all",
+  method = "pearson",
+  tagCountThreshold = 1,
+  applyThresholdBoth = FALSE
+)
+
+\S4method{correlationMatrix}{matrix}(
+  object,
+  what = c("CTSS", "consensusClusters"),
+  values = c("raw", "normalized"),
+  samples = "all",
+  method = "pearson",
+  tagCountThreshold = 1,
+  applyThresholdBoth = FALSE
+)
 }
 \arguments{
-\item{object}{A \code{\link{CAGEexp}} object or (only for \code{\link[=plotCorrelation2]{plotCorrelation2()}} a
-\code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}} or an expression table as a
-\code{\link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame}}, \code{\link{data.frame}} or \code{\link{matrix}} object.}
+\item{object}{A \code{\link{CAGEexp}} object or a \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}}
+or an expression table as a \code{\link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame}}, \code{\link{data.frame}} or
+\code{\link{matrix}} object. \code{\link[=plotCorrelation]{plotCorrelation()}} only supports \code{CAGEexp} input.}
 
 \item{what}{The clustering level to be used for plotting and calculating
 correlations: \code{CTSS} (individual TSSs) or \code{consensusClusters}. Ignored for
-anything else than \code{CAGEexp} objects.}
+anything else than \code{CAGEexp} and \code{SummarizedExperiment} objects.}
 
 \item{values}{Use either \code{raw} (default) or \code{normalized} CAGE
 signal.  Ignored for plain expression tables.}
@@ -143,19 +209,21 @@ in \code{plotCorrelation2} they are just black and white, which is much
 faster to plot.  Note that while the scatterplots are on a logarithmic scale
 with pseudocount added to the zero values, the correlation coefficients are
 calculated on untransformed (but thresholded) data.
+
+\code{correlationMatrix()} returns a \code{matrix} of pairwise correlations
+between selected samples.
 }
 \description{
-Calculates the pairwise correlation between samples and creates
-a plot matrix showing the correlation coefficients in the upper triangle, the
-sample names in the diagonal, and the scatter plots in the lower triangle.
+Functions to compute pairwise sample correlations and display them in a
+matrix with scatter plots below the diagonal, sample names on the diagonal,
+and correlation coefficients above.
 }
 \details{
 In the scatter plots, a pseudo-count equal to half the lowest score
 is added to the null values so that they can appear despite logarithmic scale.
 
-\code{SummarizedExperiment} objects are expected to contain raw tag counts
-in a \dQuote{counts} assay and the normalized expression scores in a
-\dQuote{normalized} assay.
+\code{SummarizedExperiment} objects are expected to contain raw tag counts in a
+\code{counts} assay and the normalized expression scores in a \code{normalized} assay.
 
 Avoid using large \code{matrix} objects as they are coerced to \code{DataFrame} class
 without special care for efficiency.
@@ -171,6 +239,8 @@ and e) preventing coercion of \code{DataFrames} to \code{data.frames}.
 
 plotCorrelation2(exampleCAGEexp, what = "consensusClusters", value = "normalized")
 
+correlationMatrix(exampleCAGEexp, what = "consensusClusters", value = "normalized")
+
 }
 \seealso{
 Other CAGEr plot functions: 
@@ -185,5 +255,7 @@ Other CAGEr plot functions:
 Vanja Haberle
 
 Charles Plessy
+
+Katalin Ferenc
 }
 \concept{CAGEr plot functions}

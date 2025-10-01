@@ -1,20 +1,19 @@
 #' @include CAGEr.R Paraclu.R
+NULL
 
-#' @name plotCorrelation
+#' Pairwise scatter plots and correlations of CAGE signal
 #' 
-#' @title Pairwise scatter plots and correlations of CAGE signal
+#' Functions to compute pairwise sample correlations and display them in a
+#' matrix with scatter plots below the diagonal, sample names on the diagonal,
+#' and correlation coefficients above.
 #' 
-#' @description Calculates the pairwise correlation between samples and creates
-#' a plot matrix showing the correlation coefficients in the upper triangle, the
-#' sample names in the diagonal, and the scatter plots in the lower triangle.
-#' 
-#' @param object A [`CAGEexp`] object or (only for [`plotCorrelation2()`] a
-#'   [`SummarizedExperiment::SummarizedExperiment`] or an expression table as a
-#'   [`S4Vectors::DataFrame`], [`data.frame`] or [`matrix`] object.
+#' @param object A [`CAGEexp`] object or a [`SummarizedExperiment::SummarizedExperiment`]
+#'   or an expression table as a [`S4Vectors::DataFrame`], [`data.frame`] or
+#'   [`matrix`] object. [`plotCorrelation()`] only supports `CAGEexp` input.
 #' 
 #' @param what The clustering level to be used for plotting and calculating
 #'   correlations: `CTSS` (individual TSSs) or `consensusClusters`. Ignored for
-#'   anything else than `CAGEexp` objects.
+#'   anything else than `CAGEexp` and `SummarizedExperiment` objects.
 #' 
 #' @param values Use either `raw` (default) or `normalized` CAGE
 #'   signal.  Ignored for plain expression tables.
@@ -39,9 +38,8 @@
 #' @details In the scatter plots, a pseudo-count equal to half the lowest score
 #' is added to the null values so that they can appear despite logarithmic scale.
 #' 
-#' `SummarizedExperiment` objects are expected to contain raw tag counts
-#' in a \dQuote{counts} assay and the normalized expression scores in a
-#' \dQuote{normalized} assay.
+#' `SummarizedExperiment` objects are expected to contain raw tag counts in a
+#' `counts` assay and the normalized expression scores in a `normalized` assay.
 #' 
 #' Avoid using large `matrix` objects as they are coerced to `DataFrame` class
 #' without special care for efficiency.
@@ -56,6 +54,7 @@
 #' 
 #' @author Vanja Haberle
 #' @author Charles Plessy
+#' @author Katalin Ferenc
 #' 
 #' @family CAGEr plot functions
 #' 
@@ -95,7 +94,7 @@ setMethod( "plotCorrelation", "CAGEr"
 	if(all(samples %in% sampleLabels(object))){
 		tag.count <- tag.count[,samples]
 		nr.samples <- length(samples)
-	}else if(samples == "all"){
+	}else if(identical(samples, "all")){
 		samples <- sampleLabels(object)
 		nr.samples <- length(samples)
 	}else{
@@ -186,6 +185,8 @@ setMethod( "plotCorrelation", "CAGEr"
 #' and e) preventing coercion of \code{DataFrames} to \code{data.frames}.
 #' 
 #' @importFrom memoise memoise
+#' @importFrom graphics pairs
+#' 
 #' @export
 
 setGeneric( "plotCorrelation2"
@@ -196,7 +197,6 @@ setGeneric( "plotCorrelation2"
                     , digits = 3)
               standardGeneric("plotCorrelation2"))
 
-#' @importFrom graphics pairs
 #' @rdname plotCorrelation
 
 setMethod( "plotCorrelation2", "CAGEexp"
@@ -255,49 +255,6 @@ setMethod( "plotCorrelation2", "SummarizedExperiment"
                   , digits             = digits)
 })
 
-#' @rdname plotCorrelation
-
-setMethod( "plotCorrelation2", "DataFrame"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
-  .plotCorrelation2( object
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth
-                   , digits             = digits)
-})
-
-#' @rdname plotCorrelation
-
-setMethod( "plotCorrelation2", "data.frame"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
-  .plotCorrelation2( object
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth
-                   , digits             = digits)
-})
-
-#' @rdname plotCorrelation
-
-setMethod( "plotCorrelation2", "matrix"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth
-                   , digits) {
-  .plotCorrelation2( as.data.frame(object)
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth
-                   , digits             = digits)
-})
-
-
 # Helper function to apply threshold pairwise
 .applyThreshold <- function(df, tagCountThreshold, applyThresholdBoth) {
   if (applyThresholdBoth) {
@@ -306,36 +263,6 @@ setMethod( "plotCorrelation2", "matrix"
     idx <- (df[[1]] >= tagCountThreshold) | (df[[2]] >= tagCountThreshold)
   }
   df[idx,]
-}
-
-# Helper function to Pre-calculate a vector of correlation coefficients
-corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth) {
-  corTreshold <- function(x, y, method) {
-    df <- data.frame(x, y)
-    df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
-    cor(x = df$x, y = df$y, method = method)
-  }
-  nr.samples <- ncol(expr.table)
-  corr.v <- numeric()
-  for (i in 1:(nr.samples-1)) {
-    for (j in (min(i+1, nr.samples)):nr.samples) {
-      corr.v <- append(corr.v, corTreshold(expr.table[[i]], expr.table[[j]], method))
-    }
-  }
-  corr.v
-}
-
-
-# Helper function to pre-calculate a vector of correlation coefficients
-calculateCorrelations <- function(corr.v, samples, nr.samples){
-
-  corr.m <- matrix(1, nr.samples, nr.samples)
-  colnames(corr.m) <- samples
-  rownames(corr.m) <- samples
-  corr.m[lower.tri(corr.m)] <- corr.v
-  corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
-
-  corr.m
 }
 
 #' @importFrom grDevices dev.flush dev.hold
@@ -490,24 +417,25 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
 
 # The function that runs the actual work of calculating correlations and
 # plotting expression values.
-.plotCorrelation2 <- function( expr.table, samples, method
+.plotCorrelation2 <- function( object, what, values, samples, method
                              , tagCountThreshold, applyThresholdBoth
                              , digits) {
   # Select samples
-  if (all(samples %in% colnames(expr.table))) {
-    expr.table <- expr.table[,samples]
-  } else if(samples == "all"){
-    samples <- colnames(expr.table)
+  if (all(samples %in% colnames(object))) {
+    object <- object[,samples]
+  } else if(identical(samples, "all")){
+    samples <- colnames(object)
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
-  nr.samples <- length(samples)
-  
+
   # Pre-calculate a vector of correlation coefficients
-  corr.v <- corVector(expr.table, method, tagCountThreshold, applyThresholdBoth)
-  corr.m <- calculateCorrelations(corr.v, samples, nr.samples)
+  corr.m <- correlationMatrix(
+    object, method = method,
+    tagCountThreshold = tagCountThreshold, applyThresholdBoth = applyThresholdBoth)
+  corr.v <- corr.m[lower.tri(corr.m)]
   
   # Add pseudocount to null values so that the plot axes are correctly set.
-  pseudocount <- min(sapply(expr.table, function(x) min(x[x>0]))) / 2
-  expr.table  <- DataFrame(lapply( expr.table
+  pseudocount <- min(sapply(object, function(x) min(x[x>0]))) / 2
+  object  <- DataFrame(lapply( object
                                  , function(x) {x[x==0] <- pseudocount ; x}))
   
   # This closure retreives correlation coefficients one after the other.
@@ -549,7 +477,7 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
     points(df, ...)
   }
 
-  pairs( expr.table
+  pairs( object
        , lower.panel = pointsUnique
        , upper.panel = panel.cor
        , pch = "."
@@ -562,6 +490,23 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
 
   corr.m
 }
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "DataFrame",  .plotCorrelation2)
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "data.frame", .plotCorrelation2)
+
+#' @rdname plotCorrelation
+
+setMethod( "plotCorrelation2", "matrix"
+         , function( object
+                   , what, values, samples, method , tagCountThreshold, applyThresholdBoth, digits) {
+  .plotCorrelation2( as.data.frame(object)
+                   , what, values, samples, method , tagCountThreshold, applyThresholdBoth, digits)
+})
 
 # Vanja's version of smooth scatter that allows passing range.x argument to grDevices:::.smoothScatterCalcDensity function to calculate 2D kernel smoothed density
 
@@ -655,72 +600,15 @@ yaxs = par("yaxs"), ...)
     }
 }
 
-
-#' @include CAGEr.R Paraclu.R
-
-#' @name correlationMatrix
+#' @rdname plotCorrelation
 #' 
-#' @title Pairwise correlations of CAGE signal
-#' 
-#' @description Calculates the pairwise correlation between samples
-#' 
-#' @param object A \code{\link{CAGEr}} object or (only for
-#'   \code{plotCorrelation2}) a \code{\link{SummarizedExperiment}} or an
-#'   expression table as a \code{\link{DataFrame}}, \code{\link{data.frame}} or
-#'   \code{\link{matrix}} object.
-#' 
-#' @param what The clustering level to be used for calculating
-#'   correlations. Can be either \code{"CTSS"} to use individual TSSs or
-#'   \code{"consensusClusters"} to use consensus clusters, \emph{i.e.} entire
-#'   promoters.  Ignored for anything else than \code{CAGEr} objects.
-#' 
-#' @param values Use either \code{"raw"} (default) or \code{"normalized"} CAGE
-#'   signal. Ignored for plain expression tables.
-#' 
-#' @param samples Character vector indicating which samples to use. Can be
-#'   either \code{"all"} to select all samples in a \code{CAGEr} object, or a
-#'   subset of valid sample labels as returned by the
-#'   \code{\link{sampleLabels}} function.
-#' 
-#' @param method A character string indicating which correlation coefficient
-#'   should be computed.  Passed to \code{cor} function.  Can be one of
-#'   \code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.
-#' 
-#' @param tagCountThreshold Only TSSs with tag count \code{>= tagCountThreshold}
-#'   in either one (\code{applyThresholdBoth = FALSE}) or both samples
-#'   (\code{applyThresholdBoth = TRUE}) are used to calculate
-#'   correlation.
-#' 
-#' @param applyThresholdBoth See \code{tagCountThreshold} above.
-#' 
-#' @details The same matrix is returned from \code{plotCorrelation2}
-#' 
-#' \code{SummarizedExperiment} objects are expected to contain raw tag counts
-#' in a \dQuote{counts} assay and the normalized expression scores in a
-#' \dQuote{normalized} assay.
-#' 
-#' Avoid using large \code{matrix} objects as they are coerced to
-#' \code{DataFrame} class without special care for efficiency.
-#' 
-#' @return Returns a \code{matrix} of pairwise correlations between 
-#' selected samples.
-#' 
-#' @author Vanja Haberle
-#' @author Charles Plessy
-#' @author Katalin Ferenc
-#' 
-#' @aliases
-#'   correlationMatrix,CAGEexp-method
-#'   correlationMatrix,SummarizedExperiment-method
-#'   correlationMatrix,DataFrame-method
-#'   correlationMatrix,data.frame-method
-#'   correlationMatrix,matrix-method
-#' 
-#' @family CAGEr functions
+#' @return `correlationMatrix()` returns a `matrix` of pairwise correlations
+#' between selected samples.
 #' 
 #' @examples
-#' 
 #' correlationMatrix(exampleCAGEexp, what = "consensusClusters", value = "normalized")
+#' 
+#' @importFrom utils combn
 #' 
 #' @export
 
@@ -731,7 +619,7 @@ setGeneric( "correlationMatrix"
                     , tagCountThreshold = 1, applyThresholdBoth = FALSE)
               standardGeneric("correlationMatrix"))
 
-#' @rdname correlationMatrix
+#' @rdname plotCorrelation
 
 setMethod( "correlationMatrix", "CAGEexp"
          , function( object, what, values, samples, method
@@ -751,7 +639,7 @@ setMethod( "correlationMatrix", "CAGEexp"
                   , applyThresholdBoth = applyThresholdBoth)
 })
 
-#' @rdname correlationMatrix
+#' @rdname plotCorrelation
 
 setMethod( "correlationMatrix", "SummarizedExperiment"
          , function( object, what, values, samples, method
@@ -785,57 +673,50 @@ setMethod( "correlationMatrix", "SummarizedExperiment"
                   , applyThresholdBoth = applyThresholdBoth)
 })
 
-#' @rdname correlationMatrix
-
-setMethod( "correlationMatrix", "DataFrame"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
-  .correlationMatrix( object
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth)
-})
-
-#' @rdname correlationMatrix
-
-setMethod( "correlationMatrix", "data.frame"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
-  .correlationMatrix( object
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth)
-})
-
-#' @rdname correlationMatrix
-
-setMethod( "correlationMatrix", "matrix"
-         , function( object, what, values, samples, method
-                   , tagCountThreshold, applyThresholdBoth) {
-  .correlationMatrix( as.data.frame(object)
-                   , samples            = samples
-                   , method             = method
-                   , tagCountThreshold  = tagCountThreshold
-                   , applyThresholdBoth = applyThresholdBoth)
-})
-
-
 # The function that runs the actual work of calculating correlations
-.correlationMatrix <- function( expr.table, samples, method
-                             , tagCountThreshold, applyThresholdBoth) {
+.correlationMatrix <- function( object, what, values, samples, method
+                                , tagCountThreshold, applyThresholdBoth) {
   # Select samples
-  if (all(samples %in% colnames(expr.table))) {
-    expr.table <- expr.table[,samples]
-  } else if(samples == "all"){
-    samples <- colnames(expr.table)
+  if (all(samples %in% colnames(object))) {
+    object <- object[,samples]
+  } else if(identical(samples, "all")){
+    samples <- colnames(object)
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
   nr.samples <- length(samples)
-
-  corr.v <- corVector(expr.table, method, tagCountThreshold, applyThresholdBoth)
-  corr.m <- calculateCorrelations(corr.v, samples, nr.samples)
-
+  
+  # Calculate correlations once per pair
+  corThreshold <- function(x, y, method) {
+    df <- data.frame(x, y)
+    df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
+    cor(df$x, df$y, method = method)
+  }
+  pairs <- combn(ncol(object), 2)
+  corr.v <- apply(pairs, 2, function(idx) {
+    corThreshold(object[[idx[1]]], object[[idx[2]]], method)
+  })
+    
+  # Return them as a matrix
+  corr.m <- matrix(1, nr.samples, nr.samples)
+  colnames(corr.m) <- samples
+  rownames(corr.m) <- samples
+  corr.m[lower.tri(corr.m)] <- corr.v
+  corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
   corr.m
-
 }
+
+#' @rdname plotCorrelation
+
+setMethod( "correlationMatrix", "DataFrame",  .correlationMatrix )
+
+#' @rdname plotCorrelation
+
+setMethod( "correlationMatrix", "data.frame", .correlationMatrix )
+
+#' @rdname plotCorrelation
+
+setMethod( "correlationMatrix", "matrix"
+         , function( object
+                   , what, values, samples, method, tagCountThreshold, applyThresholdBoth) {
+ .correlationMatrix( as.data.frame(object)
+                   , what, values, samples, method, tagCountThreshold, applyThresholdBoth)
+})
