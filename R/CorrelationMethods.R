@@ -94,7 +94,7 @@ setMethod( "plotCorrelation", "CAGEr"
 	if(all(samples %in% sampleLabels(object))){
 		tag.count <- tag.count[,samples]
 		nr.samples <- length(samples)
-	}else if(samples == "all"){
+	}else if(identical(samples, "all")){
 		samples <- sampleLabels(object)
 		nr.samples <- length(samples)
 	}else{
@@ -423,7 +423,7 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
   # Select samples
   if (all(samples %in% colnames(object))) {
     object <- object[,samples]
-  } else if(samples == "all"){
+  } else if(identical(samples, "all")){
     samples <- colnames(object)
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
 
@@ -677,7 +677,7 @@ setMethod( "correlationMatrix", "SummarizedExperiment"
   # Select samples
   if (all(samples %in% colnames(object))) {
     object <- object[,samples]
-  } else if(samples == "all"){
+  } else if(identical(samples, "all")){
     samples <- colnames(object)
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
   nr.samples <- length(samples)
