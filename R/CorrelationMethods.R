@@ -683,18 +683,15 @@ setMethod( "correlationMatrix", "SummarizedExperiment"
   nr.samples <- length(samples)
   
   # Calculate correlations once per pair
-  corTreshold <- function(x, y, method) {
+  corThreshold <- function(x, y, method) {
     df <- data.frame(x, y)
     df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
-    cor(x = df$x, y = df$y, method = method)
+    cor(df$x, df$y, method = method)
   }
-  nr.samples <- ncol(object)
-  corr.v <- numeric()
-  for (i in 1:(nr.samples-1)) {
-    for (j in (min(i+1, nr.samples)):nr.samples) {
-      corr.v <- append(corr.v, corTreshold(object[[i]], object[[j]], method))
-    }
-  }
+  pairs <- combn(ncol(object), 2)
+  corr.v <- apply(pairs, 2, function(idx) {
+    corThreshold(object[[idx[1]]], object[[idx[2]]], method)
+  })
     
   # Return them as a matrix
   corr.m <- matrix(1, nr.samples, nr.samples)
