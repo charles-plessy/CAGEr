@@ -608,6 +608,8 @@ yaxs = par("yaxs"), ...)
 #' @examples
 #' correlationMatrix(exampleCAGEexp, what = "consensusClusters", value = "normalized")
 #' 
+#' @importFrom utils combn
+#' 
 #' @export
 
 setGeneric( "correlationMatrix"
