@@ -282,19 +282,6 @@ corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth)
   corr.v
 }
 
-
-# Helper function to pre-calculate a vector of correlation coefficients
-calculateCorrelations <- function(corr.v, samples, nr.samples){
-
-  corr.m <- matrix(1, nr.samples, nr.samples)
-  colnames(corr.m) <- samples
-  rownames(corr.m) <- samples
-  corr.m[lower.tri(corr.m)] <- corr.v
-  corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
-
-  corr.m
-}
-
 #' @importFrom grDevices dev.flush dev.hold
 #' @importFrom graphics Axis mtext
 
@@ -456,11 +443,12 @@ pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verI
   } else if(samples == "all"){
     samples <- colnames(object)
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
-  nr.samples <- length(samples)
-  
+
   # Pre-calculate a vector of correlation coefficients
-  corr.v <- corVector(object, method, tagCountThreshold, applyThresholdBoth)
-  corr.m <- calculateCorrelations(corr.v, samples, nr.samples)
+  corr.m <- correlationMatrix(
+    object, method = method,
+    tagCountThreshold = tagCountThreshold, applyThresholdBoth = applyThresholdBoth)
+  corr.v <- corr.m[lower.tri(corr.m)]
   
   # Add pseudocount to null values so that the plot axes are correctly set.
   pseudocount <- min(sapply(object, function(x) min(x[x>0]))) / 2
@@ -711,9 +699,14 @@ setMethod( "correlationMatrix", "SummarizedExperiment"
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
   nr.samples <- length(samples)
   
+  # Calculate correlations
   corr.v <- corVector(object, method, tagCountThreshold, applyThresholdBoth)
-  corr.m <- calculateCorrelations(corr.v, samples, nr.samples)
-  
+  corr.m <- matrix(1, nr.samples, nr.samples)
+  colnames(corr.m) <- samples
+  rownames(corr.m) <- samples
+  corr.m[lower.tri(corr.m)] <- corr.v
+  corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
+    
   corr.m
 }
 
