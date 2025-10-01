@@ -265,23 +265,6 @@ setMethod( "plotCorrelation2", "SummarizedExperiment"
   df[idx,]
 }
 
-# Helper function to Pre-calculate a vector of correlation coefficients
-corVector <- function(expr.table, method, tagCountThreshold, applyThresholdBoth) {
-  corTreshold <- function(x, y, method) {
-    df <- data.frame(x, y)
-    df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
-    cor(x = df$x, y = df$y, method = method)
-  }
-  nr.samples <- ncol(expr.table)
-  corr.v <- numeric()
-  for (i in 1:(nr.samples-1)) {
-    for (j in (min(i+1, nr.samples)):nr.samples) {
-      corr.v <- append(corr.v, corTreshold(expr.table[[i]], expr.table[[j]], method))
-    }
-  }
-  corr.v
-}
-
 #' @importFrom grDevices dev.flush dev.hold
 #' @importFrom graphics Axis mtext
 
@@ -699,14 +682,26 @@ setMethod( "correlationMatrix", "SummarizedExperiment"
   } else stop("'samples' parameter must be either \"all\" or a character vector of valid sample labels!")
   nr.samples <- length(samples)
   
-  # Calculate correlations
-  corr.v <- corVector(object, method, tagCountThreshold, applyThresholdBoth)
+  # Calculate correlations once per pair
+  corTreshold <- function(x, y, method) {
+    df <- data.frame(x, y)
+    df <- .applyThreshold(df, tagCountThreshold, applyThresholdBoth)
+    cor(x = df$x, y = df$y, method = method)
+  }
+  nr.samples <- ncol(object)
+  corr.v <- numeric()
+  for (i in 1:(nr.samples-1)) {
+    for (j in (min(i+1, nr.samples)):nr.samples) {
+      corr.v <- append(corr.v, corTreshold(object[[i]], object[[j]], method))
+    }
+  }
+    
+  # Return them as a matrix
   corr.m <- matrix(1, nr.samples, nr.samples)
   colnames(corr.m) <- samples
   rownames(corr.m) <- samples
   corr.m[lower.tri(corr.m)] <- corr.v
   corr.m[upper.tri(corr.m)] <- t(corr.m)[upper.tri(corr.m)]
-    
   corr.m
 }
 
