@@ -38,7 +38,7 @@ as the transcription start site.
 }
 \details{
 This function will only work if the \code{\link{CAGEexp}} object was built with a
-\code{\link[BSgenome:BSgenome-class]{BSgenome::BSgenome}} package, as it needs to extract genomic sequences.
+\code{\link{BSgenome}} package, as it needs to extract genomic sequences.
 }
 \examples{
 TSSlogo(exampleCAGEexp|>consensusClustersGR(), 20, 10)
