@@ -50,7 +50,6 @@ Other CAGEr clusters functions:
 Other CAGEr accessor methods: 
 \code{\link{CTSScoordinatesGR}()},
 \code{\link{CTSSnormalizedTpmDF}()},
-\code{\link{CTSSnormalizedTpmSE}()},
 \code{\link{CTSStagCountDF}()},
 \code{\link{GeneExpDESeq2}()},
 \code{\link{GeneExpSE}()},

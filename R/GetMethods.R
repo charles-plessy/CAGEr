@@ -381,53 +381,6 @@ setMethod( "CTSSnormalizedTpmGR", "CAGEexp", function (object, samples) {
   gr
 })
 
-#' @name CTSSnormalizedTpmSE
-#' @rdname CTSSnormalizedTpm
-#' Export of normalized CTSS in a SummarizedExperiment object that can
-#' be used as input to CAGEfightR enhancer calling.
-#' 
-#' An export function for integration of normalized values into CAGEfightR.
-#' 
-#' @note At the moment the conversion is expensive as it goes from `DataFrame`
-#' of `Rle` to `data.frame` to `matrix`.
-#' 
-#' @param object A `CAGEexp` object with CTSS values
-#' 
-#' @return A `SummarizedExperiment` object with two assays: raw counts and 
-#' normalized CTSS values. score(rowRanges) is the sum of normalized CTSS 
-#' values per sample
-#' 
-#' @author Charles Plessy
-#' @author Katalin Ferenc
-#' @family CAGEr accessor methods
-#'
-#' @seealso \code{\link{normalizeTagCount}}
-#' 
-#' @examples
-#' CTSSnormalizedTpmSE(exampleCAGEexp)
-setGeneric("CTSSnormalizedTpmSE", function(object)
-  standardGeneric("CTSSnormalizedTpmSE"))
-
-
-#' @export
-#' @rdname CTSSnormalizedTpm
-#' @aliases CTSSnormalizedTpmSE,CAGEexp-method
-#' 
-setMethod("CTSSnormalizedTpmSE", signature( object = "CAGEexp"), function(object) {
-  se <- CTSStagCountSE(object)
-  colData(se) <- colData(object)
-  rowRanges(se) <- rowRanges(se)
-  colData(se)$Name <- colData(se)$sampleLabels
-  assays(se, withDimnames=FALSE) <- List(
-    counts = as(as.matrix(as.data.frame(assays(se)[[1]])), "dgCMatrix"),
-    TPM = as(as.matrix(as.data.frame(assays(se)[[2]])), "dgCMatrix"))
-  score(rowRanges(se)) <- rowSums(assays(se)$TPM)
-
-  # Return summarized experiment object
-  se
-})
-
-
 #' @name tagClustersGR
 #' @rdname tagClusters
 #' 

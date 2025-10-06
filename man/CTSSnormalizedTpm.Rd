@@ -5,7 +5,6 @@
 \alias{CTSSnormalizedTpmDF,CAGEexp-method}
 \alias{CTSSnormalizedTpmGR}
 \alias{CTSSnormalizedTpmGR,CAGEexp-method}
-\alias{CTSSnormalizedTpmSE,CAGEexp-method}
 \title{Extracting normalized CAGE signal for TSSs from CAGEr objects}
 \usage{
 CTSSnormalizedTpmDF(object)
@@ -15,8 +14,6 @@ CTSSnormalizedTpmDF(object)
 CTSSnormalizedTpmGR(object, samples)
 
 \S4method{CTSSnormalizedTpmGR}{CAGEexp}(object, samples)
-
-\S4method{CTSSnormalizedTpmSE}{CAGEexp}(object)
 }
 \arguments{
 \item{object}{A \code{CAGEexp} object.}
@@ -44,7 +41,6 @@ exampleCAGEexp |> CTSSnormalizedTpmGR("all")
 Other CAGEr accessor methods: 
 \code{\link{CTSScoordinatesGR}()},
 \code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CTSSnormalizedTpmSE}()},
 \code{\link{CTSStagCountDF}()},
 \code{\link{GeneExpDESeq2}()},
 \code{\link{GeneExpSE}()},
