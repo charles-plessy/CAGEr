@@ -13,6 +13,9 @@
 #' @return A `RangedSummarizedExperiment` object.  See the example below on
 #' how to attach it to the experiment list of a `CAGEexp` object.
 #' 
+#' @author Charles Plessy
+#' @author Katalin Ferenc
+#' 
 #' @family CAGEfightR
 #' @family CAGEr object modifiers
 #' 
