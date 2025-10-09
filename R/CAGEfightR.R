@@ -42,7 +42,7 @@ setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {
   assays(se) <- List(
         counts = as(as.matrix(as.data.frame(assays(se)$counts)), "dgCMatrix"),
         TPM = as(as.matrix(as.data.frame(assays(se)$normalizedTpmMatrix)), "dgCMatrix"))
-  score(rowRanges(se)) <- rowSums(assays(se)$TPM)
+  score(rowRanges(se)) <- Matrix::rowSums(assays(se)$TPM)
   enhancers <- quickEnhancers(se)
   c(enhancers = enhancers, object)
 })
