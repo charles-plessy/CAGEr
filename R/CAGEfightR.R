@@ -25,6 +25,7 @@
 #' quickEnhancers(exampleCAGEexp)
 #' }
 #' 
+#' @importFrom Matrix rowSums
 #' @importFrom CAGEfightR quickEnhancers
 
 setGeneric("quickEnhancers", function(object)
@@ -38,16 +39,9 @@ setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {
   se <- CTSStagCountSE(object)
   colData(se) <- colData(object)
   colData(se)$Name <- colData(se)$sampleLabels
-  # checking content of object on VM
-  print("assays counts")
-  print(assays(se)$counts)
-  print("assays normalizedTpmMatrix")
-  print(assays(se)$normalizedTpmMatrix)
   assays(se) <- List(
         counts = as(as.matrix(as.data.frame(assays(se)$counts)), "dgCMatrix"),
         TPM = as(as.matrix(as.data.frame(assays(se)$normalizedTpmMatrix)), "dgCMatrix"))
-  # checking content of object on VM
-  print(assays(se)$TPM)
   score(rowRanges(se)) <- rowSums(assays(se)$TPM)
   enhancers <- quickEnhancers(se)
   c(enhancers = enhancers, object)
