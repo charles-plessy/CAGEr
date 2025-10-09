@@ -46,5 +46,10 @@ Other CAGEr object modifiers:
 \code{\link{resetCAGEexp}()},
 \code{\link{summariseChrExpr}()}
 }
+\author{
+Charles Plessy
+
+Katalin Ferenc
+}
 \concept{CAGEfightR}
 \concept{CAGEr object modifiers}

@@ -25,6 +25,7 @@
 #' quickEnhancers(exampleCAGEexp)
 #' }
 #' 
+#' @importFrom Matrix rowSums
 #' @importFrom CAGEfightR quickEnhancers
 
 setGeneric("quickEnhancers", function(object)
