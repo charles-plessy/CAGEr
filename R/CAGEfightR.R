@@ -26,6 +26,7 @@
 #' }
 #' 
 #' @importFrom CAGEfightR quickEnhancers
+#' @importFrom Matrix rowSums
 
 setGeneric("quickEnhancers", function(object)
   standardGeneric("quickEnhancers"))
@@ -41,7 +42,7 @@ setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {
   assays(se) <- List(
         counts = as(as.matrix(as.data.frame(assays(se)$counts)), "dgCMatrix"),
         TPM = as(as.matrix(as.data.frame(assays(se)$normalizedTpmMatrix)), "dgCMatrix"))
-  score(rowRanges(se)) <- Matrix::rowSums(assays(se)$TPM)
+  score(rowRanges(se)) <- Matrix::rowSums(assays(se)$TPM) # For some reason base::rowSums is wrongly picked if Matrix:: is not specified.
   enhancers <- quickEnhancers(se)
   c(enhancers = enhancers, object)
 })

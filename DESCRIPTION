@@ -24,6 +24,7 @@ Imports:
     gtools,
     IRanges (>= 2.18.0),
     KernSmooth,
+    Matrix,
     memoise,
     plyr,
     rlang,
