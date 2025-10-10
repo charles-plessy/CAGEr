@@ -24,10 +24,6 @@ The \code{CAGEr} object will be converted to a format similar to the output
 of \code{\link[CAGEfightR:quantifyCTSSs]{CAGEfightR::quantifyCTSSs()}}, and then passed to the \code{quickEnhancers}
 function.
 }
-\note{
-At the moment the conversion is expensive as it goes from \code{DataFrame}
-of \code{Rle} to \code{data.frame} to \code{matrix}.
-}
 \examples{
 # Can not run as long as the test data has nothing on the minus strand!
 \dontrun{
@@ -49,6 +45,11 @@ Other CAGEr object modifiers:
 \code{\link{quantilePositions}()},
 \code{\link{resetCAGEexp}()},
 \code{\link{summariseChrExpr}()}
+}
+\author{
+Charles Plessy
+
+Katalin Ferenc
 }
 \concept{CAGEfightR}
 \concept{CAGEr object modifiers}

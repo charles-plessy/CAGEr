@@ -8,13 +8,13 @@
 #' of [`CAGEfightR::quantifyCTSSs()`], and then passed to the `quickEnhancers`
 #' function.
 #' 
-#' @note At the moment the conversion is expensive as it goes from `DataFrame`
-#' of `Rle` to `data.frame` to `matrix`.
-#' 
 #' @param object A `CAGEexp` object
 #' 
 #' @return A `RangedSummarizedExperiment` object.  See the example below on
 #' how to attach it to the experiment list of a `CAGEexp` object.
+#' 
+#' @author Charles Plessy
+#' @author Katalin Ferenc
 #' 
 #' @family CAGEfightR
 #' @family CAGEr object modifiers
@@ -37,9 +37,12 @@ setGeneric("quickEnhancers", function(object)
 setMethod("quickEnhancers", signature(object = "CAGEexp"), function(object) {
   se <- CTSStagCountSE(object)
   colData(se) <- colData(object)
-  rowRanges(se) <- as(rowRanges(se), "StitchedGPos")
   colData(se)$Name <- colData(se)$sampleLabels
-  assays(se) <- List(counts=as(as.matrix(as.data.frame(assay(se))), "dgCMatrix"))
+  assays(se) <- List(
+        counts = as(as.matrix(as.data.frame(assays(se)$counts)), "dgCMatrix"),
+        TPM = as(as.matrix(as.data.frame(assays(se)$normalizedTpmMatrix)), "dgCMatrix"))
+  score(rowRanges(se)) <- Matrix::rowSums(assays(se)$TPM)
   enhancers <- quickEnhancers(se)
   c(enhancers = enhancers, object)
 })
+
