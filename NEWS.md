@@ -5,7 +5,8 @@ NEW FEATURES
 - Pass normalised expression values to `quickEnhancers()`. Closes #132.
 - New `correlationMatrix()` function to compute correlation matrix without
   plotting it.  Closes #129.
-- Save power law parameters in the plot object of `plotReverseCumulatives()`.
+- Save power law alpha value in the `reference.slope` element of the `meta`
+  slot of the _ggplot2_ object produced by `plotReverseCumulatives()`.
 - Support for importing CTSS data from bigWig files.
 
 BUG FIXES
