@@ -1,11 +1,12 @@
 Package: CAGEr
 Title: Analysis of CAGE (Cap Analysis of Gene Expression) sequencing data for precise mapping of transcription start sites and promoterome mining
-Version: 2.15.1
-Date: 2025-06-22
+Version: 2.15.2
+Date: 2025-10-10
 Authors@R:
   c( person("Vanja",   "Haberle",   email = "vanja.haberle@gmail.com",       role = "aut"),
      person("Charles", "Plessy",    email = "charles.plessy@oist.jp",        role = "cre"),
      person("Damir",   "Baranasic", email = "damir.baranasic@lms.mrc.ac.uk", role = "ctb"),
+     person("Katalin", "Ferenc",    email = "k.t.ferenc@ncmbm.uio.no",       role = "ctb"),
      person("Sarvesh", "Nikumbh",   email = "s.nikumbh@lms.mrc.ac.uk",       role = "ctb")
   )
 Imports:
@@ -20,7 +21,7 @@ Imports:
     GenomicAlignments (>= 1.45.1),
     GenomicFeatures (>= 1.61.4),
     GenomicRanges (>= 1.61.1),
-    ggplot2 (>= 2.2.0),
+    ggplot2 (>= 4.0.0),
     gtools,
     IRanges (>= 2.18.0),
     KernSmooth,

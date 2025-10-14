@@ -40,7 +40,8 @@ NULL
 #' @returns A [`ggplot2::ggplot`] object containing the plots.  The plot can
 #' be further modified to change its title or axis labels (see
 #' [`ggplot2::labs`]).  The legend can be removed with
-#' [`ggplot2::guides`]`(col=FALSE)`.
+#' [`ggplot2::guides`]`(col=FALSE)`.  The alpha parameter of the power law is
+#' saved in the `reference.slope` element of the `meta` slot of the object.
 #' 
 #' @references Balwierz _et al_. (2009) Methods for analyzing deep sequencing
 #' expression data: constructing the human and mouse promoterome with deepCAGE data,

@@ -52,7 +52,8 @@ plotted together.  Set to \code{sampleLabels} to plot each sample separately.}
 A \code{\link[ggplot2:ggplot]{ggplot2::ggplot}} object containing the plots.  The plot can
 be further modified to change its title or axis labels (see
 \code{\link[ggplot2:labs]{ggplot2::labs}}).  The legend can be removed with
-\code{\link[ggplot2:guides]{ggplot2::guides}}\code{(col=FALSE)}.
+\code{\link[ggplot2:guides]{ggplot2::guides}}\code{(col=FALSE)}.  The alpha parameter of the power law is
+saved in the \code{reference.slope} element of the \code{meta} slot of the object.
 }
 \description{
 Plots the reverse cumulative distribution of the expression values of the

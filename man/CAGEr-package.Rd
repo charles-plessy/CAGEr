@@ -19,6 +19,7 @@ Authors:
 Other contributors:
 \itemize{
   \item Damir Baranasic \email{damir.baranasic@lms.mrc.ac.uk} [contributor]
+  \item Katalin Ferenc \email{k.t.ferenc@ncmbm.uio.no} [contributor]
   \item Sarvesh Nikumbh \email{s.nikumbh@lms.mrc.ac.uk} [contributor]
 }
 
