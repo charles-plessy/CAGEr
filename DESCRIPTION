@@ -6,6 +6,7 @@ Authors@R:
   c( person("Vanja",   "Haberle",   email = "vanja.haberle@gmail.com",       role = "aut"),
      person("Charles", "Plessy",    email = "charles.plessy@oist.jp",        role = "cre"),
      person("Damir",   "Baranasic", email = "damir.baranasic@lms.mrc.ac.uk", role = "ctb"),
+     person("Katalin", "Ferenc",    email = "k.t.ferenc@ncmbm.uio.no",       role = "ctb"),
      person("Sarvesh", "Nikumbh",   email = "s.nikumbh@lms.mrc.ac.uk",       role = "ctb")
   )
 Imports:

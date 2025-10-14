@@ -13,10 +13,6 @@ BUG FIXES
 - Stop passing _StitchedGPos_ to `quickEnhancesr()`. Closes #133.
 - Migrate from _GenomeInfoDb_ to _Seqinfo_ where needed.
 
-THANKS
-
-- Katalin Ferenc for pull requests, feedback and suggestions.
-
 # No changes in version 2.14.0 (16/04/2025)
 
 # Changes in version 2.12.0 (30/10/2024)
