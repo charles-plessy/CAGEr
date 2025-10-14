@@ -20,7 +20,7 @@ Imports:
     GenomicAlignments (>= 1.45.1),
     GenomicFeatures (>= 1.61.4),
     GenomicRanges (>= 1.61.1),
-    ggplot2 (>= 2.2.0),
+    ggplot2 (>= 4.0.0),
     gtools,
     IRanges (>= 2.18.0),
     KernSmooth,
