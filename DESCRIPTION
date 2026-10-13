@@ -56,7 +56,8 @@ Suggests:
     ggseqlogo,
     BiocStyle,
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.1.5)
 Description: The _CAGEr_ package identifies transcription start sites (TSS) and
  their usage frequency from CAGE (Cap Analysis Gene Expression) sequencing data.
  It normalises raw CAGE tag count, clusters TSSs into tag clusters (TC) and
@@ -109,3 +110,4 @@ VignetteBuilder: knitr
 RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
+Config/testthat/edition: 3
