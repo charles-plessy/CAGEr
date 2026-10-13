@@ -10,14 +10,14 @@
 #' @param object A [`CAGEr`] object
 #' 
 #' @param tpmThreshold Ignore tag clusters with normalized signal `< tpmThreshold`
-#'        when constructing the consensus clusters.
+#'        when constructing the consensus clusters.  This threshold is not
+#'        applied to the CTSSs that contribute to the expression of the
+#'        consensus clusters (see Details).
 #' 
-#' @param excludeSignalBelowThreshold When `TRUE` the tag clusters with
-#'        normalized signal `< tpmThreshold` will not contribute to the total
-#'        CAGE signal of a consensus cluster.  When set to `FALSE` all TCs that
-#'        overlap consensus clusters will contribute to the total signal,
-#'        regardless whether they pass the threshold for constructing the
-#'        clusters or not.
+#' @param excludeSignalBelowThreshold Deprecated and ignored; a warning is
+#'        emitted when this argument is supplied.  The expression of the
+#'        consensus clusters is computed from all the CTSSs that pass the
+#'        filter of [filterLowExpCTSS()] (see Details).
 #'        
 #' @param qLow,qUp Set which "lower" (or "upper") quantile should be used as 5'
 #'        (or 3') boundary of the tag cluster.  If `NULL` the start (for `qLow`)
@@ -47,6 +47,15 @@
 #' of promoters that can be further used for expression profiling or detecting
 #'  "shifting" (differentially used) promoters between different CAGE samples.
 #' 
+#' The expression of a consensus cluster in a sample is the sum of the signal
+#' in that sample of the CTSSs that it contains, among the CTSSs flagged as
+#' passing in [filteredCTSSidx()] at the time `aggregateTagClusters()` is run
+#' (this flag is normally set by [filterLowExpCTSS()] before tag clustering).
+#' The raw and normalized signals are summed separately to give the `counts`
+#' and `normalized` assays.  No other filter is applied to the CTSSs: in
+#' particular, `tpmThreshold` only selects the tag clusters that define the
+#' boundaries of the consensus clusters.
+#' 
 #' @return Returns the object in which the _experiment_ `consensusClusters` will
 #' be occupied by a [`RangedSummarizedExperiment`] containing the cluster
 #' coordinates as row ranges, and their expression levels in the `counts` and
@@ -70,16 +79,10 @@
 #' @examples
 #' 
 #' consensusClustersGR(exampleCAGEexp)
-#' ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-#'                           , excludeSignalBelowThreshold = FALSE, maxDist = 100)
+#' ce <- aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, maxDist = 100)
 #' consensusClustersGR(ce)
 #' 
-#' ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-#'                           , excludeSignalBelowThreshold = TRUE, maxDist = 100)
-#' consensusClustersGR(ce)
-#' 
-#' ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-#'                           , excludeSignalBelowThreshold = TRUE, maxDist = 100
+#' ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50, maxDist = 100
 #'                           , qLow = 0.1, qUp = 0.9)
 #' consensusClustersGR(ce)
 #' 
@@ -98,6 +101,13 @@ setGeneric( "aggregateTagClusters"
 setMethod( "aggregateTagClusters", "CAGEr"
          , function ( object, tpmThreshold, excludeSignalBelowThreshold
                     , qLow, qUp, maxDist, useMulticore, nrCores) {
+  
+  # missing() only works here because the formals of this method are identical
+  # to the ones of the generic.
+  if (!missing(excludeSignalBelowThreshold))
+    warning("'excludeSignalBelowThreshold' is deprecated and ignored; ",
+            "consensus-cluster expression is the sum of all CTSSs passing ",
+            "filteredCTSSidx().", call. = FALSE)
   
   # Prepare the GRangesList object containing the TCs.
   if (all( !is.null(qLow), !is.null(qUp))) {
@@ -121,17 +131,10 @@ setMethod( "aggregateTagClusters", "CAGEr"
   consensus.clusters <-
     .aggregateTagClustersGRL(gr.list = TC.list, CAGEexp_obj = object, maxDist = maxDist)
   
-  if (excludeSignalBelowThreshold) {
-    filter <- flagLowExpCTSS( object
-                         , threshold       = tpmThreshold
-                         , nrPassThreshold = 1
-                         , thresholdIsTpm  = TRUE)
-  } else filter <- TRUE
-
     CTSScoordinatesGR(object)$cluster <-
       ranges2names(CTSScoordinatesGR(object), consensus.clusters)
-    se <- CTSStagCountSE(object)[filter & decode(filteredCTSSidx(object)), ]
-    consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters, tpmThreshold = tpmThreshold)
+    se <- CTSStagCountSE(object)[decode(filteredCTSSidx(object)), ]
+    consensusClustersSE(object) <- .CCtoSE(se, consensus.clusters)
     score(consensusClustersGR(object)) <- rowSums(assays(consensusClustersSE(object))[["normalized"]])
     object$outOfClusters <- librarySizes(object) - colSums(assay(consensusClustersSE(object)))
     object
@@ -157,19 +160,16 @@ setMethod( "aggregateTagClusters", "CAGEr"
   .ConsensusClusters(clusters.gr)
 }
 
-setGeneric( ".CCtoSE" , function(se, consensus.clusters, tpmThreshold = 1)
+setGeneric( ".CCtoSE" , function(se, consensus.clusters)
             standardGeneric(".CCtoSE"))
 
 setMethod( ".CCtoSE"
          , c(se = "RangedSummarizedExperiment")
-         , function(se, consensus.clusters, tpmThreshold = 1) {
+         , function(se, consensus.clusters) {
     if (is.null(assays(se)[["normalizedTpmMatrix"]]))
       stop("Needs normalised data; run ", sQuote("normalizeTagCount()"), " first.")
     if (is.null(rowRanges(se)$cluster))
       rowRanges(se)$cluster <- ranges2names(rowRanges(se), consensus.clusters)
-    
-    if (tpmThreshold > 0)
-      se <- se[rowSums.RleDataFrame(assays(se)[["normalizedTpmMatrix"]]) > tpmThreshold,]
     
     .rowsumAsMatrix <- function(DF, names) {
       # First, remove CTSS that do not match clusters

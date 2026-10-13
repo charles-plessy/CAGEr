@@ -31,14 +31,14 @@ aggregateTagClusters(
 \item{object}{A \code{\link{CAGEr}} object}
 
 \item{tpmThreshold}{Ignore tag clusters with normalized signal \verb{< tpmThreshold}
-when constructing the consensus clusters.}
+when constructing the consensus clusters.  This threshold is not
+applied to the CTSSs that contribute to the expression of the
+consensus clusters (see Details).}
 
-\item{excludeSignalBelowThreshold}{When \code{TRUE} the tag clusters with
-normalized signal \verb{< tpmThreshold} will not contribute to the total
-CAGE signal of a consensus cluster.  When set to \code{FALSE} all TCs that
-overlap consensus clusters will contribute to the total signal,
-regardless whether they pass the threshold for constructing the
-clusters or not.}
+\item{excludeSignalBelowThreshold}{Deprecated and ignored; a warning is
+emitted when this argument is supplied.  The expression of the
+consensus clusters is computed from all the CTSSs that pass the
+filter of \code{\link[=filterLowExpCTSS]{filterLowExpCTSS()}} (see Details).}
 
 \item{qLow, qUp}{Set which "lower" (or "upper") quantile should be used as 5'
 (or 3') boundary of the tag cluster.  If \code{NULL} the start (for \code{qLow})
@@ -83,20 +83,23 @@ non-overlapping set of consensus clusters by merging overlapping TCs and TCs
 \verb{<= maxDist} base-pairs apart.  Consensus clusters represent a referent set
 of promoters that can be further used for expression profiling or detecting
 "shifting" (differentially used) promoters between different CAGE samples.
+
+The expression of a consensus cluster in a sample is the sum of the signal
+in that sample of the CTSSs that it contains, among the CTSSs flagged as
+passing in \code{\link[=filteredCTSSidx]{filteredCTSSidx()}} at the time \code{aggregateTagClusters()} is run
+(this flag is normally set by \code{\link[=filterLowExpCTSS]{filterLowExpCTSS()}} before tag clustering).
+The raw and normalized signals are summed separately to give the \code{counts}
+and \code{normalized} assays.  No other filter is applied to the CTSSs: in
+particular, \code{tpmThreshold} only selects the tag clusters that define the
+boundaries of the consensus clusters.
 }
 \examples{
 
 consensusClustersGR(exampleCAGEexp)
-ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-                          , excludeSignalBelowThreshold = FALSE, maxDist = 100)
+ce <- aggregateTagClusters(exampleCAGEexp, tpmThreshold = 50, maxDist = 100)
 consensusClustersGR(ce)
 
-ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-                          , excludeSignalBelowThreshold = TRUE, maxDist = 100)
-consensusClustersGR(ce)
-
-ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50
-                          , excludeSignalBelowThreshold = TRUE, maxDist = 100
+ce <- aggregateTagClusters( exampleCAGEexp, tpmThreshold = 50, maxDist = 100
                           , qLow = 0.1, qUp = 0.9)
 consensusClustersGR(ce)
 
