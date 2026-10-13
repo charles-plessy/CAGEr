@@ -1,3 +1,10 @@
+# Changes in development version
+
+BUG FIXES
+
+- Fix vignette build with recent _S4Vectors_, whose `table()` method for _Rle_
+  objects does not accept the `useNA` argument anymore.
+
 # Changes in version 2.16.0 (29/10/2025)
 
 NEW FEATURES

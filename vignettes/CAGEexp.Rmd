@@ -709,7 +709,7 @@ one sample.
 ce <- getExpressionProfiles(ce, what = "consensusClusters", tpmThreshold = 10, 
   nrPassThreshold = 1, method = "som", xDim = 4, yDim = 2)
 
-consensusClustersGR(ce)$exprClass |> table(useNA = "always")
+consensusClustersGR(ce)$exprClass |> decode() |> table(useNA = "always")
 ```
 
 Distribution of expression across samples for the 8 clusters returned by SOM can
