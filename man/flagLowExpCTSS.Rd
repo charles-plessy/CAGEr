@@ -63,17 +63,23 @@ filterLowExpCTSS(
 \item{object}{An object from the \emph{CAGEr} package that contains expression
 values for multiple samples.}
 
-\item{threshold}{Flag CTSSs with signal \verb{< threshold}.}
+\item{threshold}{A CTSS passes the threshold in a sample when its signal in
+that sample is \verb{> threshold}.  A signal equal to the threshold does
+not pass it.}
 
-\item{nrPassThreshold}{Only flag CTSSs when signal is below threshold in at
-least \code{nrPassThreshold} samples.}
+\item{nrPassThreshold}{Minimal number of samples in which a CTSS must pass
+the threshold to not be flagged.  If it is larger than the number of
+samples, the number of samples is used instead.  With the default
+value of 1, only the CTSSs whose signal is \verb{<= threshold} in all the
+samples are flagged.}
 
 \item{thresholdIsTpm}{Logical, is threshold raw tag count value (\code{FALSE}) or
 normalized signal (\code{TRUE}).}
 }
 \value{
 \code{flagLowExpCTSS} returns a \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}} vector where \code{TRUE} indicates the
-index of a CTSS that passes the filter.
+index of a CTSS that passes the filter (signal \verb{> threshold} in at least
+\code{nrPassThreshold} samples), and \code{FALSE} a flagged CTSS.
 
 \code{filterLowExpCTSS} returns the \code{CAGEr} object where the output of
 \code{flagLowExpCTSS} was stored internally.

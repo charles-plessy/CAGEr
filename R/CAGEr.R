@@ -170,16 +170,22 @@ setMethod("validSamples", "CAGEr", function (object, x){
 #' @param object An object from the _CAGEr_ package that contains expression
 #' values for multiple samples.
 #'
-#' @param threshold Flag CTSSs with signal `< threshold`.
+#' @param threshold A CTSS passes the threshold in a sample when its signal in
+#'        that sample is `> threshold`.  A signal equal to the threshold does
+#'        not pass it.
 #'      
-#' @param nrPassThreshold Only flag CTSSs when signal is below threshold in at
-#'        least `nrPassThreshold` samples.
+#' @param nrPassThreshold Minimal number of samples in which a CTSS must pass
+#'        the threshold to not be flagged.  If it is larger than the number of
+#'        samples, the number of samples is used instead.  With the default
+#'        value of 1, only the CTSSs whose signal is `<= threshold` in all the
+#'        samples are flagged.
 #'        
 #' @param thresholdIsTpm Logical, is threshold raw tag count value (`FALSE`) or
 #'        normalized signal (`TRUE`).
 #'        
 #' @returns `flagLowExpCTSS` returns a [`Rle`] vector where `TRUE` indicates the
-#' index of a CTSS that passes the filter.
+#' index of a CTSS that passes the filter (signal `> threshold` in at least
+#' `nrPassThreshold` samples), and `FALSE` a flagged CTSS.
 #' 
 #' @export
 #' 
