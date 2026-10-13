@@ -585,15 +585,18 @@ ce$outOfClusters / ce$librarySizes *100
 Tag clusters can be aggregated using their full span (from start to end) or using positions of
 previously calculated quantiles as their boundaries.  Only tag clusters above given tag count
 threshold will be considered and two clusters will be aggregated together if their boundaries
-(i.e. either starts and ends or positions of quantiles) are `<= maxDist` apart.  Final set
+(i.e. either starts and ends or positions of quantiles) are `<= maxDist` apart.  This threshold
+is only used to define the boundaries of the consensus clusters: their expression in each sample,
+as raw tag counts or normalized signal, is the sum of the signal in that sample of the CTSSs that
+they contain, among the CTSSs that were not flagged by `filterLowExpCTSS` (see above).  Final set
 of consensus clusters can be retrieved by:
 
 ```{r}
 consensusClustersGR(ce)
 ```
 
-which will return genomic coordinates and sum of CAGE signal across all samples for each consensus
-cluster (the `tpm` column).
+which will return genomic coordinates and sum of normalized CAGE signal across all samples for each
+consensus cluster (the `score` column).
 
 Analogously to tag clusters, analysis of promoter width can be performed for consensus clusters
 as well, using the same `cumulativeCTSSdistribution`, `quantilePositions`
