@@ -38,20 +38,20 @@ as the transcription start site.
 }
 \details{
 This function will only work if the \code{\link{CAGEexp}} object was built with a
-\code{\link[BSgenome:BSgenome-class]{BSgenome::BSgenome}} package, as it needs to extract genomic sequences.
+\code{\link[BSgenome:BSgenome]{BSgenome}} package, as it needs to extract genomic sequences.
 }
 \examples{
 TSSlogo(exampleCAGEexp|>consensusClustersGR(), 20, 10)
 
 }
 \seealso{
-Other CAGEr plot functions: 
-\code{\link{hanabiPlot}()},
-\code{\link{plotAnnot}()},
-\code{\link{plotCorrelation}()},
-\code{\link{plotExpressionProfiles}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{plotReverseCumulatives}()}
+Other CAGEr plot functions:
+\code{\link[=hanabiPlot]{hanabiPlot()}},
+\code{\link[=plotAnnot]{plotAnnot()}},
+\code{\link[=plotCorrelation]{plotCorrelation()}},
+\code{\link[=plotExpressionProfiles]{plotExpressionProfiles()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=plotReverseCumulatives]{plotReverseCumulatives()}}
 }
 \author{
 Charles Plessy

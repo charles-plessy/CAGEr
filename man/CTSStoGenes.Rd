@@ -17,7 +17,7 @@ function.}
 The input object with the following modifications:
 \itemize{
 \item A new \code{geneExpMatrix} experiment containing gene expression levels as
-a \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}} object with one assay called \code{counts}, which
+a \code{\link[SummarizedExperiment:SummarizedExperiment]{SummarizedExperiment}} object with one assay called \code{counts}, which
 is plain \code{matrix} of integers.  (This plays better than \verb{Rle DataFrames}
 when interfacing with downstream packages like DESeq2, and since the number of
 genes is limited, a \code{matrix} will not cause problems of performance.)
@@ -41,23 +41,23 @@ all( librarySizes(exampleCAGEexp) -
 \seealso{
 \code{\link[=annotateCTSS]{annotateCTSS()}}.
 
-Other CAGEr object modifiers: 
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{annotateCTSS}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{getCTSS}()},
-\code{\link{normalizeTagCount}()},
-\code{\link{paraclu}()},
-\code{\link{quantilePositions}()},
-\code{\link{quickEnhancers}()},
-\code{\link{resetCAGEexp}()},
-\code{\link{summariseChrExpr}()}
+Other CAGEr object modifiers:
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=getCTSS]{getCTSS()}},
+\code{\link[=normalizeTagCount]{normalizeTagCount()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=quickEnhancers]{quickEnhancers()}},
+\code{\link[=resetCAGEexp]{resetCAGEexp()}},
+\code{\link[=summariseChrExpr]{summariseChrExpr()}}
 
-Other CAGEr gene expression analysis functions: 
-\code{\link{GeneExpDESeq2}()},
-\code{\link{ranges2genes}()}
+Other CAGEr gene expression analysis functions:
+\code{\link[=GeneExpDESeq2]{GeneExpDESeq2()}},
+\code{\link[=ranges2genes]{ranges2genes()}}
 }
 \author{
 Charles Plessy

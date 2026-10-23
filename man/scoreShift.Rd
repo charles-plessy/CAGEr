@@ -117,8 +117,8 @@ scoreShift( exampleCAGEexp
 \seealso{
 \code{\link{cumulativeCTSSdistribution}}
 
-Other CAGEr promoter shift functions: 
-\code{\link{getShiftingPromoters}()}
+Other CAGEr promoter shift functions:
+\code{\link[=getShiftingPromoters]{getShiftingPromoters()}}
 }
 \author{
 Vanja Haberle

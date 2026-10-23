@@ -44,9 +44,9 @@ S3 method to plot hanabi objects.  Used by the
 \code{\link{hanabiPlot}} function.
 }
 \seealso{
-Other CAGEr richness functions: 
-\code{\link{hanabi}},
-\code{\link{hanabiPlot}()}
+Other CAGEr richness functions:
+\code{\link[=hanabi]{hanabi()}},
+\code{\link[=hanabiPlot]{hanabiPlot()}}
 }
 \author{
 Charles Plessy

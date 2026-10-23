@@ -44,7 +44,7 @@ defined relatively to the start point of their cluster, for more efficient
 \code{TagClusters} objects directly.  The quantile data for \verb{consensus clusters}
 are stored in \code{\link{integer}} matrices named \dQuote{q_\emph{x}}, where \emph{x}
 represents the quantile (for instance, \code{q_0.1}), and these matrices are
-\emph{assays} of the \code{consensusClusters} \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}}.
+\emph{assays} of the \code{consensusClusters} \code{\link[SummarizedExperiment:RangedSummarizedExperiment]{RangedSummarizedExperiment}}.
 }
 \description{
 Calculates the positions of \dQuote{upper} and \dQuote{lower}
@@ -66,31 +66,31 @@ quantilePositions(exampleCAGEexp, "consensusClusters", qLow = c(0.1, 0.2), qUp =
 
 }
 \seealso{
-Other CAGEr object modifiers: 
-\code{\link{CTSStoGenes}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{annotateCTSS}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{getCTSS}()},
-\code{\link{normalizeTagCount}()},
-\code{\link{paraclu}()},
-\code{\link{quickEnhancers}()},
-\code{\link{resetCAGEexp}()},
-\code{\link{summariseChrExpr}()}
+Other CAGEr object modifiers:
+\code{\link[=CTSStoGenes]{CTSStoGenes()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=getCTSS]{getCTSS()}},
+\code{\link[=normalizeTagCount]{normalizeTagCount()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=quickEnhancers]{quickEnhancers()}},
+\code{\link[=resetCAGEexp]{resetCAGEexp()}},
+\code{\link[=summariseChrExpr]{summariseChrExpr()}}
 
-Other CAGEr clusters functions: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersDESeq2}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{paraclu}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr clusters functions:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersDESeq2]{consensusClustersDESeq2()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \author{
 Vanja Haberle

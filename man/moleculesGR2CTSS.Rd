@@ -7,10 +7,10 @@
 moleculesGR2CTSS(gr)
 }
 \arguments{
-\item{gr}{A \link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges} object.}
+\item{gr}{A \link[GenomicRanges:GRanges]{GRanges} object.}
 }
 \value{
-Returns a \link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges} object.
+Returns a \link[GenomicRanges:GRanges]{GRanges} object.
 }
 \description{
 Calculates CTSS positions from a GenomicRanges object where each element
@@ -21,15 +21,15 @@ gr <- GenomicRanges::GRanges("chr1", IRanges::IRanges(1, 10), c("+", "-", "+"))
 CAGEr:::moleculesGR2CTSS(gr)
 }
 \seealso{
-Other loadFileIntoGPos: 
-\code{\link{bam2CTSS}()},
-\code{\link{import.CTSS}()},
-\code{\link{import.bam}()},
-\code{\link{import.bam.ctss}()},
-\code{\link{import.bedCTSS}()},
-\code{\link{import.bedScore}()},
-\code{\link{import.bedmolecule}()},
-\code{\link{import.bigwig}()},
-\code{\link{loadFileIntoGPos}()}
+Other loadFileIntoGPos:
+\code{\link[=bam2CTSS]{bam2CTSS()}},
+\code{\link[=import.CTSS]{import.CTSS()}},
+\code{\link[=import.bam]{import.bam()}},
+\code{\link[=import.bam.ctss]{import.bam.ctss()}},
+\code{\link[=import.bedCTSS]{import.bedCTSS()}},
+\code{\link[=import.bedScore]{import.bedScore()}},
+\code{\link[=import.bedmolecule]{import.bedmolecule()}},
+\code{\link[=import.bigwig]{import.bigwig()}},
+\code{\link[=loadFileIntoGPos]{loadFileIntoGPos()}}
 }
 \concept{loadFileIntoGPos}

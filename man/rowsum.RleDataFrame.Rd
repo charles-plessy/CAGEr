@@ -24,7 +24,7 @@ values be discarded?}
 }
 \description{
 Drop-in replacement for the \code{rowsum} function, which does not work natively
-on \code{\link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame}} objects containing \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}}-encoded
+on \code{\link[S4Vectors:DataFrame]{S4Vectors::DataFrame}} objects containing \code{\link[S4Vectors:Rle]{S4Vectors::Rle}}-encoded
 numerical values.
 }
 \details{
@@ -34,10 +34,11 @@ of \emph{CAGEr} for the alternatives that were considered.
 \examples{
 exampleCAGEexp |> CTSStagCountDF() |>
   CAGEr:::rowsum.RleDataFrame(decode(CTSScoordinatesGR(exampleCAGEexp)$cluster), reorder = FALSE)
+  
 }
 \seealso{
-Other Rle DataFrames: 
-\code{\link{rowSums.RleDataFrame}()}
+Other Rle DataFrames:
+\code{\link[=rowSums.RleDataFrame]{rowSums.RleDataFrame()}}
 }
 \author{
 Charles Plessy

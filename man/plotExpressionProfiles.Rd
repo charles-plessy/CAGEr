@@ -31,17 +31,17 @@ exampleCAGEexp |> plotExpressionProfiles("consensusClusters")
 
 }
 \seealso{
-Other CAGEr plot functions: 
-\code{\link{TSSlogo}()},
-\code{\link{hanabiPlot}()},
-\code{\link{plotAnnot}()},
-\code{\link{plotCorrelation}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{plotReverseCumulatives}()}
+Other CAGEr plot functions:
+\code{\link[=TSSlogo]{TSSlogo()}},
+\code{\link[=hanabiPlot]{hanabiPlot()}},
+\code{\link[=plotAnnot]{plotAnnot()}},
+\code{\link[=plotCorrelation]{plotCorrelation()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=plotReverseCumulatives]{plotReverseCumulatives()}}
 
-Other CAGEr expression clustering functions: 
-\code{\link{expressionClasses}()},
-\code{\link{getExpressionProfiles}()}
+Other CAGEr expression clustering functions:
+\code{\link[=expressionClasses]{expressionClasses()}},
+\code{\link[=getExpressionProfiles]{getExpressionProfiles()}}
 }
 \author{
 Vanja Haberle

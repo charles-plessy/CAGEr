@@ -35,34 +35,34 @@ List of numeric Rle.
 Accessor function.
 }
 \seealso{
-Other CAGEr clusters functions: 
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersDESeq2}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{paraclu}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{quantilePositions}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr clusters functions:
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersDESeq2]{consensusClustersDESeq2()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 
-Other CAGEr accessor methods: 
-\code{\link{CTSScoordinatesGR}()},
-\code{\link{CTSSnormalizedTpmDF}()},
-\code{\link{CTSStagCountDF}()},
-\code{\link{GeneExpDESeq2}()},
-\code{\link{GeneExpSE}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{expressionClasses}()},
-\code{\link{filteredCTSSidx}()},
-\code{\link{genomeName}()},
-\code{\link{inputFiles}()},
-\code{\link{inputFilesType}()},
-\code{\link{librarySizes}()},
-\code{\link{sampleLabels}()},
-\code{\link{seqNameTotalsSE}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr accessor methods:
+\code{\link[=CTSScoordinatesGR]{CTSScoordinatesGR()}},
+\code{\link[=CTSSnormalizedTpmDF]{CTSSnormalizedTpmDF()}},
+\code{\link[=CTSStagCountDF]{CTSStagCountDF()}},
+\code{\link[=GeneExpDESeq2]{GeneExpDESeq2()}},
+\code{\link[=GeneExpSE]{GeneExpSE()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=expressionClasses]{expressionClasses()}},
+\code{\link[=filteredCTSSidx]{filteredCTSSidx()}},
+\code{\link[=genomeName]{genomeName()}},
+\code{\link[=inputFiles]{inputFiles()}},
+\code{\link[=inputFilesType]{inputFilesType()}},
+\code{\link[=librarySizes]{librarySizes()}},
+\code{\link[=sampleLabels]{sampleLabels()}},
+\code{\link[=seqNameTotalsSE]{seqNameTotalsSE()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \concept{CAGEr accessor methods}
 \concept{CAGEr clusters functions}

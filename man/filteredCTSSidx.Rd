@@ -28,26 +28,26 @@ filteredCTSSidx(exampleCAGEexp)
 
 }
 \seealso{
-Other CAGEr filter functions: 
-\code{\link{flagByUpstreamSequences}()},
-\code{\link{flagLowExpCTSS}()}
+Other CAGEr filter functions:
+\code{\link[=flagByUpstreamSequences]{flagByUpstreamSequences()}},
+\code{\link[=flagLowExpCTSS]{flagLowExpCTSS()}}
 
-Other CAGEr accessor methods: 
-\code{\link{CTSScoordinatesGR}()},
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CTSSnormalizedTpmDF}()},
-\code{\link{CTSStagCountDF}()},
-\code{\link{GeneExpDESeq2}()},
-\code{\link{GeneExpSE}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{expressionClasses}()},
-\code{\link{genomeName}()},
-\code{\link{inputFiles}()},
-\code{\link{inputFilesType}()},
-\code{\link{librarySizes}()},
-\code{\link{sampleLabels}()},
-\code{\link{seqNameTotalsSE}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr accessor methods:
+\code{\link[=CTSScoordinatesGR]{CTSScoordinatesGR()}},
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CTSSnormalizedTpmDF]{CTSSnormalizedTpmDF()}},
+\code{\link[=CTSStagCountDF]{CTSStagCountDF()}},
+\code{\link[=GeneExpDESeq2]{GeneExpDESeq2()}},
+\code{\link[=GeneExpSE]{GeneExpSE()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=expressionClasses]{expressionClasses()}},
+\code{\link[=genomeName]{genomeName()}},
+\code{\link[=inputFiles]{inputFiles()}},
+\code{\link[=inputFilesType]{inputFilesType()}},
+\code{\link[=librarySizes]{librarySizes()}},
+\code{\link[=sampleLabels]{sampleLabels()}},
+\code{\link[=seqNameTotalsSE]{seqNameTotalsSE()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \concept{CAGEr accessor methods}
 \concept{CAGEr filter functions}

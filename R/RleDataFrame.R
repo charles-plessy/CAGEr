@@ -56,6 +56,8 @@ rowSums.RleDataFrame <- function (x, na.rm = FALSE) {
 #' @examples 
 #' exampleCAGEexp |> CTSStagCountDF() |>
 #'   CAGEr:::rowsum.RleDataFrame(decode(CTSScoordinatesGR(exampleCAGEexp)$cluster), reorder = FALSE)
+#'   
+#' @export
 
 rowsum.RleDataFrame <- function(x, group, reorder = TRUE, na.rm = FALSE, ...)
   rowsum(

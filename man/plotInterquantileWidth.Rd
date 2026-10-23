@@ -62,25 +62,25 @@ plotInterquantileWidth( exampleCAGEexp, clusters = "consensusClusters"
 
 }
 \seealso{
-Other CAGEr plot functions: 
-\code{\link{TSSlogo}()},
-\code{\link{hanabiPlot}()},
-\code{\link{plotAnnot}()},
-\code{\link{plotCorrelation}()},
-\code{\link{plotExpressionProfiles}()},
-\code{\link{plotReverseCumulatives}()}
+Other CAGEr plot functions:
+\code{\link[=TSSlogo]{TSSlogo()}},
+\code{\link[=hanabiPlot]{hanabiPlot()}},
+\code{\link[=plotAnnot]{plotAnnot()}},
+\code{\link[=plotCorrelation]{plotCorrelation()}},
+\code{\link[=plotExpressionProfiles]{plotExpressionProfiles()}},
+\code{\link[=plotReverseCumulatives]{plotReverseCumulatives()}}
 
-Other CAGEr clusters functions: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersDESeq2}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{paraclu}()},
-\code{\link{quantilePositions}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr clusters functions:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersDESeq2]{consensusClustersDESeq2()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \author{
 Vanja Haberle

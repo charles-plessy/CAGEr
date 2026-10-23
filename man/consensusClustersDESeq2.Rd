@@ -28,17 +28,17 @@ consensusClustersDESeq2(exampleCAGEexp, ~group)
 \seealso{
 \code{DESeqDataSet} in the \code{DESeq2} package.
 
-Other CAGEr clusters functions: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{paraclu}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{quantilePositions}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr clusters functions:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \author{
 Charles Plessy

@@ -77,7 +77,7 @@ samples are flagged.}
 normalized signal (\code{TRUE}).}
 }
 \value{
-\code{flagLowExpCTSS} returns a \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}} vector where \code{TRUE} indicates the
+\code{flagLowExpCTSS} returns a \code{\link[S4Vectors:Rle]{Rle}} vector where \code{TRUE} indicates the
 index of a CTSS that passes the filter (signal \verb{> threshold} in at least
 \code{nrPassThreshold} samples), and \code{FALSE} a flagged CTSS.
 
@@ -94,8 +94,8 @@ reproduced.
 flagLowExpCTSS(exampleCAGEexp, threshold = 100, nrPassThreshold = 2)
 }
 \seealso{
-Other CAGEr filter functions: 
-\code{\link{filteredCTSSidx}()},
-\code{\link{flagByUpstreamSequences}()}
+Other CAGEr filter functions:
+\code{\link[=filteredCTSSidx]{filteredCTSSidx()}},
+\code{\link[=flagByUpstreamSequences]{flagByUpstreamSequences()}}
 }
 \concept{CAGEr filter functions}

@@ -52,8 +52,8 @@ setMethod(".powerLaw", "DataFrame", function (tag.counts, fitInRange, alpha, T) 
 
 #' @name .fit.power.law.to.reverse.cumulative
 #' 
-#' Function that fits power-law distribution to reverse cumulative of given
-#' values - fitting is done using only the range specified in val.range
+#' @details Function that fits power-law distribution to reverse cumulative of
+#' given values - fitting is done using only the range specified in val.range
 #' 
 #' @return Two coefficients describing fitted power-law distribution (a = slope
 #' in the logX-logY plot (where X=signal, Y=number of sites that have >= of given

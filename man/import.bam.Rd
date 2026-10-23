@@ -28,15 +28,15 @@ Imports CTSS data from a BAM file.
 # import.bam(system.file("extdata", "example.bam", package = "CAGEr"))
 }
 \seealso{
-Other loadFileIntoGPos: 
-\code{\link{bam2CTSS}()},
-\code{\link{import.CTSS}()},
-\code{\link{import.bam.ctss}()},
-\code{\link{import.bedCTSS}()},
-\code{\link{import.bedScore}()},
-\code{\link{import.bedmolecule}()},
-\code{\link{import.bigwig}()},
-\code{\link{loadFileIntoGPos}()},
-\code{\link{moleculesGR2CTSS}()}
+Other loadFileIntoGPos:
+\code{\link[=bam2CTSS]{bam2CTSS()}},
+\code{\link[=import.CTSS]{import.CTSS()}},
+\code{\link[=import.bam.ctss]{import.bam.ctss()}},
+\code{\link[=import.bedCTSS]{import.bedCTSS()}},
+\code{\link[=import.bedScore]{import.bedScore()}},
+\code{\link[=import.bedmolecule]{import.bedmolecule()}},
+\code{\link[=import.bigwig]{import.bigwig()}},
+\code{\link[=loadFileIntoGPos]{loadFileIntoGPos()}},
+\code{\link[=moleculesGR2CTSS]{moleculesGR2CTSS()}}
 }
 \concept{loadFileIntoGPos}

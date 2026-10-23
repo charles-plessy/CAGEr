@@ -87,7 +87,7 @@ them as counts or percentages in stacked barplots.
 When given a \code{\link{CAGEexp}} object or its \emph{column data}, what will be counted is
 the number of \emph{CAGE tags}.  When given cluster objects (\code{\link{CTSS}},
 \code{\link{TagClusters}} or \code{\link{ConsensusClusters}}) wrapped as
-a \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges::GRangesList}}, what will be counted is the number of
+a \code{\link[GenomicRanges:GRangesList]{GenomicRanges::GRangesList}}, what will be counted is the number of
 \emph{clusters}.
 
 Stacked barplots with error bars inspired from
@@ -110,19 +110,19 @@ plotAnnot(exampleCAGEexp, CAGEr:::msScope_counts , group = "myGroups")
 \seealso{
 \code{\link{mapStats}} for a list of \emph{scopes}.
 
-Other CAGEr annotation functions: 
-\code{\link{annotateCTSS}()},
-\code{\link{ranges2annot}()},
-\code{\link{ranges2genes}()},
-\code{\link{ranges2names}()}
+Other CAGEr annotation functions:
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=ranges2annot]{ranges2annot()}},
+\code{\link[=ranges2genes]{ranges2genes()}},
+\code{\link[=ranges2names]{ranges2names()}}
 
-Other CAGEr plot functions: 
-\code{\link{TSSlogo}()},
-\code{\link{hanabiPlot}()},
-\code{\link{plotCorrelation}()},
-\code{\link{plotExpressionProfiles}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{plotReverseCumulatives}()}
+Other CAGEr plot functions:
+\code{\link[=TSSlogo]{TSSlogo()}},
+\code{\link[=hanabiPlot]{hanabiPlot()}},
+\code{\link[=plotCorrelation]{plotCorrelation()}},
+\code{\link[=plotExpressionProfiles]{plotExpressionProfiles()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=plotReverseCumulatives]{plotReverseCumulatives()}}
 }
 \author{
 Charles Plessy

@@ -36,16 +36,16 @@ CTSS(
 \item{bsgenomeName}{String containing the name of a \emph{BSgenome} package.}
 
 \item{seqnames, pos, strand, seqinfo, seqlengths, ...}{See the documentation
-of \code{\link[GenomicRanges:GPos-class]{GenomicRanges::GPos}} for further details.}
+of \code{\link[GenomicRanges:GPos]{GenomicRanges::GPos}} for further details.}
 
-\item{from, to, strict}{See  \code{\link[methods:setAs]{methods::coerce}}.}
+\item{from, to, strict}{See  \code{\link[methods:coerce]{methods::coerce}}.}
 }
 \description{
 The \code{CTSS} class represents CAGE transcription start sites (CTSS) at
-single-nucleotide resolution, using \code{\link[GenomicRanges:GPos-class]{GenomicRanges::UnstitchedGPos}} as base
+single-nucleotide resolution, using \code{\link[GenomicRanges:UnstitchedGPos]{GenomicRanges::UnstitchedGPos}} as base
 class.  It is used by \emph{CAGEr} for type safety.
 
-The \code{CTSS} constructor takes the same arguments as \code{\link[GenomicRanges:GPos-class]{GenomicRanges::GPos}},
+The \code{CTSS} constructor takes the same arguments as \code{\link[GenomicRanges:GPos]{GenomicRanges::GPos}},
 plus \code{bsgenomeName}, and minus \code{stitch}, which is hardcoded to \code{FALSE}.
 }
 \details{

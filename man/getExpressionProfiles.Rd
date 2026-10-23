@@ -104,9 +104,9 @@ Toronen \emph{et al.} (1999) Analysis of gene expression data using
 self-organizing maps, \emph{FEBS Letters} \emph{451}:142-146.
 }
 \seealso{
-Other CAGEr expression clustering functions: 
-\code{\link{expressionClasses}()},
-\code{\link{plotExpressionProfiles}()}
+Other CAGEr expression clustering functions:
+\code{\link[=expressionClasses]{expressionClasses()}},
+\code{\link[=plotExpressionProfiles]{plotExpressionProfiles()}}
 }
 \author{
 Vanja Haberle

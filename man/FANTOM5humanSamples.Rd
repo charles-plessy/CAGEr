@@ -17,9 +17,9 @@ libraries.  Its use is described in more details in the vignette
 \dQuote{Use of CAGE resources with CAGEr}.
 }
 \seealso{
-Other FANTOM data: 
+Other FANTOM data:
 \code{\link{FANTOM5mouseSamples}},
-\code{\link{importPublicData}()}
+\code{\link[=importPublicData]{importPublicData()}}
 }
 \concept{FANTOM data}
 \keyword{datasets}

@@ -7,12 +7,12 @@
 ranges2names(rangesA, rangesB)
 }
 \arguments{
-\item{rangesA}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object.}
+\item{rangesA}{A \code{\link[GenomicRanges:GRanges]{GenomicRanges::GRanges}} object.}
 
 \item{rangesB}{A second \code{GRanges} object.}
 }
 \value{
-A \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}} factor of same length as the \code{rangesA} \emph{GRanges}
+A \code{\link[S4Vectors:Rle]{S4Vectors::Rle}} factor of same length as the \code{rangesA} \emph{GRanges}
 object, indicating one name or a semicolon-separated list of names from
 the each \code{rangesB} object.  The levels are in order of appearance to
 to maintain genomic coordinate sort order when the names are cluster names.
@@ -31,11 +31,11 @@ CAGEr:::ranges2names(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 
 }
 \seealso{
-Other CAGEr annotation functions: 
-\code{\link{annotateCTSS}()},
-\code{\link{plotAnnot}()},
-\code{\link{ranges2annot}()},
-\code{\link{ranges2genes}()}
+Other CAGEr annotation functions:
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=plotAnnot]{plotAnnot()}},
+\code{\link[=ranges2annot]{ranges2annot()}},
+\code{\link[=ranges2genes]{ranges2genes()}}
 }
 \author{
 Charles Plessy

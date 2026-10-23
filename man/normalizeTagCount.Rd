@@ -86,22 +86,22 @@ constructing the human and mouse promoterome with deepCAGE data, \emph{Genome Bi
 \seealso{
 \code{\link{plotReverseCumulatives}}, \code{\link{CTSSnormalizedTpmDF}}
 
-Other CAGEr object modifiers: 
-\code{\link{CTSStoGenes}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{annotateCTSS}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{getCTSS}()},
-\code{\link{paraclu}()},
-\code{\link{quantilePositions}()},
-\code{\link{quickEnhancers}()},
-\code{\link{resetCAGEexp}()},
-\code{\link{summariseChrExpr}()}
+Other CAGEr object modifiers:
+\code{\link[=CTSStoGenes]{CTSStoGenes()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=getCTSS]{getCTSS()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=quickEnhancers]{quickEnhancers()}},
+\code{\link[=resetCAGEexp]{resetCAGEexp()}},
+\code{\link[=summariseChrExpr]{summariseChrExpr()}}
 
-Other CAGEr normalised data functions: 
-\code{\link{plotReverseCumulatives}()}
+Other CAGEr normalised data functions:
+\code{\link[=plotReverseCumulatives]{plotReverseCumulatives()}}
 }
 \author{
 Vanja Haberle

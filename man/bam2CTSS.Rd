@@ -7,7 +7,7 @@
 bam2CTSS(gr, removeFirstG, correctSystematicG, genome)
 }
 \arguments{
-\item{gr}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object returned by \code{\link[=import.bam]{import.bam()}}.}
+\item{gr}{A \code{\link[GenomicRanges:GRanges]{GenomicRanges::GRanges}} object returned by \code{\link[=import.bam]{import.bam()}}.}
 
 \item{removeFirstG}{See getCTSS().}
 
@@ -25,15 +25,15 @@ Converts from BAM to CTSS
 Converts genomic ranges representing SAM/BAM alignments into a CTSS object.
 }
 \seealso{
-Other loadFileIntoGPos: 
-\code{\link{import.CTSS}()},
-\code{\link{import.bam}()},
-\code{\link{import.bam.ctss}()},
-\code{\link{import.bedCTSS}()},
-\code{\link{import.bedScore}()},
-\code{\link{import.bedmolecule}()},
-\code{\link{import.bigwig}()},
-\code{\link{loadFileIntoGPos}()},
-\code{\link{moleculesGR2CTSS}()}
+Other loadFileIntoGPos:
+\code{\link[=import.CTSS]{import.CTSS()}},
+\code{\link[=import.bam]{import.bam()}},
+\code{\link[=import.bam.ctss]{import.bam.ctss()}},
+\code{\link[=import.bedCTSS]{import.bedCTSS()}},
+\code{\link[=import.bedScore]{import.bedScore()}},
+\code{\link[=import.bedmolecule]{import.bedmolecule()}},
+\code{\link[=import.bigwig]{import.bigwig()}},
+\code{\link[=loadFileIntoGPos]{loadFileIntoGPos()}},
+\code{\link[=moleculesGR2CTSS]{moleculesGR2CTSS()}}
 }
 \concept{loadFileIntoGPos}

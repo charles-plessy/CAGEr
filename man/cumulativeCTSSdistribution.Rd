@@ -48,31 +48,31 @@ CTSScumulativesCC(exampleCAGEexp)[[1]][1:6]
            
 }
 \seealso{
-Other CAGEr object modifiers: 
-\code{\link{CTSStoGenes}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{annotateCTSS}()},
-\code{\link{distclu}()},
-\code{\link{getCTSS}()},
-\code{\link{normalizeTagCount}()},
-\code{\link{paraclu}()},
-\code{\link{quantilePositions}()},
-\code{\link{quickEnhancers}()},
-\code{\link{resetCAGEexp}()},
-\code{\link{summariseChrExpr}()}
+Other CAGEr object modifiers:
+\code{\link[=CTSStoGenes]{CTSStoGenes()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=getCTSS]{getCTSS()}},
+\code{\link[=normalizeTagCount]{normalizeTagCount()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=quickEnhancers]{quickEnhancers()}},
+\code{\link[=resetCAGEexp]{resetCAGEexp()}},
+\code{\link[=summariseChrExpr]{summariseChrExpr()}}
 
-Other CAGEr clusters functions: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersDESeq2}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{distclu}()},
-\code{\link{paraclu}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{quantilePositions}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr clusters functions:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersDESeq2]{consensusClustersDESeq2()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \author{
 Vanja Haberle

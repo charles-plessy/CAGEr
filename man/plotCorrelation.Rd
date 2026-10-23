@@ -166,8 +166,8 @@ correlationMatrix(
 )
 }
 \arguments{
-\item{object}{A \code{\link{CAGEexp}} object or a \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}}
-or an expression table as a \code{\link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame}}, \code{\link{data.frame}} or
+\item{object}{A \code{\link{CAGEexp}} object or a \code{\link[SummarizedExperiment:SummarizedExperiment]{SummarizedExperiment::SummarizedExperiment}}
+or an expression table as a \code{\link[S4Vectors:DataFrame]{S4Vectors::DataFrame}}, \code{\link{data.frame}} or
 \code{\link{matrix}} object. \code{\link[=plotCorrelation]{plotCorrelation()}} only supports \code{CAGEexp} input.}
 
 \item{what}{The clustering level to be used for plotting and calculating
@@ -243,13 +243,13 @@ correlationMatrix(exampleCAGEexp, what = "consensusClusters", value = "normalize
 
 }
 \seealso{
-Other CAGEr plot functions: 
-\code{\link{TSSlogo}()},
-\code{\link{hanabiPlot}()},
-\code{\link{plotAnnot}()},
-\code{\link{plotExpressionProfiles}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{plotReverseCumulatives}()}
+Other CAGEr plot functions:
+\code{\link[=TSSlogo]{TSSlogo()}},
+\code{\link[=hanabiPlot]{hanabiPlot()}},
+\code{\link[=plotAnnot]{plotAnnot()}},
+\code{\link[=plotExpressionProfiles]{plotExpressionProfiles()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=plotReverseCumulatives]{plotReverseCumulatives()}}
 }
 \author{
 Vanja Haberle

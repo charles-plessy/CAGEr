@@ -267,6 +267,7 @@ setMethod( "plotCorrelation2", "SummarizedExperiment"
 
 #' @importFrom grDevices dev.flush dev.hold
 #' @importFrom graphics Axis mtext
+#' @export
 
 # Re-implement the pairs function to prevent coercion to data.frame
 pairs.DataFrame <- function (x, labels, panel = points, ..., horInd = 1:nc, verInd = 1:nc, 

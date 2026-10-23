@@ -20,7 +20,7 @@ flagByUpstreamSequences(object, target, distance = 0)
 }
 \arguments{
 \item{object}{A \code{\link{CTSS}}, a \code{\link{TagClusters}}, \code{\link{ConsensusClusters}} or a
-\code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object from which a \emph{BSgenome} object can
+\code{\link[GenomicRanges:GRanges]{GenomicRanges::GRanges}} object from which a \emph{BSgenome} object can
 be reached.}
 
 \item{target}{A target sequence.}
@@ -41,9 +41,9 @@ the search will be done upstream its \emph{dominant peak}.  Convert the object
 to the \code{GRanges} class if this is not the behaviour you want.
 }
 \seealso{
-Other CAGEr filter functions: 
-\code{\link{filteredCTSSidx}()},
-\code{\link{flagLowExpCTSS}()}
+Other CAGEr filter functions:
+\code{\link[=filteredCTSSidx]{filteredCTSSidx()}},
+\code{\link[=flagLowExpCTSS]{flagLowExpCTSS()}}
 }
 \author{
 Charles Plessy

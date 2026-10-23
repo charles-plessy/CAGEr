@@ -70,7 +70,7 @@ paraclu(
 )
 }
 \arguments{
-\item{object}{A \code{\link{CTSS}}, or a \code{\link[S4Vectors:Pairs-class]{S4Vectors::Pairs}} object with positions
+\item{object}{A \code{\link{CTSS}}, or a \code{\link[S4Vectors:Pairs]{S4Vectors::Pairs}} object with positions
 \emph{first} and scores \emph{second}.}
 
 \item{minStability}{Minimal stability of the cluster, where stability is
@@ -108,8 +108,8 @@ them back in a \code{\link{TagClusters}} object after filtering them by size and
 expression following the \code{minStability}, \code{maxLength}, \code{keepSingletonsAbove}
 and \code{reduceToNonoverlapping} parameters.
 
-Running Paraclu on a \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} object will loop on each
-sample, and return the results as a \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges::GRangesList}} of \code{TagClusters}.
+Running Paraclu on a \code{\link[SummarizedExperiment:RangedSummarizedExperiment]{RangedSummarizedExperiment}} object will loop on each
+sample, and return the results as a \code{\link[GenomicRanges:GRangesList]{GRangesList}} of \code{TagClusters}.
 
 Running Paraclu on a \code{\link{CAGEexp}} returnts is with the clusters stored as a
 \code{GRangesList} of \code{\link{TagClusters}} objects in its metadata slot \code{tagClusters}.
@@ -151,35 +151,35 @@ for transcription initiation in mammalian genomes.}  Genome Research 2008
 \seealso{
 \code{\link{aggregateTagClusters}}
 
-Other CAGEr clustering methods: 
-\code{\link{consensusClustersTpm}()},
-\code{\link{distclu}()}
+Other CAGEr clustering methods:
+\code{\link[=consensusClustersTpm]{consensusClustersTpm()}},
+\code{\link[=distclu]{distclu()}}
 
-Other CAGEr object modifiers: 
-\code{\link{CTSStoGenes}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{annotateCTSS}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{getCTSS}()},
-\code{\link{normalizeTagCount}()},
-\code{\link{quantilePositions}()},
-\code{\link{quickEnhancers}()},
-\code{\link{resetCAGEexp}()},
-\code{\link{summariseChrExpr}()}
+Other CAGEr object modifiers:
+\code{\link[=CTSStoGenes]{CTSStoGenes()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=getCTSS]{getCTSS()}},
+\code{\link[=normalizeTagCount]{normalizeTagCount()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=quickEnhancers]{quickEnhancers()}},
+\code{\link[=resetCAGEexp]{resetCAGEexp()}},
+\code{\link[=summariseChrExpr]{summariseChrExpr()}}
 
-Other CAGEr clusters functions: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersDESeq2}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{quantilePositions}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr clusters functions:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersDESeq2]{consensusClustersDESeq2()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \author{
 Vanja Haberle

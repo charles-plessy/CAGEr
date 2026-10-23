@@ -68,6 +68,7 @@ NULL
 #' @importFrom ggplot2 aes geom_abline geom_step geom_vline ggplot ggtitle
 #' @importFrom ggplot2 guides guide_legend labs
 #' @importFrom ggplot2 scale_color_manual scale_x_log10 scale_y_log10
+#' @importFrom IRanges PartitioningByEnd
 #' @importFrom rlang .data
 #' @importFrom scales hue_pal
 #' @importFrom stats cor median

@@ -44,22 +44,22 @@ CTSScoordinatesGR(exampleCAGEexp)
 \seealso{
 \code{\link{getCTSS}}
 
-Other CAGEr accessor methods: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CTSSnormalizedTpmDF}()},
-\code{\link{CTSStagCountDF}()},
-\code{\link{GeneExpDESeq2}()},
-\code{\link{GeneExpSE}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{expressionClasses}()},
-\code{\link{filteredCTSSidx}()},
-\code{\link{genomeName}()},
-\code{\link{inputFiles}()},
-\code{\link{inputFilesType}()},
-\code{\link{librarySizes}()},
-\code{\link{sampleLabels}()},
-\code{\link{seqNameTotalsSE}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr accessor methods:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CTSSnormalizedTpmDF]{CTSSnormalizedTpmDF()}},
+\code{\link[=CTSStagCountDF]{CTSStagCountDF()}},
+\code{\link[=GeneExpDESeq2]{GeneExpDESeq2()}},
+\code{\link[=GeneExpSE]{GeneExpSE()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=expressionClasses]{expressionClasses()}},
+\code{\link[=filteredCTSSidx]{filteredCTSSidx()}},
+\code{\link[=genomeName]{genomeName()}},
+\code{\link[=inputFiles]{inputFiles()}},
+\code{\link[=inputFilesType]{inputFilesType()}},
+\code{\link[=librarySizes]{librarySizes()}},
+\code{\link[=sampleLabels]{sampleLabels()}},
+\code{\link[=seqNameTotalsSE]{seqNameTotalsSE()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \author{
 Vanja Haberle

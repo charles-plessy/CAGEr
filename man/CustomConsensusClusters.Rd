@@ -24,7 +24,7 @@ CustomConsensusClusters(
 \arguments{
 \item{object}{A \code{CAGEexp} object}
 
-\item{clusters}{Consensus clusters in \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} format.}
+\item{clusters}{Consensus clusters in \code{\link[GenomicRanges:GRanges]{GRanges}} format.}
 
 \item{threshold, nrPassThreshold}{Only CTSSs with signal \verb{>= threshold} in
 \verb{>= nrPassThreshold} experiments will be used for clustering and will
@@ -34,7 +34,7 @@ contribute towards total signal of the cluster.}
 normalized signal (TRUE).}
 }
 \value{
-stores the result as a new \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} in the
+stores the result as a new \code{\link[SummarizedExperiment:RangedSummarizedExperiment]{RangedSummarizedExperiment}} in the
 \code{experiment} slot of the object.  The assays of the new experiment are called
 \code{counts} and \code{normalized}.  An \code{outOfClusters} column is added
 to the sample metadata to reflect the number of molecules that do not have
@@ -57,31 +57,31 @@ CustomConsensusClusters(exampleCAGEexp, cc)
 
 }
 \seealso{
-Other CAGEr object modifiers: 
-\code{\link{CTSStoGenes}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{annotateCTSS}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{getCTSS}()},
-\code{\link{normalizeTagCount}()},
-\code{\link{paraclu}()},
-\code{\link{quantilePositions}()},
-\code{\link{quickEnhancers}()},
-\code{\link{resetCAGEexp}()},
-\code{\link{summariseChrExpr}()}
+Other CAGEr object modifiers:
+\code{\link[=CTSStoGenes]{CTSStoGenes()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=getCTSS]{getCTSS()}},
+\code{\link[=normalizeTagCount]{normalizeTagCount()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=quickEnhancers]{quickEnhancers()}},
+\code{\link[=resetCAGEexp]{resetCAGEexp()}},
+\code{\link[=summariseChrExpr]{summariseChrExpr()}}
 
-Other CAGEr clusters functions: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersDESeq2}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{paraclu}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{quantilePositions}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr clusters functions:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersDESeq2]{consensusClustersDESeq2()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \author{
 Charles Plessy

@@ -31,8 +31,8 @@ getCTSS(
 
 \item{sequencingQualityThreshold}{Only CAGE tags with average sequencing quality
 \code{>= sequencingQualityThreshold} and mapping quality \code{>=
-  mappingQualityThreshold} are kept. Used only if \code{inputFileType(object)
-  == "bam"} or \code{inputFileType(object) == "bamPairedEnd"}, \emph{i.e} when
+mappingQualityThreshold} are kept. Used only if \code{inputFileType(object)
+== "bam"} or \code{inputFileType(object) == "bamPairedEnd"}, \emph{i.e} when
 input files are BAM files of aligned sequenced CAGE tags, otherwise ignored.  If
 there are no sequencing quality values in the BAM file (\emph{e.g.} HeliScope
 single molecule sequencer does not return sequencing qualities) all reads will by
@@ -44,7 +44,7 @@ qualities.  If there is no information on mapping quality in the BAM file
 (\emph{e.g.} software used to align CAGE tags to the referent genome does not
 provide mapping quality) the \code{mappingQualityThreshold} parameter is ignored.
 In case of paired-end sequencing BAM file (i.e. \code{inputFileType(object) ==
-  "bamPairedEnd"}) only the first mate of the properly paired reads (i.e. the five
+"bamPairedEnd"}) only the first mate of the properly paired reads (i.e. the five
 prime end read) will be read and subject to specified thresholds.}
 
 \item{mappingQualityThreshold}{See sequencingQualityThreshold.}
@@ -63,7 +63,7 @@ CAGE tags when it is a mismatch, \emph{i.e.} this option can only be used when
 to CAGE tags is estimated from mismatch cases and used to systematically correct
 the G addition for positions with G in the genome.  Used only if
 \code{inputFileType(object) == "bam"} or \code{inputFileType(object) ==
-  "bamPairedEnd"}, \emph{i.e} when input files are BAM files of aligned sequenced
+"bamPairedEnd"}, \emph{i.e} when input files are BAM files of aligned sequenced
 CAGE tags, otherwise ignored.  See Details.}
 
 \item{useMulticore}{Logical, should multicore be used.
@@ -74,7 +74,7 @@ CAGE tags, otherwise ignored.  See Details.}
 }
 \value{
 Returns the object, in which the \code{tagCountMatrix} experiment will be
-occupied by a \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} containing the expression data
+occupied by a \code{\link[SummarizedExperiment:RangedSummarizedExperiment]{RangedSummarizedExperiment}} containing the expression data
 as a \code{DataFrame} of \code{Rle} integers, and the CTSS coordinates as genomic
 ranges in a \code{\link{CTSS}} object.  The expression data can be retrieved with
 the \code{\link{CTSStagCountDF}} function.  In addition, the library sizes are
@@ -129,19 +129,19 @@ evolution, \emph{Nature Genetics} \bold{38}(7):626-635.
 \seealso{
 \code{\link{inputFilesType}}, \code{\link{librarySizes}}.
 
-Other CAGEr object modifiers: 
-\code{\link{CTSStoGenes}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{annotateCTSS}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{normalizeTagCount}()},
-\code{\link{paraclu}()},
-\code{\link{quantilePositions}()},
-\code{\link{quickEnhancers}()},
-\code{\link{resetCAGEexp}()},
-\code{\link{summariseChrExpr}()}
+Other CAGEr object modifiers:
+\code{\link[=CTSStoGenes]{CTSStoGenes()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=normalizeTagCount]{normalizeTagCount()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=quickEnhancers]{quickEnhancers()}},
+\code{\link[=resetCAGEexp]{resetCAGEexp()}},
+\code{\link[=summariseChrExpr]{summariseChrExpr()}}
 }
 \author{
 Vanja Haberle

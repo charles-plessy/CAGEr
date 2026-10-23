@@ -38,11 +38,11 @@ sampleLabels(exampleCAGEexp)
 
 }
 \seealso{
-Other CAGEr setter methods: 
-\code{\link{genomeName}()},
-\code{\link{inputFiles}()},
-\code{\link{inputFilesType}()},
-\code{\link{sampleLabels}()}
+Other CAGEr setter methods:
+\code{\link[=genomeName]{genomeName()}},
+\code{\link[=inputFiles]{inputFiles()}},
+\code{\link[=inputFilesType]{inputFilesType()}},
+\code{\link[=sampleLabels]{sampleLabels()}}
 }
 \author{
 Vanja Haberle

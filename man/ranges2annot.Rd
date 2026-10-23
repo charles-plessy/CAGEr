@@ -7,8 +7,8 @@
 ranges2annot(ranges, annot, upstream = 500, downstream = 500)
 }
 \arguments{
-\item{ranges}{A \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object, for example extracted from
-a \code{RangedSummarizedExperiment} object with the \code{\link[MatrixGenerics:rowRanges]{MatrixGenerics::rowRanges}}
+\item{ranges}{A \code{\link[GenomicRanges:GRanges]{GenomicRanges::GRanges}} object, for example extracted from
+a \code{RangedSummarizedExperiment} object with the \code{\link[SummarizedExperiment:rowRanges]{rowRanges}}
 command.}
 
 \item{annot}{A \code{GRanges} from which promoter positions will be inferred.
@@ -25,7 +25,7 @@ to be considered as part of the \emph{promoter region}.}
 models to be considered as part of the \emph{promoter region}.}
 }
 \value{
-A Run-length-encoded (\code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}}) factor of same length as the \code{CTSS}
+A Run-length-encoded (\code{\link[S4Vectors:Rle]{Rle}}) factor of same length as the \code{CTSS}
 object, indicating if the interval is \code{promoter}, \code{exon}, \code{intron} or
 \code{unknown}, or just \code{promoter}, \code{gene}, \code{unknown} if the \code{type}
 metadata is absent.
@@ -61,11 +61,11 @@ CAGEr:::ranges2annot(ctss, gr2, up=500, down=20)
 \seealso{
 \code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
 
-Other CAGEr annotation functions: 
-\code{\link{annotateCTSS}()},
-\code{\link{plotAnnot}()},
-\code{\link{ranges2genes}()},
-\code{\link{ranges2names}()}
+Other CAGEr annotation functions:
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=plotAnnot]{plotAnnot()}},
+\code{\link[=ranges2genes]{ranges2genes()}},
+\code{\link[=ranges2names]{ranges2names()}}
 }
 \author{
 Charles Plessy

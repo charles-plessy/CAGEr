@@ -31,7 +31,7 @@ loadFileIntoGPos(
 \item{genome}{See coerceInBSgenome().}
 }
 \value{
-A \code{\link[GenomicRanges:GPos-class]{GenomicRanges::GPos()}} object where the score represents the number of CAGE tags
+A \code{\link[GenomicRanges:GPos]{GPos()}} object where the score represents the number of CAGE tags
 starting on that nucleotide.
 }
 \description{
@@ -40,15 +40,15 @@ A private (non-exported) function to load from each file format supported by CAG
 \seealso{
 import.CTSS
 
-Other loadFileIntoGPos: 
-\code{\link{bam2CTSS}()},
-\code{\link{import.CTSS}()},
-\code{\link{import.bam}()},
-\code{\link{import.bam.ctss}()},
-\code{\link{import.bedCTSS}()},
-\code{\link{import.bedScore}()},
-\code{\link{import.bedmolecule}()},
-\code{\link{import.bigwig}()},
-\code{\link{moleculesGR2CTSS}()}
+Other loadFileIntoGPos:
+\code{\link[=bam2CTSS]{bam2CTSS()}},
+\code{\link[=import.CTSS]{import.CTSS()}},
+\code{\link[=import.bam]{import.bam()}},
+\code{\link[=import.bam.ctss]{import.bam.ctss()}},
+\code{\link[=import.bedCTSS]{import.bedCTSS()}},
+\code{\link[=import.bedScore]{import.bedScore()}},
+\code{\link[=import.bedmolecule]{import.bedmolecule()}},
+\code{\link[=import.bigwig]{import.bigwig()}},
+\code{\link[=moleculesGR2CTSS]{moleculesGR2CTSS()}}
 }
 \concept{loadFileIntoGPos}

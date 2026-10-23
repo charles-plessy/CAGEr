@@ -25,7 +25,7 @@ which to extract sample-specific information on consensus clusters.}
 }
 \value{
 \code{consensusClustersGR} returns a \code{\link{ConsensusClusters}} object, which
-wraps the \code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} class.  The \code{score} columns indicates the
+wraps the \code{\link[GenomicRanges:GRanges]{GRanges}} class.  The \code{score} columns indicates the
 normalised expression value of each cluster, either across all samples
 (\code{sample = NULL}), or for the selected sample.  The legacy \code{tpm} column may
 be removed in the future.  When \code{sample} argument is
@@ -37,7 +37,7 @@ the dominant TSS, and (if applicable) interquantile width of the consensus
 clusters in the specified sample or otherwise, sample-agnostic information is
 returned.
 
-\code{consensusClustersSE} returns the \code{\link[SummarizedExperiment:SummarizedExperiment-class]{SummarizedExperiment::SummarizedExperiment}} stored
+\code{consensusClustersSE} returns the \code{\link[SummarizedExperiment:SummarizedExperiment]{SummarizedExperiment}} stored
 in the \code{consensusClusters} experiment slot of the CAGEexp object.
 }
 \description{
@@ -52,34 +52,34 @@ consensusClustersGR( exampleCAGEexp, sample = 2
 \seealso{
 \code{\link[=consensusClusters<-]{consensusClusters<-()}}
 
-Other CAGEr accessor methods: 
-\code{\link{CTSScoordinatesGR}()},
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CTSSnormalizedTpmDF}()},
-\code{\link{CTSStagCountDF}()},
-\code{\link{GeneExpDESeq2}()},
-\code{\link{GeneExpSE}()},
-\code{\link{expressionClasses}()},
-\code{\link{filteredCTSSidx}()},
-\code{\link{genomeName}()},
-\code{\link{inputFiles}()},
-\code{\link{inputFilesType}()},
-\code{\link{librarySizes}()},
-\code{\link{sampleLabels}()},
-\code{\link{seqNameTotalsSE}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr accessor methods:
+\code{\link[=CTSScoordinatesGR]{CTSScoordinatesGR()}},
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CTSSnormalizedTpmDF]{CTSSnormalizedTpmDF()}},
+\code{\link[=CTSStagCountDF]{CTSStagCountDF()}},
+\code{\link[=GeneExpDESeq2]{GeneExpDESeq2()}},
+\code{\link[=GeneExpSE]{GeneExpSE()}},
+\code{\link[=expressionClasses]{expressionClasses()}},
+\code{\link[=filteredCTSSidx]{filteredCTSSidx()}},
+\code{\link[=genomeName]{genomeName()}},
+\code{\link[=inputFiles]{inputFiles()}},
+\code{\link[=inputFilesType]{inputFilesType()}},
+\code{\link[=librarySizes]{librarySizes()}},
+\code{\link[=sampleLabels]{sampleLabels()}},
+\code{\link[=seqNameTotalsSE]{seqNameTotalsSE()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 
-Other CAGEr clusters functions: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersDESeq2}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{paraclu}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{quantilePositions}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr clusters functions:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersDESeq2]{consensusClustersDESeq2()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \author{
 Vanja Haberle

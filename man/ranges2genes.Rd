@@ -7,14 +7,14 @@
 ranges2genes(ranges, genes)
 }
 \arguments{
-\item{ranges}{\code{\link[GenomicRanges:GRanges-class]{GenomicRanges::GRanges}} object, for example extracted from
-a \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} object with the
-\code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::rowRanges}} command.}
+\item{ranges}{\code{\link[GenomicRanges:GRanges]{GenomicRanges::GRanges}} object, for example extracted from
+a \code{\link[SummarizedExperiment:RangedSummarizedExperiment]{SummarizedExperiment::RangedSummarizedExperiment}} object with the
+\code{\link[SummarizedExperiment:rowRanges]{SummarizedExperiment::rowRanges}} command.}
 
 \item{genes}{A \emph{GRanges} object containing \code{gene_name} metadata.}
 }
 \value{
-A \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}} factor of same length as the \emph{GRanges} object,
+A \code{\link[S4Vectors:Rle]{S4Vectors::Rle}} factor of same length as the \emph{GRanges} object,
 indicating one gene symbol or a semicolon-separated list of gene symbols for each
 range.  The levels are alphabetically sorted.
 }
@@ -33,15 +33,15 @@ CAGEr:::ranges2genes(CTSScoordinatesGR(exampleCAGEexp), exampleZv9_annot)
 \seealso{
 \code{\link{CTSScoordinatesGR}}, \code{\link{exampleZv9_annot}}
 
-Other CAGEr annotation functions: 
-\code{\link{annotateCTSS}()},
-\code{\link{plotAnnot}()},
-\code{\link{ranges2annot}()},
-\code{\link{ranges2names}()}
+Other CAGEr annotation functions:
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=plotAnnot]{plotAnnot()}},
+\code{\link[=ranges2annot]{ranges2annot()}},
+\code{\link[=ranges2names]{ranges2names()}}
 
-Other CAGEr gene expression analysis functions: 
-\code{\link{CTSStoGenes}()},
-\code{\link{GeneExpDESeq2}()}
+Other CAGEr gene expression analysis functions:
+\code{\link[=CTSStoGenes]{CTSStoGenes()}},
+\code{\link[=GeneExpDESeq2]{GeneExpDESeq2()}}
 }
 \author{
 Charles Plessy

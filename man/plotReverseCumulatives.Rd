@@ -99,16 +99,16 @@ expression data: constructing the human and mouse promoterome with deepCAGE data
 \seealso{
 \code{\link{normalizeTagCount}}
 
-Other CAGEr plot functions: 
-\code{\link{TSSlogo}()},
-\code{\link{hanabiPlot}()},
-\code{\link{plotAnnot}()},
-\code{\link{plotCorrelation}()},
-\code{\link{plotExpressionProfiles}()},
-\code{\link{plotInterquantileWidth}()}
+Other CAGEr plot functions:
+\code{\link[=TSSlogo]{TSSlogo()}},
+\code{\link[=hanabiPlot]{hanabiPlot()}},
+\code{\link[=plotAnnot]{plotAnnot()}},
+\code{\link[=plotCorrelation]{plotCorrelation()}},
+\code{\link[=plotExpressionProfiles]{plotExpressionProfiles()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}}
 
-Other CAGEr normalised data functions: 
-\code{\link{normalizeTagCount}()}
+Other CAGEr normalised data functions:
+\code{\link[=normalizeTagCount]{normalizeTagCount()}}
 }
 \author{
 Vanja Haberle (original work)

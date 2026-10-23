@@ -192,9 +192,9 @@ setMethod( "initialize", "CAGEexp"
 
 "exampleCAGEexp"
 
-
 #' @name coerce,data.frame,CAGEexp-method
 #' @rdname CAGEexp-class
+#' @usage NULL
 
 setAs("data.frame", "CAGEexp", function(from){
   

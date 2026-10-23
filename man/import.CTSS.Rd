@@ -13,21 +13,21 @@ Note that the format of the "CTSS" files handled in this function is not
 the same as the FANTOM5 "CTSS" files (which are plain BED).}
 }
 \description{
-Imports a "CTSS" file in a \link[GenomicRanges:GPos-class]{GenomicRanges::GPos} object
+Imports a "CTSS" file in a \link[GenomicRanges:GPos]{GPos} object
 }
 \examples{
 CAGEr:::import.CTSS(system.file("extdata", "Zf.high.chr17.ctss", package = "CAGEr"))
 }
 \seealso{
-Other loadFileIntoGPos: 
-\code{\link{bam2CTSS}()},
-\code{\link{import.bam}()},
-\code{\link{import.bam.ctss}()},
-\code{\link{import.bedCTSS}()},
-\code{\link{import.bedScore}()},
-\code{\link{import.bedmolecule}()},
-\code{\link{import.bigwig}()},
-\code{\link{loadFileIntoGPos}()},
-\code{\link{moleculesGR2CTSS}()}
+Other loadFileIntoGPos:
+\code{\link[=bam2CTSS]{bam2CTSS()}},
+\code{\link[=import.bam]{import.bam()}},
+\code{\link[=import.bam.ctss]{import.bam.ctss()}},
+\code{\link[=import.bedCTSS]{import.bedCTSS()}},
+\code{\link[=import.bedScore]{import.bedScore()}},
+\code{\link[=import.bedmolecule]{import.bedmolecule()}},
+\code{\link[=import.bigwig]{import.bigwig()}},
+\code{\link[=loadFileIntoGPos]{loadFileIntoGPos()}},
+\code{\link[=moleculesGR2CTSS]{moleculesGR2CTSS()}}
 }
 \concept{loadFileIntoGPos}

@@ -43,21 +43,17 @@ hanabiPlot(h, group = 1:5, pch=1:5, col="purple")
 
 }
 \seealso{
-Other CAGEr richness functions: 
-\code{\link{hanabi}},
-\code{\link{plot.hanabi}()}
+Other CAGEr richness functions:
+\code{\link[=hanabi]{hanabi()}},
+\code{\link[=plot.hanabi]{plot.hanabi()}}
 
-Other CAGEr richness functions: 
-\code{\link{hanabi}},
-\code{\link{plot.hanabi}()}
-
-Other CAGEr plot functions: 
-\code{\link{TSSlogo}()},
-\code{\link{plotAnnot}()},
-\code{\link{plotCorrelation}()},
-\code{\link{plotExpressionProfiles}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{plotReverseCumulatives}()}
+Other CAGEr plot functions:
+\code{\link[=TSSlogo]{TSSlogo()}},
+\code{\link[=plotAnnot]{plotAnnot()}},
+\code{\link[=plotCorrelation]{plotCorrelation()}},
+\code{\link[=plotExpressionProfiles]{plotExpressionProfiles()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=plotReverseCumulatives]{plotReverseCumulatives()}}
 }
 \author{
 Charles Plessy

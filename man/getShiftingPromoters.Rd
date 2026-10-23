@@ -63,8 +63,8 @@ getShiftingPromoters( exampleCAGEexp
 
 }
 \seealso{
-Other CAGEr promoter shift functions: 
-\code{\link{scoreShift}()}
+Other CAGEr promoter shift functions:
+\code{\link[=scoreShift]{scoreShift()}}
 }
 \author{
 Vanja Haberle

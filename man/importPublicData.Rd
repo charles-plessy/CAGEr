@@ -142,7 +142,7 @@ Genetics \strong{41}:553-562.
 }
 }
 \seealso{
-Other FANTOM data: 
+Other FANTOM data:
 \code{\link{FANTOM5humanSamples}},
 \code{\link{FANTOM5mouseSamples}}
 }

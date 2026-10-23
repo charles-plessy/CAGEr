@@ -132,9 +132,9 @@ hanabi(CTSStagCountGR(exampleCAGEexp, 2))
 \seealso{
 \code{vegan::rarecurve}.
 
-Other CAGEr richness functions: 
-\code{\link{hanabiPlot}()},
-\code{\link{plot.hanabi}()}
+Other CAGEr richness functions:
+\code{\link[=hanabiPlot]{hanabiPlot()}},
+\code{\link[=plot.hanabi]{plot.hanabi()}}
 }
 \author{
 Charles Plessy

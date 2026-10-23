@@ -18,7 +18,7 @@ A \code{Rle}-encoded numerical vector of the same class as in the
 }
 \description{
 Drop-in replacement for the \code{rowSums} function, which does not work natively
-on \code{\link[S4Vectors:DataFrame-class]{S4Vectors::DataFrame}} objects containing \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}}-encoded
+on \code{\link[S4Vectors:DataFrame]{S4Vectors::DataFrame}} objects containing \code{\link[S4Vectors:Rle]{S4Vectors::Rle}}-encoded
 numerical values.
 }
 \details{
@@ -29,8 +29,8 @@ of \emph{CAGEr} for the alternatives that were considered.
 exampleCAGEexp |> CTSStagCountDF() |> CAGEr:::rowSums.RleDataFrame(na.rm = TRUE)
 }
 \seealso{
-Other Rle DataFrames: 
-\code{\link{rowsum.RleDataFrame}()}
+Other Rle DataFrames:
+\code{\link[=rowsum.RleDataFrame]{rowsum.RleDataFrame()}}
 }
 \author{
 Charles Plessy

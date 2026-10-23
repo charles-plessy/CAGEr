@@ -37,7 +37,7 @@ Returns a \code{GRangesList} or a \code{TagClusters} object with genomic coordin
 position of dominant TSS, total CAGE signal and additional information for
 all TCs from specified CAGE dataset (sample).  If quantile information is
 provided, interquantile width for each TC is also calculated.  The
-\code{\link[S4Vectors:Annotated-class]{S4Vectors::metadata}} slot of the object contains a copy of the \code{CAGEexp}
+\code{\link[S4Vectors:metadata]{S4Vectors::metadata}} slot of the object contains a copy of the \code{CAGEexp}
 object's \emph{column data}.
 }
 \description{
@@ -51,34 +51,34 @@ tagClustersGR( exampleCAGEexp )@metadata$colData
 
 }
 \seealso{
-Other CAGEr accessor methods: 
-\code{\link{CTSScoordinatesGR}()},
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CTSSnormalizedTpmDF}()},
-\code{\link{CTSStagCountDF}()},
-\code{\link{GeneExpDESeq2}()},
-\code{\link{GeneExpSE}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{expressionClasses}()},
-\code{\link{filteredCTSSidx}()},
-\code{\link{genomeName}()},
-\code{\link{inputFiles}()},
-\code{\link{inputFilesType}()},
-\code{\link{librarySizes}()},
-\code{\link{sampleLabels}()},
-\code{\link{seqNameTotalsSE}()}
+Other CAGEr accessor methods:
+\code{\link[=CTSScoordinatesGR]{CTSScoordinatesGR()}},
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CTSSnormalizedTpmDF]{CTSSnormalizedTpmDF()}},
+\code{\link[=CTSStagCountDF]{CTSStagCountDF()}},
+\code{\link[=GeneExpDESeq2]{GeneExpDESeq2()}},
+\code{\link[=GeneExpSE]{GeneExpSE()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=expressionClasses]{expressionClasses()}},
+\code{\link[=filteredCTSSidx]{filteredCTSSidx()}},
+\code{\link[=genomeName]{genomeName()}},
+\code{\link[=inputFiles]{inputFiles()}},
+\code{\link[=inputFilesType]{inputFilesType()}},
+\code{\link[=librarySizes]{librarySizes()}},
+\code{\link[=sampleLabels]{sampleLabels()}},
+\code{\link[=seqNameTotalsSE]{seqNameTotalsSE()}}
 
-Other CAGEr clusters functions: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersDESeq2}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{distclu}()},
-\code{\link{paraclu}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{quantilePositions}()}
+Other CAGEr clusters functions:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersDESeq2]{consensusClustersDESeq2()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=distclu]{distclu()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=quantilePositions]{quantilePositions()}}
 }
 \author{
 Vanja Haberle

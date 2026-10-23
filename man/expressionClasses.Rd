@@ -16,7 +16,7 @@ expressionClasses(object)
 \item{object}{A \code{\link{CAGEr}} object.}
 }
 \value{
-Returns a \code{\link[S4Vectors:Rle-class]{S4Vectors::Rle}}-encoded vector of labels of \emph{expression classes}.
+Returns a \code{\link[S4Vectors:Rle]{Rle}}-encoded vector of labels of \emph{expression classes}.
 The number of labels matches the number of expression clusters returned by
 \code{\link{getExpressionProfiles}} function.
 }
@@ -30,26 +30,26 @@ exampleCAGEexp |> consensusClustersGR() |> expressionClasses()
 
 }
 \seealso{
-Other CAGEr expression clustering functions: 
-\code{\link{getExpressionProfiles}()},
-\code{\link{plotExpressionProfiles}()}
+Other CAGEr expression clustering functions:
+\code{\link[=getExpressionProfiles]{getExpressionProfiles()}},
+\code{\link[=plotExpressionProfiles]{plotExpressionProfiles()}}
 
-Other CAGEr accessor methods: 
-\code{\link{CTSScoordinatesGR}()},
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CTSSnormalizedTpmDF}()},
-\code{\link{CTSStagCountDF}()},
-\code{\link{GeneExpDESeq2}()},
-\code{\link{GeneExpSE}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{filteredCTSSidx}()},
-\code{\link{genomeName}()},
-\code{\link{inputFiles}()},
-\code{\link{inputFilesType}()},
-\code{\link{librarySizes}()},
-\code{\link{sampleLabels}()},
-\code{\link{seqNameTotalsSE}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr accessor methods:
+\code{\link[=CTSScoordinatesGR]{CTSScoordinatesGR()}},
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CTSSnormalizedTpmDF]{CTSSnormalizedTpmDF()}},
+\code{\link[=CTSStagCountDF]{CTSStagCountDF()}},
+\code{\link[=GeneExpDESeq2]{GeneExpDESeq2()}},
+\code{\link[=GeneExpSE]{GeneExpSE()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=filteredCTSSidx]{filteredCTSSidx()}},
+\code{\link[=genomeName]{genomeName()}},
+\code{\link[=inputFiles]{inputFiles()}},
+\code{\link[=inputFilesType]{inputFilesType()}},
+\code{\link[=librarySizes]{librarySizes()}},
+\code{\link[=sampleLabels]{sampleLabels()}},
+\code{\link[=seqNameTotalsSE]{seqNameTotalsSE()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \concept{CAGEr accessor methods}
 \concept{CAGEr expression clustering functions}

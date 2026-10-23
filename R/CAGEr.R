@@ -35,7 +35,7 @@ setClassUnion("CAGEr", c("CAGEexp"))  # Legacy of dual support for CAGEset befor
 #' 
 #' @return A BSgenome object of the same name as the `reference.genome` argument.
 #' 
-#' @param reference.genome
+#' @param reference.genome A `BSgenome` object or the name of a BSgenome object.
 #' 
 #' @author Charles Plessy
 #' @importFrom utils installed.packages

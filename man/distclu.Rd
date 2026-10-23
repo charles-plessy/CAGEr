@@ -16,7 +16,7 @@ distclu(object, maxDist = 20, keepSingletonsAbove = 0)
 \S4method{distclu}{CAGEexp}(object, maxDist = 20, keepSingletonsAbove = 0)
 }
 \arguments{
-\item{object}{The \code{\link[SummarizedExperiment:RangedSummarizedExperiment-class]{SummarizedExperiment::RangedSummarizedExperiment}} object
+\item{object}{The \code{\link[SummarizedExperiment:RangedSummarizedExperiment]{SummarizedExperiment::RangedSummarizedExperiment}} object
 containing CTSS information, or just a \code{\link{CTSS}} object.}
 
 \item{maxDist}{Maximal distance between two neighbouring CTSSs for them to
@@ -28,7 +28,7 @@ all TCs by default.  Setting it to \code{Inf} removes all singletons.}
 }
 \value{
 For \code{CTSS} input, a \code{\link{TagClusters}} object, for
-\code{SummarizedExperiment} input, a \code{\link[GenomicRanges:GRangesList-class]{GenomicRanges::GRangesList}} of \code{\link{TagClusters}} objects,
+\code{SummarizedExperiment} input, a \code{\link[GenomicRanges:GRangesList]{GRangesList}} of \code{\link{TagClusters}} objects,
 and for \code{\link{CAGEexp}} input, a modified object containing the tag clusters
 stored as a \code{GRangesList} of \code{\link{TagClusters}} objects in its metadata slot
 \code{tagClusters}.
@@ -37,7 +37,7 @@ stored as a \code{GRangesList} of \code{\link{TagClusters}} objects in its metad
 The \code{"distclu"} method is an implementation of simple distance-based
 clustering of data attached to sequences, where two neighbouring TSSs are
 joined together if they are closer than some specified distance (see
-\code{\link[GenomicRanges:inter-range-methods]{GenomicRanges::reduce}} for implementation details.
+\code{\link[GenomicRanges:reduce]{GenomicRanges::reduce}} for implementation details.
 }
 \details{
 Clustering is done for every CAGE dataset within the CAGEr object separately,
@@ -55,35 +55,35 @@ tagClustersGR(ce, "Zf.30p.dome")
 \seealso{
 \code{\link{aggregateTagClusters}}
 
-Other CAGEr clustering methods: 
-\code{\link{consensusClustersTpm}()},
-\code{\link{paraclu}()}
+Other CAGEr clustering methods:
+\code{\link[=consensusClustersTpm]{consensusClustersTpm()}},
+\code{\link[=paraclu]{paraclu()}}
 
-Other CAGEr object modifiers: 
-\code{\link{CTSStoGenes}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{annotateCTSS}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{getCTSS}()},
-\code{\link{normalizeTagCount}()},
-\code{\link{paraclu}()},
-\code{\link{quantilePositions}()},
-\code{\link{quickEnhancers}()},
-\code{\link{resetCAGEexp}()},
-\code{\link{summariseChrExpr}()}
+Other CAGEr object modifiers:
+\code{\link[=CTSStoGenes]{CTSStoGenes()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=annotateCTSS]{annotateCTSS()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=getCTSS]{getCTSS()}},
+\code{\link[=normalizeTagCount]{normalizeTagCount()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=quickEnhancers]{quickEnhancers()}},
+\code{\link[=resetCAGEexp]{resetCAGEexp()}},
+\code{\link[=summariseChrExpr]{summariseChrExpr()}}
 
-Other CAGEr clusters functions: 
-\code{\link{CTSScumulativesTagClusters}()},
-\code{\link{CustomConsensusClusters}()},
-\code{\link{aggregateTagClusters}()},
-\code{\link{consensusClustersDESeq2}()},
-\code{\link{consensusClustersGR}()},
-\code{\link{cumulativeCTSSdistribution}()},
-\code{\link{paraclu}()},
-\code{\link{plotInterquantileWidth}()},
-\code{\link{quantilePositions}()},
-\code{\link{tagClustersGR}()}
+Other CAGEr clusters functions:
+\code{\link[=CTSScumulativesTagClusters]{CTSScumulativesTagClusters()}},
+\code{\link[=CustomConsensusClusters]{CustomConsensusClusters()}},
+\code{\link[=aggregateTagClusters]{aggregateTagClusters()}},
+\code{\link[=consensusClustersDESeq2]{consensusClustersDESeq2()}},
+\code{\link[=consensusClustersGR]{consensusClustersGR()}},
+\code{\link[=cumulativeCTSSdistribution]{cumulativeCTSSdistribution()}},
+\code{\link[=paraclu]{paraclu()}},
+\code{\link[=plotInterquantileWidth]{plotInterquantileWidth()}},
+\code{\link[=quantilePositions]{quantilePositions()}},
+\code{\link[=tagClustersGR]{tagClustersGR()}}
 }
 \author{
 Vanja Haberle
