@@ -25,6 +25,8 @@ OTHER CHANGES
 - Accelerated `paraclu()` ~10×, and `distclu()` and `aggregateTagClusters()`
   2–4×, with unchanged results.  Clusters that do not overlap any CTSS now
   stop the computation with an explicit error message.
+- Accelerated `exportToTrack()` 10–30× when `qLow` and `qUp` are given, with
+  unchanged results.
 
 # Changes in version 2.16.0 (29/10/2025)
 

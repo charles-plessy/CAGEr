@@ -513,21 +513,20 @@ setMethod( "exportToTrack", "GRangesList"
 setMethod( "exportToTrack", "GRanges",
 function(object, what, qLow, qUp, colorByExpressionProfile, oneTrack) {
   if((! is.null(qLow)) & (! is.null(qUp)) ) {
-    decoded.mat <-
-      rbind( width(object)
-           , mcols(object)[,paste0("q_", qLow)] |> decode()
-           , mcols(object)[,paste0("q_", qUp)]  |> decode()
-      )
-    object$blocks <- IRangesList(apply(decoded.mat, 2, \(x) {
-      # See benchmarks/BED12-blockInfo-benchmark.md
-      width_value <- x[1]
-      qLow_value  <- x[2]
-      qUp_value   <- x[3]
-      ir <- IRanges()                      |>
-        c( if(qLow_value != 1) IRanges(1)) |>
-        c( IRanges(qLow_value, qUp_value)) |>
-        c( if(qUp_value != width_value) IRanges(width_value))
-    }))
+    width_value <- width(object)
+    qLow_value  <- mcols(object)[,paste0("q_", qLow)] |> decode()
+    qUp_value   <- mcols(object)[,paste0("q_", qUp)]  |> decode()
+    # Up to three blocks per cluster, in this order: the first base, the
+    # interquantile range, and the last base, unless the first or last base is
+    # an end of the interquantile range.  The matrices have one column per
+    # cluster, so that subsetting them keeps the blocks grouped by cluster.
+    # This is vectorised, because building IRanges in a loop is very slow
+    # (see also benchmarks/BED12-blockInfo-benchmark.md).
+    keep   <- rbind(qLow_value != 1, TRUE, qUp_value != width_value)
+    starts <- rbind(1, qLow_value, width_value)[keep]
+    ends   <- rbind(1, qUp_value,  width_value)[keep]
+    object$blocks <- relist( IRanges(starts, ends)
+                           , PartitioningByEnd(cumsum(colSums(keep))))
   }
   ucsc <- as(object, "UCSCData")
   score(ucsc) <- decode(score(ucsc))
