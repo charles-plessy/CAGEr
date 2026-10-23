@@ -112,22 +112,25 @@ setGeneric("paraclu",
 
 .paraclu <- function( pos, score
                     , min_density = -Inf
-                    , clusters = data.frame()) {
+                    , clusters = NULL) {
   params <- .paraclu_params(pos, score)
   
   if (!is.na(params$br)) {
     new_min     <- max(min_density, params$min_density)
     left  <-    1      : (params$br-1)
     right <- params$br :  length(pos)
-    clusters <- rbind(.paraclu(pos[left],  score[left],  new_min, clusters), 
-                      .paraclu(pos[right], score[right], new_min, clusters))
+    # base::rbind() avoids the slow S4 dispatch of BiocGenerics::rbind().
+    clusters <- base::rbind(.paraclu(pos[left],  score[left],  new_min, clusters),
+                            .paraclu(pos[right], score[right], new_min, clusters))
   }
   
-  rbind( clusters
-         , data.frame( start = min(pos)
-                       ,   end = max(pos)
-                       , min_d = min_density
-                       , max_d = params$min_density))
+  # A numeric matrix built with base::rbind() is much faster than one-row data
+  # frames combined with the S4 rbind() generic imported from BiocGenerics.
+  base::rbind( clusters
+             , c( start = min(pos)
+                ,   end = max(pos)
+                , min_d = min_density
+                , max_d = params$min_density))
 }
 
 #' @rdname paraclu
@@ -139,7 +142,7 @@ setMethod("paraclu", "Pairs",
           , reduceToNonoverlapping = TRUE
           , useMulticore = FALSE, nrCores = NULL) {
   if (length(object) == 0) return(IRanges())
-  df <- .paraclu(first(object), second(object))
+  df <- as.data.frame(.paraclu(first(object), second(object)))
   IRanges(df$start, df$end, min_d = df$min_d, max_d = df$max_d)
 })
 

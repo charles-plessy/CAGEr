@@ -52,14 +52,18 @@ NULL
   
   # Scores sorted by run and position
   grouped_scores <- extractList(score(ctss), o)
+  if (any(lengths(grouped_scores) == 0))
+    stop("Some clusters do not overlap any CTSS.")
   
   # Find relative position of dominant CTSS in each run.
   # In case of ties, take the central one.  Note it might bias + and - strands
-  # in a different way.
-  local_max_idx <- sapply(grouped_scores, \(x) {
-    w <- which(x == max(x))
-    w[ceiling(length(w)/2)]
-  })
+  # in a different way.  This is vectorised over all runs, because an sapply()
+  # loop on the elements of a List is very slow.  The scores are decoded
+  # because which() is not vectorised on RleList objects.
+  decoded_scores <- extractList(decode(score(ctss)), o)
+  max_pos <- which(decoded_scores == max(decoded_scores))
+  local_max_idx <- unlist(max_pos)[ cumsum(c(0, head(lengths(max_pos), -1)))
+                                  + ceiling(lengths(max_pos) / 2)]
   
   # Find absolute position of dominant CTSS in each run.
   global_max_ids <- cluster_start_idx + local_max_idx - 1

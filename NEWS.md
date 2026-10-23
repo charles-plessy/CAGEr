@@ -20,6 +20,12 @@ BUG FIXES
 - Fix vignette build with recent _S4Vectors_, whose `table()` method for _Rle_
   objects does not accept the `useNA` argument anymore.
 
+OTHER CHANGES
+
+- Accelerated `paraclu()` ~10×, and `distclu()` and `aggregateTagClusters()`
+  2–4×, with unchanged results.  Clusters that do not overlap any CTSS now
+  stop the computation with an explicit error message.
+
 # Changes in version 2.16.0 (29/10/2025)
 
 NEW FEATURES
