@@ -1,4 +1,4 @@
-# Changes in development version
+# Changes in version 2.19.1 (23/10/2026)
 
 BACKWARDS-INCOMPATIBLE CHANGES
 
