@@ -1,7 +1,7 @@
 ---
 title: "Fastest way to calculate BED12 blocks for UCSCData objects"
 author: "Charles Plessy"
-date: 'June 29, 2021'
+date: 'October 23, 2026'
 output: 
   html_document: 
     keep_md: yes
@@ -27,10 +27,17 @@ way in _CAGEr_'s `exportToTrack` function.
 The best approach, `f.mat.direct` is not exactly fast, but is 5 × faster than my
 original attempt (`f.grline`).
 
+Update (October 2026): building the blocks of all clusters at once
+(`f.vectorised`) is about 700 × faster than looping on the clusters with
+`f.mat.direct` (2 ms instead of 1.2 s for the 532 clusters of one sample), and
+gives an identical result.  All the blocks are created with
+a single call to `IRanges()` and split by cluster with `relist()` and
+`PartitioningByEnd()`.  `exportToTrack` now uses this approach.
 
 
 
-```r
+
+``` r
 suppressPackageStartupMessages(library("GenomicRanges"))
 suppressPackageStartupMessages(library("CAGEr"))
 tc <- CAGEr::exampleCAGEexp |> CAGEr::tagClustersGR(1)
@@ -39,7 +46,7 @@ decoded.mat <- rbind(width(tc), decode(tc$q_0.1), decode(tc$q_0.9))
 ```
 
 
-```r
+``` r
 # Operate directly on each line
 
 f.grline <- function(grline) {
@@ -79,55 +86,102 @@ f.mat.viaString <- function(x) {
   )
   IRanges(str)
 }
+
+# Vectorised over all clusters: one column per cluster in the matrices, up to
+# three blocks per cluster (first base, interquantile range, last base), a single
+# call to the IRanges constructor, and a split by cluster with relist().
+
+f.vectorised <- function(decoded.mat) {
+  width_value <- decoded.mat[1,]
+  qLow_value  <- decoded.mat[2,]
+  qUp_value   <- decoded.mat[3,]
+  keep   <- rbind(qLow_value != 1, TRUE, qUp_value != width_value)
+  starts <- rbind(1, qLow_value, width_value)[keep]
+  ends   <- rbind(1, qUp_value,  width_value)[keep]
+  relist(IRanges(starts, ends), PartitioningByEnd(cumsum(colSums(keep))))
+}
 ```
 
 
-```r
+``` r
 tc[1]
 ```
 
 ```
-## TagClusters object with 1 range and 6 metadata columns:
-##     seqnames    ranges strand |           score   nr_ctss dominant_ctss tpm.dominant_ctss q_0.1 q_0.9
-##        <Rle> <IRanges>  <Rle> |           <Rle> <integer>     <integer>             <Rle> <Rle> <Rle>
-##   1    chr17  26050540      + | 22.310089406231         1      26050540   22.310089406231     1     1
+## TagClusters object with 1 range and 7 metadata columns:
+##     seqnames    ranges strand |           score    dominant_ctss   nr_ctss annotation  genes q_0.1 q_0.9
+##        <Rle> <IRanges>  <Rle> |           <Rle>           <CTSS> <integer>      <Rle>  <Rle> <Rle> <Rle>
+##   1    chr17  26050540      + | 22.310089406231 chr17:26050540:+         1   promoter grid1a     1     1
 ##   -------
-##   seqinfo: 1 sequence from an unspecified genome; no seqlengths
+##   seqinfo: 26 sequences (1 circular) from danRer7 genome
 ```
 
-```r
+``` r
 microbenchmark::microbenchmark(f.grline(tcl[[1]]), f.mat.direct(decoded.mat[,1]), f.mat.viaString(decoded.mat[,1]), times = 100)
 ```
 
 ```
 ## Unit: milliseconds
-##                               expr      min        lq      mean    median        uq       max neval
-##                 f.grline(tcl[[1]]) 9.178579  9.645029 10.704038 10.284728 11.355642 15.512259   100
-##     f.mat.direct(decoded.mat[, 1]) 2.810769  2.961396  3.528324  3.302803  3.606683  9.024574   100
-##  f.mat.viaString(decoded.mat[, 1]) 9.342554 10.126850 11.103980 10.933802 11.565727 22.582231   100
+##                               expr      min       lq     mean   median       uq       max neval cld
+##                 f.grline(tcl[[1]]) 6.651738 6.828249 7.343721 6.995603 7.414189 11.567481   100 a  
+##     f.mat.direct(decoded.mat[, 1]) 2.133308 2.183652 2.331102 2.210591 2.266056  5.701192   100  b 
+##  f.mat.viaString(decoded.mat[, 1]) 7.557194 7.739555 8.377135 7.897567 8.120161 19.510868   100   c
 ```
 
-```r
+``` r
 tc[5]
 ```
 
 ```
-## TagClusters object with 1 range and 6 metadata columns:
-##     seqnames            ranges strand |            score   nr_ctss dominant_ctss tpm.dominant_ctss q_0.1 q_0.9
-##        <Rle>         <IRanges>  <Rle> |            <Rle> <integer>     <integer>             <Rle> <Rle> <Rle>
-##   5    chr17 26453632-26453708      + | 1023.81202126363        16      26453667  288.917306039892    30    72
+## TagClusters object with 1 range and 7 metadata columns:
+##     seqnames            ranges strand |            score    dominant_ctss   nr_ctss annotation genes q_0.1 q_0.9
+##        <Rle>         <IRanges>  <Rle> |            <Rle>           <CTSS> <integer>      <Rle> <Rle> <Rle> <Rle>
+##   5    chr17 26453632-26453708      + | 1023.81202126363 chr17:26453667:+        16   promoter ttc7b    30    72
 ##   -------
-##   seqinfo: 1 sequence from an unspecified genome; no seqlengths
+##   seqinfo: 26 sequences (1 circular) from danRer7 genome
 ```
 
-```r
+``` r
 microbenchmark::microbenchmark(f.grline(tcl[[5]]), f.mat.direct(decoded.mat[,5]), f.mat.viaString(decoded.mat[,5]), times = 100)
 ```
 
 ```
 ## Unit: milliseconds
-##                               expr       min        lq      mean    median        uq       max neval
-##                 f.grline(tcl[[5]]) 10.015783 10.576726 11.313155 11.094960 12.048345 14.515133   100
-##     f.mat.direct(decoded.mat[, 5])  3.665505  3.838581  4.120408  3.974128  4.377097  5.110636   100
-##  f.mat.viaString(decoded.mat[, 5])  9.529413 10.062541 10.744386 10.541201 11.260659 13.957480   100
+##                               expr      min       lq     mean   median       uq       max neval cld
+##                 f.grline(tcl[[5]]) 7.491104 7.675015 8.007087 7.841324 8.004052 17.265202   100  a 
+##     f.mat.direct(decoded.mat[, 5]) 2.836928 2.892983 2.987140 2.930143 2.983857  7.430684   100   b
+##  f.mat.viaString(decoded.mat[, 5]) 7.543154 7.700290 7.901869 7.810298 7.959041 12.751089   100  a
+```
+
+All the clusters of one sample at once, which is what `exportToTrack` does:
+
+
+``` r
+length(tc)
+```
+
+```
+## [1] 532
+```
+
+``` r
+identical(IRangesList(apply(decoded.mat, 2, f.mat.direct)), f.vectorised(decoded.mat))
+```
+
+```
+## [1] TRUE
+```
+
+``` r
+microbenchmark::microbenchmark(
+  loop       = IRangesList(apply(decoded.mat, 2, f.mat.direct)),
+  vectorised = f.vectorised(decoded.mat),
+  times = 10)
+```
+
+```
+## Unit: milliseconds
+##        expr         min         lq        mean      median          uq         max neval cld
+##        loop 1231.833538 1234.47325 1285.285211 1238.099493 1239.874048 1717.153435    10  a 
+##  vectorised    1.560775    1.66441    1.793331    1.775571    1.814277    2.419917    10   b
 ```
