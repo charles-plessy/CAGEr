@@ -2,31 +2,18 @@
 
 BACKWARDS-INCOMPATIBLE CHANGES
 
-- In `aggregateTagClusters()`, `tpmThreshold` now only selects the tag
-  clusters that define the boundaries of the consensus clusters.  The
-  expression of a consensus cluster is the sum of the CTSSs that it contains
-  among those flagged as passing in `filteredCTSSidx()` (normally set by
-  `filterLowExpCTSS()`) at the time `aggregateTagClusters()` is run.  Two
-  hidden filters are removed: the one that kept only the CTSSs with a
-  normalised signal above `tpmThreshold` in at least one sample (when
-  `excludeSignalBelowThreshold = TRUE`, the default), and the one that dropped
-  the CTSSs whose normalised signal summed over all samples was not above
-  `tpmThreshold`, which made results depend on the number of samples.  Cluster
-  boundaries do not change, but the `counts` and `normalized` assays and the
-  `score` of the consensus clusters can increase, `outOfClusters` can
-  decrease, and consensus clusters in which no CTSS passed these filters are
-  not dropped anymore.
+- In `aggregateTagClusters()`, `tpmThreshold` now only selects the tag clusters
+  that define the boundaries of the consensus clusters.  Two erroneously applied
+  filters are removed: the one that kept only the CTSSs with a normalised signal
+  above `tpmThreshold` in at least one sample, and the one that dropped the
+  CTSSs whose normalised signal summed over all samples was not above
+  `tpmThreshold`.
 - The `excludeSignalBelowThreshold` argument of `aggregateTagClusters()` is
-  deprecated: its value is ignored, and a warning is emitted when it is
-  supplied.  Up to CAGEr 1.20, setting it to `TRUE` summed in each sample the
-  signal of the tag clusters passing `tpmThreshold`, as announced in CAGEr
-  1.2.7, but since CAGEr 1.22.0 (Bioconductor 3.7) it had instead been
-  discarding the individual CTSSs below `tpmThreshold` in every sample.
+  deprecated.  It was erroneously discarding the individual CTSSs below
+  `tpmThreshold` in every sample.
 - `CustomConsensusClusters()` no longer drops the CTSSs whose normalised
   signal summed over all samples is 1 or less.  Its `threshold` and
-  `nrPassThreshold` arguments still apply.  Expression values and
-  `outOfClusters` can change accordingly, and clusters made only of such
-  CTSSs are now kept.
+  `nrPassThreshold` arguments still apply.
 
 BUG FIXES
 
