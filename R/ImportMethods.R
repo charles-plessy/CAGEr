@@ -829,7 +829,6 @@ setMethod( "getCTSS", "CAGEexp"
 #' 
 #' }
 #' 
-#' @importFrom utils data
 #' @export
 
 setGeneric("importPublicData",
@@ -920,18 +919,18 @@ setGeneric("importPublicData",
     if (! requireNamespace("BSgenome.Hsapiens.UCSC.hg18"))
       stop ("This function requires the ", dQuote("BSgenome.Hsapiens.UCSC.hg18"), " package.")
     FANTOMhumanSamples <- FANTOMtimecourseCAGEhuman <- FANTOMtissueCAGEhuman <- NULL
-      data("FANTOMhumanSamples",        package = "FANTOM3and4CAGE", envir = environment())
-    data("FANTOMtimecourseCAGEhuman", package = "FANTOM3and4CAGE", envir = environment())
-    data("FANTOMtissueCAGEhuman",     package = "FANTOM3and4CAGE", envir = environment())
+      utils::data("FANTOMhumanSamples",        package = "FANTOM3and4CAGE", envir = environment())
+    utils::data("FANTOMtimecourseCAGEhuman", package = "FANTOM3and4CAGE", envir = environment())
+    utils::data("FANTOMtissueCAGEhuman",     package = "FANTOM3and4CAGE", envir = environment())
     samples.info <- FANTOMhumanSamples
     genome.name <- "BSgenome.Hsapiens.UCSC.hg18"
   } else if (all(dataset %in% c("FANTOMtissueCAGEmouse", "FANTOMtimecourseCAGEmouse"))) {
     if (! requireNamespace("BSgenome.Mmusculus.UCSC.mm9"))
       stop ("This function requires the ", dQuote("BSgenome.Mmusculus.UCSC.mm9"), " package.")
     FANTOMmouseSamples <- NULL
-    data("FANTOMmouseSamples", package = "FANTOM3and4CAGE", envir = environment())
-    data("FANTOMtimecourseCAGEmouse", package = "FANTOM3and4CAGE", envir = environment())
-    data("FANTOMtissueCAGEmouse",     package = "FANTOM3and4CAGE", envir = environment())
+    utils::data("FANTOMmouseSamples", package = "FANTOM3and4CAGE", envir = environment())
+    utils::data("FANTOMtimecourseCAGEmouse", package = "FANTOM3and4CAGE", envir = environment())
+    utils::data("FANTOMtissueCAGEmouse",     package = "FANTOM3and4CAGE", envir = environment())
     samples.info <- FANTOMmouseSamples
     genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
   } else {
@@ -968,14 +967,14 @@ setGeneric("importPublicData",
     if (! requireNamespace("BSgenome.Hsapiens.UCSC.hg19"))
       stop ("This function requires the ", dQuote("BSgenome.Hsapiens.UCSC.hg19"), " package.")
     FANTOM5humanSamples <- NULL
-    data("FANTOM5humanSamples", package = "CAGEr", envir = environment())
+    utils::data("FANTOM5humanSamples", package = "CAGEr", envir = environment())
     samples.info <- FANTOM5humanSamples
     genome.name <- "BSgenome.Hsapiens.UCSC.hg19"
   } else {
     if (! requireNamespace("BSgenome.Mmusculus.UCSC.mm9"))
       stop ("This function requires the ", dQuote("BSgenome.Mmusculus.UCSC.mm9"), " package.")
     FANTOM5mouseSamples <- NULL
-    data("FANTOM5mouseSamples", package = "CAGEr", envir = environment())
+    utils::data("FANTOM5mouseSamples", package = "CAGEr", envir = environment())
     samples.info <- FANTOM5mouseSamples
     genome.name <- "BSgenome.Mmusculus.UCSC.mm9"
   }

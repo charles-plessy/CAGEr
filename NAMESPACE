@@ -254,7 +254,6 @@ importFrom(stringdist,stringdist)
 importFrom(stringi,stri_sub)
 importFrom(utils,
   combn,
-  data,
   head,
   installed.packages,
   read.table,

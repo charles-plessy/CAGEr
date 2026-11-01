@@ -125,7 +125,7 @@ setGeneric( "plotReverseCumulatives",
   DF$plotOrder <- DF$sampleLabels |> ordered(unique(DF$sampleLabels))
 
   p <- as.data.frame(DF) |>
-      merge( object@metadata$colData[,c('sampleLabels', group)] |> as.data.frame()
+      merge( object@metadata$colData[, unique(c('sampleLabels', group)), drop = FALSE] |> as.data.frame()
            , by="sampleLabels") |> ggplot() +
     aes(.data$x, .data$y, col = .data$plotOrder) +
     geom_step() +
