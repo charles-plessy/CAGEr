@@ -1,3 +1,15 @@
+# Changes in version 2.19.2 (01/11/2026)
+
+BUG FIXES
+
+- Fix `plotReverseCumulatives(group = "sampleLabels")`, which failed with
+  `'by' must specify a uniquely valid column` since _S4Vectors_ 0.51.8 stopped
+  de-duplicating column names in `as.data.frame()` of a _DataFrame_: the
+  `sampleLabels` column was selected twice.
+- Remove the `utils::data` import, which clashed with the new `data()` generic
+  of _BiocGenerics_ and caused a `replacing previous import` warning at load
+  time.  `importPublicData()` now calls `utils::data()` explicitly.
+
 # Changes in version 2.19.1 (23/10/2026)
 
 BACKWARDS-INCOMPATIBLE CHANGES
